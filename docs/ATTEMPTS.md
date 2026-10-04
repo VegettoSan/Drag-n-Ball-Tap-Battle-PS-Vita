@@ -172,3 +172,20 @@ no bundled charXX; community archive has added/modified platform classes.
 **Evidence:** docs/evidence/apk_inventory.json; docs/APK_AUDIT.md.
 **Result:** SUCCESS (FORMAT CONFIRMED only).
 **Next:** harden native readers/extraction and inspect external data/game services.
+
+## 2026-10-04 — Attempt 006 — Safe extraction and exact-byte regression
+
+**Goal / hypothesis:** preflight paths/conflicts and stage CRC-checked data to avoid
+silently replacing manifests or publishing half an invalid APK.
+**Baseline:** 9e770eb; old extractor skips nested data and writes incrementally.
+**Changes:** hardened extractor; tests/test_extractor.py.
+**Procedure:** five unittest groups: nested UTF-8/unknown extension + hash,
+traversal/duplicate/case/file-directory collisions, manifest conflict/overwrite,
+symlink escape, corrupt late ZIP entry. Extract supplied APK; compare all hashes
+with independent audit evidence.
+**Expected / observed:** five groups pass; 57 files extracted; all SHA-256 values match.
+**Evidence:** unittest output and independent manifest/inventory comparison.
+**Result:** SUCCESS (host extraction only).
+**Next:** test native PAC/VFS. Publication into an existing directory is not an
+all-or-nothing filesystem transaction if disk failure/concurrent writes happen;
+ZIP validation and ordinary preflight failures leave existing output intact.

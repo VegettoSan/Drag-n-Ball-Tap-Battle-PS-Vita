@@ -36,3 +36,13 @@ No port implementation failures have been recorded yet.
 ## Important policy
 
 A result that is merely untested is **not** a failure. A hypothesis is **not** a confirmed cause. Record both accurately so later work does not build on false certainty.
+
+## 2026-10-04 — Baseline extractor integrity weaknesses
+
+**Attempt:** 006; baseline 1e3699b source review.
+**What failed:** unguarded manifest write ignored --overwrite, nested raw files
+were skipped, and earlier resources were published before discovering a late
+conflict/CRC failure. Manifest loss follows directly from unconditional write.
+**Do not repeat:** direct incremental extraction without full preflight/staging.
+**Different approach:** validated path/collision budget plus staged CRC checks;
+regressions now exercise manifest preservation and corrupt late records.

@@ -44,3 +44,11 @@ Only add items here when they are demonstrated by evidence. Distinguish PC-side 
 - **HARDWARE CONFIRMED** — observed working on a real PS Vita.
 
 Whenever possible, promote discoveries through these levels rather than assuming PC-side success guarantees Vita behavior.
+
+## 2026-10-04 — Complete inventory and hardened extractor
+
+**Scope:** FORMAT CONFIRMED / host validation.
+19 outer PACs and all nested SPR containers audited; metadata/hashes committed
+in evidence/apk_inventory.json. All 57 extracted raw SHA-256 values match that
+independent report. Five regression groups cover exact bytes, UTF-8/nesting,
+unsafe paths/collisions, manifest overwrite, symlinks and late CRC failures.
