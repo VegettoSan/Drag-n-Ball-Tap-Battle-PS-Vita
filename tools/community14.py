@@ -23,7 +23,7 @@ FIXED_NAMES = {'2752': 'common', '1BC2': 'select0', '9B28': 'effect',
                '5D73': 'card_preview', 'D67E': 'gamedata', '82B7': 'text00'}
 NUMBERED_NAMES = {'0B49': ('back', 2), 'BDC7': ('bobj', 2),
                   'E03B': ('char', 2), '8AC1': ('chardemo', 2),
-                  'FAFD': ('charf00', 2), '47DD': ('card', 3)}
+                  'FAFD': ('charf', 4), '47DD': ('card', 3)}
 
 
 def canonical_name(name):

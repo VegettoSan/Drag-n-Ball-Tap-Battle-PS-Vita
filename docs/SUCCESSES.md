@@ -96,3 +96,11 @@ floor-alpha premultiplication. All 36 Ogg files and mk.bin are identical. The
 seven libabc libraries match the public SWB byte-for-byte, establishing a shared
 loader rather than an author identity. Metadata-only evidence committed; no
 commercial payload, Java or Android helper binary redistributed.
+
+## 2026-10-04 — Original and community APK imports verified
+
+**Attempt:** 013. Nine extractor regressions pass. Real APK imports preserve all
+57 original and 144 community entries byte-for-byte. Confirmed PAC aliases become
+canonical names, including all 13 char/chardemo/charf triplets. --mod keeps the
+original installation intact; unknown data stays preserved and profile/conflict
+errors occur before publishing resources.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract untouched res/raw data from a user-owned APK, with hashes.
+"""Extract untouched raw/assets data from a user-owned APK, with hashes.
 
 All archive paths, destination conflicts and CRCs are checked before publishing
 files. Unknown raw extensions are preserved and reported, never discarded.
@@ -15,6 +15,7 @@ import stat
 import sys
 import tempfile
 import zipfile
+import community14
 
 RAW_PREFIX = 'res/raw/'
 MANIFEST = 'dbtb_manifest.json'
@@ -53,23 +54,44 @@ def check_destination(path, overwrite, directory=False):
             raise ValueError(f'destination exists (use --overwrite for regular files): {path}')
 
 
-def extract(apk, output, overwrite=False):
+def choose_layout(archive, layout):
+    files = [i.filename for i in archive.infolist() if not i.is_dir()]
+    raw = any(n.startswith(RAW_PREFIX) for n in files)
+    assets = any(n.startswith('assets/') for n in files)
+    if layout == 'auto':
+        if raw and assets:
+            raise ValueError('ambiguous res/raw + assets APK: choose --layout explicitly')
+        if raw:
+            return 'raw'
+        if assets:
+            return 'community14' if any(community14.canonical_name(n[7:]) != n[7:] for n in files if n.startswith('assets/')) else 'assets'
+        raise ValueError('APK contains no res/raw or assets files')
+    return layout
+
+
+def extract(apk, output, overwrite=False, layout='auto'):
+    if layout not in {'auto', 'raw', 'assets', 'community14'}:
+        raise ValueError('unknown APK layout')
     with zipfile.ZipFile(apk) as archive:
+        layout = choose_layout(archive, layout)
+        prefix = RAW_PREFIX if layout == 'raw' else 'assets/'
         entries = []
         names = set()
         total = 0
         for info in sorted(archive.infolist(), key=lambda x: x.filename):
-            if not info.filename.startswith(RAW_PREFIX):
+            if not info.filename.startswith(prefix):
                 continue
-            name = info.filename[len(RAW_PREFIX):]
+            name = info.filename[len(prefix):]
             if info.is_dir():
                 if name and not safe_name(name.rstrip('/')):
                     raise ValueError(f'unsafe raw directory: {info.filename!r}')
                 continue
             if not safe_name(name):
                 raise ValueError(f'unsafe raw path: {info.filename!r}')
+            if layout == 'community14':
+                name = community14.canonical_name(name)
             key = name.casefold()
-            if key == MANIFEST or key in names:
+            if key.split('/')[0] == MANIFEST or key in names:
                 raise ValueError(f'duplicate or reserved raw path: {name}')
             mode = (info.external_attr >> 16) & 0o170000
             if mode not in (0, stat.S_IFREG):
@@ -82,7 +104,7 @@ def extract(apk, output, overwrite=False):
             names.add(key)
             entries.append((info, name))
         if not entries:
-            raise ValueError('APK contains no res/raw files')
+            raise ValueError(f'APK contains no {prefix} files')
         for _, name in entries:
             parts = name.casefold().split('/')
             if any('/'.join(parts[:i]) in names for i in range(1, len(parts))):
@@ -103,13 +125,24 @@ def extract(apk, output, overwrite=False):
                     shutil.copyfileobj(source, destination, 1024 * 1024)
                 if target.stat().st_size != info.file_size:
                     raise ValueError(f'wrong extracted size: {name}')
+                if layout == 'community14' and name.endswith('.pac'):
+                    # Refuse a different codec before publishing any output.
+                    data = target.read_bytes()
+                    if not community14.looks_encoded(data):
+                        raise ValueError(f'unsupported community PAC codec: {info.filename}')
+                    community14.table(data)
                 files.append({'name': name, 'size': info.file_size, 'sha256': file_hash(target),
                               'apk_path': info.filename})
             unknown = [f['name'] for f in files if Path(f['name']).suffix.lower() not in KNOWN]
-            manifest = {'format': 2, 'source_apk': apk.name, 'source_apk_sha256': file_hash(apk),
-                        'file_count': len(files), 'files': files, 'unknown_raw_files': unknown,
+            manifest = {'format': 3, 'source_layout': layout,
+                        'pac_codec': community14.PROFILE if layout == 'community14' else 'original-or-unknown',
+                        'payloads_unchanged': True,
+                        'renamed_files': [{'apk_path': f['apk_path'], 'name': f['name']} for f in files
+                                          if f['apk_path'][len(prefix):] != f['name']], 'source_apk': apk.name, 'source_apk_sha256': file_hash(apk),
+                        'file_count': len(files), 'files': files, 'unknown_files': unknown,
+                        'unknown_raw_files': unknown if layout == 'raw' else [],
                         'not_extracted': [i.filename for i in archive.infolist()
-                                          if not i.filename.startswith(RAW_PREFIX) and not i.is_dir()]}
+                                          if not i.filename.startswith(prefix) and not i.is_dir()]}
             (stage / MANIFEST).write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
             output.mkdir(parents=True, exist_ok=True)
             for name in [f['name'] for f in files] + [MANIFEST]:
@@ -129,17 +162,28 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('apk', type=Path)
     parser.add_argument('output', type=Path)
+    parser.add_argument('--layout', choices=['auto', 'raw', 'assets', 'community14'], default='auto')
+    parser.add_argument('--mod', help='extract into OUTPUT/mods/NAME, protecting OUTPUT/game')
     parser.add_argument('--overwrite', action='store_true')
     args = parser.parse_args()
     try:
-        manifest = extract(args.apk, args.output, args.overwrite)
+        if args.mod:
+            if not safe_name(args.mod) or '/' in args.mod or args.mod.casefold() == MANIFEST:
+                raise ValueError('mod name must be a single safe directory component')
+            args.output = args.output / 'mods' / args.mod
+        manifest = extract(args.apk, args.output, args.overwrite, args.layout)
     except (OSError, ValueError, zipfile.BadZipFile, RuntimeError, NotImplementedError) as exc:
         print(f'error: {exc}', file=sys.stderr)
         return 2
-    for name in manifest['unknown_raw_files']:
-        print(f'warning: unknown raw format preserved: {name}')
+    for name in manifest['unknown_files']:
+        print(f'warning: unknown resource format preserved: {name}')
     print(f"Done: {manifest['file_count']} untouched files -> {args.output}")
-    print('Copy contents to ux0:data/DBTapBattle/game/; this APK may require additional external character data.')
+    print('Layout: ' + manifest['source_layout'] + '; PAC codec: ' + manifest['pac_codec'])
+    if args.mod:
+        print(f'Copy contents to ux0:data/DBTapBattle/mods/{args.mod}/; select that folder at boot.')
+    else:
+        print('Copy contents to game/ for a base installation, or mods/NAME/ for a community dataset.')
+    print('Resource import does not establish gameplay or code-mod compatibility.')
     return 0
 
 

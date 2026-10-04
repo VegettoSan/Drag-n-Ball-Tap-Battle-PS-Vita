@@ -71,7 +71,7 @@ only; it must preserve every payload byte and retain the APK path/hash manifest.
 | BDC7 + 2 digits | bobj + same digits |
 | E03B + 2 digits | char + same digits |
 | 8AC1 + 2 digits | chardemo + same digits |
-| FAFD + 2 digits | charf00 + same digits |
+| FAFD + 4 digits | charf + same digits (charf0000–0012) |
 | 9B28 | effect |
 | 59F2 | demo_00 |
 | 3C90 | demo_08 |
@@ -137,3 +137,37 @@ python tools/compare_apks.py original.apk community.apk docs/evidence/android14_
 Reports contain paths, hashes, dimensions, API/class names and format facts;
 no asset bytes or decompiled commercial source. Native import/preview tests
 and limitations are recorded with their implementation in subsequent commits.
+
+## Import and installed-mod contract
+
+The extractor now supports `--layout auto|raw|assets|community14`. Auto rejects
+mixed raw/assets archives instead of choosing arbitrarily; it recognizes the
+verified aliases and validates the encoded tables before publication. `assets`
+is also available for ordinary named asset mods. Unknown extensions are retained
+and listed. All earlier path/symlink/CRC/conflict/budget protections remain.
+
+```sh
+# Preserve the original installation.
+python tools/extract_apk_data.py original.apk ./install/game
+# Place the complete community dataset in a separately selectable overlay.
+python tools/extract_apk_data.py community.apk ./install --mod Android14
+# The same import route handles mods retaining this APK's names/codec.
+python tools/extract_apk_data.py my-community-mod.apk ./install --mod MyMod
+```
+
+Copy `install/game/` and `install/mods/` into `ux0:data/DBTapBattle/`. Alternatively
+this community APK can be the sole base: extract directly to `install/game/`,
+but the two missing resources and future engine completeness still need review.
+Do not merge it over an existing original install. `--overwrite` operates only
+on the selected destination. `--mod NAME` confines output to `OUTPUT/mods/NAME`.
+
+Format-3 dbtb_manifest.json records source SHA, layout/profile, all 106 alias
+renames, original APK paths, untouched content hashes and omitted Android files.
+It is import provenance; the native reader detects PAC codecs per file so a
+missing override can still resolve an ordinary original PAC. No Android .so,
+DEX, resources.arsc or signing metadata is installed as game data.
+
+Host tests: nine extractor regressions pass, including alias collisions,
+different-codec refusal, ambiguous archives, safe nested assets and CLI protection
+of an existing game/common.pac. Both real APK extractions pass; every extracted
+file matches its APK entry byte-for-byte and all 13 triplets have canonical names.

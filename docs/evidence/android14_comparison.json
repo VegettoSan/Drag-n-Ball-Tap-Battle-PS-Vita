@@ -2970,110 +2970,6 @@
   ],
   "added_resources": [
     {
-      "logical_name": "FAFD0000.pac",
-      "path": "assets/FAFD0000.pac",
-      "size": 26746,
-      "compressed_size": 26746,
-      "zip_method": 0,
-      "sha256": "77f11d8f4a695e9daf05148dffe2c3baa4504179aae015f539684f6494ef3637"
-    },
-    {
-      "logical_name": "FAFD0001.pac",
-      "path": "assets/FAFD0001.pac",
-      "size": 26659,
-      "compressed_size": 26659,
-      "zip_method": 0,
-      "sha256": "bba9b529b29e9e593e88b05e53f4285725ca7afd152d337c76bc3b4f0028deb4"
-    },
-    {
-      "logical_name": "FAFD0002.pac",
-      "path": "assets/FAFD0002.pac",
-      "size": 26902,
-      "compressed_size": 26902,
-      "zip_method": 0,
-      "sha256": "bb4fb871b96197d5ce5bdcda4d6b1fcd5d6679734393b332a33f2752321a078f"
-    },
-    {
-      "logical_name": "FAFD0003.pac",
-      "path": "assets/FAFD0003.pac",
-      "size": 26558,
-      "compressed_size": 26558,
-      "zip_method": 0,
-      "sha256": "fda0ec0130934218984bd81bc858d5ab7d81b40c780f13924910b6f303275f75"
-    },
-    {
-      "logical_name": "FAFD0004.pac",
-      "path": "assets/FAFD0004.pac",
-      "size": 26673,
-      "compressed_size": 26673,
-      "zip_method": 0,
-      "sha256": "1e7eb2fb4ff96dd799adf5fc6b95987b2ef49ec1c6fa2245bd3d6bf9579998e9"
-    },
-    {
-      "logical_name": "FAFD0005.pac",
-      "path": "assets/FAFD0005.pac",
-      "size": 26978,
-      "compressed_size": 26978,
-      "zip_method": 0,
-      "sha256": "a789c98a9d2b3648658807cdf6fd693dec96634718c31ade5d57f02659473dcf"
-    },
-    {
-      "logical_name": "FAFD0006.pac",
-      "path": "assets/FAFD0006.pac",
-      "size": 26790,
-      "compressed_size": 26790,
-      "zip_method": 0,
-      "sha256": "4caa3af75f6c6f8d5f7854c9648d33c2a709f025689d6d7aa211f05bd7240399"
-    },
-    {
-      "logical_name": "FAFD0007.pac",
-      "path": "assets/FAFD0007.pac",
-      "size": 26832,
-      "compressed_size": 26832,
-      "zip_method": 0,
-      "sha256": "3d51b6cd645a5f0660cd6f3a5ec030a5e9ca0f27d4137e888caa16bd96780d5b"
-    },
-    {
-      "logical_name": "FAFD0008.pac",
-      "path": "assets/FAFD0008.pac",
-      "size": 45856,
-      "compressed_size": 45856,
-      "zip_method": 0,
-      "sha256": "0b889a74d4f469b9f144625db919b5deff043e5852b6341ef4a3406e756e8401"
-    },
-    {
-      "logical_name": "FAFD0009.pac",
-      "path": "assets/FAFD0009.pac",
-      "size": 28636,
-      "compressed_size": 28636,
-      "zip_method": 0,
-      "sha256": "2ac5dfca5b1d74c98a46ba328c24f93982da094d16d9d5052d3a52870f6f95be"
-    },
-    {
-      "logical_name": "FAFD0010.pac",
-      "path": "assets/FAFD0010.pac",
-      "size": 41152,
-      "compressed_size": 41152,
-      "zip_method": 0,
-      "sha256": "7edf4a36fa5a4ace4e998482b4ec2971dc4c5cd21080a3fed5c58d9187075936"
-    },
-    {
-      "logical_name": "FAFD0011.pac",
-      "path": "assets/FAFD0011.pac",
-      "size": 26946,
-      "compressed_size": 26946,
-      "zip_method": 0,
-      "sha256": "14043a87075725aa4145d17a69e407a3ccf5589b5088a67ea36a11505a7c8466"
-    },
-    {
-      "logical_name": "FAFD0012.pac",
-      "path": "assets/FAFD0012.pac",
-      "size": 28718,
-      "compressed_size": 28718,
-      "zip_method": 0,
-      "sha256": "683dcfed7e5863ce3e57d1e31f885dc19b7c82aa10c7c2189eebb0e1248bd762"
-    },
-    {
       "logical_name": "card001.pac",
       "path": "assets/47DD001.pac",
       "size": 216811,
@@ -3680,6 +3576,110 @@
       "compressed_size": 159684,
       "zip_method": 0,
       "sha256": "5015d0bdd021c395e427b85761ecde46b3f6c574ed8a0ff369555a4eaabe11bc"
+    },
+    {
+      "logical_name": "charf0000.pac",
+      "path": "assets/FAFD0000.pac",
+      "size": 26746,
+      "compressed_size": 26746,
+      "zip_method": 0,
+      "sha256": "77f11d8f4a695e9daf05148dffe2c3baa4504179aae015f539684f6494ef3637"
+    },
+    {
+      "logical_name": "charf0001.pac",
+      "path": "assets/FAFD0001.pac",
+      "size": 26659,
+      "compressed_size": 26659,
+      "zip_method": 0,
+      "sha256": "bba9b529b29e9e593e88b05e53f4285725ca7afd152d337c76bc3b4f0028deb4"
+    },
+    {
+      "logical_name": "charf0002.pac",
+      "path": "assets/FAFD0002.pac",
+      "size": 26902,
+      "compressed_size": 26902,
+      "zip_method": 0,
+      "sha256": "bb4fb871b96197d5ce5bdcda4d6b1fcd5d6679734393b332a33f2752321a078f"
+    },
+    {
+      "logical_name": "charf0003.pac",
+      "path": "assets/FAFD0003.pac",
+      "size": 26558,
+      "compressed_size": 26558,
+      "zip_method": 0,
+      "sha256": "fda0ec0130934218984bd81bc858d5ab7d81b40c780f13924910b6f303275f75"
+    },
+    {
+      "logical_name": "charf0004.pac",
+      "path": "assets/FAFD0004.pac",
+      "size": 26673,
+      "compressed_size": 26673,
+      "zip_method": 0,
+      "sha256": "1e7eb2fb4ff96dd799adf5fc6b95987b2ef49ec1c6fa2245bd3d6bf9579998e9"
+    },
+    {
+      "logical_name": "charf0005.pac",
+      "path": "assets/FAFD0005.pac",
+      "size": 26978,
+      "compressed_size": 26978,
+      "zip_method": 0,
+      "sha256": "a789c98a9d2b3648658807cdf6fd693dec96634718c31ade5d57f02659473dcf"
+    },
+    {
+      "logical_name": "charf0006.pac",
+      "path": "assets/FAFD0006.pac",
+      "size": 26790,
+      "compressed_size": 26790,
+      "zip_method": 0,
+      "sha256": "4caa3af75f6c6f8d5f7854c9648d33c2a709f025689d6d7aa211f05bd7240399"
+    },
+    {
+      "logical_name": "charf0007.pac",
+      "path": "assets/FAFD0007.pac",
+      "size": 26832,
+      "compressed_size": 26832,
+      "zip_method": 0,
+      "sha256": "3d51b6cd645a5f0660cd6f3a5ec030a5e9ca0f27d4137e888caa16bd96780d5b"
+    },
+    {
+      "logical_name": "charf0008.pac",
+      "path": "assets/FAFD0008.pac",
+      "size": 45856,
+      "compressed_size": 45856,
+      "zip_method": 0,
+      "sha256": "0b889a74d4f469b9f144625db919b5deff043e5852b6341ef4a3406e756e8401"
+    },
+    {
+      "logical_name": "charf0009.pac",
+      "path": "assets/FAFD0009.pac",
+      "size": 28636,
+      "compressed_size": 28636,
+      "zip_method": 0,
+      "sha256": "2ac5dfca5b1d74c98a46ba328c24f93982da094d16d9d5052d3a52870f6f95be"
+    },
+    {
+      "logical_name": "charf0010.pac",
+      "path": "assets/FAFD0010.pac",
+      "size": 41152,
+      "compressed_size": 41152,
+      "zip_method": 0,
+      "sha256": "7edf4a36fa5a4ace4e998482b4ec2971dc4c5cd21080a3fed5c58d9187075936"
+    },
+    {
+      "logical_name": "charf0011.pac",
+      "path": "assets/FAFD0011.pac",
+      "size": 26946,
+      "compressed_size": 26946,
+      "zip_method": 0,
+      "sha256": "14043a87075725aa4145d17a69e407a3ccf5589b5088a67ea36a11505a7c8466"
+    },
+    {
+      "logical_name": "charf0012.pac",
+      "path": "assets/FAFD0012.pac",
+      "size": 28718,
+      "compressed_size": 28718,
+      "zip_method": 0,
+      "sha256": "683dcfed7e5863ce3e57d1e31f885dc19b7c82aa10c7c2189eebb0e1248bd762"
     }
   ],
   "original_dex": {
@@ -3696,17 +3696,17 @@
       }
     ],
     "permissions": [
-      "android.permission.VIBRATE",
-      "android.permission.BLUETOOTH",
-      "com.android.vending.BILLING",
-      "android.permission.WRITE_EXTERNAL_STORAGE",
       "android.permission.INTERNET",
-      "android.permission.BLUETOOTH_ADMIN"
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "com.android.vending.BILLING",
+      "android.permission.BLUETOOTH_ADMIN",
+      "android.permission.BLUETOOTH",
+      "android.permission.VIBRATE"
     ],
     "activities": [
       "com.namcobandaigames.dragonballtap.apk.dragonballtap",
-      "com.namcobandaigames.dragonballtap.apk.smap",
-      "com.namcobandaigames.dragonballtap.apk.BluetoothSearch"
+      "com.namcobandaigames.dragonballtap.apk.BluetoothSearch",
+      "com.namcobandaigames.dragonballtap.apk.smap"
     ],
     "class_count": 91,
     "classes": [
@@ -5298,11 +5298,11 @@
       }
     ],
     "permissions": [
-      "android.permission.VIBRATE",
-      "android.permission.BLUETOOTH",
-      "android.permission.WRITE_EXTERNAL_STORAGE",
       "android.permission.INTERNET",
-      "android.permission.BLUETOOTH_ADMIN"
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "android.permission.BLUETOOTH_ADMIN",
+      "android.permission.BLUETOOTH",
+      "android.permission.VIBRATE"
     ],
     "activities": [
       "com.namcobandaigames.apk.Primary",

@@ -293,3 +293,17 @@ reproducible audit_apk.py/compare_apks.py and pinned community14.py metadata.
 **Result:** SUCCESS (static/container/pixel facts); runtime INCONCLUSIVE.
 **Next:** preserve encoded data, normalize only confirmed aliases at import,
 and implement bounded native PAC/image decoding with correct alpha handling.
+
+## 2026-10-04 — Attempt 013 — Non-destructive community import
+
+**Baseline:** 8569c70. **Changes:** raw/assets/profile selection; confirmed alias
+normalization; format-3 provenance; --mod destination isolation; codec validation.
+FAFD uses four suffix digits (FAFD0012 → charf0012), cross-checked against the
+actual 13 filenames before publishing the importer.
+**Procedure:** nine Python regressions; original 57-file and community 144-file
+extraction; compare every output byte/hash to the APK; verify 13 character triplets.
+**Observed:** all pass; originals stay intact; alias collisions, wrong codec,
+unsafe paths and ambiguous layout fail before resource publication.
+**Evidence:** tests/test_extractor.py; updated comparison report; ANDROID14_APK.md.
+**Result:** SUCCESS (host import). **Next:** native table/image regressions and
+correct premultiplied-alpha preview; no gameplay support claim from extraction.

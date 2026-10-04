@@ -1,9 +1,15 @@
 import hashlib
 import importlib.util
+import sys
+import struct
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
 import zipfile
+
+sys.path.insert(0, str(Path(__file__).parents[1] / 'tools'))
+import community14
 
 spec = importlib.util.spec_from_file_location('extractor', Path(__file__).parents[1] / 'tools/extract_apk_data.py')
 e = importlib.util.module_from_spec(spec)
@@ -69,6 +75,66 @@ class ExtractorTest(unittest.TestCase):
         with self.assertRaises(zipfile.BadZipFile):
             e.extract(self.apk, self.output)
         self.assertFalse(self.output.exists())
+
+
+    def encoded_pac(self):
+        c = community14
+        # One real encoded BIN-type table entry; payload stays byte-identical.
+        return (struct.pack('<HII', 1 ^ c.COUNT_XOR, c.OFFSET_XOR, 3 ^ c.SIZE_XOR)
+                + struct.pack('>I', (0x8f230d0d ^ c.TYPE_XOR)) + bytes(4) + b'abc')
+
+    def test_encoded_import_preserves_payload_and_maps_all_name_families(self):
+        names = {'2752.pac': 'common.pac', '1BC2.pac': 'select0.pac',
+                 '0B4903.pac': 'back03.pac', 'BDC701.pac': 'bobj01.pac',
+                 'E03B12.pac': 'char12.pac', '8AC112.pac': 'chardemo12.pac',
+                 'FAFD0012.pac': 'charf0012.pac', '47DD050.pac': 'card050.pac'}
+        data = self.encoded_pac()
+        self.archive([('assets/' + n, data) for n in names])
+        m = e.extract(self.apk, self.output)
+        self.assertEqual(m['source_layout'], 'community14')
+        self.assertEqual(len(m['renamed_files']), len(names))
+        for logical in names.values():
+            self.assertEqual((self.output / logical).read_bytes(), data)
+        self.assertEqual(m['file_count'], len(names))
+
+    def test_alias_collision_bad_codec_and_unsafe_assets_publish_nothing(self):
+        data = self.encoded_pac()
+        for entries in [[('assets/2752.pac', data), ('assets/common.pac', data)],
+                        [('assets/2752.pac', data), ('assets/47DD050.pac', b'wrong profile')],
+                        [('assets/../outside.pac', data)],
+                        [('assets/dbtb_manifest.json/x', b'data')],
+                        [('assets/A.pac', data), ('assets/a.pac', data)]]:
+            with self.subTest(entries=[n for n, _ in entries]):
+                self.archive(entries)
+                with self.assertRaises(ValueError):
+                    e.extract(self.apk, self.output)
+                self.assertFalse(self.output.exists())
+
+    def test_mixed_layout_requires_choice_and_plain_assets_remain_untouched(self):
+        self.archive([('res/raw/common.pac', b'raw'), ('assets/common.pac', b'asset')])
+        with self.assertRaisesRegex(ValueError, 'ambiguous'):
+            e.extract(self.apk, self.output)
+        m = e.extract(self.apk, self.output, layout='assets')
+        self.assertEqual(m['source_layout'], 'assets')
+        self.assertEqual((self.output / 'common.pac').read_bytes(), b'asset')
+        self.assertEqual(m['renamed_files'], [])
+
+    def test_cli_mod_never_replaces_original(self):
+        self.output.mkdir()
+        original = self.output / 'game'
+        original.mkdir()
+        (original / 'common.pac').write_bytes(b'original marker')
+        self.archive([('assets/2752.pac', self.encoded_pac())])
+        tool = Path(__file__).parents[1] / 'tools/extract_apk_data.py'
+        result = subprocess.run([sys.executable, str(tool), str(self.apk), str(self.output),
+                                 '--mod', 'Android14', '--overwrite'], capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((original / 'common.pac').read_bytes(), b'original marker')
+        self.assertEqual((self.output / 'mods/Android14/common.pac').read_bytes(), self.encoded_pac())
+        result = subprocess.run([sys.executable, str(tool), str(self.apk), str(self.output),
+                                 '--mod', '../game'], capture_output=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual((original / 'common.pac').read_bytes(), b'original marker')
 
 
 if __name__ == '__main__':
