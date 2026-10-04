@@ -189,3 +189,21 @@ with independent audit evidence.
 **Next:** test native PAC/VFS. Publication into an existing directory is not an
 all-or-nothing filesystem transaction if disk failure/concurrent writes happen;
 ZIP validation and ordinary preflight failures leave existing output intact.
+
+## 2026-10-04 — Attempt 007 — Native PAC/VFS host regressions
+
+**Goal / hypothesis:** correct safety/state weaknesses without changing original
+PAC semantics or requiring a new asset container.
+**Baseline:** 7213bb2.
+**Changes:** component-based VFS validation, regular-file checks, explicit errors,
+portable host I/O, dedicated config/logs/saves; PAC transactional entry table,
+read budget, reopen/changed-length validation.
+**Procedure:** compile test_core.cpp with g++ C++14, warnings-as-errors,
+AddressSanitizer/UndefinedBehaviorSanitizer. Run synthetic corruption/NUL/path/
+symlink/UTF-8/fallback tests, then read every entry of all 19 original PACs.
+**Expected / observed:** CORE PASS; all 19 originals parsed/read successfully.
+**Evidence:** tests/test_core.cpp; independent APK inventory entry counts.
+**Result:** SUCCESS (host core only).
+**Limit:** LeakSanitizer cannot scan /proc under this runner; disabled leak scan
+only with ASAN_OPTIONS=detect_leaks=0. Address/undefined-behavior checks remain on.
+**Next:** real Vita compile; GPU display remains unconfirmed.

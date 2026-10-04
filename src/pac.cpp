@@ -40,8 +40,8 @@ bool PacFile::open(const std::string& path) {
     }
 
     const long end = std::ftell(fp);
-    if (end < 2) {
-        error_ = "PAC is too small";
+    if (end < 2 || static_cast<uint64_t>(end) > 0x7FFFFFFFull) {
+        error_ = "PAC size is outside supported 32-bit seek range";
         std::fclose(fp);
         return false;
     }
@@ -64,7 +64,8 @@ bool PacFile::open(const std::string& path) {
     }
     data_base_ = static_cast<uint32_t>(data_base64);
 
-    entries_.reserve(count);
+    std::vector<PacEntry> parsed;
+    parsed.reserve(count);
     for (uint16_t i = 0; i < count; ++i) {
         uint8_t raw[16];
         if (!readExact(fp, raw, sizeof(raw))) {
@@ -89,10 +90,11 @@ bool PacFile::open(const std::string& path) {
             return false;
         }
 
-        entries_.push_back(entry);
+        parsed.push_back(entry);
     }
 
     std::fclose(fp);
+    entries_.swap(parsed);
     error_.clear();
     open_ = true;
     return true;
@@ -120,21 +122,36 @@ std::string PacFile::typeString(size_t index) const {
     return std::string(entry.type, entry.type + length);
 }
 
-bool PacFile::readEntry(size_t index, std::vector<uint8_t>& out) const {
+bool PacFile::readEntry(size_t index, std::vector<uint8_t>& out, size_t max_bytes) {
     out.clear();
+    error_.clear();
     if (!open_ || index >= entries_.size()) {
+        error_ = "PAC is closed or entry index is invalid";
         return false;
     }
 
     const PacEntry& entry = entries_[index];
+    if (entry.size > max_bytes) {
+        error_ = "PAC entry exceeds caller memory budget";
+        return false;
+    }
     FILE* fp = std::fopen(path_.c_str(), "rb");
     if (!fp) {
+        error_ = "could not reopen PAC entry";
         return false;
     }
 
+    // Mods can be replaced after selection. Do not allocate from a stale table
+    // when the backing file has changed length or become truncated.
+    if (std::fseek(fp, 0, SEEK_END) != 0 || std::ftell(fp) != static_cast<long>(file_size_)) {
+        error_ = "PAC backing file size changed since open";
+        std::fclose(fp);
+        return false;
+    }
     const uint64_t absolute = static_cast<uint64_t>(data_base_) + entry.offset;
     if (absolute > 0x7FFFFFFFull || std::fseek(fp, static_cast<long>(absolute), SEEK_SET) != 0) {
         std::fclose(fp);
+        error_ = "could not seek to PAC entry";
         return false;
     }
 
@@ -143,6 +160,7 @@ bool PacFile::readEntry(size_t index, std::vector<uint8_t>& out) const {
     std::fclose(fp);
     if (!ok) {
         out.clear();
+        error_ = "PAC entry read was truncated";
     }
     return ok;
 }

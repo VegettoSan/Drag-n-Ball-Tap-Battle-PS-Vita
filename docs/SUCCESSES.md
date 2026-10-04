@@ -52,3 +52,12 @@ Whenever possible, promote discoveries through these levels rather than assuming
 in evidence/apk_inventory.json. All 57 extracted raw SHA-256 values match that
 independent report. Five regression groups cover exact bytes, UTF-8/nesting,
 unsafe paths/collisions, manifest overwrite, symlinks and late CRC failures.
+
+## 2026-10-04 — Native PAC and mod overlay validated on host
+
+**Scope:** FORMAT CONFIRMED; not hardware confirmation.
+Actual src/pac.cpp reads every entry from all 19 original PACs. Host regressions
+exercise malformed/truncated tables, 32-bit overflow offsets, empty PACs,
+non-terminated tags, per-entry allocation budget, changed backing file length,
+failed-open table isolation, mod precedence/fallback, original detection,
+nested paths, UTF-8/spaces, traversal/NUL rejection and symlink escapes.

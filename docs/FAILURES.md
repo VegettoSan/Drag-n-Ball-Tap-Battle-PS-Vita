@@ -46,3 +46,15 @@ conflict/CRC failure. Manifest loss follows directly from unconditional write.
 **Do not repeat:** direct incremental extraction without full preflight/staging.
 **Different approach:** validated path/collision budget plus staged CRC checks;
 regressions now exercise manifest preservation and corrupt late records.
+
+## 2026-10-04 — Baseline VFS path and presence mistakes
+
+**Attempt:** 007.
+**What failed:** std::string containing NUL passed safety validation but C I/O
+would resolve only its prefix. originalDataPresent used active-mod resolve and
+accepted any existing common.pac path, including directories. Legitimate names
+containing '..' were incorrectly excluded from discovery.
+**Do not repeat:** substring-only traversal checks, exists-and-not-directory as
+regular-file validation, or active-overlay resolution to check original data.
+**Different approach:** validate components/control bytes, require regular files,
+and check game/common.pac independently. All covered by host regressions.

@@ -23,7 +23,8 @@ public:
     const std::vector<PacEntry>& entries() const { return entries_; }
 
     std::string typeString(size_t index) const;
-    bool readEntry(size_t index, std::vector<uint8_t>& out) const;
+    // Budget is an explicit per-read limit, not an inferred original-format rule.
+    bool readEntry(size_t index, std::vector<uint8_t>& out, size_t max_bytes = 16 * 1024 * 1024);
 
 private:
     std::string path_;

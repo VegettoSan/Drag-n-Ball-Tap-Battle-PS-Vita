@@ -27,3 +27,6 @@ __pycache__/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Host verification output
+build-host/
