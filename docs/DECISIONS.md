@@ -72,3 +72,12 @@ Input adapters produce neutral menu commands and stable pointer events; original
 Controller/KeyData gameplay semantics will consume them, rather than reading
 SceCtrl inside combat. Touch/physical boot selector is implemented; combat
 mapping is a proposal until original command interpretation is reconstructed.
+## ADR-009 — Source facts before inferred internal schemas
+
+**Status:** accepted — 2026-10-04.
+Keep raw DAC animation and converted gamedata/text tables as distinct formats.
+Outer PAC LE is not a universal endian rule: original CNV rectangle reads use
+BE signed 16-bit values. Preserve unknown GDT/BMP/DAT/PLT/DB payloads without
+claiming a decoder. Do not impose a 40-FPS game tick from constants unused in
+the observed render callback. Original state dispatch overrides community wiki
+labels. Save compatibility requires a real original save fixture before approval.

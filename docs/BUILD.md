@@ -1,79 +1,101 @@
-# Build and First Test
+# Build and first test — bootstrap 00.02
 
-## Requirements
+## Confirmed compilation
 
-- VitaSDK configured through the `VITASDK` environment variable.
-- vitaGL and its current dependencies installed in the same VitaSDK environment.
-- CMake 3.16+.
+A real VitaSDK GCC 15.2.0 **hard-float** build has compiled, linked and packaged
+this bootstrap. Installed package set: vitasdk-core 2026.08.1-1; vitaGL
+0.0.0.r1488.g2bdbe89-1; libpng 1.6.58-1; zlib 1.3.2-2; libmathneon
+0.0.0.r11.g0faab81-1; vitaShaRK 1.7-1; SceShaccCgExt 1.0.1-1; taihen 0.11-1.
+Final source commit/artifact hashes are recorded in evidence/build_validation.json.
+Do not mix soft-float libraries or a different renderer ABI into this build.
 
-The initial CMake link list follows current vitaGL sample conventions and may need adjustment if the locally installed VitaSDK/vitaGL package differs. Any such adjustment must be logged in `ATTEMPTS.md`.
+Use official VitaSDK installation/package guidance at https://vitasdk.org/.
+A complete release channel is preferable to a partially rebuilt nightly package
+set. Install the matching core before renderer dependencies. Package names and
+link archive names differ (e.g. vitaShaRK installs libvitashark.a).
 
-## Build
-
-```bash
-mkdir -p build
-cd build
-cmake ..
-cmake --build . -j$(nproc)
+```sh
+export VITASDK=/your/vitasdk
+export PATH="$VITASDK/bin:$PATH"
+# Install through the supported channel's package manager as documented there:
+vdpm install vitaGL libpng zlib libmathneon vitaShaRK SceShaccCgExt taihen
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j4
 ```
 
-Expected artifact:
+CMake also accepts -DVITASDK or an explicit toolchain file. Dependencies must
+come from the same target ABI. CMake uses C++14, no exceptions/RTTI, warning flags,
+64-MiB application heap, standard 960×544 output, and no legacy vitaGL pool.
+The vglInitExtended fourth argument is a RAM allocation threshold, **not** a
+hard total GPU-memory cap. Native SELF is created with homebrew unsafe permission
+(-s equivalent) required by this graphics/runtime stack; it is not signed retail.
 
-```text
-build/dbtb_vita.vpk
+Artifact: build/dbtb_vita.vpk. Title ID: DBTB00001. Version: 00.02.
+No commercial data is packaged. Native code source and relinking files are
+available alongside the test deliverable; see THIRD_PARTY.md.
+
+## Data preparation
+
+```sh
+python tools/extract_apk_data.py /path/to/DBTapBattle.apk ./original-data
 ```
 
-Current title ID:
+Copy the complete output directory contents to ux0:data/DBTapBattle/game/.
+The manifest includes per-file exact hashes and unknown raw formats. Extraction
+preflights conflicts (including manifest), rejects traversal/duplicates/symlinks,
+stages and CRC-checks data before publication. --overwrite permits replacement
+of regular files. Disk/concurrent publication failure into an existing output
+is not an all-or-nothing transaction; preserve a backup when using overwrite.
+No assets/ or external Android files are silently imported.
 
-```text
-DBTB00001
+This supplied APK alone is sufficient for common.pac preview, **not battle**:
+character triplets are absent. Read PLATFORM_SERVICES.md before calling it a
+complete game installation.
+
+Optional mod: place replacement files inside
+ux0:data/DBTapBattle/mods/MyMod/. Missing files fall back to game/. A mod need
+not duplicate all 57 files. mod.json is optional and currently ignored.
+
+## Expected test sequence (not yet observed on device)
+
+1. vitaGL initializes; selector displays Original and discovered folders.
+2. D-pad/left stick moves; Cross or a front-screen tap confirms a visible row.
+   Circle/Triangle cancels. More than eight rows scroll using physical controls.
+3. Selected overlay resolves common.pac; parser validates its table.
+4. First PNG is read unchanged and decoded. For supplied original this is a
+   512×512 texture atlas, shown scaled as a diagnostic resource preview.
+   **It is not a reconstructed original menu or a playable game.**
+5. Green PAC OK + atlas after successful upload; errors show a red diagnostic.
+   Release/repress Cross, Start or Circle/Triangle to exit result.
+6. ux0:data/DBTapBattle/logs/runtime.log records timestamp/version/ref, selected
+   data source/path, entry count, decoded dimensions and render/input errors.
+
+vitaGL requires libshacccg.suprx on the system according to its official setup
+instructions. This module is not supplied in the VPK. No audio is expected.
+Touch/UI rendering, driver/shader behavior and lifecycle are PENDING runtime
+verification; a successfully packaged binary does not prove startup.
+
+## Evidence to return
+
+Exact VPK/build, logs/runtime.log, photo of selector and atlas, Original/mod
+choice, whether front touch/D-pad/stick worked. On a failure include any Vita
+crash dump; symbols/relink bundle contains the native ELF. Do not supply raw
+commercial data to Git.
+
+## Host regression commands
+
+```sh
+python -m unittest discover -s tests -p 'test_*.py' -v
+mkdir -p build-host
+g++ -std=c++14 -Wall -Wextra -Werror -fsanitize=address,undefined -g -Isrc \
+  src/pac.cpp src/vfs.cpp tests/test_core.cpp -o build-host/test_core
+ASAN_OPTIONS=detect_leaks=0 build-host/test_core /path/to/original-data/*.pac
+# Requires host libpng development headers/library:
+g++ -std=c++14 -Wall -Wextra -Werror -fsanitize=address,undefined -g -Isrc \
+  src/image.cpp src/pac.cpp tests/test_image.cpp -lpng -o build-host/test_image
+ASAN_OPTIONS=detect_leaks=0 build-host/test_image /path/to/original-data/*.pac
 ```
 
-## Prepare original data
-
-On PC:
-
-```bash
-python3 tools/extract_apk_data.py /path/to/DBTapBattle.apk ./original-data
-```
-
-Copy the extracted files to:
-
-```text
-ux0:data/DBTapBattle/game/
-```
-
-Do not copy the APK itself to the repository.
-
-## Optional mods
-
-Create one folder per mod:
-
-```text
-ux0:data/DBTapBattle/mods/MyMod/
-```
-
-Place only the files the mod overrides there. Missing files fall back to `game/`.
-
-## Expected first bootstrap behavior
-
-1. App starts and initializes vitaGL.
-2. It scans `mods/`.
-3. A selector displays `ORIGINAL` plus detected mod folder names.
-4. D-pad moves selection.
-5. Cross confirms.
-6. Triangle exits the selector.
-7. The selected VFS resolves `common.pac`.
-8. The PAC parser validates its original table.
-9. A green `PAC OK` screen appears on success; red `PAC ERROR` appears on failure.
-10. `ux0:data/DBTapBattle/runtime.log` records the boot, selected dataset and PAC result.
-
-## What to provide after the first Vita test
-
-- Exact commit/build used.
-- `runtime.log`.
-- Photo/screenshot of the selector and result screen.
-- Whether Original and at least one mod folder are both detected correctly.
-- Any crash dump if generated.
-
-Do not mark the bootstrap as successful until it is built and observed on Vita/Vita3K.
+Only leak scanning was disabled in this restricted runner; ASan/UBSan remained
+active. The core test enumerates 258 folders, including a 255-byte name. PNG
+tests reject truncated data and valid-CRC IHDRs exceeding decoded-memory budget.

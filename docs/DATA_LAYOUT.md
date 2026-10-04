@@ -81,7 +81,8 @@ Recommended schema:
 }
 ```
 
-The first implementation may use the directory name as the display name and add JSON parsing later.
+Current implementation uses the directory name; mod.json parsing is PENDING.
+The diagnostic font is ASCII-only; paths retain UTF-8 bytes.
 
 ## Safety rules
 
@@ -89,3 +90,11 @@ The first implementation may use the directory name as the display name and add 
 - Never patch original PAC files in place during normal play.
 - Save/configuration data should live outside both `game/` and individual mod resource folders.
 - Path traversal such as `../` must not be accepted by the virtual filesystem.
+
+## Writable paths and completeness
+
+Current bootstrap creates config/, logs/, saves/ alongside game/ and mods/.
+Log: ux0:data/DBTapBattle/logs/runtime.log. Original data presence currently
+means game/common.pac is a regular file, independent of an active mod; it is
+not a complete installation test. Original charNN/chardemoNN/charf00NN triplets
+are absent in the supplied APK. Runtime save files remain PENDING.

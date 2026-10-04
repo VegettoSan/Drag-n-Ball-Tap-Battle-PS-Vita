@@ -98,3 +98,22 @@ Do not assume resource types are null-terminated; always treat the field as exac
 ## Mod compatibility implication
 
 Because the container is simple and self-contained, the Vita port should read community PAC replacements directly instead of unpacking/repacking them into a Vita-specific container.
+
+## Independent corpus validation — 2026-10-04
+
+All 19 bundled PACs, across common/effect/font/gamedata/select/text/back/bobj/
+card/demo families, were checked. Six nested SPR containers also obey the outer
+PAC layout. Outer counts are 3–14, all reserved fields zero, contiguous payloads,
+no overlap and no tail. There is no alignment requirement (e.g. PNG offsets may
+be odd). ZIP compression is independent of PAC; offsets refer to uncompressed
+PAC bytes. No alternate/empty original PAC version was observed.
+
+The native reader was compiled on host and Vita. Every entry of all 19 originals
+was read on host. It handles four-byte non-terminated tags, rejects truncated/
+out-of-bounds tables, exposes no partial entry list after a failed open, checks
+backing length before reads, and applies a default 16-MiB per-entry read budget.
+Caller may select a different budget; this is a resource policy, not a discovered
+original-format limit. Files outside signed 32-bit seek range are unsupported.
+Unknown tags/reserved values are retained for future mods, not rejected merely
+because they differ from this corpus. Zero-count synthetic PACs parse safely.
+Native runtime on Vita and modified/community PAC variants remain PENDING.

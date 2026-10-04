@@ -69,3 +69,10 @@ A real VitaSDK GCC 15.2.0 hard-float build creates ARM ELF, Sony VELF, SELF and
 VPK. Host decoder reads all 51 outer-PAC PNGs and rejects truncated PNGs.
 This does not confirm startup, selector, texture display or shader compiler on
 Vita3K/hardware. Those remain explicitly PENDING.
+# 2026-10-04 — Audio and internal-table corpus checks
+
+**Scope:** FORMAT CONFIRMED for the stated fields only.
+All 36 Ogg files are Vorbis, 44100 Hz: 17 stereo BGM and 19 mono SE.
+Six SPR payloads validate as nested PACs. Seventeen raw DAC animation tables
+have in-bounds action-index start addresses. This confirms table headers/index
+arithmetic, not complete animation command decoding or native audio playback.

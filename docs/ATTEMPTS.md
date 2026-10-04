@@ -239,3 +239,21 @@ polling adapter; selector consumes this layer, supports front tap and left stick
 **Result:** PARTIAL — BUILD CONFIRMED, input behavior PENDING hardware.
 **Next:** test pointer IDs/release phases and multi-page mod selection on device;
 connect pointer events to the recovered KeyData/Controller in the next phase.
+# 2026-10-04 — Attempt 010 — Original engine and internal-format cross-check
+
+**Goal:** complete the platform/format audit without turning inferred schemas
+into confirmed decoders. **Baseline:** 38d156e.
+**Hypothesis:** original DEX bytecode and independent JADX output can resolve
+community-state discrepancies and destructive DAD decompilation omissions.
+**Changes:** engine dispatch, render call mapping, audio/save/download/Bluetooth
+boundaries, internal-table probe and audio probe; metadata-only evidence.
+**Procedure:** compare original class methods with GdGohan snapshot, validate
+all 19 PACs and candidate internal layouts, ffprobe all 36 Ogg streams.
+**Expected / observed:** raw animation DAC and converted gamedata/text DAC
+differ; CNV coordinates are BE; state 390 is next-rival selection/load; save
+allocation is 12906 bytes. All 36 audio streams are Vorbis at 44100 Hz.
+**Evidence:** ENGINE_MAP.md, RESOURCE_FORMATS.md, PLATFORM_SERVICES.md,
+RENDER_MAPPING.md and evidence/internal_tables.json / audio_inventory.json.
+**Result:** PARTIAL — source/container facts established; full animation,
+collision, save interoperability and native platform behavior remain PENDING.
+**Next:** verify bootstrap on device, then port original metadata/draw functions.

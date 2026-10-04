@@ -70,3 +70,17 @@ installation conflicts with existing files; install a consistent managed core
 into the isolated toolchain root, then dependencies. Do not mix soft/hard float.
 LeakSanitizer is unsupported under this runner's /proc restrictions; disable
 only leak detection rather than dropping ASan/UBSan entirely.
+
+## 2026-10-04 — Reject uniform internal-table and wiki state assumptions
+
+**Attempt:** independent internal/motor audit following 005.
+**What failed:** treating every CNV/DAC/GDT as binCnv's u16+8-byte table yields
+out-of-range offsets on the real corpus. That conversion is mode-selected;
+raw DAC animation and CNV rectangles have different encodings/endian fields.
+Wiki 390='active fight' and 193='character selection' do not describe original
+case handlers. DAD output also omitted valid original save writes.
+**Evidence:** internal_tables.json; original DEX/jadx handler and method inspection.
+**Do not repeat:** uniform generic decoder, wiki-only battle dispatcher, or
+compiling decompiler output without bytecode and resource validation.
+**Different approach:** per-schema decoders, original task dispatch ranges,
+original bytecode/API evidence and corpus regression tests.

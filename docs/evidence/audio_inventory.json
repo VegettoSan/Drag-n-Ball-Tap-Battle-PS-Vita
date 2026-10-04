@@ -1,0 +1,218 @@
+{
+  "res/raw/bgm_00.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "12.144240"
+  },
+  "res/raw/bgm_01.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "10.434785"
+  },
+  "res/raw/bgm_02.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "12.972971"
+  },
+  "res/raw/bgm_03.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "30.920249"
+  },
+  "res/raw/bgm_04.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "26.853152"
+  },
+  "res/raw/bgm_05.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "25.771814"
+  },
+  "res/raw/bgm_06.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "26.301361"
+  },
+  "res/raw/bgm_07.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "29.090907"
+  },
+  "res/raw/bgm_08.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "12.549025"
+  },
+  "res/raw/bgm_09.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "4.031088"
+  },
+  "res/raw/bgm_10.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "5.415828"
+  },
+  "res/raw/bgm_11.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "4.615397"
+  },
+  "res/raw/bgm_12.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "2.261655"
+  },
+  "res/raw/bgm_13.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "5.462404"
+  },
+  "res/raw/bgm_14.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "28.717959"
+  },
+  "res/raw/bgm_15.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "30.877211"
+  },
+  "res/raw/bgm_16.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 2,
+    "duration": "16.884082"
+  },
+  "res/raw/se_00.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.870771"
+  },
+  "res/raw/se_01.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.515692"
+  },
+  "res/raw/se_02.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.300000"
+  },
+  "res/raw/se_03.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.394558"
+  },
+  "res/raw/se_04.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.686417"
+  },
+  "res/raw/se_05.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "1.307574"
+  },
+  "res/raw/se_06.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "1.403855"
+  },
+  "res/raw/se_07.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "2.376395"
+  },
+  "res/raw/se_08.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.192721"
+  },
+  "res/raw/se_09.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.671995"
+  },
+  "res/raw/se_10.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "3.453379"
+  },
+  "res/raw/se_11.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.936417"
+  },
+  "res/raw/se_12.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.483560"
+  },
+  "res/raw/se_13.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "1.000998"
+  },
+  "res/raw/se_14.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "2.195737"
+  },
+  "res/raw/se_15.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.787619"
+  },
+  "res/raw/se_16.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.050000"
+  },
+  "res/raw/se_17.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.230726"
+  },
+  "res/raw/se_18.ogg": {
+    "codec_name": "vorbis",
+    "sample_rate": "44100",
+    "channels": 1,
+    "duration": "0.205986"
+  }
+}

@@ -34,7 +34,9 @@ ux0:data/DBTapBattle/
 │   │   ├── charXX.pac
 │   │   └── ...
 │   └── AnotherMod/
-└── config.ini
+├── config/
+├── logs/
+└── saves/
 ```
 
 File lookup when a mod is active:
@@ -57,7 +59,7 @@ The original installation is therefore never overwritten by a mod.
 6. Parse its original PAC table successfully.
 7. Continue toward loading an original texture and rendering it with vitaGL.
 
-The bootstrap code for steps 2–6 is now in the repository, but it is **not yet BUILD CONFIRMED**. A real VitaSDK compile/test is the next verification step.
+Bootstrap 00.02 is **BUILD CONFIRMED** with a real VitaSDK build. It resolves and parses common.pac, decodes its first PNG and includes a diagnostic texture preview. Device execution remains **PENDING**. This is not yet the original menu or gameplay.
 
 ## Repository map
 
@@ -96,11 +98,28 @@ The supplied original APK currently yields 57 direct `res/raw/` runtime files: 1
 
 ## Current status
 
-- APK architecture: inspected.
+- APK architecture: all 77 files inventoried; 91 DEX classes inspected.
 - PAC outer container: FORMAT CONFIRMED.
 - Original raw-data extraction: FORMAT CONFIRMED.
 - VitaSDK/vitaGL bootstrap implementation: committed.
-- Original/mod VFS overlay: implemented, pending Vita build verification.
-- Boot selector: implemented, pending Vita build verification.
-- C++ PAC reader: implemented, pending Vita build/Vita runtime verification.
-- BUILD CONFIRMED: **not yet**.
+- Original/mod VFS overlay: host regressions pass; Vita build confirmed.
+- Boot selector: physical/touch implementation compiled; device verification pending.
+- C++ PAC reader: all 19 original PACs and every entry read on host; Vita build confirmed.
+- PNG: all 51 exterior PAC textures decoded on host; GPU preview pending runtime verification.
+- BUILD CONFIRMED: **yes**, bootstrap 00.02.
+- VITA3K / HARDWARE CONFIRMED: **not yet**.
+- Original APK lacks charNN/chardemoNN/charf00NN resources needed for complete gameplay.
+
+## Independent audit and device test
+
+- [Audit results and next milestone](docs/AUDIT_STATUS.md)
+- [APK inventory and reference qualification](docs/APK_AUDIT.md)
+- [Internal formats](docs/RESOURCE_FORMATS.md)
+- [Original engine map](docs/ENGINE_MAP.md)
+- [Exact renderer API mapping](docs/RENDER_MAPPING.md)
+- [Audio/input/save/external-data/Bluetooth](docs/PLATFORM_SERVICES.md)
+- [Third-party library notices](docs/THIRD_PARTY.md)
+
+Original/mod lookup and container parsing are implemented; gameplay compatibility
+with actual community mods has not been established. mod.json remains optional
+and ignored. No original assets or decompiled game sources are distributed.

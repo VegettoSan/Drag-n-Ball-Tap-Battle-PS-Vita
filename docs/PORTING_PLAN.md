@@ -96,3 +96,10 @@ The first two categories are the primary compatibility target. Code-modified APK
 ## External reverse-engineering reference
 
 A useful community reference exists at `GdGohan/Dragon-Ball-Tap-Battle-Decompilation`, including documentation of `TCBManajer`, game states, resource loading, touch/button systems and several important arrays/variables. Treat it as a reference, not as a replacement for validation against the user's original APK.
+
+## Audit checkpoint — 2026-10-04
+
+Phase 0 compile/package is BUILD CONFIRMED and the bootstrap now reads/decodes
+a real PAC PNG. Hardware exit condition remains PENDING. See AUDIT_STATUS.md
+for evidence and risks; do not begin battle reconstruction from community wiki
+labels without the original handlers and a complete user-owned data set.
