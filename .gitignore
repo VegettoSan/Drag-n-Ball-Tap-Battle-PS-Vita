@@ -30,3 +30,6 @@ Thumbs.db
 
 # Host verification output
 build-host/
+
+# Private APK-derived bytecode/AOT output (never commit commercial sources)
+aot-work/

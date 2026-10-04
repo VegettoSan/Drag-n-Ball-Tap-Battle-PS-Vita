@@ -143,8 +143,8 @@ route; new code behavior or encoding constants need a separately recovered port.
 Host validation passed for both APKs: 125 outer PACs + 12 nested SPRs, 470 decoded
 textures and nine extractor regressions. New native preview source handles
 ordinary PNG and community RGBA with the corresponding alpha blend. This change
-has **not** been built/tested on Vita here: historical bootstrap 00.02 VPK evidence
-applies to its recorded source commit, not automatically to these new changes.
+is now **ARM BUILD CONFIRMED** at source 2c3fecd with the matching 2026.08 SDK;
+device/GPU execution remains unverified. See BUILD.md for the new artifact hash.
 Gameplay, raw sprite/action interpretation and WAV playback remain pending.
 See ANDROID14_APK.md for exact differences, confirmed shared-library provenance,
 unknown distributor and full commands/evidence.

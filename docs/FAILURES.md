@@ -98,3 +98,22 @@ new constants/code mods compatible because they share the APK title/version.
 Local apt cannot switch its sandbox UID here; PNG headers were obtained by
 building the pinned official source locally, without altering system packages.
 No missing-toolchain issue has been interpreted as a runtime/game failure.
+
+## 2026-10-04 — Unadapted Android engine does not become a native game by AOT
+
+**Attempt:** 018. Full Init/Run probe: 203 diagnostics/44 unique with the basic
+classpath; missing GL/JSON are classpath gaps, while Android/network/security
+and reflection require proper native services. JVM Android stubs throw immediately.
+Do not claim compiler failure proves the core cannot be reused or that adding
+stub classes supplies rendering/gameplay. Retest after actual boundary replacement.
+
+Tooling corrections: Java needed proxy settings and an explicit Maven plugin
+coordinate. TeaVM's greedy -p ate the main class; use JVM classpath plus --.
+Compiling generated roots with -I shadows C string.h/time.h; compiling all.c
+alongside its constituent files duplicates definitions. Build all.c once.
+
+Stock TeaVM C also assumes GNU means POSIX and Newlib has uchar.h; Vita needs
+explicit runtime adaptation. GCC 15 rejects a fallback non-void return and
+Newlib lacks GNU timegm. The isolated input patch addresses only tested needs,
+omitting unused Date rather than inventing it. Device/full-engine scheduler and
+filesystem behavior remain unverified. No placeholder game release is published.

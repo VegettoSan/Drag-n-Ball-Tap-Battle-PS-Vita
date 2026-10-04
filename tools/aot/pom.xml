@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>local.dbtb</groupId>
+  <artifactId>engine-feasibility</artifactId>
+  <version>1</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.teavm</groupId>
+      <artifactId>teavm-cli</artifactId>
+      <version>0.12.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.teavm</groupId>
+      <artifactId>teavm-classlib</artifactId>
+      <version>0.12.3</version>
+    </dependency>
+  </dependencies>
+</project>

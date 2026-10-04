@@ -359,3 +359,36 @@ manifests, Spanish installation instructions and SHA256SUMS. ZIP SHA-256:
 f1b899f8bd03821d46db72d561591908b9a38f3c84c7907762530504f84056ea.
 **Result:** SUCCESS (private downloadable user data). No commercial data is
 uploaded to Git or GitHub Releases. A data package does not establish gameplay.
+
+## 2026-10-04 — Attempt 017 — Restore SDK and compile current native bootstrap
+
+**Source:** 2c3fecd. **Procedure:** official vdpm rootless signed 2026.08 channel
+in a fresh isolated SDK, managed core 2026.08.1-1 plus the exact renderer packages
+from BUILD.md; CMake Release configure/build, ARM ELF inspection and VPK ZIP CRC.
+**Observed:** current dual-profile PAC/image/table source compiles and packages.
+VPK 717864 bytes; hash in BUILD.md. **Result:** BUILD CONFIRMED. No emulator or
+Vita run; no menu/combat. The diagnostic is not published as a playable release.
+
+## 2026-10-04 — Attempt 018 — Preserve original Java core via AOT
+
+**Goal:** test a route preserving original game methods rather than rewriting
+all Game1..17 handlers. **Procedure:** dex2jar 2.4 on the original APK; handwritten
+EngineProbe calls Init/Run, InputProbe calls original KeyData/Controller; ECJ
+3.37.0, TeaVM 0.12.3 C, JVM/native output comparison, GCC host/Vita builds.
+**Observed:** unadapted full engine produces 203 diagnostics (44 unique), no C;
+JVM throws Android Stub! at BluetoothAdapter. Correcting CLI/classpath isolates
+input: press/hold/release key 16, pointer coordinates/speeds, independent IDs,
+slot bounds/reuse and Unicode stdout match byte-for-byte between JVM and C.
+**Vita changes:** missing uchar.h/UTF-16, GNU POSIX detection, mmap reservation,
+clock/fiber hooks, unreachable-return fallback and unused Date backend addressed
+for the isolated probe. Fresh adapted output links to ARM hard-float and converts
+to VELF/SELF with a standalone 16-MiB Newlib heap: 445118 bytes, SHA-256
+a293566b84b2685ad6bda7b3faffe433d80de1da13178303263c1d3275dd25c7.
+UTF-16 ASan/UBSan and generated host output with the custom layer pass.
+**Result:** SUCCESS (input AOT/native build); full engine INCOMPLETE; device
+execution PENDING. This is not connected to the VPK or a production-engine
+decision. No generated commercial sources/binaries or APKs are committed.
+**Next:** replace actual Android/local-resource/render/text/audio/save boundaries
+and obsolete network startup, then verify original Init→Run→menu→selection→battle.
+Both resource profiles must remain supported; altered Java mods need separate
+behavior recovery. See tools/aot/README.md for full reproduction and limits.

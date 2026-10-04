@@ -127,3 +127,13 @@ CONFIRMED; the Vita program still shows a diagnostic atlas after initialization.
 unchanged runtime files, provenance manifests and per-file hashes. Archive CRC
 and content hashes pass. prepare_vita_data.py reproduces the package from the
 user's APKs and refuses overwrites; no game assets enter the source repository.
+
+## 2026-10-04 — Current ARM build and original input AOT experiment
+
+**Attempts:** 017–018. Current native bootstrap source 2c3fecd packages correctly
+with the matching SDK (still diagnostic). The original APK's KeyData/Controller
+passes a JVM/native C parity probe, including button edges and pointer behavior.
+An isolated runtime adaptation links to a real Vita ARM ELF and valid SELF.
+UTF-16 host tests pass. This demonstrates a reusable Java-core experiment, not
+full-engine porting or device execution; the full Init/Run remains blocked by
+unadapted Android dependencies. Generated game code stays outside Git.
