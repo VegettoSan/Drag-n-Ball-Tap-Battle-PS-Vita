@@ -1,5 +1,6 @@
 #pragma once
 
+#include "image.hpp"
 #include <string>
 #include <vector>
 
@@ -9,4 +10,4 @@ struct BootChoice {
 };
 
 bool runBootSelector(const std::vector<std::string>& mods, bool original_data_present, BootChoice& choice);
-void showPacResult(bool success, const std::string& detail);
+void showPacResult(bool success, const std::string& detail, const RgbaImage* image = nullptr);

@@ -1,4 +1,5 @@
 #include "ui.hpp"
+#include "log.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -96,6 +97,10 @@ void begin2D() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
 }
 
 } // namespace
@@ -108,7 +113,7 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
     sceCtrlSetSamplingMode(SCE_CTRL_MODE_ANALOG);
 
     for (;;) {
-        SceCtrlData pad;
+        SceCtrlData pad{};
         sceCtrlPeekBufferPositive(0, &pad, 1);
         const uint32_t pressed = pad.buttons & ~previous;
         previous = pad.buttons;
@@ -163,14 +168,43 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
     }
 }
 
-void showPacResult(bool success, const std::string& detail) {
-    uint32_t previous = 0;
+void showPacResult(bool success, const std::string& detail, const RgbaImage* image) {
+    GLuint texture = 0;
+    std::string shown_detail = detail;
+    if (image) {
+        while (glGetError() != GL_NO_ERROR) {}
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->width, image->height, 0,
+                     GL_RGBA, GL_UNSIGNED_BYTE, image->pixels.data());
+        const GLenum error = glGetError();
+        if (error != GL_NO_ERROR || !texture) {
+            runtimeLog("Renderer texture upload error: " + std::to_string(error));
+            if (texture) glDeleteTextures(1, &texture);
+            texture = 0;
+            success = false;
+            shown_detail = "TEXTURE UPLOAD FAILED - CHECK RUNTIME.LOG";
+        } else runtimeLog("Texture upload accepted by vitaGL");
+    }
+    // Seed edge detector from held controls so the selector's Cross cannot
+    // instantly dismiss this screen. A fresh press after release is required.
+    SceCtrlData initial{};
+    sceCtrlPeekBufferPositive(0, &initial, 1);
+    uint32_t previous = initial.buttons;
     for (;;) {
-        SceCtrlData pad;
+        SceCtrlData pad{};
         sceCtrlPeekBufferPositive(0, &pad, 1);
         const uint32_t pressed = pad.buttons & ~previous;
         previous = pad.buttons;
-        if (pressed & (SCE_CTRL_CROSS | SCE_CTRL_TRIANGLE | SCE_CTRL_START)) return;
+        if (pressed & (SCE_CTRL_CROSS | SCE_CTRL_TRIANGLE | SCE_CTRL_START)) {
+            if (texture) glDeleteTextures(1, &texture);
+            runtimeLog("Preview closed by user");
+            return;
+        }
 
         if (success) glClearColor(0.025f, 0.16f, 0.065f, 1.0f);
         else glClearColor(0.20f, 0.035f, 0.035f, 1.0f);
@@ -178,7 +212,25 @@ void showPacResult(bool success, const std::string& detail) {
         begin2D();
 
         text(48, 80, 5, success ? "PAC OK" : "PAC ERROR", 1.0f, 1.0f, 1.0f);
-        text(50, 160, 2, clipped(detail, 70), 0.95f, 0.95f, 0.95f);
+        text(50, 160, 2, clipped(shown_detail, 70), 0.95f, 0.95f, 0.95f);
+        if (texture) {
+            const float scale = std::min(700.0f / image->width, 286.0f / image->height);
+            const float w = image->width * scale, h = image->height * scale;
+            const float x = (960.0f - w) / 2, y = 195.0f;
+            glEnable(GL_TEXTURE_2D);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glColor4f(1, 1, 1, 1);
+            glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex3f(x, y, 0);
+            glTexCoord2f(1, 0); glVertex3f(x+w, y, 0);
+            glTexCoord2f(1, 1); glVertex3f(x+w, y+h, 0);
+            glTexCoord2f(0, 1); glVertex3f(x, y+h, 0);
+            glEnd();
+            glDisable(GL_TEXTURE_2D);
+        }
         text(50, 500, 2, "X / START / TRIANGLE TO EXIT", 0.75f, 0.75f, 0.78f);
         vglSwapBuffers(GL_FALSE);
         sceKernelDelayThread(16000);

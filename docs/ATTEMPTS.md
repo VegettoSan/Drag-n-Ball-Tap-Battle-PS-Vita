@@ -207,3 +207,21 @@ symlink/UTF-8/fallback tests, then read every entry of all 19 original PACs.
 **Limit:** LeakSanitizer cannot scan /proc under this runner; disabled leak scan
 only with ASAN_OPTIONS=detect_leaks=0. Address/undefined-behavior checks remain on.
 **Next:** real Vita compile; GPU display remains unconfirmed.
+
+## 2026-10-04 — Attempt 008 — First real Vita VPK and original PNG preview
+
+**Goal / hypothesis:** close the missing PAC→entry→texture chain without recreating
+an original game menu.
+**Baseline:** 99df49b.
+**Changes:** bounded libpng RGBA decoder; diagnostic first-PNG atlas preview;
+checked vitaGL initialization/upload; timestamped logs/runtime.log; configured
+heap; CMake target-scoped flags, explicit version/ref, corrected static link order.
+**Procedure:** install official VitaSDK core and matching hard-float packages via
+2026.08 channel; cmake configure/build. Host test_image reads all 51 exterior PNG
+entries and rejects invalid/truncated PNGs under ASan/UBSan. Decode budget 16 MiB.
+**Expected / observed:** native ARM ELF→VELF→SELF→VPK succeeds, no source warnings;
+51 PNG PASS on host. GPU display has not been executed in this environment.
+**Evidence:** actual CMake output; tests/test_image.cpp. Build provenance and final
+artifact hashes will be recorded after the source commit is published/rebuilt.
+**Result:** PARTIAL — BUILD CONFIRMED; GPU/hardware INCONCLUSIVE.
+**Next:** verify selector and original atlas in Vita, then implement CNV/DAC metadata.

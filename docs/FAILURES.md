@@ -58,3 +58,15 @@ containing '..' were incorrectly excluded from discovery.
 regular-file validation, or active-overlay resolution to check original data.
 **Different approach:** validate components/control bytes, require regular files,
 and check game/common.pac independently. All covered by host regressions.
+
+## 2026-10-04 — Build environment setup failures
+
+**Attempt:** 008 (environment, not a game runtime failure).
+**Observed:** direct git push lacks a local HTTPS credential; authenticated
+GitHub commit/ref operations succeeded instead. Latest nightly hard-float
+package database lacked several renderer dependencies; use complete 2026.08
+channel. A raw toolchain tarball has no pacman ownership records, so package
+installation conflicts with existing files; install a consistent managed core
+into the isolated toolchain root, then dependencies. Do not mix soft/hard float.
+LeakSanitizer is unsupported under this runner's /proc restrictions; disable
+only leak detection rather than dropping ASan/UBSan entirely.

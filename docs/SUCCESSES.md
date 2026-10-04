@@ -61,3 +61,11 @@ exercise malformed/truncated tables, 32-bit overflow offsets, empty PACs,
 non-terminated tags, per-entry allocation budget, changed backing file length,
 failed-open table isolation, mod precedence/fallback, original detection,
 nested paths, UTF-8/spaces, traversal/NUL rejection and symlink escapes.
+
+## 2026-10-04 — Vita bootstrap compiles and packages
+
+**Scope:** BUILD CONFIRMED.
+A real VitaSDK GCC 15.2.0 hard-float build creates ARM ELF, Sony VELF, SELF and
+VPK. Host decoder reads all 51 outer-PAC PNGs and rejects truncated PNGs.
+This does not confirm startup, selector, texture display or shader compiler on
+Vita3K/hardware. Those remain explicitly PENDING.
