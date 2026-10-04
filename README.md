@@ -57,12 +57,23 @@ The original installation is therefore never overwritten by a mod.
 6. Parse its original PAC table successfully.
 7. Continue toward loading an original texture and rendering it with vitaGL.
 
+The bootstrap code for steps 2–6 is now in the repository, but it is **not yet BUILD CONFIRMED**. A real VitaSDK compile/test is the next verification step.
+
 ## Repository map
 
 - `src/` — native Vita port code.
 - `tools/` — PC-side tools, including APK data extraction.
 - `docs/` — architecture, format notes and development history.
 - `data/` — documentation/placeholders only; copyrighted game assets are not stored here.
+
+## Documentation
+
+- [`docs/BUILD.md`](docs/BUILD.md) — build, data preparation and first-test procedure.
+- [`docs/PORTING_PLAN.md`](docs/PORTING_PLAN.md) — staged roadmap from bootstrap to gameplay/mod compatibility.
+- [`docs/MODS.md`](docs/MODS.md) — mod overlay model and compatibility tiers.
+- [`docs/DATA_LAYOUT.md`](docs/DATA_LAYOUT.md) — original/mod runtime directory contract.
+- [`docs/PAC_FORMAT.md`](docs/PAC_FORMAT.md) — PAC container format validated against the supplied original APK.
+- [`docs/PROJECT_RULES.md`](docs/PROJECT_RULES.md) — non-negotiable project/porting rules.
 
 ## Development records
 
@@ -79,6 +90,17 @@ Before repeating an experiment, read:
 
 Conversion is allowed only when a Vita limitation makes direct use impractical and the reason is documented. Original `.pac` and their internal resources remain the source of truth.
 
+## APK data already validated
+
+The supplied original APK currently yields 57 direct `res/raw/` runtime files: 19 PAC files, 36 OGG files and auxiliary resources. `tools/extract_apk_data.py` prepares these files without converting them and creates a SHA-256 manifest.
+
 ## Current status
 
-Repository bootstrap in progress. The original APK has already been inspected and the base PAC container structure has been validated; see `docs/PAC_FORMAT.md`.
+- APK architecture: inspected.
+- PAC outer container: FORMAT CONFIRMED.
+- Original raw-data extraction: FORMAT CONFIRMED.
+- VitaSDK/vitaGL bootstrap implementation: committed.
+- Original/mod VFS overlay: implemented, pending Vita build verification.
+- Boot selector: implemented, pending Vita build verification.
+- C++ PAC reader: implemented, pending Vita build/Vita runtime verification.
+- BUILD CONFIRMED: **not yet**.
