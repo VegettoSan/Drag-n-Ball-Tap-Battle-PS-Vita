@@ -109,5 +109,26 @@ No sampled commercial/community mod dataset has been declared compatible.
   rules require separately recovered native logic. Protected containers require
   an authorized, documented loader rather than an assumed standard PAC reader.
 - A complete APK mod may store resources in assets/ or external folders. The
-  extractor deliberately extracts res/raw only and reports other APK files;
-  users must not interpret it as a universal mod installer.
+  extractor now recognizes raw, ordinary assets and the pinned community14
+  profile (see ANDROID14_APK.md); it is not a universal mod installer.
+
+## Audited community14 asset-mod family
+
+`a210795b` uses encoded PAC metadata, premultiplied RGBA DEFLATE images and alias
+names rather than ordinary res/raw PNG PACs. The importer normalizes verified
+names and preserves payloads. Native PAC detection is per file, so standard
+missing-file fallback still uses the original codec; a bad existing mod file
+raises an error. Full-container overrides do not merge PAC entries.
+
+```sh
+python tools/extract_apk_data.py mod.apk ./install --mod MyMod
+```
+
+Supported and host-tested: import layout/aliases, immutable data, file overlay,
+outer/nested container reads and PNG/private RGBA decoding. Code-only character
+count/mechanics changes, encoded converted-table semantics and WAV playback
+remain pending; all community gameplay is pending native engine implementation.
+Different private constants/aliases require another verified profile. The APK
+contains no demonstrated universal plugin/mod-folder loader; APK editing and
+asset replacement are not proof of generic native mod behavior. No author or
+particular release is inferred from a generic signing certificate.

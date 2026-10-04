@@ -171,3 +171,28 @@ Host tests: nine extractor regressions pass, including alias collisions,
 different-codec refusal, ambiguous archives, safe nested assets and CLI protection
 of an existing game/common.pac. Both real APK extractions pass; every extracted
 file matches its APK entry byte-for-byte and all 13 triplets have canonical names.
+
+## Native support and verified limit
+
+PacFile now reads original tables and this encoded profile, preserving unknown
+record IDs. The preview decodes either original PNG or community raw-DEFLATE
+RGBA directly into memory, records the codec in runtime.log and uses the correct
+alpha blend. Existing VFS overlay/fallback needs no new global codec switch.
+The actual new-source common preview is original 9 entries/community 6 entries,
+each with a first 512×512 atlas. No resource conversion or Android binary is needed.
+
+Host ASan/UBSan tests read **125 outer PACs + 12 nested SPR containers** and
+**470 textures (80 original including nested sprites, 390 community)**. Original
+PNG corruption/budget regressions pass. Community tests cover wrong indexes,
+truncated/trailing/incorrect-size DEFLATE, allocation limits, metadata-first PAC,
+out-of-range encoded table entries, memory limits and clean state after failure.
+Nine extractor tests and real-byte-preservation checks also pass.
+
+This session lacks VitaSDK/CMake and device/emulator execution. New native
+source/preview is therefore **HOST CONFIRMED**, ARM build/GPU PENDING. No new VPK
+was produced, and the earlier build_validation.json is not evidence of these
+changes. Character/menu/combat logic, community converted tables, WAV playback,
+saves and code-dependent mod mechanics remain pending. Asset mods retaining the
+verified profile can be imported/read now; "fully playable mod support" is not
+claimed. Different private constants must fail explicitly or receive a new
+reviewed codec profile.

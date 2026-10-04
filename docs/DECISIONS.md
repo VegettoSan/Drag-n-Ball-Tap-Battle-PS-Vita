@@ -81,3 +81,14 @@ BE signed 16-bit values. Preserve unknown GDT/BMP/DAT/PLT/DB payloads without
 claiming a decoder. Do not impose a 40-FPS game tick from constants unused in
 the observed render callback. Original state dispatch overrides community wiki
 labels. Save compatibility requires a real original save fixture before approval.
+
+## ADR-010 — Pinned community codec and canonical import names
+
+**Status:** accepted — 2026-10-04. Support the supplied Android14 APK alongside
+the original with a verified metadata/image profile, not an Android .so loader.
+Normalize confirmed resource aliases during PC import and preserve every data
+byte/hash. Decode per file at runtime; keep the existing mod/original fallback.
+Carry premultiplied-alpha state explicitly rather than double-multiplying RGB.
+Do not import arbitrary SWB changes or infer changed game mechanics from shared
+helpers. New constants/code need a fresh audit. Full native gameplay remains
+separate from verified resource compatibility.

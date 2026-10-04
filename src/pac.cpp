@@ -21,9 +21,29 @@ uint32_t readLe32(const uint8_t* p) {
            (static_cast<uint32_t>(p[3]) << 24);
 }
 
+uint32_t readBe32(const uint8_t* p) {
+    return (static_cast<uint32_t>(p[0]) << 24) | (static_cast<uint32_t>(p[1]) << 16) |
+           (static_cast<uint32_t>(p[2]) << 8) | p[3];
+}
+
+// ext.o constants pinned to the supplied a210795b APK. RGBA is raw DEFLATE,
+// not a PNG even though the Android loader uses its PNG_TYPE slot.
+const char* communityType(uint32_t type) {
+    switch (type) {
+        case 0x5d93757fu: return "act";
+        case 0x8f230d0du: return "bin";
+        case 0x86ffa7f3u: return "cnv";
+        case 0x84dff882u: return "dac";
+        case 0x8728c48au: return "rgba";
+        case 0x83f2e69au: return "spr";
+        case 0x425206e2u: return "wav";
+        default: return nullptr;
+    }
+}
+
 } // namespace
 
-bool PacFile::open(const std::string& path) {
+bool PacFile::open(const std::string& path, PacEncoding encoding) {
     close();
     path_ = path;
 
@@ -55,7 +75,28 @@ bool PacFile::open(const std::string& path) {
         return false;
     }
 
-    const uint16_t count = readLe16(count_bytes);
+    const uint16_t raw_count = readLe16(count_bytes);
+    const uint16_t private_count = raw_count ^ 42802u;
+    encoding_ = encoding == PacEncoding::Community14 ? encoding : PacEncoding::Original;
+    if (encoding == PacEncoding::Auto && (raw_count & 0x8000u) && private_count &&
+        2ull + static_cast<uint64_t>(private_count) * 16 <= file_size_) {
+        // Inspect known type IDs, including PACs with ignored metadata first.
+        // Once identified, corrupt encoded entries fail without plain fallback.
+        for (uint32_t i = 0; i < private_count; ++i) {
+            uint8_t raw[16];
+            if (!readExact(fp, raw, sizeof(raw))) break;
+            if (communityType(readBe32(raw + 8) ^ 0xc569e1efu ^ i)) {
+                encoding_ = PacEncoding::Community14;
+                break;
+            }
+        }
+        if (std::fseek(fp, 2, SEEK_SET) != 0) {
+            error_ = "could not seek to PAC table";
+            std::fclose(fp);
+            return false;
+        }
+    }
+    const uint16_t count = encoding_ == PacEncoding::Community14 ? private_count : raw_count;
     const uint64_t data_base64 = 2ull + static_cast<uint64_t>(count) * 16ull;
     if (data_base64 > file_size_ || data_base64 > 0xFFFFFFFFull) {
         error_ = "PAC table exceeds file size";
@@ -80,6 +121,14 @@ bool PacFile::open(const std::string& path) {
         entry.size = readLe32(raw + 4);
         std::memcpy(entry.type, raw + 8, 4);
         entry.reserved = readLe32(raw + 12);
+        if (encoding_ == PacEncoding::Community14) {
+            entry.offset ^= 996678763u ^ i;
+            entry.size ^= 47633006u ^ i;
+            entry.encoded_type = readBe32(raw + 8) ^ 0xc569e1efu ^ i;
+            const char* type = communityType(entry.encoded_type);
+            std::memset(entry.type, 0, 4);
+            std::memcpy(entry.type, type ? type : "unk", type ? std::strlen(type) : 3);
+        }
 
         const uint64_t start = data_base64 + static_cast<uint64_t>(entry.offset);
         const uint64_t finish = start + static_cast<uint64_t>(entry.size);
@@ -107,6 +156,7 @@ void PacFile::close() {
     data_base_ = 0;
     file_size_ = 0;
     open_ = false;
+    encoding_ = PacEncoding::Original;
 }
 
 std::string PacFile::typeString(size_t index) const {

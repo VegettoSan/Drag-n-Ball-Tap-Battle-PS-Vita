@@ -85,3 +85,16 @@ case handlers. DAD output also omitted valid original save writes.
 compiling decompiler output without bytecode and resource validation.
 **Different approach:** per-schema decoders, original task dispatch ranges,
 original bytecode/API evidence and corpus regression tests.
+
+## 2026-10-04 — Original extractor/PNG assumptions do not fit community APK
+
+**Attempt:** 012–014. The baseline raw-only extractor cannot import the supplied
+assets/ dataset. Encoded metadata interpreted as ordinary PAC count/offsets fails;
+PNG decoding cannot interpret its raw-DEFLATE RGBA, and straight-alpha blending
+would darken premultiplied RGB. Renaming filenames alone is insufficient.
+**Different approach:** verified per-file codec, canonical name import with
+unchanged bytes, bounded DEFLATE RGBA and explicit alpha state. Do not declare
+new constants/code mods compatible because they share the APK title/version.
+Local apt cannot switch its sandbox UID here; PNG headers were obtained by
+building the pinned official source locally, without altering system packages.
+No missing-toolchain issue has been interpreted as a runtime/game failure.

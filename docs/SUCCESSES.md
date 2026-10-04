@@ -104,3 +104,11 @@ commercial payload, Java or Android helper binary redistributed.
 canonical names, including all 13 char/chardemo/charf triplets. --mod keeps the
 original installation intact; unknown data stays preserved and profile/conflict
 errors occur before publishing resources.
+
+## 2026-10-04 — Native host decoding of both APK formats
+
+**Attempt:** 014. Original VFS/PAC tests and PNG regressions remain passing. Native
+ASan/UBSan corpus reads 137 containers, decodes 470 textures, including all 390
+community textures and 80 originals with nested SPR. Explicit alpha state avoids
+applying alpha twice to community pixels. Corrupt tables/DEFLATE/index/budget
+cases fail cleanly. This is HOST CONFIRMED, not a new Vita build/device result.

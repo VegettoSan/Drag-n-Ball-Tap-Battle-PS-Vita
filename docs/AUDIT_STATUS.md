@@ -60,3 +60,14 @@ _SetAct/_ActReqMain, followed by SPR DrawSprite and original task/panel menu.
 Add audio/text/input services along the recovered boundaries. Obtain a user-owned
 complete character dataset before character selection/battle work. Do not invent
 menu coordinates, frame durations, collision formulas or a new combat system.
+
+## Android14 follow-up — 2026-10-04
+
+Audited supplied SHA a210795b alongside b84f98a3. Shared native helpers match the
+GdGohan SWB exactly; publisher unconfirmed. Import/extraction, aliases, PAC/SPR
+and DEFLATE RGBA have HOST CONFIRMED results: 9 Python regressions, 125 outer
+PACs, 12 nested SPRs and 470 textures. New diagnostic source tracks alpha and
+codec. Vita SDK/build/GPU verification of **this follow-up** remains PENDING;
+previous build evidence applies only to its source hash. Added 13 triplets/51
+cards are installed data, not implemented native character/battle behavior.
+See ANDROID14_APK.md and evidence/android14_validation.json for scope/commands.

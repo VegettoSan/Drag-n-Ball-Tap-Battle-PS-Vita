@@ -307,3 +307,21 @@ unsafe paths and ambiguous layout fail before resource publication.
 **Evidence:** tests/test_extractor.py; updated comparison report; ANDROID14_APK.md.
 **Result:** SUCCESS (host import). **Next:** native table/image regressions and
 correct premultiplied-alpha preview; no gameplay support claim from extraction.
+
+## 2026-10-04 — Attempt 014 — Native community tables and RGBA
+
+**Baseline:** 861165b. **Changes:** PacEncoding per file, retained unknown metadata,
+bounded raw-DEFLATE image decoder, explicit alpha state, codec-aware preview/log.
+**Procedure:** g++ C++14 warnings-as-errors + ASan/UBSan; existing VFS/PAC/PNG
+regressions; new metadata-first/corrupt table/DEFLATE/index/budget tests; read both
+real corpora and nested SPR. Host libpng 1.6.43 source built locally for headers
+and static link because this environment lacks its development package.
+**Observed:** CORE PASS on all 125 outer files; original PNG PASS 51; COMMUNITY
+PASS 137 total containers and 470 textures (80 original, 390 community). Synthetic
+RGBA bytes/alpha match exactly; invalid data is rejected without partial images.
+**Evidence:** tests/test_community.cpp, tests/test_core.cpp, tests/test_image.cpp;
+evidence/android14_validation.json. **Result:** SUCCESS (native C++ host only).
+**Limit:** no VitaSDK/CMake/device here; new ARM build/GPU behavior unconfirmed.
+**Next:** build this source with the documented matching VitaSDK; test original
+and Android14 common previews/logs. Then recover converted tables, sprite behavior,
+character/menu/combat and WAV services along original engine boundaries.

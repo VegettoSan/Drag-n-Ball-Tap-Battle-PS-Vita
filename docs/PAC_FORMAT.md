@@ -117,3 +117,22 @@ original-format limit. Files outside signed 32-bit seek range are unsupported.
 Unknown tags/reserved values are retained for future mods, not rejected merely
 because they differ from this corpus. Zero-count synthetic PACs parse safely.
 Native runtime on Vita and modified/community PAC variants remain PENDING.
+
+## Encoded Android14 profile
+
+The ordinary schema above remains the original contract. The supplied community
+APK adds `community14-a210795b`: XOR-coded count/offset/size/type and BE-coded
+image dimensions, raw DEFLATE premultiplied RGBA. Exact constants/formulas and
+provenance are in ANDROID14_APK.md and tools/community14.py. Native PacFile
+supports explicit Original/Community14 and defaults to per-file detection.
+Auto looks for a high-bit count compatible with the pinned XOR table plus a
+known decoded type ID; malformed identified tables fail without switching to
+another codec. Unknown metadata retains its numeric type/reserved fields and
+is never falsely labeled PNG. A caller with a deliberately ambiguous/unusual
+container can specify the encoding; other private profiles are unsupported.
+
+SPR tables restart entry indexes and use the same encoding. Host corpus tests
+read both variants and all nested SPRs. RGBA decoding checks dimensions, decoded
+allocation budget, exact output size and complete DEFLATE termination. Files
+stay unchanged; images are decoded in memory and alpha state stays attached to
+RgbaImage so ordinary PNG and premultiplied community data can coexist.

@@ -56,3 +56,12 @@ or treat its mods/changed game-state wiki as original behavior.
 
 Native Vita build and execution are PENDING until a real toolchain and runtime
 test establish them. Host format tests cannot establish Vita behavior.
+
+## Supplied Android14 variant follow-up
+
+The above audit is the original APK baseline. The second supplied APK is now
+compared in ANDROID14_APK.md, with hashes, alias/profile contracts and independent
+metadata evidence. It has a genuine Android native *helper* layer, not a complete
+native game engine; the original Java-game reconstruction decision still applies.
+It supplies indexed character/card data missing from the baseline. Support is
+resource-level and host-tested; actual native menus/battle/audio remain pending.

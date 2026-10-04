@@ -214,7 +214,7 @@ void showPacResult(bool success, const std::string& detail, const RgbaImage* ima
             const float x = (960.0f - w) / 2, y = 195.0f;
             glEnable(GL_TEXTURE_2D);
             glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glBlendFunc(image->premultiplied_alpha ? GL_ONE : GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
             glBindTexture(GL_TEXTURE_2D, texture);
             glColor4f(1, 1, 1, 1);

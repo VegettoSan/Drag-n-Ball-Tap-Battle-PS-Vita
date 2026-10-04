@@ -67,27 +67,31 @@ int main() {
 
     const std::string detail = "COMMON.PAC ENTRIES: " + std::to_string(pac.entries().size()) +
                                "  SOURCE: " + (choice.original ? std::string("ORIGINAL") : choice.mod_directory);
+    runtimeLog(std::string("PAC codec: ") +
+               (pac.encoding() == PacEncoding::Community14 ? "community14-a210795b" : "original"));
     runtimeLog("PAC parse OK. Entries: " + std::to_string(pac.entries().size()));
     RgbaImage image;
-    bool found_png = false;
+    bool found_image = false;
     for (size_t i = 0; i < pac.entries().size(); ++i) {
-        if (pac.typeString(i) != "png") continue;
+        const bool community_image = pac.typeString(i) == "rgba";
+        if (!community_image && pac.typeString(i) != "png") continue;
         std::vector<uint8_t> payload;
         std::string error;
-        if (!pac.readEntry(i, payload) || !decodePng(payload, image, error)) {
-            runtimeLog("PNG error at entry " + std::to_string(i) + ": " +
+        if (!pac.readEntry(i, payload) ||
+            !(community_image ? decodeCommunityImage(payload, i, image, error) : decodePng(payload, image, error))) {
+            runtimeLog("Image error at entry " + std::to_string(i) + ": " +
                        (pac.error().empty() ? error : pac.error()));
-            showPacResult(false, "PNG ERROR: " + (pac.error().empty() ? error : pac.error()));
+            showPacResult(false, "IMAGE ERROR: " + (pac.error().empty() ? error : pac.error()));
             return 6;
         }
-        runtimeLog("PNG decoded: entry " + std::to_string(i) + " " + std::to_string(image.width) +
+        runtimeLog("Image decoded: entry " + std::to_string(i) + " " + std::to_string(image.width) +
                    "x" + std::to_string(image.height) + " bytes=" + std::to_string(payload.size()));
-        found_png = true;
+        found_image = true;
         break;
     }
-    if (!found_png) {
-        runtimeLog("PAC valid but no PNG entry: unsupported bootstrap dataset");
-        showPacResult(false, "PAC VALID, NO PNG FOR PREVIEW");
+    if (!found_image) {
+        runtimeLog("PAC valid but no supported image entry: unsupported bootstrap dataset");
+        showPacResult(false, "PAC VALID, NO IMAGE FOR PREVIEW");
         return 7;
     }
     runtimeLog("State: original resource preview (diagnostic atlas, not game menu)");

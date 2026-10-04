@@ -70,6 +70,7 @@ Bootstrap 00.02 is **BUILD CONFIRMED** with a real VitaSDK build. It resolves an
 
 ## Documentation
 
+- [`docs/ANDROID14_APK.md`](docs/ANDROID14_APK.md) — original/community APK comparison, codec, provenance and mod import.
 - [`docs/BUILD.md`](docs/BUILD.md) — build, data preparation and first-test procedure.
 - [`docs/PORTING_PLAN.md`](docs/PORTING_PLAN.md) — staged roadmap from bootstrap to gameplay/mod compatibility.
 - [`docs/MODS.md`](docs/MODS.md) — mod overlay model and compatibility tiers.
@@ -123,3 +124,27 @@ The supplied original APK currently yields 57 direct `res/raw/` runtime files: 1
 Original/mod lookup and container parsing are implemented; gameplay compatibility
 with actual community mods has not been established. mod.json remains optional
 and ignored. No original assets or decompiled game sources are distributed.
+
+## Community Android 14 data support
+
+The user-supplied Android14 APK is now supported at the **resource/import level**:
+144 assets, encoded PAC tables and raw-DEFLATE premultiplied RGBA textures. Import
+into an isolated mod folder, preserving the original installation:
+
+```sh
+python tools/extract_apk_data.py /path/to/community.apk ./install --mod Android14
+```
+
+Copy install/mods/Android14/ to ux0:data/DBTapBattle/mods/Android14/. Original
+res/raw and ordinary assets layouts remain supported. Bytecode/native Android
+helpers are not imported. Mods retaining the audited names/codec use the same
+route; new code behavior or encoding constants need a separately recovered port.
+
+Host validation passed for both APKs: 125 outer PACs + 12 nested SPRs, 470 decoded
+textures and nine extractor regressions. New native preview source handles
+ordinary PNG and community RGBA with the corresponding alpha blend. This change
+has **not** been built/tested on Vita here: historical bootstrap 00.02 VPK evidence
+applies to its recorded source commit, not automatically to these new changes.
+Gameplay, converted community tables and WAV playback remain pending.
+See ANDROID14_APK.md for exact differences, confirmed shared-library provenance,
+unknown distributor and full commands/evidence.

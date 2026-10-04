@@ -98,3 +98,13 @@ Log: ux0:data/DBTapBattle/logs/runtime.log. Original data presence currently
 means game/common.pac is a regular file, independent of an active mod; it is
 not a complete installation test. Original charNN/chardemoNN/charf00NN triplets
 are absent in the supplied APK. Runtime save files remain PENDING.
+
+## Community assets as a separate dataset
+
+`extract_apk_data.py community.apk ./install --mod Android14` prepares
+install/mods/Android14/, with canonical names and untouched encoded PACs.
+Copy under ux0:data/DBTapBattle/mods/Android14/. Format-3 import manifest records
+profile, alias mapping and original APK content hashes. Native codec detection
+is per PAC, not globally per active mod. The original game/ folder and missing
+resource fallback remain unchanged. See ANDROID14_APK.md for the exact profile
+and resource/engine compatibility boundary.

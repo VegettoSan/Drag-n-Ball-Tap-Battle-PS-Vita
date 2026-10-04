@@ -46,7 +46,8 @@ preflights conflicts (including manifest), rejects traversal/duplicates/symlinks
 stages and CRC-checks data before publication. --overwrite permits replacement
 of regular files. Disk/concurrent publication failure into an existing output
 is not an all-or-nothing transaction; preserve a backup when using overwrite.
-No assets/ or external Android files are silently imported.
+For community assets, the extractor now supports explicit/audited layout selection;
+see ANDROID14_APK.md. External Android folders are not silently imported.
 
 This supplied APK alone is sufficient for common.pac preview, **not battle**:
 character triplets are absent. Read PLATFORM_SERVICES.md before calling it a
@@ -92,10 +93,32 @@ g++ -std=c++14 -Wall -Wextra -Werror -fsanitize=address,undefined -g -Isrc \
 ASAN_OPTIONS=detect_leaks=0 build-host/test_core /path/to/original-data/*.pac
 # Requires host libpng development headers/library:
 g++ -std=c++14 -Wall -Wextra -Werror -fsanitize=address,undefined -g -Isrc \
-  src/image.cpp src/pac.cpp tests/test_image.cpp -lpng -o build-host/test_image
+  src/image.cpp src/pac.cpp tests/test_image.cpp -lpng -lz -o build-host/test_image
 ASAN_OPTIONS=detect_leaks=0 build-host/test_image /path/to/original-data/*.pac
 ```
 
 Only leak scanning was disabled in this restricted runner; ASan/UBSan remained
 active. The core test enumerates 258 folders, including a 255-byte name. PNG
 tests reject truncated data and valid-CRC IHDRs exceeding decoded-memory budget.
+
+## Android14 resource support after the historical 00.02 build
+
+The new PAC/RGBA reader and alpha-aware diagnostic preview are host-tested source
+changes. A VitaSDK/CMake installation is unavailable in the current session, so
+no updated VPK or ARM-build claim accompanies this change. Existing
+build_validation.json remains historical and must not be reused as proof of it.
+zlib was already linked by CMake; no Android helper library is added.
+
+```sh
+python tools/extract_apk_data.py community.apk ./install --mod Android14
+# Host libpng/zlib development headers/libraries required:
+g++ -std=c++14 -Wall -Wextra -Werror -fsanitize=address,undefined -g -Isrc \
+  src/image.cpp src/pac.cpp tests/test_community.cpp -lpng -lz -o build-host/test_community
+ASAN_OPTIONS=detect_leaks=0 build-host/test_community ./original-data/*.pac ./install/mods/Android14/*.pac
+```
+
+Expected new-source device preview: original common.pac has 9 entries; community
+common.pac (imported from 2752.pac) has 6 entries. Both first textures are 512×512;
+logs identify the actual PAC codec and resolved folder. The community decoded
+pixel data is premultiplied, so its preview uses GL_ONE/ONE_MINUS_SRC_ALPHA.
+Do not expect original menus, characters, sound or battle from this bootstrap.

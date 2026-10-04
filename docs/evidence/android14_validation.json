@@ -1,0 +1,63 @@
+{
+  "format": 1,
+  "baseline": "861165bfe96ceca499a0ed81fa0475dfd85b5cb0",
+  "date": "2026-10-04",
+  "original_apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+  "community_apk_sha256": "a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4",
+  "python_regressions": {
+    "count": 9,
+    "result": "PASS"
+  },
+  "real_extraction": {
+    "original_files": 57,
+    "community_files": 144,
+    "alias_renames": 106,
+    "all_payloads_match_apk_bytes": true,
+    "original_preserved": true
+  },
+  "native_host": {
+    "compiler": "g++ C++14",
+    "flags": [
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fsanitize=address,undefined",
+      "-g"
+    ],
+    "leak_scan": false,
+    "libpng_source_tag": "v1.6.43",
+    "libpng_source_commit": "ed217e3e601d8e462f7fd1e04bed43ac42212429",
+    "core": "PASS",
+    "original_outer_png_regressions": 51,
+    "outer_pacs": 125,
+    "nested_spr_containers": 12,
+    "total_containers": 137,
+    "original_textures": 80,
+    "community_textures": 390,
+    "total_textures": 470,
+    "result": "PASS",
+    "negative_cases": [
+      "out-of-bounds encoded table",
+      "metadata-first profile detection",
+      "partial state after failed open",
+      "entry memory budget",
+      "wrong image index",
+      "truncated DEFLATE",
+      "trailing DEFLATE data",
+      "incorrect decoded size",
+      "texture allocation budget"
+    ]
+  },
+  "vita_build": "PENDING: no VitaSDK/CMake in this session",
+  "hardware_or_emulator": "PENDING",
+  "gameplay_or_code_mods": "PENDING",
+  "commands": [
+    "python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "python3 tools/extract_apk_data.py original.apk install/game",
+    "python3 tools/extract_apk_data.py community.apk install --mod Android14",
+    "g++ -std=c++14 -Wall -Wextra -Werror -fsanitize=address,undefined -g -Isrc src/pac.cpp src/vfs.cpp tests/test_core.cpp -o build-host/test_core",
+    "g++ -std=c++14 -Wall -Wextra -Werror -fsanitize=address,undefined -g -Isrc src/image.cpp src/pac.cpp tests/test_community.cpp -lpng -lz -o build-host/test_community",
+    "ASAN_OPTIONS=detect_leaks=0 build-host/test_core install/game/*.pac install/mods/Android14/*.pac",
+    "ASAN_OPTIONS=detect_leaks=0 build-host/test_community install/game/*.pac install/mods/Android14/*.pac"
+  ]
+}
