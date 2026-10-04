@@ -239,7 +239,8 @@ polling adapter; selector consumes this layer, supports front tap and left stick
 **Result:** PARTIAL — BUILD CONFIRMED, input behavior PENDING hardware.
 **Next:** test pointer IDs/release phases and multi-page mod selection on device;
 connect pointer events to the recovered KeyData/Controller in the next phase.
-# 2026-10-04 — Attempt 010 — Original engine and internal-format cross-check
+
+## 2026-10-04 — Attempt 010 — Original engine and internal-format cross-check
 
 **Goal:** complete the platform/format audit without turning inferred schemas
 into confirmed decoders. **Baseline:** 38d156e.
@@ -257,7 +258,8 @@ RENDER_MAPPING.md and evidence/internal_tables.json / audio_inventory.json.
 **Result:** PARTIAL — source/container facts established; full animation,
 collision, save interoperability and native platform behavior remain PENDING.
 **Next:** verify bootstrap on device, then port original metadata/draw functions.
-# 2026-10-04 — Attempt 011 — Final packaging and bounded-resource stress tests
+
+## 2026-10-04 — Attempt 011 — Final packaging and bounded-resource stress tests
 
 **Goal:** package reproducible native output and retain useful symbols/relink
 inputs. **Baseline:** ef18f65.

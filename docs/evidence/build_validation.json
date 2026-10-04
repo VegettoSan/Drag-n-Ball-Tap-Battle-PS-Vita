@@ -1,0 +1,87 @@
+{
+  "date_utc": "2026-10-04",
+  "source_commit": "c13f4a2f312726294a1b637e545f908cf110e5d0",
+  "repository": "https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita",
+  "source_clean": true,
+  "compiler": "arm-vita-eabi-g++ (GNU Tools for ARM Embedded Processors) 15.2.0",
+  "packages": {
+    "vitasdk-core": "2026.08.1-1",
+    "vitaShaRK": "1.7-1",
+    "libpng": "1.6.58-1",
+    "zlib": "1.3.2-2",
+    "libmathneon": "0.0.0.r11.g0faab81-1",
+    "vdpm": "0.1.3-1",
+    "vitaGL": "0.0.0.r1488.g2bdbe89-1",
+    "SceShaccCgExt": "1.0.1-1",
+    "taihen": "0.11-1"
+  },
+  "abi": "ELF32 little-endian ARM EABI5 hard-float; VFP registers",
+  "cmake_build_type": "Release",
+  "cxx_standard": 14,
+  "native_build": "BUILD CONFIRMED",
+  "vita3k": "PENDING: not executed",
+  "hardware": "PENDING: not executed",
+  "vpk": {
+    "filename": "DBTapBattle-Vita-00.02.vpk",
+    "size": 712798,
+    "sha256": "85eab9f2f8b46d1c5f2609c588dd23d1e1016edd29e78281db19b088f3ad6ce1",
+    "zip_crc": "PASS",
+    "members": [
+      {
+        "name": "sce_sys/param.sfo",
+        "size": 788
+      },
+      {
+        "name": "eboot.bin",
+        "size": 701420
+      },
+      {
+        "name": "notices/THIRD_PARTY.md",
+        "size": 1504
+      },
+      {
+        "name": "notices/vitaGL-GPL-3.0.txt",
+        "size": 35149
+      },
+      {
+        "name": "notices/vitaGL-LGPL-3.0.txt",
+        "size": 7652
+      }
+    ],
+    "sfo": {
+      "APP_VER": "00.02",
+      "ATTRIBUTE": "00800000",
+      "ATTRIBUTE2": "0c000000",
+      "ATTRIBUTE_MINOR": "10000000",
+      "CATEGORY": "gd",
+      "CONTENT_ID": "HB0001-DBTB00001_00-0000000000000000",
+      "GC_RO_SIZE": "00000000",
+      "GC_RW_SIZE": "00000000",
+      "PARENTAL_LEVEL": "00000000",
+      "PSP2_DISP_VER": "00.000",
+      "PSP2_SYSTEM_VER": "00000000",
+      "REGION_DENY": "00000000",
+      "SAVEDATA_MAX_SIZE": "00001000",
+      "STITLE": "Dragon Ball Tap Battle Vita",
+      "TITLE": "Dragon Ball Tap Battle Vita",
+      "TITLE_ID": "DBTB00001",
+      "VERSION": "01.00"
+    },
+    "self_magic": "53434500"
+  },
+  "tests": {
+    "extractor_unittest_groups": 5,
+    "extractor_result": "PASS",
+    "native_host_pac_files": 19,
+    "native_host_png_entries": 51,
+    "core_png_tests": "PASS with ASan/UBSan; leak scanning disabled for runner constraints",
+    "mod_folders": 258,
+    "max_tested_component_bytes": 255,
+    "png_oversized_valid_ihdr_crc": "PASS: allocation budget rejection"
+  },
+  "limits": [
+    "No emulator or physical Vita launch",
+    "No combat, animation interpreter, native audio or save interoperability",
+    "No original/commercial game assets included"
+  ]
+}

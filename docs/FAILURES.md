@@ -31,7 +31,8 @@ What must materially change before trying again.
 
 ---
 
-No port implementation failures have been recorded yet.
+The initial baseline had no recorded failures. Confirmed findings from the
+subsequent audit are recorded below.
 
 ## Important policy
 
