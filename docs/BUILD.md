@@ -127,13 +127,14 @@ Only leak scanning was disabled in this restricted runner; ASan/UBSan remained
 active. The core test enumerates 258 folders, including a 255-byte name. PNG
 tests reject truncated data and valid-CRC IHDRs exceeding decoded-memory budget.
 
-## Android14 resource support after the historical 00.02 build
+## Android14 resource support and current ARM build
 
-The new PAC/RGBA reader and alpha-aware diagnostic preview are host-tested source
-changes. A VitaSDK/CMake installation is unavailable in the current session, so
-no updated VPK or ARM-build claim accompanies this change. Existing
-build_validation.json remains historical and must not be reused as proof of it.
-zlib was already linked by CMake; no Android helper library is added.
+The new PAC/RGBA reader, alpha-aware diagnostic preview and initial game/text
+table reader are host-tested and ARM BUILD CONFIRMED at source 2c3fecd. The
+2026-10-04 artifact size/hash are recorded above; device execution is pending.
+Existing build_validation.json remains historical and must not be reused as
+proof of the newer artifact. zlib was already linked by CMake; no Android helper
+library is added.
 
 ```sh
 python tools/extract_apk_data.py community.apk ./install --mod Android14

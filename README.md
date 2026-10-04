@@ -153,7 +153,26 @@ The native startup now loads `gamedata.pac` and `text00.pac` through the VFS,
 following original InitGameData. Converted table headers support both profiles
 per file, including mixed original/community fallback; modified table values
 remain intact. Host tests pass on both supplied APKs (271+1 records each).
-The executable still ends in the atlas diagnostic: no playable menu/battle or
-new Vita build is claimed. The next gameplay target is menu → character select
+The executable still ends in the atlas diagnostic. Its dual-profile data code
+is ARM BUILD CONFIRMED; no playable menu/battle or device run is claimed. The next gameplay target is menu → character select
 → one complete battle on this shared data layer. APK mods changing Java logic
 need separate behavior ports; reading their assets does not port their code.
+
+
+## Original core feasibility and private data package
+
+`tools/prepare_vita_data.py` prepares a verified ZIP with the 57 original files
+and 144 Android14 files in separate Vita directories. All payload bytes remain
+unchanged; provenance manifests, hashes and installation instructions are included.
+The ZIP contains user-owned game data and is not uploaded to this repository or
+public Releases. Original-only data still lacks downloaded character triplets.
+
+An isolated Java-to-C experiment preserves original KeyData/Controller methods
+from the supplied APK. Tested input/Unicode output matches JVM and host C, and
+the adapted probe compiles/links for Vita. It is not integrated into the game VPK
+and has not run on a device. The unadapted full engine still needs real Android
+service replacements. See [tools/aot/README.md](tools/aot/README.md).
+
+**Delivery status:** no playable prerelease has been published. Menu, character
+selection, combat, rendering/audio services and saves remain to be integrated.
+The compiled bootstrap and standalone input probe are technical validations.
