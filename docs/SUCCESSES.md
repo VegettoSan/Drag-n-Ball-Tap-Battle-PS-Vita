@@ -112,3 +112,11 @@ ASan/UBSan corpus reads 137 containers, decodes 470 textures, including all 390
 community textures and 80 originals with nested SPR. Explicit alpha state avoids
 applying alpha twice to community pixels. Corrupt tables/DEFLATE/index/budget
 cases fail cleanly. This is HOST CONFIRMED, not a new Vita build/device result.
+
+## 2026-10-04 — Native initial game/text tables for both APKs
+
+**Attempt:** 015. The original InitGameData pair now loads natively, using each
+resolved PAC's codec. Both supplied APKs decode 271 game records + one text
+record. ASan/UBSan tests preserve modified values and verify mixed-profile mod
+override/fallback, row/column bounds and atomic failed loads. This is HOST
+CONFIRMED; the Vita program still shows a diagnostic atlas after initialization.

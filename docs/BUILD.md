@@ -59,6 +59,12 @@ not duplicate all 57 files. mod.json is optional and currently ignored.
 
 ## Expected test sequence (not yet observed on device)
 
+Current source additionally initializes gamedata.pac/text00.pac before common
+preview; both are now required. Their converted table directories accept ordinary
+and audited community profiles per resolved file. Failure displays GAME DATA and
+logs the error (exit 8); success logs both paths and record counts. This change
+is host-tested and has not received a new Vita build or device run here.
+
 1. vitaGL initializes; selector displays Original and discovered folders.
 2. D-pad/left stick moves; Cross or a front-screen tap confirms a visible row.
    Circle/Triangle cancels. More than eight rows scroll using physical controls.

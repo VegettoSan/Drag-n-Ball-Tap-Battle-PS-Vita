@@ -3,6 +3,7 @@
 #include "log.hpp"
 #include "ui.hpp"
 #include "vfs.hpp"
+#include "game_data.hpp"
 
 #include <cstdio>
 #include <string>
@@ -48,6 +49,19 @@ int main() {
         }
         runtimeLog("Selected mod: " + choice.mod_directory);
     }
+
+    // Start the same two converted-table loads as original InitGameData.
+    // Keep both tables alive for the engine that will replace the preview.
+    GameDatabase database;
+    if (!database.load(vfs)) {
+        runtimeLog("Initial game data failed: " + database.error);
+        showPacResult(false, "GAME DATA: " + database.error);
+        return 8;
+    }
+    runtimeLog("Initial game tables loaded: game=" + std::to_string(database.game.records().size()) +
+               " text=" + std::to_string(database.text.records().size()));
+    runtimeLog("Game table source: " + database.game.sourcePath());
+    runtimeLog("Text table source: " + database.text.sourcePath());
 
     std::string common_path;
     if (!vfs.resolve("common.pac", common_path)) {

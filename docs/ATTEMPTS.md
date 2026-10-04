@@ -325,3 +325,24 @@ evidence/android14_validation.json. **Result:** SUCCESS (native C++ host only).
 **Next:** build this source with the documented matching VitaSDK; test original
 and Android14 common previews/logs. Then recover converted tables, sprite behavior,
 character/menu/combat and WAV services along original engine boundaries.
+
+## 2026-10-04 — Attempt 015 — Begin actual engine data initialization
+
+**Baseline:** 9134e65. **Goal:** move from image preview toward the original
+startup path with both APK profiles, without inventing gameplay.
+**Changes:** native converted game/text table reader, per-PAC codec after VFS
+resolution, original InitGameData two-resource initialization in main.
+**Procedure:** check original DEX InitGameData/binCnv and community ext.u constants;
+warnings-as-errors C++14, ASan/UBSan, both extracted APKs and mixed-codec overlay.
+**Observed:** 271+1 records per APK; 262/39783 comparable game cells changed and
+preserved. Bounds, row stride, unsigned bytes, record XOR, failed-load clearing,
+ordinary fallback and corrupt override rejection pass. Initial LeakSanitizer
+execution could not inspect /proc tasks; repeat disables only leak detection.
+**Result:** SUCCESS (host data initialization); Vita build/execution PENDING.
+**Limit:** main still ends in the diagnostic atlas. No menu/combat or new playable
+VPK delivered. AOT Java-to-C investigated as a possibility, not implemented or
+validated on Vita; do not describe it as an available Android runtime.
+**Next:** port the original sprite/action interpreter and task/state dispatch
+for menu → character selection → one complete battle, using this same database
+and both existing texture/container codecs. Original-only gameplay also requires
+the character resources absent from the supplied original APK.

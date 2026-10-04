@@ -103,3 +103,20 @@ Phase 0 compile/package is BUILD CONFIRMED and the bootstrap now reads/decodes
 a real PAC PNG. Hardware exit condition remains PENDING. See AUDIT_STATUS.md
 for evidence and risks; do not begin battle reconstruction from community wiki
 labels without the original handlers and a complete user-owned data set.
+
+## User priority — first playable path, both profiles (2026-10-04)
+
+Concentrate implementation on original menu → character selection → one complete
+battle, reusing one native engine and the per-file original/community resource
+codecs. Native InitGameData table loading is now implemented and host-tested;
+sprite/action interpretation, task dispatch, rendering and combat are still
+required. Complete the required systems for this path together rather than
+treating additional atlas previews as a playable milestone. Core touch input,
+battle sound and exit behavior belong to this path; secondary network modes,
+news/downloader UI and mod metadata can wait. A packaged diagnostic is not a
+playable game, and source compatibility is not hardware validation.
+
+Keep asset/data overlays from both APK profiles. A mod changing Java behavior
+needs an explicit native behavior adaptation. The original APK lacks character
+packages; full original-only play requires those user-provided resources. The
+community APK's character files are available when its dataset is selected.

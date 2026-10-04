@@ -43,6 +43,48 @@ command interpreter and rendering order.
 
 ## Reproduce evidence
 
+### Native initial game tables (2026-10-04)
+
+`src/game_data.cpp` now implements the selected `binCnv` table used by original
+`InitGameData`: resource 14 (`gamedata.pac`) and 15 (`text00.pac`), cnvType=3
+selecting the converted DAC entry. It retains the entire byte payload and decodes
+the directory into position/width/height records; cell values remain unsigned
+bytes, as in the original Java short array. This does not interpret raw animation
+DAC, GDT, strings, CNV draw rectangles or sprite commands.
+
+Original directory: LE u16 count, then count records of LE u32 byte position,
+u16 width and u16 height. For the audited Android14 profile, XOR count with
+34594, position with uint32(-1887452470) and record index, width with 23261 and
+record index, height with 47592 and record index. Indices are table-record
+indices, independent of the outer PAC entry index. Payload cell bytes are not
+XOR-decoded or replaced with original defaults.
+
+Codec selection follows each resolved PAC. A converted gamedata override and
+ordinary text fallback can therefore coexist. Truncated directories, header
+overlap and record extents outside the payload fail with empty output. The
+complete two-table load is atomic; a corrupt mod override reports an error.
+These bounds are native safety constraints, verified on the supplied files.
+
+Host ASan/UBSan validation: both APKs yield 271 game records and one text record.
+262 of 39,783 comparable game cells differ (only equal-dimension records compared);
+these differences are preserved. Remaining cells and dimension changes are not
+included in that statistic. Tests also cover record-index XOR, unsigned 128/255
+values, every truncated synthetic payload, coordinate bounds, large offsets and
+products, stale-state clearing and mixed-codec VFS fallback. LeakSanitizer is
+disabled because this container prevents its /proc thread inspection; address
+and undefined-behavior instrumentation remain enabled. No Vita runtime proof.
+
+```sh
+g++ -std=c++14 -Wall -Wextra -Werror -fno-exceptions -fno-rtti \
+  -fsanitize=address,undefined -g -Isrc tests/test_game_data.cpp \
+  src/game_data.cpp src/pac.cpp src/vfs.cpp -o /tmp/test_game_data
+mkdir /tmp/dbtb-table-test
+ASAN_OPTIONS=detect_leaks=0 /tmp/test_game_data /path/to/install /tmp/dbtb-table-test
+```
+
+The corpus expects original files in install/game and the audited community
+files in install/mods/Android14. Use a fresh temporary test directory each run.
+
 ```sh
 python tools/audit_internal_formats.py /path/to/DBTapBattle.apk docs/evidence/internal_tables.json
 python tools/audit_audio.py /path/to/DBTapBattle.apk docs/evidence/audio_inventory.json

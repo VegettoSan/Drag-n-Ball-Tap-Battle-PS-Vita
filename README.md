@@ -145,6 +145,15 @@ textures and nine extractor regressions. New native preview source handles
 ordinary PNG and community RGBA with the corresponding alpha blend. This change
 has **not** been built/tested on Vita here: historical bootstrap 00.02 VPK evidence
 applies to its recorded source commit, not automatically to these new changes.
-Gameplay, converted community tables and WAV playback remain pending.
+Gameplay, raw sprite/action interpretation and WAV playback remain pending.
 See ANDROID14_APK.md for exact differences, confirmed shared-library provenance,
 unknown distributor and full commands/evidence.
+
+The native startup now loads `gamedata.pac` and `text00.pac` through the VFS,
+following original InitGameData. Converted table headers support both profiles
+per file, including mixed original/community fallback; modified table values
+remain intact. Host tests pass on both supplied APKs (271+1 records each).
+The executable still ends in the atlas diagnostic: no playable menu/battle or
+new Vita build is claimed. The next gameplay target is menu → character select
+→ one complete battle on this shared data layer. APK mods changing Java logic
+need separate behavior ports; reading their assets does not port their code.

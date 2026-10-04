@@ -21,7 +21,7 @@ if(NOT DBTB_COMMIT)
   set(DBTB_COMMIT "unknown")
 endif()
 
-add_executable(${PROJECT_NAME} src/main.cpp src/vfs.cpp src/pac.cpp src/ui.cpp src/image.cpp src/log.cpp src/input.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/vfs.cpp src/pac.cpp src/ui.cpp src/image.cpp src/log.cpp src/input.cpp src/game_data.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE src)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 14 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS YES)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -O2 $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
