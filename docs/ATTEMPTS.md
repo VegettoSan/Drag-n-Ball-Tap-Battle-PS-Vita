@@ -158,3 +158,17 @@ INCONCLUSIVE
 
 **Next action**
 Compile with VitaSDK, fix any SDK/link issues, then run on Vita/Vita3K and promote only confirmed results to `SUCCESSES.md`.
+
+## 2026-10-04 — Attempt 005 — Independent full APK inventory
+
+**Goal / hypothesis:** validate packaging across all PAC families, not just back00.
+**Baseline:** main 1e3699b, original APK SHA-256 recorded in APK_AUDIT.md.
+**Changes:** reproducible tools/audit_apk.py and metadata-only evidence.
+**Procedure:** read all 77 ZIP files, validate 19 outer PACs and nested SPRs,
+inspect DEX with androguard; compare GdGohan SWB at f4a275d.
+**Expected:** original offsets agree across families; distinguish original from mods.
+**Observed:** all outer bounds valid, reserved=0, no overlap/tail; 91 DEX classes;
+no bundled charXX; community archive has added/modified platform classes.
+**Evidence:** docs/evidence/apk_inventory.json; docs/APK_AUDIT.md.
+**Result:** SUCCESS (FORMAT CONFIRMED only).
+**Next:** harden native readers/extraction and inspect external data/game services.

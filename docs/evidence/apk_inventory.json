@@ -1,0 +1,3995 @@
+{
+  "format": 1,
+  "source_apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+  "zip_files": 77,
+  "extension_counts": {
+    ".xml": 8,
+    ".RSA": 1,
+    ".SF": 1,
+    ".MF": 1,
+    ".dex": 1,
+    ".png": 8,
+    ".pac": 19,
+    ".ogg": 36,
+    ".bin": 1,
+    ".arsc": 1
+  },
+  "native_libraries": [],
+  "files": [
+    {
+      "path": "AndroidManifest.xml",
+      "size": 4800,
+      "compressed_size": 1334,
+      "zip_method": 8,
+      "sha256": "9dd33b656f38fa4e855248b2da96cea0d74082fa2bf36d9790ff2e903821ee51"
+    },
+    {
+      "path": "META-INF/BANDAINA.RSA",
+      "size": 1085,
+      "compressed_size": 651,
+      "zip_method": 8,
+      "sha256": "3960a0f3b528ffa9327283764101563beb011b428d2ee73a8f91ab15b8825761"
+    },
+    {
+      "path": "META-INF/BANDAINA.SF",
+      "size": 5503,
+      "compressed_size": 2300,
+      "zip_method": 8,
+      "sha256": "3d318e675b6f14f01b7afc8e894f50cfc71fbaa44d9343bb2dc4da80d93ea4cd"
+    },
+    {
+      "path": "META-INF/MANIFEST.MF",
+      "size": 5382,
+      "compressed_size": 2234,
+      "zip_method": 8,
+      "sha256": "ec50b953fa94416c324d0bc5cd490cea983cb05f1b75c77ce1c4aea875cf64c0"
+    },
+    {
+      "path": "classes.dex",
+      "size": 704916,
+      "compressed_size": 252191,
+      "zip_method": 8,
+      "sha256": "0e2de1f3d712454aa30175016b0e2987c4d7e8e36bddab48ef4a2037023ecb72"
+    },
+    {
+      "path": "res/drawable-hdpi/icon.png",
+      "size": 14661,
+      "compressed_size": 14661,
+      "zip_method": 0,
+      "sha256": "8f4026aae2b3de1d16b02b598648db8940912fe5d88624e28dc2dbfaad9d9cf3"
+    },
+    {
+      "path": "res/drawable-ldpi/icon.png",
+      "size": 4045,
+      "compressed_size": 4045,
+      "zip_method": 0,
+      "sha256": "bd7cd0c350878ce0cc0033d126c86386349c28eda69cb701ab2de2a9560e3d0b"
+    },
+    {
+      "path": "res/drawable-mdpi/icon.png",
+      "size": 6954,
+      "compressed_size": 6954,
+      "zip_method": 0,
+      "sha256": "273f0076bbdcddaaa2c41e548b6ffe09547c6e95a256b421a26eabdfc4f0e71d"
+    },
+    {
+      "path": "res/drawable/back.png",
+      "size": 2433,
+      "compressed_size": 2433,
+      "zip_method": 0,
+      "sha256": "f35650da45295e98b1936e5f50d1de4be7d571f3af84b71b4958f91c81ae8c37"
+    },
+    {
+      "path": "res/drawable/bar.xml",
+      "size": 472,
+      "compressed_size": 223,
+      "zip_method": 8,
+      "sha256": "c271d348b349b31914e94fcf24dafe9c056e011168a1ff0122b435fe22a1fc3a"
+    },
+    {
+      "path": "res/drawable/button_base.png",
+      "size": 433,
+      "compressed_size": 433,
+      "zip_method": 0,
+      "sha256": "908552306049bec8836774d3764e8b1627cb4e4e0301a1dd02172ad42f1cdfe1"
+    },
+    {
+      "path": "res/drawable/menu_bar.png",
+      "size": 455,
+      "compressed_size": 455,
+      "zip_method": 0,
+      "sha256": "39ff659fd69a56e56b3ff179c7c9f85bd06edfda861b58e9325390c3aac38d0c"
+    },
+    {
+      "path": "res/drawable/window.9.png",
+      "size": 613,
+      "compressed_size": 613,
+      "zip_method": 0,
+      "sha256": "b908d7707d4b9854867b1047d77769a9a08437f8ee754076eea01256e0d16cb7"
+    },
+    {
+      "path": "res/layout/btsearch.xml",
+      "size": 1492,
+      "compressed_size": 526,
+      "zip_method": 8,
+      "sha256": "5db2b82c8748580af46fe6994ce143abeeda44f294370be4c7780dd4746b3196"
+    },
+    {
+      "path": "res/layout/main.xml",
+      "size": 372,
+      "compressed_size": 208,
+      "zip_method": 8,
+      "sha256": "b9ab0e347fcf7b3567011d745faeab39bc60ea6d0c22ee2d72241c6a17888f7c"
+    },
+    {
+      "path": "res/layout/rowdata.xml",
+      "size": 364,
+      "compressed_size": 210,
+      "zip_method": 8,
+      "sha256": "b9abdedf93efaf7a1b4e137a1038a06195f58d8dd999022b2d6cd055fb6d59a1"
+    },
+    {
+      "path": "res/layout/smap.xml",
+      "size": 492,
+      "compressed_size": 263,
+      "zip_method": 8,
+      "sha256": "382f3b66af618a32d66c57953bf86690f3964992b923ac98c3be2f89ec82158b"
+    },
+    {
+      "path": "res/layout/smap_listitem.xml",
+      "size": 1612,
+      "compressed_size": 578,
+      "zip_method": 8,
+      "sha256": "01ef38cf4cbd99867d806b767067c1bd362ede435dbd027a17e13a600c3940c1"
+    },
+    {
+      "path": "res/layout/smap_main.xml",
+      "size": 1896,
+      "compressed_size": 667,
+      "zip_method": 8,
+      "sha256": "53bbbc412639526feed6441ed80d121c0b58cf38caf6d740301a83c37548de4d"
+    },
+    {
+      "path": "res/raw/back00.pac",
+      "size": 1290699,
+      "compressed_size": 442820,
+      "zip_method": 8,
+      "sha256": "a19c425b0496aadc780d3a12b47fad91363423c9b5944407bdd5f74d64f18012"
+    },
+    {
+      "path": "res/raw/back01.pac",
+      "size": 1100837,
+      "compressed_size": 435066,
+      "zip_method": 8,
+      "sha256": "828e031db2c705512fde4d04fbedaaf350875e5cb354b47b53d114435f8cd012"
+    },
+    {
+      "path": "res/raw/back02.pac",
+      "size": 1680689,
+      "compressed_size": 460189,
+      "zip_method": 8,
+      "sha256": "84520e0753c9aea708a3d3489a48770e51c42275774aae6cb126dd54600d7554"
+    },
+    {
+      "path": "res/raw/back03.pac",
+      "size": 1244185,
+      "compressed_size": 322856,
+      "zip_method": 8,
+      "sha256": "1796d5aa7a0a53f57cd3a19666555e731af69ad6da91273295c977e86925d348"
+    },
+    {
+      "path": "res/raw/bgm_00.ogg",
+      "size": 201590,
+      "compressed_size": 201590,
+      "zip_method": 0,
+      "sha256": "815a71712b3afa00b1bf3a6cc65aaab61297564519739104a853e342b4c04e22"
+    },
+    {
+      "path": "res/raw/bgm_01.ogg",
+      "size": 174022,
+      "compressed_size": 174022,
+      "zip_method": 0,
+      "sha256": "89aaab359d28d73dca7eb6b765f64bb9eb9bf8511daefc2110d4494849aa67f8"
+    },
+    {
+      "path": "res/raw/bgm_02.ogg",
+      "size": 215205,
+      "compressed_size": 215205,
+      "zip_method": 0,
+      "sha256": "add1974186f7b100e013573990a6f04341f4bf1a1e23e147623048f7eeb26283"
+    },
+    {
+      "path": "res/raw/bgm_03.ogg",
+      "size": 507156,
+      "compressed_size": 507156,
+      "zip_method": 0,
+      "sha256": "21e4a12e328dfc7913e3a575ca55f83570a42b02c05b96642c56244d1b3b99e9"
+    },
+    {
+      "path": "res/raw/bgm_04.ogg",
+      "size": 440550,
+      "compressed_size": 440550,
+      "zip_method": 0,
+      "sha256": "4ae673b316d2a06137ea00b84d2027bc6b8fe5543b2924060a068edc6d2a1f66"
+    },
+    {
+      "path": "res/raw/bgm_05.ogg",
+      "size": 423274,
+      "compressed_size": 423274,
+      "zip_method": 0,
+      "sha256": "7a838cc04bc7e69cf9b5c9d994fd0184217a9d74807b45bce8dda04d01ab7613"
+    },
+    {
+      "path": "res/raw/bgm_06.ogg",
+      "size": 431952,
+      "compressed_size": 431952,
+      "zip_method": 0,
+      "sha256": "c9e0ce3449c6244b76f83381ebb4f8bb6fc4c29f101f495e8862c9593a83e2c6"
+    },
+    {
+      "path": "res/raw/bgm_07.ogg",
+      "size": 477037,
+      "compressed_size": 477037,
+      "zip_method": 0,
+      "sha256": "c92508ca8c964fd2b36f62dc57684dfc95bf7b83063d66b07fa578941407d30e"
+    },
+    {
+      "path": "res/raw/bgm_08.ogg",
+      "size": 208153,
+      "compressed_size": 208153,
+      "zip_method": 0,
+      "sha256": "2832d8beb7f5d5956125a6071b820fe2cbf748ea0461874587ebc90bd87d26fe"
+    },
+    {
+      "path": "res/raw/bgm_09.ogg",
+      "size": 69921,
+      "compressed_size": 69921,
+      "zip_method": 0,
+      "sha256": "a0acebca05c8b005214f0c47b8a434a63b1df050c752cc82d8e8765f85fad7bf"
+    },
+    {
+      "path": "res/raw/bgm_10.ogg",
+      "size": 92175,
+      "compressed_size": 92175,
+      "zip_method": 0,
+      "sha256": "e67954b197400cf3ace67bcbc5bc33b2c6199cc8b23abcf1f9432b722ae6f1da"
+    },
+    {
+      "path": "res/raw/bgm_11.ogg",
+      "size": 79460,
+      "compressed_size": 79460,
+      "zip_method": 0,
+      "sha256": "37a3bbb5068387f28faa310e79305b209eacc4f2d8236235bd9d792e7c56da7a"
+    },
+    {
+      "path": "res/raw/bgm_12.ogg",
+      "size": 41141,
+      "compressed_size": 41141,
+      "zip_method": 0,
+      "sha256": "3d0a666fdceba325926a2fdf932710d061e8d8e8db9661cbd499a436be2754f6"
+    },
+    {
+      "path": "res/raw/bgm_13.ogg",
+      "size": 92961,
+      "compressed_size": 92961,
+      "zip_method": 0,
+      "sha256": "ef06166a77e5643879347b393c2cd85742be46552422a5ae562511e6ffa0ae35"
+    },
+    {
+      "path": "res/raw/bgm_14.ogg",
+      "size": 471429,
+      "compressed_size": 471429,
+      "zip_method": 0,
+      "sha256": "aff7232a4e3cde56850de66909f77f9e3519534bcc20d6730ef1cb6162496e3d"
+    },
+    {
+      "path": "res/raw/bgm_15.ogg",
+      "size": 506106,
+      "compressed_size": 506106,
+      "zip_method": 0,
+      "sha256": "2ee1ebefb8c00b03e6e47e79eb56900eeea0deee50d106c69a65559cfb897788"
+    },
+    {
+      "path": "res/raw/bgm_16.ogg",
+      "size": 278463,
+      "compressed_size": 278463,
+      "zip_method": 0,
+      "sha256": "ff8439f5086af70a5a8b499e4cdd8fb14aed07843e481df91737fdc6449ab3f1"
+    },
+    {
+      "path": "res/raw/bobj00.pac",
+      "size": 67100,
+      "compressed_size": 59151,
+      "zip_method": 8,
+      "sha256": "dc68c9e3d2ca0456e754afd1484c57a88f220858f5ae83faf7439766c7daccbb"
+    },
+    {
+      "path": "res/raw/bobj01.pac",
+      "size": 451669,
+      "compressed_size": 451669,
+      "zip_method": 0,
+      "sha256": "90976b27341330da5d2458e5d4def3fd4f50f3ab6a5cabd90005ffff94da279e"
+    },
+    {
+      "path": "res/raw/bobj02.pac",
+      "size": 364727,
+      "compressed_size": 364727,
+      "zip_method": 0,
+      "sha256": "7bdc4b145edb998b8607309861564ac222b1df73333900c2616fcc704ae93bb5"
+    },
+    {
+      "path": "res/raw/bobj03.pac",
+      "size": 446324,
+      "compressed_size": 446324,
+      "zip_method": 0,
+      "sha256": "9c1407adb7823ca4c91bb52ffcd309d45a9388f0cc684a87f3f851147f499d8d"
+    },
+    {
+      "path": "res/raw/bobj04.pac",
+      "size": 339938,
+      "compressed_size": 339938,
+      "zip_method": 0,
+      "sha256": "62e3fafa410d3a12322e18bcf15f8f8682dee40eba00097469433361179ed2c8"
+    },
+    {
+      "path": "res/raw/card000.pac",
+      "size": 116610,
+      "compressed_size": 116610,
+      "zip_method": 0,
+      "sha256": "71153f4d29fc5107c6c329fc2e7ddc94502395a2be01469dd899b2afa4a6529d"
+    },
+    {
+      "path": "res/raw/card_preview.pac",
+      "size": 972993,
+      "compressed_size": 535863,
+      "zip_method": 8,
+      "sha256": "27f34e4b5c252296c2e42d11f219142500ef04d885e1c1e9bde69e57e16f962c"
+    },
+    {
+      "path": "res/raw/common.pac",
+      "size": 1310448,
+      "compressed_size": 303706,
+      "zip_method": 8,
+      "sha256": "19dce00e21198a339e09b1ec7052ef90fca29de765fab7db31cd0da2ebce235b"
+    },
+    {
+      "path": "res/raw/demo_00.pac",
+      "size": 893523,
+      "compressed_size": 893523,
+      "zip_method": 0,
+      "sha256": "8b6a3bfd2874646fbcb410b2af4ee93e0f465d397e52af5ec957e5534cecd645"
+    },
+    {
+      "path": "res/raw/demo_08.pac",
+      "size": 2131543,
+      "compressed_size": 2131543,
+      "zip_method": 0,
+      "sha256": "bd925f53326240bff42cce2bcc4bb33457b1c7534e72df67299cf531cf00a31e"
+    },
+    {
+      "path": "res/raw/effect.pac",
+      "size": 1533983,
+      "compressed_size": 1533983,
+      "zip_method": 0,
+      "sha256": "2c2a3babdf88d814a9cc1514a018b09d2bdcf8f6b86d55ea0817b68a4aa523c0"
+    },
+    {
+      "path": "res/raw/font00.pac",
+      "size": 42203,
+      "compressed_size": 37491,
+      "zip_method": 8,
+      "sha256": "3d49020a372b932ef9a3005f60059a1c705de3f9e53dee28059db4e038de3502"
+    },
+    {
+      "path": "res/raw/gamedata.pac",
+      "size": 372625,
+      "compressed_size": 35479,
+      "zip_method": 8,
+      "sha256": "55df276a71bd6d061dd499c2d59b4f718471055187de83e063baa7d9052ee960"
+    },
+    {
+      "path": "res/raw/loading.png",
+      "size": 4233,
+      "compressed_size": 4233,
+      "zip_method": 0,
+      "sha256": "79b374ee879104a5ae040c8f3308fcb225c89a8fd2e8696306ed2258cc1c95bd"
+    },
+    {
+      "path": "res/raw/mk.bin",
+      "size": 392,
+      "compressed_size": 324,
+      "zip_method": 8,
+      "sha256": "2caef8c445b71896f34d560e90be6e04d1911d6bf8010d73c84dd9288b30251f"
+    },
+    {
+      "path": "res/raw/se_00.ogg",
+      "size": 18037,
+      "compressed_size": 18037,
+      "zip_method": 0,
+      "sha256": "e54ef972dde0abd24fce011f1e7a732252b5c28bccd83ce73cb75cb19ddeaad3"
+    },
+    {
+      "path": "res/raw/se_01.ogg",
+      "size": 11979,
+      "compressed_size": 11979,
+      "zip_method": 0,
+      "sha256": "22a60f0387c7f0366138ac9bbdbe19433b60a4d2af113b372386dcdf913264e0"
+    },
+    {
+      "path": "res/raw/se_02.ogg",
+      "size": 8677,
+      "compressed_size": 8677,
+      "zip_method": 0,
+      "sha256": "d234d41951833961c19699156b9e6c34cdf00887a5d900a735d517d826c122ed"
+    },
+    {
+      "path": "res/raw/se_03.ogg",
+      "size": 10028,
+      "compressed_size": 10028,
+      "zip_method": 0,
+      "sha256": "1b9946ff83e26d26dd34c023d41de153a0fa688e3c8895216d067c7028927e56"
+    },
+    {
+      "path": "res/raw/se_04.ogg",
+      "size": 14966,
+      "compressed_size": 14966,
+      "zip_method": 0,
+      "sha256": "1f0c5650e998c62842005d4a1d41ac2b1e78ecce7d528fbb9e6efe9f4c25cbd6"
+    },
+    {
+      "path": "res/raw/se_05.ogg",
+      "size": 25135,
+      "compressed_size": 25135,
+      "zip_method": 0,
+      "sha256": "46aa1851c9df1b21d289eb4565d7901b6e0518775739dcd6cceb13060d54468e"
+    },
+    {
+      "path": "res/raw/se_06.ogg",
+      "size": 27148,
+      "compressed_size": 27148,
+      "zip_method": 0,
+      "sha256": "9f118bd7259a0feca8fa2117f4e4e73b088d928124a38852d554f5ca438f4a56"
+    },
+    {
+      "path": "res/raw/se_07.ogg",
+      "size": 42602,
+      "compressed_size": 42602,
+      "zip_method": 0,
+      "sha256": "5c0b41bcaaf2d7ddb8aee9d92ac1673d5de5dca6f1c854e07c4f890a9a785a77"
+    },
+    {
+      "path": "res/raw/se_08.ogg",
+      "size": 6961,
+      "compressed_size": 6961,
+      "zip_method": 0,
+      "sha256": "244dd64798f531182bf3528fd4d3d6d21a08a1bd8c1c82ad333b25d4e12d545e"
+    },
+    {
+      "path": "res/raw/se_09.ogg",
+      "size": 14853,
+      "compressed_size": 14853,
+      "zip_method": 0,
+      "sha256": "145aa9384cd123e73e76624e238ee5975708efe34a9d7d6ab07a41a264e724d9"
+    },
+    {
+      "path": "res/raw/se_10.ogg",
+      "size": 60275,
+      "compressed_size": 60275,
+      "zip_method": 0,
+      "sha256": "e99cb3c43317c47217411c6d1129bb7d702cc8a48afa7896cd7255c33958f196"
+    },
+    {
+      "path": "res/raw/se_11.ogg",
+      "size": 19220,
+      "compressed_size": 19220,
+      "zip_method": 0,
+      "sha256": "9ec7518044efe006c6ac0dc990646f7f433ccf4fda2a9a5f7ac6e3f8eb01309f"
+    },
+    {
+      "path": "res/raw/se_12.ogg",
+      "size": 12065,
+      "compressed_size": 12065,
+      "zip_method": 0,
+      "sha256": "97674a8ed9483baa5a6febe9cc2d7c87cae0ef7ec84c9dee6dc1db0e9794d6d7"
+    },
+    {
+      "path": "res/raw/se_13.ogg",
+      "size": 20239,
+      "compressed_size": 20239,
+      "zip_method": 0,
+      "sha256": "7cb8484c5a377dbd358f04f91efdabfcc91f95c23393699ffcfa37d0b37a11e5"
+    },
+    {
+      "path": "res/raw/se_14.ogg",
+      "size": 39491,
+      "compressed_size": 39491,
+      "zip_method": 0,
+      "sha256": "8506264f971e07fefc1204b418b08484fed9ec197caf6917fcc19076f2b11da7"
+    },
+    {
+      "path": "res/raw/se_15.ogg",
+      "size": 16604,
+      "compressed_size": 16604,
+      "zip_method": 0,
+      "sha256": "e5d98327e80e84c1a7efb2252e9acf706e43a559f30e123b6289a71c0a6d9674"
+    },
+    {
+      "path": "res/raw/se_16.ogg",
+      "size": 5023,
+      "compressed_size": 5023,
+      "zip_method": 0,
+      "sha256": "3fb23ce34b47e481f454ec039c0ab60eb12bc51c47fe994c925b013a34def0e1"
+    },
+    {
+      "path": "res/raw/se_17.ogg",
+      "size": 7618,
+      "compressed_size": 7618,
+      "zip_method": 0,
+      "sha256": "c3cfc86403aa227d932d5faa158c3aea44998cf4bc6a06f1b3049d1e95ba2ed1"
+    },
+    {
+      "path": "res/raw/se_18.ogg",
+      "size": 4820,
+      "compressed_size": 4820,
+      "zip_method": 0,
+      "sha256": "a49eaec30274ffa407e4a1137980124c152b6783da60c9a77544d9c2983e5b01"
+    },
+    {
+      "path": "res/raw/select0.pac",
+      "size": 3037234,
+      "compressed_size": 1739087,
+      "zip_method": 8,
+      "sha256": "2ea61954b7dbabdccdb6f8bc352b591252fc1ed23c653c21a281bb632197eef2"
+    },
+    {
+      "path": "res/raw/text00.pac",
+      "size": 41424,
+      "compressed_size": 9197,
+      "zip_method": 8,
+      "sha256": "f4d415ef725e508b569da44d66170cb9314763fc256031011d86833d076294f2"
+    },
+    {
+      "path": "resources.arsc",
+      "size": 10108,
+      "compressed_size": 10108,
+      "zip_method": 0,
+      "sha256": "c7d80ff21e65e627fcc95280eada861f82d3313ce9f091dfe015f57e48248e72"
+    }
+  ],
+  "pacs": {
+    "res/raw/back00.pac": {
+      "count": 8,
+      "data_base": 130,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 73589,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "f8550b679dbd8a8c6be8539e193b60c4c9aa2d0c3609b52930fac2d4e41986e3",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 73589,
+          "size": 10074,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "e5f892d57c0c9879e695c11daec4116a7951b0f8d07e14c42756d9111d9a6d44",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 83663,
+          "size": 768,
+          "type": "act",
+          "reserved": 0,
+          "sha256": "4f5d35ba6829b20f0c8057af4471713efc512a0ab360f4bc61b0aedbf33e16a2"
+        },
+        {
+          "index": 3,
+          "offset": 84431,
+          "size": 4070,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "7de7e355b2db63301cb7f58eb8221cae35fa2e686d854a36e062e94adc7fe0d6"
+        },
+        {
+          "index": 4,
+          "offset": 88501,
+          "size": 50,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "de903350ff59a9cb1f48f705d7d0815a5f66a2dbb2bce22184ddc1e5d2e962d3"
+        },
+        {
+          "index": 5,
+          "offset": 88551,
+          "size": 1201763,
+          "type": "spr",
+          "reserved": 0,
+          "sha256": "3b27fc1c688f1c1c9cb3462c2c6531fed1df3959e91aa78615ecee0af4e1ebd0",
+          "nested_pac": {
+            "count": 2,
+            "data_base": 34,
+            "entries": [
+              {
+                "index": 0,
+                "offset": 0,
+                "size": 305263,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "7f16b2754d29339f4076712c39be75f0753fc9dbabddce186a07a91841faa992",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 1,
+                "offset": 305263,
+                "size": 896466,
+                "type": "bin",
+                "reserved": 0,
+                "sha256": "1186d85622c90624ab025df2a08f14f22c2516c3d842e31987bd71863997bd8b"
+              }
+            ],
+            "overlapping": false,
+            "trailing_bytes": 0
+          }
+        },
+        {
+          "index": 6,
+          "offset": 1290314,
+          "size": 35,
+          "type": "bin",
+          "reserved": 0,
+          "sha256": "7dc16a41134a5f9f1f94d6787b92dc66edbc56b655fd2793f4b6fa7e2256c171"
+        },
+        {
+          "index": 7,
+          "offset": 1290349,
+          "size": 220,
+          "type": "gdt",
+          "reserved": 0,
+          "sha256": "974bf3eeadfced8a4cbc4e585f19de3df3df6cced5830b9042600af3ee0ff122"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/back01.pac": {
+      "count": 8,
+      "data_base": 130,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 73589,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "f8550b679dbd8a8c6be8539e193b60c4c9aa2d0c3609b52930fac2d4e41986e3",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 73589,
+          "size": 10074,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "e5f892d57c0c9879e695c11daec4116a7951b0f8d07e14c42756d9111d9a6d44",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 83663,
+          "size": 768,
+          "type": "act",
+          "reserved": 0,
+          "sha256": "4f5d35ba6829b20f0c8057af4471713efc512a0ab360f4bc61b0aedbf33e16a2"
+        },
+        {
+          "index": 3,
+          "offset": 84431,
+          "size": 4070,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "7de7e355b2db63301cb7f58eb8221cae35fa2e686d854a36e062e94adc7fe0d6"
+        },
+        {
+          "index": 4,
+          "offset": 88501,
+          "size": 50,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "de903350ff59a9cb1f48f705d7d0815a5f66a2dbb2bce22184ddc1e5d2e962d3"
+        },
+        {
+          "index": 5,
+          "offset": 88551,
+          "size": 1011901,
+          "type": "spr",
+          "reserved": 0,
+          "sha256": "728b18aee256e1cd2f3a4f2af74dd241f1698ece459eb292a665f1017f510cc4",
+          "nested_pac": {
+            "count": 2,
+            "data_base": 34,
+            "entries": [
+              {
+                "index": 0,
+                "offset": 0,
+                "size": 300809,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "a6c172686b6df16fc25022c493e815d3bf5b05a54da635b4036bd9d3f86e6c30",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 1,
+                "offset": 300809,
+                "size": 711058,
+                "type": "bin",
+                "reserved": 0,
+                "sha256": "baa59cde1c3c5d830393e2535730f3fd66b5771d88899398ac5d4468f7100c2c"
+              }
+            ],
+            "overlapping": false,
+            "trailing_bytes": 0
+          }
+        },
+        {
+          "index": 6,
+          "offset": 1100452,
+          "size": 35,
+          "type": "bin",
+          "reserved": 0,
+          "sha256": "7dc16a41134a5f9f1f94d6787b92dc66edbc56b655fd2793f4b6fa7e2256c171"
+        },
+        {
+          "index": 7,
+          "offset": 1100487,
+          "size": 220,
+          "type": "gdt",
+          "reserved": 0,
+          "sha256": "974bf3eeadfced8a4cbc4e585f19de3df3df6cced5830b9042600af3ee0ff122"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/back02.pac": {
+      "count": 8,
+      "data_base": 130,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 73589,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "f8550b679dbd8a8c6be8539e193b60c4c9aa2d0c3609b52930fac2d4e41986e3",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 73589,
+          "size": 10074,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "e5f892d57c0c9879e695c11daec4116a7951b0f8d07e14c42756d9111d9a6d44",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 83663,
+          "size": 768,
+          "type": "act",
+          "reserved": 0,
+          "sha256": "4f5d35ba6829b20f0c8057af4471713efc512a0ab360f4bc61b0aedbf33e16a2"
+        },
+        {
+          "index": 3,
+          "offset": 84431,
+          "size": 4070,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "7de7e355b2db63301cb7f58eb8221cae35fa2e686d854a36e062e94adc7fe0d6"
+        },
+        {
+          "index": 4,
+          "offset": 88501,
+          "size": 50,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "de903350ff59a9cb1f48f705d7d0815a5f66a2dbb2bce22184ddc1e5d2e962d3"
+        },
+        {
+          "index": 5,
+          "offset": 88551,
+          "size": 1591753,
+          "type": "spr",
+          "reserved": 0,
+          "sha256": "4c07346e72a4f614c49da1e7050f78ad5fcaa2080126a800e6040b253b73f19f",
+          "nested_pac": {
+            "count": 2,
+            "data_base": 34,
+            "entries": [
+              {
+                "index": 0,
+                "offset": 0,
+                "size": 294005,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "369793c8459d94f59b49ac3085bc33096b5e60ccf59a20341bb91df687fa190f",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 1,
+                "offset": 294005,
+                "size": 1297714,
+                "type": "bin",
+                "reserved": 0,
+                "sha256": "17ea258b9ce562b0eb848bc6cdcfec4fcd19998f02951c5ad3c49f15c36fd124"
+              }
+            ],
+            "overlapping": false,
+            "trailing_bytes": 0
+          }
+        },
+        {
+          "index": 6,
+          "offset": 1680304,
+          "size": 35,
+          "type": "bin",
+          "reserved": 0,
+          "sha256": "9c3fcf18c792081273b66771ca670461a36970e812e6d3983e2c4617e6433270"
+        },
+        {
+          "index": 7,
+          "offset": 1680339,
+          "size": 220,
+          "type": "gdt",
+          "reserved": 0,
+          "sha256": "488d4a4936c1ccc1ed0607985045ff5d3e76970bae9f08f396dc7ba24980a189"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/back03.pac": {
+      "count": 8,
+      "data_base": 130,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 73589,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "f8550b679dbd8a8c6be8539e193b60c4c9aa2d0c3609b52930fac2d4e41986e3",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 73589,
+          "size": 10074,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "e5f892d57c0c9879e695c11daec4116a7951b0f8d07e14c42756d9111d9a6d44",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 83663,
+          "size": 768,
+          "type": "act",
+          "reserved": 0,
+          "sha256": "4f5d35ba6829b20f0c8057af4471713efc512a0ab360f4bc61b0aedbf33e16a2"
+        },
+        {
+          "index": 3,
+          "offset": 84431,
+          "size": 4070,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "7de7e355b2db63301cb7f58eb8221cae35fa2e686d854a36e062e94adc7fe0d6"
+        },
+        {
+          "index": 4,
+          "offset": 88501,
+          "size": 50,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "de903350ff59a9cb1f48f705d7d0815a5f66a2dbb2bce22184ddc1e5d2e962d3"
+        },
+        {
+          "index": 5,
+          "offset": 88551,
+          "size": 1155249,
+          "type": "spr",
+          "reserved": 0,
+          "sha256": "7c5907330c3fd51b08a36d066e06a020dfe737ab6c5e266b5d64790d597762b3",
+          "nested_pac": {
+            "count": 2,
+            "data_base": 34,
+            "entries": [
+              {
+                "index": 0,
+                "offset": 0,
+                "size": 183805,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "80d81f947c12515d315a4950445e79d74073d9da3057562e8ce1ba61be44261e",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 1,
+                "offset": 183805,
+                "size": 971410,
+                "type": "bin",
+                "reserved": 0,
+                "sha256": "cbf510235e066ce3e7582bd90dcd3578625109dd5f845e4df5babb5267cd5957"
+              }
+            ],
+            "overlapping": false,
+            "trailing_bytes": 0
+          }
+        },
+        {
+          "index": 6,
+          "offset": 1243800,
+          "size": 35,
+          "type": "bin",
+          "reserved": 0,
+          "sha256": "7dc16a41134a5f9f1f94d6787b92dc66edbc56b655fd2793f4b6fa7e2256c171"
+        },
+        {
+          "index": 7,
+          "offset": 1243835,
+          "size": 220,
+          "type": "gdt",
+          "reserved": 0,
+          "sha256": "974bf3eeadfced8a4cbc4e585f19de3df3df6cced5830b9042600af3ee0ff122"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/bobj00.pac": {
+      "count": 5,
+      "data_base": 82,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 39227,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "8c90cb3ff181b8ce3c9916791a447ebb9714fadf17c9b44da4128f0bd78eef12",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 39227,
+          "size": 12221,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "2e267c479e705d31bf77b03a8a0dfd09d85329d6207d508b6ec740496b4e32e5",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 51448,
+          "size": 198,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "6971885148bfc0035dfe4e5486dbe1e9e23db310626709efb533462e31ca7bd4"
+        },
+        {
+          "index": 3,
+          "offset": 51646,
+          "size": 3596,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "806cec5c3ddf77e575a392ef6c180d1dce1e852efdfe058fdf0c67a922492907"
+        },
+        {
+          "index": 4,
+          "offset": 55242,
+          "size": 11776,
+          "type": "db",
+          "reserved": 0,
+          "sha256": "3d31ee12fb1ea5658ee079b87ac45319b70f89a7f24e0378f103bd7b181c8646"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/bobj01.pac": {
+      "count": 5,
+      "data_base": 82,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 329061,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "fe1bdc439792a0eee120e91e03f3e51d415ba4b6f2bf5333dbd2e05eff0fcfd0",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 329061,
+          "size": 105449,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "bbf1ac78d6285342196a63ddbce27025bda0bb971d20634d5e13b8183f16376c",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 434510,
+          "size": 225,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "237b20ea8647207a238845dc5c330951237a04bdff4af58dfe3fa516cc2cd4cf"
+        },
+        {
+          "index": 3,
+          "offset": 434735,
+          "size": 4052,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "02f5ad190c5c4f79486c887a348a1c98bb924daacc388f1b1c9b1f759ef894f3"
+        },
+        {
+          "index": 4,
+          "offset": 438787,
+          "size": 12800,
+          "type": "db",
+          "reserved": 0,
+          "sha256": "f64adbad4248168dc488f79647d87ae47749aa9da9e9b675bcff05fd1a1c6910"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/bobj02.pac": {
+      "count": 5,
+      "data_base": 82,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 249342,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "06a2e242fc47cdd1bc2e588551ffcec02abdbf96baa1bf623bdb9bcf1e8a0aef",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 249342,
+          "size": 98226,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "8b2122886202cac26a52f35cd81c96c308da01cebeb307547190c17853295316",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 347568,
+          "size": 225,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "237b20ea8647207a238845dc5c330951237a04bdff4af58dfe3fa516cc2cd4cf"
+        },
+        {
+          "index": 3,
+          "offset": 347793,
+          "size": 4052,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "02f5ad190c5c4f79486c887a348a1c98bb924daacc388f1b1c9b1f759ef894f3"
+        },
+        {
+          "index": 4,
+          "offset": 351845,
+          "size": 12800,
+          "type": "db",
+          "reserved": 0,
+          "sha256": "93bb8922012bcd0a6fbcfba49282490dd3fc88b1d6a5cedbf3e82f7afe20cb60"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/bobj03.pac": {
+      "count": 5,
+      "data_base": 82,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 323849,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "e358cf1444ea192e7df467a0aac19380c15882017dae9331d1cef7074061c905",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 323849,
+          "size": 105316,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "25e140f3be4bc0ebc09a3f1952112a40dfe7b1484e9ecc6e148a7f06440866b0",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 429165,
+          "size": 225,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "237b20ea8647207a238845dc5c330951237a04bdff4af58dfe3fa516cc2cd4cf"
+        },
+        {
+          "index": 3,
+          "offset": 429390,
+          "size": 4052,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "02f5ad190c5c4f79486c887a348a1c98bb924daacc388f1b1c9b1f759ef894f3"
+        },
+        {
+          "index": 4,
+          "offset": 433442,
+          "size": 12800,
+          "type": "db",
+          "reserved": 0,
+          "sha256": "c16df70b015c2cec21963aec7e75b2164b215362836da030072a5855b013e0a9"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/bobj04.pac": {
+      "count": 5,
+      "data_base": 82,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 225557,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "cbb0dca82bc1ecdfe23030a3d47beba500e2a851b4ff6ed9a4befd7ed263aca8",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 225557,
+          "size": 97222,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "3582b607d8bae3529996210c8a49ca667b33c14e37877ab384d6f9c03c45d9d2",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 322779,
+          "size": 225,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "237b20ea8647207a238845dc5c330951237a04bdff4af58dfe3fa516cc2cd4cf"
+        },
+        {
+          "index": 3,
+          "offset": 323004,
+          "size": 4052,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "02f5ad190c5c4f79486c887a348a1c98bb924daacc388f1b1c9b1f759ef894f3"
+        },
+        {
+          "index": 4,
+          "offset": 327056,
+          "size": 12800,
+          "type": "db",
+          "reserved": 0,
+          "sha256": "0254ac255b687cdfcb5811500545b90529ae144af6ebc3d8493779b5eeb5dfe8"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/card000.pac": {
+      "count": 5,
+      "data_base": 82,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 40,
+          "type": "bin",
+          "reserved": 0,
+          "sha256": "321bf149a34d421b8490b872a56746b7aaf61a88b79bba7917c6221868a10b5f"
+        },
+        {
+          "index": 1,
+          "offset": 40,
+          "size": 108,
+          "type": "gdt",
+          "reserved": 0,
+          "sha256": "5a8a1df476888c37b0c4883e6b3c54a60bb7771a55a2b1bdd9d17cda1cab7472"
+        },
+        {
+          "index": 2,
+          "offset": 148,
+          "size": 106565,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "a2623ec534820f9c5b10b667c51bc6f98f3e2609dbab530bded62d4541a15ce1",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 3,
+          "offset": 106713,
+          "size": 153,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "8e205d63b7ad9fc6628e73ced55cc95003a5cf29015ee675db2a5984e10eac1f"
+        },
+        {
+          "index": 4,
+          "offset": 106866,
+          "size": 9662,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "22e9c184b845831d97187199861c0706748c5d4bc4b7338751c0e1ddb41f00db"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/card_preview.pac": {
+      "count": 7,
+      "data_base": 114,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 525366,
+          "type": "bmp",
+          "reserved": 0,
+          "sha256": "5aa63da90bd38302c842713ca3f4c2cf0a43e5bc33d67eda6c43b8ba69698d77"
+        },
+        {
+          "index": 1,
+          "offset": 525366,
+          "size": 9315,
+          "type": "dat",
+          "reserved": 0,
+          "sha256": "04b0fae3f8a70c9eb9a3189baa1328ca7ea7324f3e3f1a3499c6a9f3a998101b"
+        },
+        {
+          "index": 2,
+          "offset": 534681,
+          "size": 9,
+          "type": "plt",
+          "reserved": 0,
+          "sha256": "ab61ad4040d3cb562a707d40e3f50e2b4cdb72812303c0545881099af34c8054"
+        },
+        {
+          "index": 3,
+          "offset": 534690,
+          "size": 414213,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "b669b65b277321d52ecd0f06787cbfbb94e9494361b4cbb16c84af51a3b135d5",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 4,
+          "offset": 948903,
+          "size": 20080,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "9dca32bb837ba9aaadfcb3d8e324154b5156ca9b412e86ded40b07664280a600",
+          "png_dimensions": [
+            256,
+            256
+          ]
+        },
+        {
+          "index": 5,
+          "offset": 968983,
+          "size": 522,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "9cab0990610b89ee71f7fb9c8a9b2a46c794d9c2bc591a677bd7c08beb390d29"
+        },
+        {
+          "index": 6,
+          "offset": 969505,
+          "size": 3374,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "2ba6938203fef7d70d121ce6e2447721763e39413b9a30ca07d628b2348869b8"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/common.pac": {
+      "count": 9,
+      "data_base": 146,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 17030,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "9518855b91eeafb2a87b861a48b800d4e2b51d2ecee0da10c0d5f658fae1d136",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 17030,
+          "size": 94280,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "1af7fe5275fcd33e59c83141734c344c0ecf369afbe41b484968282c9ca57468",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 111310,
+          "size": 96916,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "f243e83cdb527e27f5e4d301cba3aad05bda47539145d2495efd1371e0c6ca15",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 3,
+          "offset": 208226,
+          "size": 1314,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "6ebadb908da3159d06404dce4889298c7adefe404b311061dfe0267f7fe5bd7a"
+        },
+        {
+          "index": 4,
+          "offset": 209540,
+          "size": 8576,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "8b52aaeea3e1b32dcb4739e42bda07e9ea6188056152b23082b9220bb2247813"
+        },
+        {
+          "index": 5,
+          "offset": 218116,
+          "size": 1049654,
+          "type": "bmp",
+          "reserved": 0,
+          "sha256": "8356968cf92cb60df64ac72a52210e79f0cf30694326d45f15d7e87bc280d017"
+        },
+        {
+          "index": 6,
+          "offset": 1267770,
+          "size": 19995,
+          "type": "dat",
+          "reserved": 0,
+          "sha256": "bf6c4145682c0dde1d4865719527bd4e0ad86873b5e017311444db098d9dcc2d"
+        },
+        {
+          "index": 7,
+          "offset": 1287765,
+          "size": 9,
+          "type": "plt",
+          "reserved": 0,
+          "sha256": "cf4cf87883874f558ca7d8186fc93e0c4ef40452fc0e990080510c1efca31097"
+        },
+        {
+          "index": 8,
+          "offset": 1287774,
+          "size": 22528,
+          "type": "db",
+          "reserved": 0,
+          "sha256": "892eb3fbb14c179cc39fe5b6355f6ffa02424c92bd6ebfcf8dac80488470508f"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/demo_00.pac": {
+      "count": 10,
+      "data_base": 162,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 76540,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "dc761b10f371758e301a77b92c152a3c0b84c98a308956193281eb439d0b73d7",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 76540,
+          "size": 224326,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "ad763e48404d6454df65fe68863d3e3711eb5948f446e74faa29287a185883e9",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 300866,
+          "size": 121539,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "17e41e36506f9a7e094aa5171c19e09b10dc80ec41b19b6977d9799b196e949a",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 3,
+          "offset": 422405,
+          "size": 200055,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "5823b2a86212e30e6f4cc9c8135501da0a698e211578a4dd69cc55ee11651e79",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 4,
+          "offset": 622460,
+          "size": 15908,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "2bdaf3f0fad0970fee3f680250b997978d84fffd5960eebe026c9252a3ed190c",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 5,
+          "offset": 638368,
+          "size": 223301,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "8a709f2bc6dcaa8c984930ad249f8502bb23222feb6c1adbd49c4609b226c243",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 6,
+          "offset": 861669,
+          "size": 963,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "cbd9d0cf07e98a3d5edb2881202e27d8babc69c35f8f43ca2a777b3f7017f30d"
+        },
+        {
+          "index": 7,
+          "offset": 862632,
+          "size": 9354,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "ee3b7bdab35799fe9bc5060aff0d3911c966f0c8b4f9ee6780874d8aa897fce5"
+        },
+        {
+          "index": 8,
+          "offset": 871986,
+          "size": 21365,
+          "type": "dat",
+          "reserved": 0,
+          "sha256": "43808e284d44ff6818727410f8e75eed7abf5dbaf75c0868449f90102887e300"
+        },
+        {
+          "index": 9,
+          "offset": 893351,
+          "size": 10,
+          "type": "plt",
+          "reserved": 0,
+          "sha256": "97918a23eb80209dc8335724849d8b869002d9fe1bfcf5101bfe76b1f32a2386"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/demo_08.pac": {
+      "count": 5,
+      "data_base": 82,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 29636,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "638b7e0465e63dbaa55b78346e7a220af9a9547969e8dead0a38247fdc3087f9",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 29636,
+          "size": 6035,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "275b50895a7113d6cc231602d1084ae30c58fe91a8facc2f6c1ac0b5b4da55ff",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 35671,
+          "size": 63,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "946b9bee44c2070368ac7998ce5705996a85787112b2272e94b0fc10081d3c1f"
+        },
+        {
+          "index": 3,
+          "offset": 35734,
+          "size": 596,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "6258d7693c73da78f64556ae2a9ce260e0f63d4869f5d63c1adf69076ae4bb4e"
+        },
+        {
+          "index": 4,
+          "offset": 36330,
+          "size": 2095131,
+          "type": "spr",
+          "reserved": 0,
+          "sha256": "ce0285ea6e6cbaca8b8d2afa3495c83cfaf4c1d6f041154f88544ae82e156280",
+          "nested_pac": {
+            "count": 13,
+            "data_base": 210,
+            "entries": [
+              {
+                "index": 0,
+                "offset": 0,
+                "size": 147265,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "5f3c356a9db44eb386b8a0f68b7c39e048cadc2382ec277b67bf8b34416965e0",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 1,
+                "offset": 147265,
+                "size": 285748,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "4c805ce4a28aaa73eb30481ff74daf4a319c51e904985ad08418064c48eae76d",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 2,
+                "offset": 433013,
+                "size": 263028,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9776cfb76822840705498900f6cd244b44e9a4607a6dffba44582b187ade2228",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 3,
+                "offset": 696041,
+                "size": 168901,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "2c3a7ac3223f23cca94a9a37a78e70b49dc279342e0799c986d39b95789afd97",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 4,
+                "offset": 864942,
+                "size": 4531,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9fcc35bda5f80f00680ee2a65d87b7d4e4755cefd2f6c6026e7cd6b864628fe7",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 5,
+                "offset": 869473,
+                "size": 124296,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "c654b7620cda01efe823fed53bceded7a9f5ea1a9e1fb01ef210ee4c0dfaa2a9",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 6,
+                "offset": 993769,
+                "size": 203883,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "879ecb172060bb60bd24c26c9e8d2b8af97fd80bd19de114b03903b3592ad460",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 7,
+                "offset": 1197652,
+                "size": 181778,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "e31bce9fa609345c68352006664f9480829eb5d39ad3b88fdc7eb785c6e8dbe0",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 8,
+                "offset": 1379430,
+                "size": 198316,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "b90ae0f0fe7aa1484eb20554005ab2d8d737ab7c4399edbd3a4d783f90cd87d7",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 9,
+                "offset": 1577746,
+                "size": 157584,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "fc74e8612ab1fea38218736b3461cd1ca9dd90089e2f42aae12e14e0b4384211",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 10,
+                "offset": 1735330,
+                "size": 219074,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "67e19d4431b412470fd53522ef398508885659a0db799adfd72724ff49f98eee",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 11,
+                "offset": 1954404,
+                "size": 4531,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9fcc35bda5f80f00680ee2a65d87b7d4e4755cefd2f6c6026e7cd6b864628fe7",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 12,
+                "offset": 1958935,
+                "size": 135986,
+                "type": "bin",
+                "reserved": 0,
+                "sha256": "310fa83d1f8c6304e7fb3140484726e32642bd285cce62f8fb04d31a746b29b2"
+              }
+            ],
+            "overlapping": false,
+            "trailing_bytes": 0
+          }
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/effect.pac": {
+      "count": 14,
+      "data_base": 226,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 55488,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "ed909adea662bceae11d5289675bda03c573dd597016ca0f5020523fe5d0d83b",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 55488,
+          "size": 163428,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "995b4d57f82421b94d8db5ef1e05d0d4c3cf17a80adc1b60aec86aa64dea0ef9",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 218916,
+          "size": 90406,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "9fd410f0868e540a185e17aab169f38dd967b6e376823d150288652cdcc34a71",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 3,
+          "offset": 309322,
+          "size": 148301,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "731c30d6cf106901e13e58df61a162ca268992abc9599f0dd604a280365c7065",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 4,
+          "offset": 457623,
+          "size": 222427,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "208002ee9a33b5ec5dd83fe0d89d713616f1c08e09a7a299dde8e941260c3f25",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 5,
+          "offset": 680050,
+          "size": 145220,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "85ea763b39884a3790da179e8c08b0feb00134c8fa916283c3edc6474b128111",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 6,
+          "offset": 825270,
+          "size": 145826,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "0fd1953f820a994719aad504b8f450c2015feba0cd4f3f428c6e0402f5c9560a",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 7,
+          "offset": 971096,
+          "size": 36493,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "625e7ac07f796ee145e4a5228db1134923edd31266856c2887855ebdbf6c78a6",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 8,
+          "offset": 1007589,
+          "size": 75162,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "b3e56d61a31ea75d1e821a9413c925fe0ef2c245fa7c6006f2e145facaaee9f4",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 9,
+          "offset": 1082751,
+          "size": 218873,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "7617e6993cef59a19e89b73f17a7257b5a8623022dbf63f3ecbde5c5a435b5bc",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 10,
+          "offset": 1301624,
+          "size": 188920,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "1067a39104629ce6930aeb74cdbaddedd58c457eed470b0a8fe0008b19a00aa7",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 11,
+          "offset": 1490544,
+          "size": 8627,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "18f8b3edc64a8df91b8b11ffbcc6e3adb61eed56cc093107169420f6d420bd95",
+          "png_dimensions": [
+            256,
+            256
+          ]
+        },
+        {
+          "index": 12,
+          "offset": 1499171,
+          "size": 1602,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "dfb9dc2473d3253f47b4ecb39d7aa0019c72d7e4d280d045e9e386bf0137370b"
+        },
+        {
+          "index": 13,
+          "offset": 1500773,
+          "size": 32984,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "9dd51dfaa0b5aa04d94cf39cbe91ec0170f9d33666f0824219082893fb70322e"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/font00.pac": {
+      "count": 8,
+      "data_base": 130,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 6615,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "5f73fcd2276598f08861d822c0954032661f8f5fa1c2243c3974fbcf7ee2be2e",
+          "png_dimensions": [
+            256,
+            256
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 6615,
+          "size": 7352,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "67eb74ba380ddd5a72117257f5ff013fd31ba73edfd56a68f601b4476579a8f0",
+          "png_dimensions": [
+            256,
+            256
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 13967,
+          "size": 8627,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "637d4030467ec45249479eb7b970759bb9ae7b8afe045bbefdb154ad3658607c",
+          "png_dimensions": [
+            256,
+            256
+          ]
+        },
+        {
+          "index": 3,
+          "offset": 22594,
+          "size": 8402,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "499ed2f4812d6e13407fe9c6e85a00bdb6f943c2eee527fa9b31a7bbdd9b1e82",
+          "png_dimensions": [
+            256,
+            256
+          ]
+        },
+        {
+          "index": 4,
+          "offset": 30996,
+          "size": 2292,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "ee726cb8c7d13877359f415e0d5764738a01d3ce5bd71b30401ace44d6603aa9",
+          "png_dimensions": [
+            256,
+            256
+          ]
+        },
+        {
+          "index": 5,
+          "offset": 33288,
+          "size": 8682,
+          "type": "bin",
+          "reserved": 0,
+          "sha256": "544c9cec01f4435685c80e81e73f13b18dfafa3cb35eecbb9f7e122687d0943b"
+        },
+        {
+          "index": 6,
+          "offset": 41970,
+          "size": 45,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "a2cde58d6cb1f2eca2051741da7a9102ebf91aaec87ab7bf08d60a678300377f"
+        },
+        {
+          "index": 7,
+          "offset": 42015,
+          "size": 58,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "999ebfe4985ac61556cbe418a22295f9660f499c6c11771f3e0389f084545f6f"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/gamedata.pac": {
+      "count": 3,
+      "data_base": 50,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 1,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+        },
+        {
+          "index": 1,
+          "offset": 1,
+          "size": 86338,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "756acef7ab77c4a7f24430ea802c3699d2d31a175b30b601f00e82f7c90d2efa"
+        },
+        {
+          "index": 2,
+          "offset": 86339,
+          "size": 286236,
+          "type": "gdt",
+          "reserved": 0,
+          "sha256": "70397f454fda35380751b4f9c5ddf3055a2ee6ea5b33a6881e694130d9220b55"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/select0.pac": {
+      "count": 9,
+      "data_base": 146,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 72432,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "1a3701462b6e4022548e1bc8dbecd968d861eb9c4a425fec00a14195d6f21012",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 1,
+          "offset": 72432,
+          "size": 173436,
+          "type": "png",
+          "reserved": 0,
+          "sha256": "b9566026a3bddc5d027119025854da09bf2ed7862b27cf4a5ac811ee77e5db03",
+          "png_dimensions": [
+            512,
+            512
+          ]
+        },
+        {
+          "index": 2,
+          "offset": 245868,
+          "size": 234,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "1d1da43d8e13db7e745671b5ae0faf5292d349554c5055c16cf7f22a6b2d29da"
+        },
+        {
+          "index": 3,
+          "offset": 246102,
+          "size": 2710,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "0c9c0b8217b0d4954ef76505cc505738f183a2295910cecb5a6649af4d485ed8"
+        },
+        {
+          "index": 4,
+          "offset": 248812,
+          "size": 1699928,
+          "type": "spr",
+          "reserved": 0,
+          "sha256": "fd5bd9365537ed7613b06da98a1b220751042ab8238f10086ddb63a283b96a4c",
+          "nested_pac": {
+            "count": 14,
+            "data_base": 226,
+            "entries": [
+              {
+                "index": 0,
+                "offset": 0,
+                "size": 4531,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9fcc35bda5f80f00680ee2a65d87b7d4e4755cefd2f6c6026e7cd6b864628fe7",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 1,
+                "offset": 4531,
+                "size": 286295,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "4724c1bb8decd67bebdc864a35efea3de1330eb40056cbb5b320f5917157ba7d",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 2,
+                "offset": 290826,
+                "size": 263028,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9776cfb76822840705498900f6cd244b44e9a4607a6dffba44582b187ade2228",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 3,
+                "offset": 553854,
+                "size": 4531,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9fcc35bda5f80f00680ee2a65d87b7d4e4755cefd2f6c6026e7cd6b864628fe7",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 4,
+                "offset": 558385,
+                "size": 259869,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "c76385a5668e7d98c2ff641925565695cfe179d24152113ff1fc4a62f6a61805",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 5,
+                "offset": 818254,
+                "size": 4531,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9fcc35bda5f80f00680ee2a65d87b7d4e4755cefd2f6c6026e7cd6b864628fe7",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 6,
+                "offset": 822785,
+                "size": 4531,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9fcc35bda5f80f00680ee2a65d87b7d4e4755cefd2f6c6026e7cd6b864628fe7",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 7,
+                "offset": 827316,
+                "size": 4531,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9fcc35bda5f80f00680ee2a65d87b7d4e4755cefd2f6c6026e7cd6b864628fe7",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 8,
+                "offset": 831847,
+                "size": 4531,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9fcc35bda5f80f00680ee2a65d87b7d4e4755cefd2f6c6026e7cd6b864628fe7",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 9,
+                "offset": 836378,
+                "size": 181889,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "2bbd6b0f7c8e1e548ec1ecb2aabf65b414174be42395cfbf165043364913f23a",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 10,
+                "offset": 1018267,
+                "size": 4531,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "9fcc35bda5f80f00680ee2a65d87b7d4e4755cefd2f6c6026e7cd6b864628fe7",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 11,
+                "offset": 1022798,
+                "size": 125599,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "5f201e084c8db17e025794f104f409362b400353b43b93a30b8c1b453a160365",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 12,
+                "offset": 1148397,
+                "size": 272167,
+                "type": "png",
+                "reserved": 0,
+                "sha256": "29c08b2b295aa0ff8dcec7f3bd7af3e38c917f55a3df0cee550e7b4970855d0a",
+                "png_dimensions": [
+                  512,
+                  512
+                ]
+              },
+              {
+                "index": 13,
+                "offset": 1420564,
+                "size": 279138,
+                "type": "bin",
+                "reserved": 0,
+                "sha256": "260c5e9fd80466b98276c0ef0913e1c6856168912c01fab915708a41d54ef7bd"
+              }
+            ],
+            "overlapping": false,
+            "trailing_bytes": 0
+          }
+        },
+        {
+          "index": 5,
+          "offset": 1948740,
+          "size": 1049654,
+          "type": "bmp",
+          "reserved": 0,
+          "sha256": "6a8484b09eb0d726f7a7ac4f928e4caef076b3416936ad76e1d343662947f2d7"
+        },
+        {
+          "index": 6,
+          "offset": 2998394,
+          "size": 5917,
+          "type": "dat",
+          "reserved": 0,
+          "sha256": "905434c5b547dfad76425bb619321593d21b3da9ad8f8c5fef53e2b3bdb5272a"
+        },
+        {
+          "index": 7,
+          "offset": 3004311,
+          "size": 9,
+          "type": "plt",
+          "reserved": 0,
+          "sha256": "5af6d353a0fbace621cb233e25d1470e56c5fa8f41a6d8b2b927c428a83dfa4f"
+        },
+        {
+          "index": 8,
+          "offset": 3004320,
+          "size": 32768,
+          "type": "db",
+          "reserved": 0,
+          "sha256": "cf0677ad13c36c6ed888217d16f58c791795f09072683ad358385484940afe62"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    },
+    "res/raw/text00.pac": {
+      "count": 3,
+      "data_base": 50,
+      "entries": [
+        {
+          "index": 0,
+          "offset": 0,
+          "size": 1,
+          "type": "cnv",
+          "reserved": 0,
+          "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+        },
+        {
+          "index": 1,
+          "offset": 1,
+          "size": 18597,
+          "type": "dac",
+          "reserved": 0,
+          "sha256": "c85218220cccbe27973df710f778d182806d36c7b04638d46d5633a67d07e84a"
+        },
+        {
+          "index": 2,
+          "offset": 18598,
+          "size": 22776,
+          "type": "gdt",
+          "reserved": 0,
+          "sha256": "3a775b57b40e090fdfbd9880ba3de136299f8e1b0a3634b7f2c0d8732d321361"
+        }
+      ],
+      "overlapping": false,
+      "trailing_bytes": 0
+    }
+  },
+  "dex": {
+    "package": "com.namcobandaigames.dragonballtap.apk",
+    "version": "1.4",
+    "version_code": "7",
+    "min_sdk": "9",
+    "permissions": [
+      "android.permission.BLUETOOTH_ADMIN",
+      "android.permission.VIBRATE",
+      "com.android.vending.BILLING",
+      "android.permission.INTERNET",
+      "android.permission.BLUETOOTH",
+      "android.permission.WRITE_EXTERNAL_STORAGE"
+    ],
+    "activities": [
+      "com.namcobandaigames.dragonballtap.apk.BluetoothSearch",
+      "com.namcobandaigames.dragonballtap.apk.smap",
+      "com.namcobandaigames.dragonballtap.apk.dragonballtap"
+    ],
+    "class_count": 91,
+    "classes": [
+      {
+        "name": "Lcom/android/vending/billing/IMarketBillingService;",
+        "methods": [
+          "sendBillingRequest"
+        ]
+      },
+      {
+        "name": "Lcom/android/vending/billing/IMarketBillingService$Stub$Proxy;",
+        "methods": [
+          "<init>",
+          "asBinder",
+          "getInterfaceDescriptor",
+          "sendBillingRequest"
+        ]
+      },
+      {
+        "name": "Lcom/android/vending/billing/IMarketBillingService$Stub;",
+        "methods": [
+          "<init>",
+          "asInterface",
+          "asBinder",
+          "onTransact"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/AndroidGLRender;",
+        "methods": [
+          "<init>",
+          "InitScreen",
+          "onDrawFrame",
+          "onSurfaceChanged",
+          "onSurfaceCreated",
+          "resumeBGM",
+          "setGlobalWork",
+          "suspendBGM"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/AndroidGLTexture;",
+        "methods": [
+          "<init>",
+          "Dispose",
+          "GetHeight",
+          "GetImage",
+          "GetWidth",
+          "loadTexture",
+          "loadTexture",
+          "loadTexture"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/AndroidGLView;",
+        "methods": [
+          "<init>",
+          "BluetoothEnd",
+          "BluetoothStart",
+          "Dispose",
+          "LowMemory",
+          "SmapEnd",
+          "SmapStart",
+          "onActivityResult",
+          "onPause",
+          "onResume",
+          "onStop",
+          "onTouchEvent",
+          "setGlobalWork",
+          "startBrowser"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/BluetoothManajer;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "clearInstance",
+          "getInstance",
+          "ReadStop",
+          "cancel",
+          "checkSocket",
+          "clearData",
+          "dispose",
+          "getData",
+          "getReadDataSize",
+          "getSendData",
+          "isConnect",
+          "isServer",
+          "reset",
+          "run",
+          "setData",
+          "setData",
+          "setSocket"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/BluetoothSearch$1;",
+        "methods": [
+          "<init>",
+          "onReceive"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/BluetoothSearch$2;",
+        "methods": [
+          "<init>",
+          "handleMessage"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/BluetoothSearch$BluetoothClientThread;",
+        "methods": [
+          "<init>",
+          "doInBackground",
+          "doInBackground",
+          "onCancelled",
+          "onPostExecute",
+          "onPostExecute",
+          "onPreExecute"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/BluetoothSearch$BluetoothServerThread;",
+        "methods": [
+          "<init>",
+          "clear",
+          "doInBackground",
+          "doInBackground",
+          "onCancelled",
+          "onPostExecute",
+          "onPostExecute",
+          "onPreExecute"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/BluetoothSearch$ClickEvent;",
+        "methods": [
+          "<init>",
+          "onItemClick"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/BluetoothSearch$OkAdapter2;",
+        "methods": [
+          "<init>",
+          "onClick"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/BluetoothSearch;",
+        "methods": [
+          "<init>",
+          "access$002",
+          "access$100",
+          "access$1000",
+          "access$1100",
+          "access$1102",
+          "access$1200",
+          "access$1202",
+          "access$200",
+          "access$300",
+          "access$400",
+          "access$402",
+          "access$500",
+          "access$600",
+          "access$602",
+          "access$700",
+          "access$800",
+          "access$900",
+          "ClientStart",
+          "ServerStart",
+          "checkBluetooth",
+          "dispatchKeyEvent",
+          "killBluetooth",
+          "killBluetooth",
+          "onActivityResult",
+          "onClick",
+          "onCreate",
+          "onDestroy",
+          "onKeyDown",
+          "onPause",
+          "onResume",
+          "releaseBluetooth",
+          "releaseSoket",
+          "reqDiscoverable",
+          "searchBluetooth"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/Controller$ButtonObject;",
+        "methods": [
+          "<init>",
+          "clear"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/Controller$GamePad;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/Controller;",
+        "methods": [
+          "<init>",
+          "AddPad",
+          "ClearKey",
+          "GetCenterX",
+          "GetCenterY",
+          "GetCount",
+          "GetKeepFrame",
+          "GetKey",
+          "GetRange",
+          "GetSpeed",
+          "GetStatus",
+          "GetStickAngles",
+          "GetStickRange",
+          "GetTapPullX",
+          "GetTapPullY",
+          "GetTapType",
+          "GetTapX",
+          "GetTapY",
+          "GetX",
+          "GetY",
+          "Init",
+          "KeyLock",
+          "SetKey",
+          "SetKeyCode",
+          "SetPad",
+          "SetPad_Pos",
+          "SetSkipKey"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/Downloader$DownloadTask;",
+        "methods": [
+          "<init>",
+          "clearData",
+          "getData",
+          "isEnd",
+          "run",
+          "setData"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/Downloader;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "access$000",
+          "getInstance",
+          "Clear",
+          "GetData",
+          "GetSize",
+          "SetAPI",
+          "SetURL",
+          "isDownload"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/GameData$SpriteData;",
+        "methods": [
+          "<init>",
+          "Clear",
+          "Dispose",
+          "Init",
+          "getData",
+          "getImage",
+          "getImageHeight",
+          "getImageWidth"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/GameData;",
+        "methods": [
+          "<init>",
+          "binCnv",
+          "Dispose",
+          "Init",
+          "Init",
+          "getData",
+          "getImage",
+          "getImageHeight",
+          "getImageWidth",
+          "getSoundCount",
+          "getSoundData",
+          "getSprite"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/GameTimer;",
+        "methods": [
+          "<init>",
+          "<init>",
+          "Init",
+          "GetTimerCnt",
+          "Release",
+          "Resume",
+          "SetTimer",
+          "Start",
+          "Stop",
+          "Suspend"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/GlobalWork;",
+        "methods": [
+          "<init>",
+          "Init",
+          "dispose",
+          "getTCBM",
+          "setTCBM"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/Graphics2D;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "Graphics2D",
+          "getInstance",
+          "Init",
+          "bindTexture",
+          "clear",
+          "clearMatrix",
+          "dispose",
+          "drawFillRect",
+          "drawMode",
+          "drawRect",
+          "drawTexture",
+          "drawTexture",
+          "drawTexture",
+          "flash",
+          "scal",
+          "setColor",
+          "setColorGl",
+          "setMatrix",
+          "translate",
+          "viewport"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/KeyData;",
+        "methods": [
+          "<init>",
+          "Clear",
+          "ClearBegin",
+          "GetIndex",
+          "GetSpace",
+          "Init",
+          "Set",
+          "getMoveX",
+          "getMoveY",
+          "getSpeedX",
+          "getSpeedY",
+          "getX",
+          "getY",
+          "isBeginTouch"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/NewsData;",
+        "methods": [
+          "<init>",
+          "checkDate",
+          "getDataURL",
+          "getWebURL"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/ObjReq;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/R$attr;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/R$drawable;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/R$id;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/R$layout;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/R$raw;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/R$string;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/R;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/ResourceMiner;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "constructInnerClasses",
+          "getInstance",
+          "getFieldValue"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/SoundEffect$audioThread;",
+        "methods": [
+          "<init>",
+          "End",
+          "run",
+          "setData"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/SoundEffect;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "access$000",
+          "access$100",
+          "access$200",
+          "access$300",
+          "access$400",
+          "getAudioIndex",
+          "getInstance",
+          "dispose",
+          "load",
+          "loadAudioTrack",
+          "onCompletion",
+          "playAudio",
+          "playBgm",
+          "playSE",
+          "releaseAudio",
+          "stopAudio",
+          "stopBgm",
+          "stopSE"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/StringTexture;",
+        "methods": [
+          "<init>",
+          "CreateBitmap",
+          "Dispose",
+          "GetHeight",
+          "GetImage",
+          "GetWidth",
+          "clear",
+          "drawString",
+          "flash"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/TCB;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer$AutoCardTask;",
+        "methods": [
+          "<init>",
+          "CardFlash",
+          "atCardBuf",
+          "atCardSet",
+          "cancel",
+          "get",
+          "getError",
+          "isEnd",
+          "run",
+          "start"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "DrawImage",
+          "InitSE",
+          "PlayBGM",
+          "PlaySE",
+          "PushSE",
+          "access$000",
+          "ANGRY_ADD",
+          "AddBP",
+          "AddBall",
+          "AddBallLine",
+          "AddCard",
+          "AddExp",
+          "AddRP",
+          "AddScore",
+          "AddTicket",
+          "AttackEnd",
+          "AutoCard",
+          "AutoCardCheck",
+          "AutoCardFinish",
+          "AutoCardFlash",
+          "AutoCardSet",
+          "BTDataSet",
+          "BTDispose",
+          "BTReset",
+          "BTRev",
+          "BTSend",
+          "BuyAppFree",
+          "BuyCardPack",
+          "BuyCharctor",
+          "CPUNoCheck",
+          "CREATE_STRING",
+          "CardGDTString",
+          "CardPutCheck",
+          "CardPutClear",
+          "CardPutCount",
+          "CardRefresh",
+          "CharGDTString",
+          "CharOpen",
+          "CharVisibleInit",
+          "Check2Byte",
+          "CheckBack",
+          "CheckBall",
+          "CheckBallLine",
+          "CheckCardFiles",
+          "CheckCardPackFiles",
+          "CheckCharctorFiles",
+          "CheckDefaultCharctor",
+          "CheckDefaultOpen",
+          "CheckDownBtn",
+          "CheckObjHit",
+          "CheckOptFlag",
+          "CheckRightBtn",
+          "ChrSePlay",
+          "ClearCharDL",
+          "ClearCharDLALL",
+          "ClearDLInit",
+          "CmdCheck",
+          "CmdClear",
+          "CommonNormal",
+          "CopySentenceToConfigData",
+          "CreateCamera",
+          "CreateFramebuffer",
+          "CreateGamepad",
+          "CreatePanel",
+          "CreatePanelSingle",
+          "CreatePlayer",
+          "CreateValueObject",
+          "CreateValueObjectB",
+          "CreateWipeInOut",
+          "DL_ClearData",
+          "DL_GetData",
+          "DL_GetError",
+          "DL_GetSize",
+          "DL_IsDownload",
+          "DL_SetAPI",
+          "DL_SetURL",
+          "DamageChange",
+          "DamageEnd",
+          "DebugSetLevel",
+          "DeleteCamera",
+          "DeleteeGamepad",
+          "Dispose",
+          "Draw",
+          "DrawExec",
+          "DrawSprite",
+          "DrawText",
+          "DrawTextClear",
+          "EventDamage",
+          "ExtremeCheck",
+          "FILEInit",
+          "GDTString",
+          "Game",
+          "Game1",
+          "Game10",
+          "Game11",
+          "Game12",
+          "Game13",
+          "Game14",
+          "Game15",
+          "Game16",
+          "Game17",
+          "Game2",
+          "Game3",
+          "Game4",
+          "Game5",
+          "Game6",
+          "Game7",
+          "Game8",
+          "Game9",
+          "GdtBGM",
+          "GetAppFree",
+          "GetAtanTable",
+          "GetAttack",
+          "GetAttackEvent",
+          "GetAttackSelect",
+          "GetBOSS",
+          "GetBall",
+          "GetBallLine",
+          "GetBuyPack",
+          "GetCPU",
+          "GetCardAddAtack",
+          "GetCardAngry",
+          "GetCardAttack",
+          "GetCardAttackFm",
+          "GetCardAttackFmALL",
+          "GetCardBattlePoint",
+          "GetCardBattlePointFm",
+          "GetCardDefenceFm",
+          "GetCardDefenceFmALL",
+          "GetCardDeffence",
+          "GetCardIndexFm",
+          "GetCardLevel",
+          "GetCardNo",
+          "GetCardRushRed",
+          "GetCardSynchro",
+          "GetCardSynchroStock",
+          "GetCardVersion",
+          "GetCharDL",
+          "GetCharVersion",
+          "GetCharctorBuy",
+          "GetConfigValue",
+          "GetCost",
+          "GetDeffence",
+          "GetDeffenceSelect",
+          "GetDownloadData",
+          "GetExp",
+          "GetGDTAddTicket",
+          "GetGamePadKey",
+          "GetHP",
+          "GetLanguageNo",
+          "GetLevel",
+          "GetNewObj",
+          "GetPutCardAttack",
+          "GetPutCardCost",
+          "GetPutCardDefence",
+          "GetResData2",
+          "GetResName2",
+          "GetRushCount",
+          "GetStagePoint",
+          "GetString",
+          "GetSynchro",
+          "GetTicket",
+          "ImageDrawSet",
+          "Init",
+          "InitAutoCardBuf",
+          "InitCard",
+          "InitCharAttr",
+          "InitCharCard",
+          "InitGameData",
+          "InitTicket",
+          "LIFE_ADD",
+          "LIFE_DEC",
+          "LoadingProcess",
+          "MissionClear",
+          "MissionClearCheck",
+          "MissionLifeCheck",
+          "MissionLoad",
+          "MissionSave",
+          "MissionText",
+          "PlayerTail",
+          "PushCheck",
+          "ReleaseAllImage",
+          "ReleaseFramebuffer",
+          "ReleaseImage",
+          "Run",
+          "RushCheck",
+          "RushGoCheck",
+          "SYNCHRO_ADD",
+          "SYNCHRO_DEC",
+          "SaveConfig",
+          "SelfDamage",
+          "SetBinary",
+          "SetCardNo",
+          "SetCardVersion",
+          "SetCharDL",
+          "SetCharVersion",
+          "SetCharVisible",
+          "SetDefaultOpen",
+          "SetLoad",
+          "SetObj",
+          "SetString",
+          "SmapDataCount",
+          "SmapDataEnd",
+          "SmapDataError",
+          "SmapDataInit",
+          "SmapDataNo",
+          "SmapDataURL",
+          "SmapDataVersion",
+          "SoundLoad",
+          "SpriteRun",
+          "SpriteSet",
+          "StartPlayerAttack",
+          "SwapGameData",
+          "TapGuradCnacelCheck",
+          "TextGDTString",
+          "TextGDTStringAlpha",
+          "Voice",
+          "WorkInitialize",
+          "_ActReq",
+          "_ActReqMain",
+          "_FILELoad",
+          "_FILESave",
+          "_FILESaveLen",
+          "_Hokan",
+          "_KillObj",
+          "_LinkAdd",
+          "_SetAct",
+          "_SetObj",
+          "_SetObjFlag",
+          "_SetSize",
+          "_SetXY",
+          "_SetXYObj",
+          "_TFlag",
+          "_TKill",
+          "_TKilx",
+          "_TLoop",
+          "_TaskMake",
+          "cardlistData",
+          "charlistData",
+          "checkNewsDate",
+          "genrand_int32",
+          "getAngleKey",
+          "getNewsCount",
+          "init_by_array",
+          "init_genrand",
+          "isMission",
+          "newsData",
+          "pack_unpack",
+          "resumeBGM",
+          "sqrt2",
+          "suspendBGM"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/Utility;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "GetGlobalWork",
+          "InttoString",
+          "SetGlobalWork",
+          "SetVibrator",
+          "checkFile",
+          "deleteFile",
+          "getPackBinary",
+          "getPackCount",
+          "getPackPos",
+          "getPackSize",
+          "http2data",
+          "loadSharedPreferences",
+          "readDataFile",
+          "readDataFile",
+          "readDataRaw",
+          "saveSharedPreferences",
+          "startBrowser",
+          "writeDataFile",
+          "writeDataFile"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/ViewHolder;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/dragonballtap;",
+        "methods": [
+          "<init>",
+          "getLocale",
+          "onActivityResult",
+          "onCreate",
+          "onDestroy",
+          "onKeyDown",
+          "onLowMemory",
+          "onPause",
+          "onRestart",
+          "onResume",
+          "onStart",
+          "onStop"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/offscreen;",
+        "methods": [
+          "<init>",
+          "CreateBitmap",
+          "checkIfContextSupportsExtension",
+          "Dispose",
+          "Init",
+          "bind",
+          "bindClear",
+          "draw"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$1;",
+        "methods": [
+          "<init>",
+          "handleMessage"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$2;",
+        "methods": [
+          "<init>",
+          "handleMessage"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$3;",
+        "methods": [
+          "<init>",
+          "onClick"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$4;",
+        "methods": [
+          "<init>",
+          "handleMessage"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$CatalogEntry;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$ClickEvent;",
+        "methods": [
+          "<init>",
+          "onItemClick"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/PurchaseObserver;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "initCompatibilityLayer",
+          "onBillingSupported",
+          "onPurchaseStateChange",
+          "onRequestPurchaseResponse",
+          "onRestoreTransactionsResponse",
+          "postPurchaseStateChange",
+          "startBuyPageActivity"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$DungeonsPurchaseObserver;",
+        "methods": [
+          "<init>",
+          "onBillingSupported",
+          "onPurchaseStateChange",
+          "onRequestPurchaseResponse",
+          "onRestoreTransactionsResponse"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$ItemdataAdapter;",
+        "methods": [
+          "<init>",
+          "getCount",
+          "getItem",
+          "getItemId",
+          "getView"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$Managed;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "valueOf",
+          "values"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$OkAdapter2;",
+        "methods": [
+          "<init>",
+          "onClick"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$abAdapter2;",
+        "methods": [
+          "<init>",
+          "onClick"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$abAdapter;",
+        "methods": [
+          "<init>",
+          "onClick"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap$buyAdapter;",
+        "methods": [
+          "<init>",
+          "onClick"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smap;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "ViewClear",
+          "ViewSetEvent",
+          "access$000",
+          "access$002",
+          "access$1000",
+          "access$102",
+          "access$1100",
+          "access$1202",
+          "access$1300",
+          "access$200",
+          "access$202",
+          "access$300",
+          "access$302",
+          "access$400",
+          "access$500",
+          "access$502",
+          "access$600",
+          "access$700",
+          "access$800",
+          "access$900",
+          "access$902",
+          "createDialog",
+          "logProductActivity",
+          "prependLogEntry",
+          "replaceLanguageAndRegion",
+          "restoreDatabase",
+          "showPayloadEditDialog",
+          "abCreate",
+          "list_update",
+          "loading",
+          "onClick",
+          "onCreate",
+          "onCreateDialog",
+          "onDestroy",
+          "onKeyDown",
+          "onPause",
+          "onRestoreInstanceState",
+          "onResume",
+          "onSaveInstanceState",
+          "onStart",
+          "onStop",
+          "run"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smapInit$ItemData;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Lcom/namcobandaigames/dragonballtap/apk/smapInit;",
+        "methods": [
+          "<init>",
+          "Init",
+          "getDataNo",
+          "getDataURL",
+          "getDataVersion",
+          "getError",
+          "getSize",
+          "isEnd",
+          "run"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/BillingReceiver;",
+        "methods": [
+          "<init>",
+          "checkResponseCode",
+          "notify",
+          "purchaseStateChanged",
+          "onReceive"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/BillingService$BillingRequest;",
+        "methods": [
+          "<init>",
+          "getStartId",
+          "logResponseCode",
+          "makeRequestBundle",
+          "onRemoteException",
+          "responseCodeReceived",
+          "run",
+          "runIfConnected",
+          "runRequest"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/BillingService$CheckBillingSupported;",
+        "methods": [
+          "<init>",
+          "run"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/BillingService$ConfirmNotifications;",
+        "methods": [
+          "<init>",
+          "run"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/BillingService$GetPurchaseInformation;",
+        "methods": [
+          "<init>",
+          "onRemoteException",
+          "run"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/BillingService$RequestPurchase;",
+        "methods": [
+          "<init>",
+          "<init>",
+          "getStartId",
+          "responseCodeReceived",
+          "run",
+          "runIfConnected",
+          "runRequest"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/BillingService$RestoreTransactions;",
+        "methods": [
+          "<init>",
+          "getStartId",
+          "onRemoteException",
+          "responseCodeReceived",
+          "run",
+          "runIfConnected",
+          "runRequest"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/BillingService;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "access$000",
+          "access$100",
+          "access$200",
+          "access$202",
+          "access$300",
+          "bindToMarketBillingService",
+          "checkResponseCode",
+          "confirmNotifications",
+          "getPurchaseInformation",
+          "purchaseStateChanged",
+          "runPendingRequests",
+          "checkBillingSupported",
+          "handleCommand",
+          "onBind",
+          "onServiceConnected",
+          "onServiceDisconnected",
+          "onStart",
+          "requestPurchase",
+          "restoreTransactions",
+          "setContext",
+          "unbind"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/Consts$PurchaseState;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "valueOf",
+          "valueOf",
+          "values"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/Consts$ResponseCode;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "valueOf",
+          "valueOf",
+          "values"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/Consts;",
+        "methods": [
+          "<clinit>",
+          "<init>"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/PurchaseDatabase$DatabaseHelper;",
+        "methods": [
+          "<init>",
+          "createPurchaseTable",
+          "onCreate",
+          "onUpgrade"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/PurchaseDatabase;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "insertOrder",
+          "updatePurchasedItem",
+          "close",
+          "queryAllPurchasedItems",
+          "updatePurchase"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/PurchaseObserver$1;",
+        "methods": [
+          "<init>",
+          "run"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/ResponseHandler$1;",
+        "methods": [
+          "<init>",
+          "run"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/ResponseHandler;",
+        "methods": [
+          "<init>",
+          "access$000",
+          "buyPageIntentResponse",
+          "checkBillingSupportedResponse",
+          "purchaseResponse",
+          "register",
+          "responseCodeReceived",
+          "responseCodeReceived",
+          "unregister"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/Security$VerifiedPurchase;",
+        "methods": [
+          "<init>"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/Security;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "generateNonce",
+          "generatePublicKey",
+          "isNonceKnown",
+          "removeNonce",
+          "verify",
+          "verifyPurchase"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/util/Base64;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "decode",
+          "decode",
+          "decode",
+          "decode",
+          "decode4to3",
+          "decodeWebSafe",
+          "decodeWebSafe",
+          "decodeWebSafe",
+          "encode",
+          "encode",
+          "encode",
+          "encode3to4",
+          "encodeWebSafe"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/Market/util/Base64DecoderException;",
+        "methods": [
+          "<init>",
+          "<init>"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/SmapSample/SignatureActivity$1;",
+        "methods": [
+          "<init>",
+          "handleMessage"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/SmapSample/SignatureActivity$2;",
+        "methods": [
+          "<init>",
+          "handleMessage"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/SmapSample/SignatureActivity;",
+        "methods": [
+          "<init>",
+          "access$000",
+          "access$100",
+          "onCreate",
+          "run"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/SmapSample/SmapaCommon$ItemList;",
+        "methods": [
+          "<init>",
+          "getDataNo",
+          "setIconBitmap"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/SmapSample/SmapaCommon$ReceiptData;",
+        "methods": [
+          "<init>",
+          "setInfo",
+          "setReceipt"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/SmapSample/SmapaCommon;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "clearStatic",
+          "data2checksum",
+          "dataSignatureCheckEasy",
+          "dataSignatureCheckNormal",
+          "log_input",
+          "log_out",
+          "mpkb",
+          "set",
+          "set",
+          "smapAccess"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/util/AppInfoManager;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "init"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/util/HttpControl;",
+        "methods": [
+          "<clinit>",
+          "<init>",
+          "connect",
+          "connectGetBinary",
+          "connectPost",
+          "setUserAgent"
+        ]
+      },
+      {
+        "name": "Ljp/co/bandainamcogames/Smap/util/JsonConvert;",
+        "methods": [
+          "<init>",
+          "checkJson",
+          "getResultArray",
+          "getResultObj",
+          "makeRequestJsonString"
+        ]
+      }
+    ],
+    "gl_calls": {
+      "Ljavax/microedition/khronos/opengles/GL10;->glBindTexture(I I)V": 10,
+      "Ljavax/microedition/khronos/opengles/GL10;->glBlendFunc(I I)V": 4,
+      "Ljavax/microedition/khronos/opengles/GL10;->glClear(I)V": 1,
+      "Ljavax/microedition/khronos/opengles/GL10;->glClearColor(F F F F)V": 1,
+      "Ljavax/microedition/khronos/opengles/GL10;->glColor4f(F F F F)V": 1,
+      "Ljavax/microedition/khronos/opengles/GL10;->glColorPointer(I I I Ljava/nio/Buffer;)V": 1,
+      "Ljavax/microedition/khronos/opengles/GL10;->glDeleteTextures(I [I I)V": 3,
+      "Ljavax/microedition/khronos/opengles/GL10;->glDisable(I)V": 9,
+      "Ljavax/microedition/khronos/opengles/GL10;->glDisableClientState(I)V": 7,
+      "Ljavax/microedition/khronos/opengles/GL10;->glDrawElements(I I I Ljava/nio/Buffer;)V": 2,
+      "Ljavax/microedition/khronos/opengles/GL10;->glEnable(I)V": 6,
+      "Ljavax/microedition/khronos/opengles/GL10;->glEnableClientState(I)V": 8,
+      "Ljavax/microedition/khronos/opengles/GL10;->glGenTextures(I [I I)V": 3,
+      "Ljavax/microedition/khronos/opengles/GL10;->glGetString(I)Ljava/lang/String;": 1,
+      "Ljavax/microedition/khronos/opengles/GL10;->glHint(I I)V": 5,
+      "Ljavax/microedition/khronos/opengles/GL10;->glLoadIdentity()V": 4,
+      "Ljavax/microedition/khronos/opengles/GL10;->glMatrixMode(I)V": 7,
+      "Ljavax/microedition/khronos/opengles/GL10;->glOrthof(F F F F F F)V": 3,
+      "Ljavax/microedition/khronos/opengles/GL10;->glPopMatrix()V": 1,
+      "Ljavax/microedition/khronos/opengles/GL10;->glPushMatrix()V": 3,
+      "Ljavax/microedition/khronos/opengles/GL10;->glScalef(F F F)V": 2,
+      "Ljavax/microedition/khronos/opengles/GL10;->glShadeModel(I)V": 1,
+      "Ljavax/microedition/khronos/opengles/GL10;->glTexCoordPointer(I I I Ljava/nio/Buffer;)V": 1,
+      "Ljavax/microedition/khronos/opengles/GL10;->glTexEnvf(I I F)V": 3,
+      "Ljavax/microedition/khronos/opengles/GL10;->glTexParameterf(I I F)V": 14,
+      "Ljavax/microedition/khronos/opengles/GL10;->glTranslatef(F F F)V": 2,
+      "Ljavax/microedition/khronos/opengles/GL10;->glVertexPointer(I I I Ljava/nio/Buffer;)V": 2,
+      "Ljavax/microedition/khronos/opengles/GL10;->glViewport(I I I I)V": 4,
+      "Ljavax/microedition/khronos/opengles/GL11ExtensionPack;->glBindFramebufferOES(I I)V": 4,
+      "Ljavax/microedition/khronos/opengles/GL11ExtensionPack;->glCheckFramebufferStatusOES(I)I": 1,
+      "Ljavax/microedition/khronos/opengles/GL11ExtensionPack;->glDeleteFramebuffersOES(I [I I)V": 1,
+      "Ljavax/microedition/khronos/opengles/GL11ExtensionPack;->glDeleteRenderbuffersOES(I [I I)V": 2,
+      "Ljavax/microedition/khronos/opengles/GL11ExtensionPack;->glFramebufferTexture2DOES(I I I I I)V": 1,
+      "Ljavax/microedition/khronos/opengles/GL11ExtensionPack;->glGenFramebuffersOES(I [I I)V": 1,
+      "Ljavax/microedition/khronos/opengles/GL11ExtensionPack;->glGenRenderbuffersOES(I [I I)V": 1
+    },
+    "android_calls": {
+      "Landroid/app/Activity;-><init>()V": 4,
+      "Landroid/app/Activity;->dispatchKeyEvent(Landroid/view/KeyEvent;)Z": 1,
+      "Landroid/app/Activity;->finish()V": 2,
+      "Landroid/app/Activity;->getPackageManager()Landroid/content/pm/PackageManager;": 1,
+      "Landroid/app/Activity;->getPackageName()Ljava/lang/String;": 1,
+      "Landroid/app/Activity;->getSharedPreferences(Ljava/lang/String; I)Landroid/content/SharedPreferences;": 2,
+      "Landroid/app/Activity;->getSystemService(Ljava/lang/String;)Ljava/lang/Object;": 1,
+      "Landroid/app/Activity;->onActivityResult(I I Landroid/content/Intent;)V": 1,
+      "Landroid/app/Activity;->onCreate(Landroid/os/Bundle;)V": 4,
+      "Landroid/app/Activity;->onDestroy()V": 3,
+      "Landroid/app/Activity;->onKeyDown(I Landroid/view/KeyEvent;)Z": 3,
+      "Landroid/app/Activity;->onLowMemory()V": 1,
+      "Landroid/app/Activity;->onPause()V": 3,
+      "Landroid/app/Activity;->onRestart()V": 1,
+      "Landroid/app/Activity;->onRestoreInstanceState(Landroid/os/Bundle;)V": 1,
+      "Landroid/app/Activity;->onResume()V": 3,
+      "Landroid/app/Activity;->onSaveInstanceState(Landroid/os/Bundle;)V": 1,
+      "Landroid/app/Activity;->onStart()V": 2,
+      "Landroid/app/Activity;->onStop()V": 2,
+      "Landroid/app/Activity;->startActivityForResult(Landroid/content/Intent; I)V": 4,
+      "Landroid/app/AlertDialog$Builder;-><init>(Landroid/content/Context;)V": 3,
+      "Landroid/app/AlertDialog$Builder;->create()Landroid/app/AlertDialog;": 3,
+      "Landroid/app/AlertDialog$Builder;->setCancelable(Z)Landroid/app/AlertDialog$Builder;": 1,
+      "Landroid/app/AlertDialog$Builder;->setIcon(I)Landroid/app/AlertDialog$Builder;": 1,
+      "Landroid/app/AlertDialog$Builder;->setMessage(I)Landroid/app/AlertDialog$Builder;": 2,
+      "Landroid/app/AlertDialog$Builder;->setMessage(Ljava/lang/CharSequence;)Landroid/app/AlertDialog$Builder;": 5,
+      "Landroid/app/AlertDialog$Builder;->setNegativeButton(I Landroid/content/DialogInterface$OnClickListener;)Landroid/app/AlertDialog$Builder;": 2,
+      "Landroid/app/AlertDialog$Builder;->setPositiveButton(I Landroid/content/DialogInterface$OnClickListener;)Landroid/app/AlertDialog$Builder;": 7,
+      "Landroid/app/AlertDialog$Builder;->setTitle(I)Landroid/app/AlertDialog$Builder;": 7,
+      "Landroid/app/AlertDialog$Builder;->show()Landroid/app/AlertDialog;": 2,
+      "Landroid/app/KeyguardManager;->inKeyguardRestrictedInputMode()Z": 1,
+      "Landroid/app/PendingIntent;->getIntentSender()Landroid/content/IntentSender;": 1,
+      "Landroid/app/PendingIntent;->send(Landroid/content/Context; I Landroid/content/Intent;)V": 1,
+      "Landroid/app/ProgressDialog;-><init>(Landroid/content/Context;)V": 4,
+      "Landroid/app/ProgressDialog;->dismiss()V": 7,
+      "Landroid/app/ProgressDialog;->setMessage(Ljava/lang/CharSequence;)V": 5,
+      "Landroid/app/ProgressDialog;->setProgressStyle(I)V": 4,
+      "Landroid/app/ProgressDialog;->setTitle(I)V": 5,
+      "Landroid/app/ProgressDialog;->show()V": 4,
+      "Landroid/app/Service;-><init>()V": 1,
+      "Landroid/bluetooth/BluetoothAdapter;->cancelDiscovery()Z": 3,
+      "Landroid/bluetooth/BluetoothAdapter;->getDefaultAdapter()Landroid/bluetooth/BluetoothAdapter;": 2,
+      "Landroid/bluetooth/BluetoothAdapter;->isDiscovering()Z": 3,
+      "Landroid/bluetooth/BluetoothAdapter;->isEnabled()Z": 1,
+      "Landroid/bluetooth/BluetoothAdapter;->listenUsingRfcommWithServiceRecord(Ljava/lang/String; Ljava/util/UUID;)Landroid/bluetooth/BluetoothServerSocket;": 1,
+      "Landroid/bluetooth/BluetoothAdapter;->startDiscovery()Z": 1,
+      "Landroid/bluetooth/BluetoothDevice;->createRfcommSocketToServiceRecord(Ljava/util/UUID;)Landroid/bluetooth/BluetoothSocket;": 1,
+      "Landroid/bluetooth/BluetoothDevice;->getAddress()Ljava/lang/String;": 4,
+      "Landroid/bluetooth/BluetoothDevice;->getName()Ljava/lang/String;": 2,
+      "Landroid/bluetooth/BluetoothServerSocket;->accept()Landroid/bluetooth/BluetoothSocket;": 1,
+      "Landroid/bluetooth/BluetoothServerSocket;->close()V": 3,
+      "Landroid/bluetooth/BluetoothSocket;->close()V": 7,
+      "Landroid/bluetooth/BluetoothSocket;->connect()V": 1,
+      "Landroid/bluetooth/BluetoothSocket;->getInputStream()Ljava/io/InputStream;": 1,
+      "Landroid/bluetooth/BluetoothSocket;->getOutputStream()Ljava/io/OutputStream;": 1,
+      "Landroid/content/BroadcastReceiver;-><init>()V": 2,
+      "Landroid/content/ContentValues;-><init>()V": 2,
+      "Landroid/content/ContentValues;->put(Ljava/lang/String; Ljava/lang/Integer;)V": 2,
+      "Landroid/content/ContentValues;->put(Ljava/lang/String; Ljava/lang/Long;)V": 1,
+      "Landroid/content/ContentValues;->put(Ljava/lang/String; Ljava/lang/String;)V": 4,
+      "Landroid/content/Context;->deleteFile(Ljava/lang/String;)Z": 2,
+      "Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;": 1,
+      "Landroid/content/Context;->getFileStreamPath(Ljava/lang/String;)Ljava/io/File;": 1,
+      "Landroid/content/Context;->getFilesDir()Ljava/io/File;": 1,
+      "Landroid/content/Context;->getResources()Landroid/content/res/Resources;": 2,
+      "Landroid/content/Context;->getSystemService(Ljava/lang/String;)Ljava/lang/Object;": 2,
+      "Landroid/content/Context;->openFileInput(Ljava/lang/String;)Ljava/io/FileInputStream;": 2,
+      "Landroid/content/Context;->openFileOutput(Ljava/lang/String; I)Ljava/io/FileOutputStream;": 1,
+      "Landroid/content/Context;->startService(Landroid/content/Intent;)Landroid/content/ComponentName;": 3,
+      "Landroid/content/Intent;-><init>()V": 5,
+      "Landroid/content/Intent;-><init>(Landroid/content/Context; Ljava/lang/Class;)V": 2,
+      "Landroid/content/Intent;-><init>(Ljava/lang/String; Landroid/net/Uri;)V": 3,
+      "Landroid/content/Intent;-><init>(Ljava/lang/String;)V": 6,
+      "Landroid/content/Intent;->getAction()Ljava/lang/String;": 3,
+      "Landroid/content/Intent;->getIntExtra(Ljava/lang/String; I)I": 2,
+      "Landroid/content/Intent;->getLongExtra(Ljava/lang/String; J)J": 2,
+      "Landroid/content/Intent;->getParcelableExtra(Ljava/lang/String;)Landroid/os/Parcelable;": 2,
+      "Landroid/content/Intent;->getStringArrayExtra(Ljava/lang/String;)[Ljava/lang/String;": 1,
+      "Landroid/content/Intent;->getStringExtra(Ljava/lang/String;)Ljava/lang/String;": 6,
+      "Landroid/content/Intent;->putExtra(Ljava/lang/String; I)Landroid/content/Intent;": 2,
+      "Landroid/content/Intent;->putExtra(Ljava/lang/String; J)Landroid/content/Intent;": 1,
+      "Landroid/content/Intent;->putExtra(Ljava/lang/String; Ljava/lang/String;)Landroid/content/Intent;": 3,
+      "Landroid/content/Intent;->setClass(Landroid/content/Context; Ljava/lang/Class;)Landroid/content/Intent;": 3,
+      "Landroid/content/IntentFilter;-><init>()V": 1,
+      "Landroid/content/IntentFilter;->addAction(Ljava/lang/String;)V": 4,
+      "Landroid/content/SharedPreferences$Editor;->commit()Z": 2,
+      "Landroid/content/SharedPreferences$Editor;->putBoolean(Ljava/lang/String; Z)Landroid/content/SharedPreferences$Editor;": 1,
+      "Landroid/content/SharedPreferences$Editor;->putString(Ljava/lang/String; Ljava/lang/String;)Landroid/content/SharedPreferences$Editor;": 1,
+      "Landroid/content/SharedPreferences;->edit()Landroid/content/SharedPreferences$Editor;": 2,
+      "Landroid/content/SharedPreferences;->getString(Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;": 1,
+      "Landroid/content/pm/PackageManager;->getPackageInfo(Ljava/lang/String; I)Landroid/content/pm/PackageInfo;": 1,
+      "Landroid/content/res/Resources;->openRawResource(I)Ljava/io/InputStream;": 2,
+      "Landroid/database/Cursor;->close()V": 2,
+      "Landroid/database/Cursor;->getInt(I)I": 1,
+      "Landroid/database/Cursor;->moveToNext()Z": 1,
+      "Landroid/database/sqlite/SQLiteDatabase;->delete(Ljava/lang/String; Ljava/lang/String; [Ljava/lang/String;)I": 1,
+      "Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V": 4,
+      "Landroid/database/sqlite/SQLiteDatabase;->query(Ljava/lang/String; [Ljava/lang/String; Ljava/lang/String; [Ljava/lang/String; Ljava/lang/String; Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)Landroid/database/Cursor;": 1,
+      "Landroid/database/sqlite/SQLiteDatabase;->query(Ljava/lang/String; [Ljava/lang/String; Ljava/lang/String; [Ljava/lang/String; Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)Landroid/database/Cursor;": 1,
+      "Landroid/database/sqlite/SQLiteDatabase;->replace(Ljava/lang/String; Ljava/lang/String; Landroid/content/ContentValues;)J": 2,
+      "Landroid/database/sqlite/SQLiteOpenHelper;-><init>(Landroid/content/Context; Ljava/lang/String; Landroid/database/sqlite/SQLiteDatabase$CursorFactory; I)V": 1,
+      "Landroid/graphics/Bitmap;->createBitmap(I I Landroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;": 2,
+      "Landroid/graphics/Bitmap;->eraseColor(I)V": 1,
+      "Landroid/graphics/Bitmap;->getHeight()I": 3,
+      "Landroid/graphics/Bitmap;->getWidth()I": 3,
+      "Landroid/graphics/Bitmap;->recycle()V": 6,
+      "Landroid/graphics/BitmapFactory;->decodeByteArray([B I I)Landroid/graphics/Bitmap;": 4,
+      "Landroid/graphics/Canvas;-><init>(Landroid/graphics/Bitmap;)V": 1,
+      "Landroid/graphics/Canvas;->drawText(Ljava/lang/String; F F Landroid/graphics/Paint;)V": 1,
+      "Landroid/graphics/Paint;-><init>()V": 1,
+      "Landroid/graphics/Paint;->getFontMetrics()Landroid/graphics/Paint$FontMetrics;": 1,
+      "Landroid/graphics/Paint;->getTextWidths(Ljava/lang/String; [F)I": 1,
+      "Landroid/graphics/Paint;->setARGB(I I I I)V": 1,
+      "Landroid/graphics/Paint;->setAntiAlias(Z)V": 1,
+      "Landroid/graphics/Paint;->setStyle(Landroid/graphics/Paint$Style;)V": 1,
+      "Landroid/graphics/Paint;->setTextSize(F)V": 1,
+      "Landroid/graphics/RectF;-><init>()V": 1,
+      "Landroid/graphics/RectF;->height()F": 1,
+      "Landroid/graphics/RectF;->width()F": 2,
+      "Landroid/media/AudioTrack;-><init>(I I I I I I)V": 1,
+      "Landroid/media/AudioTrack;->flush()V": 1,
+      "Landroid/media/AudioTrack;->getMinBufferSize(I I I)I": 1,
+      "Landroid/media/AudioTrack;->getPlayState()I": 3,
+      "Landroid/media/AudioTrack;->getState()I": 2,
+      "Landroid/media/AudioTrack;->play()V": 1,
+      "Landroid/media/AudioTrack;->release()V": 1,
+      "Landroid/media/AudioTrack;->setStereoVolume(F F)I": 1,
+      "Landroid/media/AudioTrack;->stop()V": 2,
+      "Landroid/media/AudioTrack;->write([B I I)I": 1,
+      "Landroid/media/MediaPlayer;->create(Landroid/content/Context; I)Landroid/media/MediaPlayer;": 1,
+      "Landroid/media/MediaPlayer;->isPlaying()Z": 2,
+      "Landroid/media/MediaPlayer;->release()V": 2,
+      "Landroid/media/MediaPlayer;->setLooping(Z)V": 1,
+      "Landroid/media/MediaPlayer;->setOnCompletionListener(Landroid/media/MediaPlayer$OnCompletionListener;)V": 1,
+      "Landroid/media/MediaPlayer;->setVolume(F F)V": 1,
+      "Landroid/media/MediaPlayer;->start()V": 1,
+      "Landroid/media/MediaPlayer;->stop()V": 2,
+      "Landroid/media/SoundPool;-><init>(I I I)V": 1,
+      "Landroid/media/SoundPool;->load(Landroid/content/Context; I I)I": 1,
+      "Landroid/media/SoundPool;->play(I F F I I F)I": 1,
+      "Landroid/media/SoundPool;->release()V": 1,
+      "Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;": 3,
+      "Landroid/opengl/GLSurfaceView;-><init>(Landroid/content/Context;)V": 1,
+      "Landroid/opengl/GLSurfaceView;->onResume()V": 1,
+      "Landroid/opengl/GLUtils;->texImage2D(I I Landroid/graphics/Bitmap; I)V": 3,
+      "Landroid/opengl/GLUtils;->texSubImage2D(I I I I Landroid/graphics/Bitmap;)V": 1,
+      "Landroid/os/AsyncTask;-><init>()V": 2,
+      "Landroid/os/AsyncTask;->onCancelled()V": 2,
+      "Landroid/os/AsyncTask;->onPostExecute(Ljava/lang/Object;)V": 2,
+      "Landroid/os/AsyncTask;->onPreExecute()V": 2,
+      "Landroid/os/Binder;-><init>()V": 1,
+      "Landroid/os/Binder;->onTransact(I Landroid/os/Parcel; Landroid/os/Parcel; I)Z": 1,
+      "Landroid/os/Bundle;-><init>()V": 1,
+      "Landroid/os/Bundle;->getInt(Ljava/lang/String;)I": 2,
+      "Landroid/os/Bundle;->getLong(Ljava/lang/String; J)J": 4,
+      "Landroid/os/Bundle;->getParcelable(Ljava/lang/String;)Landroid/os/Parcelable;": 1,
+      "Landroid/os/Bundle;->putInt(Ljava/lang/String; I)V": 1,
+      "Landroid/os/Bundle;->putLong(Ljava/lang/String; J)V": 2,
+      "Landroid/os/Bundle;->putString(Ljava/lang/String; Ljava/lang/String;)V": 4,
+      "Landroid/os/Bundle;->putStringArray(Ljava/lang/String; [Ljava/lang/String;)V": 2,
+      "Landroid/os/Bundle;->writeToParcel(Landroid/os/Parcel; I)V": 2,
+      "Landroid/os/Environment;->getExternalStorageDirectory()Ljava/io/File;": 6,
+      "Landroid/os/Environment;->getExternalStorageState()Ljava/lang/String;": 6,
+      "Landroid/os/Handler;-><init>()V": 7,
+      "Landroid/os/Handler;->post(Ljava/lang/Runnable;)Z": 1,
+      "Landroid/os/Handler;->removeMessages(I)V": 3,
+      "Landroid/os/Handler;->sendMessage(Landroid/os/Message;)Z": 5,
+      "Landroid/os/IBinder;->queryLocalInterface(Ljava/lang/String;)Landroid/os/IInterface;": 1,
+      "Landroid/os/IBinder;->transact(I Landroid/os/Parcel; Landroid/os/Parcel; I)Z": 1,
+      "Landroid/os/Message;-><init>()V": 5,
+      "Landroid/os/Parcel;->enforceInterface(Ljava/lang/String;)V": 1,
+      "Landroid/os/Parcel;->obtain()Landroid/os/Parcel;": 2,
+      "Landroid/os/Parcel;->readException()V": 1,
+      "Landroid/os/Parcel;->readInt()I": 2,
+      "Landroid/os/Parcel;->recycle()V": 4,
+      "Landroid/os/Parcel;->writeInt(I)V": 4,
+      "Landroid/os/Parcel;->writeInterfaceToken(Ljava/lang/String;)V": 1,
+      "Landroid/os/Parcel;->writeNoException()V": 1,
+      "Landroid/os/Parcel;->writeString(Ljava/lang/String;)V": 1,
+      "Landroid/os/Parcelable$Creator;->createFromParcel(Landroid/os/Parcel;)Ljava/lang/Object;": 2,
+      "Landroid/os/Vibrator;->vibrate(J)V": 1,
+      "Landroid/provider/Settings$Secure;->getString(Landroid/content/ContentResolver; Ljava/lang/String;)Ljava/lang/String;": 2,
+      "Landroid/text/Html;->fromHtml(Ljava/lang/String;)Landroid/text/Spanned;": 1,
+      "Landroid/text/SpannableStringBuilder;-><init>()V": 1,
+      "Landroid/text/SpannableStringBuilder;-><init>(Ljava/lang/CharSequence;)V": 2,
+      "Landroid/text/SpannableStringBuilder;->append(C)Landroid/text/SpannableStringBuilder;": 2,
+      "Landroid/text/SpannableStringBuilder;->append(Ljava/lang/CharSequence;)Landroid/text/SpannableStringBuilder;": 4,
+      "Landroid/text/TextUtils;->isEmpty(Ljava/lang/CharSequence;)Z": 1,
+      "Landroid/util/Log;->d(Ljava/lang/String; Ljava/lang/String;)I": 7,
+      "Landroid/util/Log;->e(Ljava/lang/String; Ljava/lang/String; Ljava/lang/Throwable;)I": 3,
+      "Landroid/util/Log;->e(Ljava/lang/String; Ljava/lang/String;)I": 38,
+      "Landroid/util/Log;->i(Ljava/lang/String; Ljava/lang/String;)I": 11,
+      "Landroid/util/Log;->w(Ljava/lang/String; Ljava/lang/String;)I": 6,
+      "Landroid/view/KeyEvent;->getAction()I": 1,
+      "Landroid/view/KeyEvent;->getKeyCode()I": 1,
+      "Landroid/view/LayoutInflater;->inflate(I Landroid/view/ViewGroup; Z)Landroid/view/View;": 1,
+      "Landroid/view/MotionEvent;->getAction()I": 1,
+      "Landroid/view/MotionEvent;->getActionIndex()I": 1,
+      "Landroid/view/MotionEvent;->getPointerCount()I": 1,
+      "Landroid/view/MotionEvent;->getPointerId(I)I": 5,
+      "Landroid/view/MotionEvent;->getX(I)F": 3,
+      "Landroid/view/MotionEvent;->getY(I)F": 3,
+      "Landroid/view/View;->findViewById(I)Landroid/view/View;": 4,
+      "Landroid/view/View;->getId()I": 2,
+      "Landroid/view/View;->getTag()Ljava/lang/Object;": 1,
+      "Landroid/view/View;->setTag(Ljava/lang/Object;)V": 1,
+      "Landroid/view/Window;->addFlags(I)V": 4,
+      "Landroid/view/Window;->clearFlags(I)V": 6,
+      "Landroid/widget/ArrayAdapter;-><init>(Landroid/content/Context; I)V": 1,
+      "Landroid/widget/ArrayAdapter;->add(Ljava/lang/Object;)V": 1,
+      "Landroid/widget/ArrayAdapter;->clear()V": 1,
+      "Landroid/widget/BaseAdapter;-><init>()V": 1,
+      "Landroid/widget/Button;->setEnabled(Z)V": 4,
+      "Landroid/widget/Button;->setOnClickListener(Landroid/view/View$OnClickListener;)V": 4,
+      "Landroid/widget/ImageView;->setImageBitmap(Landroid/graphics/Bitmap;)V": 2,
+      "Landroid/widget/ListView;->setAdapter(Landroid/widget/ListAdapter;)V": 3,
+      "Landroid/widget/ListView;->setOnItemClickListener(Landroid/widget/AdapterView$OnItemClickListener;)V": 2,
+      "Landroid/widget/TextView;->getText()Ljava/lang/CharSequence;": 2,
+      "Landroid/widget/TextView;->setText(I)V": 6,
+      "Landroid/widget/TextView;->setText(Ljava/lang/CharSequence;)V": 5,
+      "Landroid/widget/Toast;->makeText(Landroid/content/Context; I I)Landroid/widget/Toast;": 2,
+      "Landroid/widget/Toast;->show()V": 2
+    },
+    "resource_names": [
+      ".pac",
+      "save.bin"
+    ],
+    "urls": [
+      "http://sd01.fas.ne.jp/~mig27.vis.ne.jp/dragonballtap/appversion.php",
+      "http://smap-ai.channel.or.jp/dragonball_tap/device/screensize.csv",
+      "http://smap-ai.channel.or.jp/dragonball_tap/news.csv",
+      "https://smap-a.channel.or.jp/purchase"
+    ]
+  }
+}
