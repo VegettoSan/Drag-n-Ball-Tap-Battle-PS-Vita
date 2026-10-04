@@ -23,7 +23,7 @@ endif()
 
 add_executable(${PROJECT_NAME} src/main.cpp src/vfs.cpp src/pac.cpp src/ui.cpp src/image.cpp src/log.cpp src/input.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE src)
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 14 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS YES)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -O2 $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-q")
 target_compile_definitions(${PROJECT_NAME} PRIVATE DBTB_VERSION="${VITA_VERSION}" DBTB_COMMIT="${DBTB_COMMIT}")
@@ -39,4 +39,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 vita_create_self(${PROJECT_NAME}.self ${PROJECT_NAME} UNSAFE)
 vita_create_vpk(${PROJECT_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self
-  VERSION ${VITA_VERSION} NAME ${VITA_APP_NAME})
+  VERSION ${VITA_VERSION} NAME ${VITA_APP_NAME}
+  FILE docs/THIRD_PARTY.md notices/THIRD_PARTY.md
+  FILE licenses/vitaGL-GPL-3.0.txt notices/vitaGL-GPL-3.0.txt
+  FILE licenses/vitaGL-LGPL-3.0.txt notices/vitaGL-LGPL-3.0.txt)

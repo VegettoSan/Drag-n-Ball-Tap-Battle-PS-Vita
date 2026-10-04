@@ -257,3 +257,19 @@ RENDER_MAPPING.md and evidence/internal_tables.json / audio_inventory.json.
 **Result:** PARTIAL — source/container facts established; full animation,
 collision, save interoperability and native platform behavior remain PENDING.
 **Next:** verify bootstrap on device, then port original metadata/draw functions.
+# 2026-10-04 — Attempt 011 — Final packaging and bounded-resource stress tests
+
+**Goal:** package reproducible native output and retain useful symbols/relink
+inputs. **Baseline:** ef18f65.
+**Hypothesis:** the reviewed bootstrap builds with explicit C++14 and license
+notices, while rejecting oversized PNG allocation and large mod-list edge cases.
+**Changes:** explicit language standard/notices, ux0:data parent creation,
+258-folder/255-byte-name VFS test and valid-CRC 4096-square PNG rejection test.
+**Procedure:** ASan/UBSan host tests plus real release VitaSDK package build;
+inspect ELF ABI, SELF header and VPK members; retain exact hashes/build log.
+**Expected / observed:** host tests pass; native compilation and packaging pass.
+No device or emulator is available, so selector/GPU/touch execution is untested.
+**Evidence:** tests/test_core.cpp, tests/test_image.cpp and final
+evidence/build_validation.json; symbols/relink archive includes the build log.
+**Result:** PARTIAL — BUILD CONFIRMED; HARDWARE/VITA3K PENDING.
+**Next:** run first-milestone device sequence in BUILD.md and capture runtime.log.

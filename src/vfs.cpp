@@ -16,6 +16,9 @@ GameVfs::GameVfs(const std::string& base) : base_(base), game_(base + "/game"), 
 
 bool GameVfs::prepareDirectories() {
     error_.clear();
+#ifdef __vita__
+    sceIoMkdir("ux0:data", 0777);
+#endif
     for (const auto& path : {base_, game_, mods_, base_ + "/config", base_ + "/logs", base_ + "/saves"}) {
 #ifdef __vita__
         sceIoMkdir(path.c_str(), 0777);

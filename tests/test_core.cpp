@@ -43,6 +43,14 @@ int main(int argc, char** argv) {
     CHECK(!vfs.resolve("other.dat", resolved)); // invalid override cannot hide behind fallback
     CHECK(symlink((base + "/game/common.pac").c_str(), (mod + "/escape").c_str()) == 0);
     CHECK(!vfs.resolve("escape", resolved));
+    for (int n=0;n<256;++n) {
+        CHECK(mkdir((base + "/mods/Folder " + std::to_string(n)).c_str(),0777)==0);
+    }
+    CHECK(vfs.listMods().size()==257);
+    const std::string long_name(255,'L');
+    CHECK(mkdir((base + "/mods/" + long_name).c_str(),0777)==0);
+    CHECK(vfs.selectMod(long_name));
+    CHECK(vfs.listMods().size()==258);
     vfs.selectOriginal();
     CHECK(vfs.resolve("common.pac", resolved) && resolved == base + "/game/common.pac");
 
