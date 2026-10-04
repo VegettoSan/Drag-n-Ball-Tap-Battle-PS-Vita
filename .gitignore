@@ -1,0 +1,29 @@
+# Vita build output
+build/
+out/
+*.elf
+*.velf
+*.self
+*.vpk
+eboot.bin
+param.sfo
+
+# Local extracted game data (never commit original copyrighted assets)
+game/
+data/game/
+data/mods/
+extracted/
+local-data/
+
+# Runtime/test logs
+*.log
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
