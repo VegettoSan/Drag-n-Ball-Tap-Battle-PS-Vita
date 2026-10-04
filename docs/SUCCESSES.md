@@ -87,3 +87,12 @@ SFO DBTB00001 / 00.02 were checked. Exact VPK hash is in
 evidence/build_validation.json. Host regressions pass on 19 PACs / 51 PNGs,
 including 258 mod directories, a 255-byte component and oversized valid-CRC
 IHDR rejection. Runtime confirmation still requires Vita3K or physical hardware.
+
+## 2026-10-04 — Community Android14 packaging recovered
+
+**Attempt:** 012. Verified ext.o/ext.u profile, all 106 outer and six SPR tables,
+390 raw-DEFLATE RGBA textures; 65 original-derived textures match after exact
+floor-alpha premultiplication. All 36 Ogg files and mk.bin are identical. The
+seven libabc libraries match the public SWB byte-for-byte, establishing a shared
+loader rather than an author identity. Metadata-only evidence committed; no
+commercial payload, Java or Android helper binary redistributed.

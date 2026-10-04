@@ -11,39 +11,61 @@ import json
 from pathlib import Path
 import struct
 import zipfile
+import zlib
+import community14
 
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def pac_inventory(data, depth=0):
+def pac_inventory(data, depth=0, encoding='auto'):
+    encoded = encoding == community14.PROFILE or (encoding == 'auto' and community14.looks_encoded(data))
+    if encoded:
+        base, records = community14.table(data)
+        count = len(records)
     if len(data) < 2:
         raise ValueError('truncated PAC count')
-    count = struct.unpack_from('<H', data)[0]
-    base = 2 + count * 16
+    if not encoded:
+        count = struct.unpack_from('<H', data)[0]
+        base = 2 + count * 16
     if base > len(data):
         raise ValueError('truncated PAC table')
     entries = []
     for i in range(count):
-        offset, size, tag, reserved = struct.unpack_from('<II4sI', data, 2 + i * 16)
+        if encoded:
+            record = records[i]
+            offset, size, reserved = record['offset'], record['size'], record['reserved']
+            kind = record['type']
+        else:
+            offset, size, tag, reserved = struct.unpack_from('<II4sI', data, 2 + i * 16)
+            kind = tag.rstrip(b'\0').decode('ascii', errors='backslashreplace')
         start = base + offset
         if start > len(data) or size > len(data) - start:
             raise ValueError(f'entry {i} outside PAC')
         payload = data[start:start + size]
-        kind = tag.rstrip(b'\0').decode('ascii', errors='backslashreplace')
         entry = dict(index=i, offset=offset, size=size, type=kind, reserved=reserved,
                      sha256=sha(payload))
+        if encoded:
+            entry['encoded_type'] = record['encoded_type']
+        if kind == 'rgba':
+            w, h = community14.image_dimensions(payload, i)
+            stream = zlib.decompressobj(-15)
+            pixels = stream.decompress(payload[4:], w * h * 4 + 1)
+            if len(pixels) != w * h * 4 or not stream.eof or stream.unused_data or stream.unconsumed_tail:
+                raise ValueError('invalid community image deflate size/termination')
+            entry['rgba_dimensions'] = [w, h]
+            entry['rgba_sha256'] = sha(pixels)
         if payload.startswith(b'\x89PNG\r\n\x1a\n') and len(payload) >= 24:
             entry['png_dimensions'] = list(struct.unpack_from('>II', payload, 16))
         if kind == 'spr' and depth < 2:
             try:
-                entry['nested_pac'] = pac_inventory(payload, depth + 1)
+                entry['nested_pac'] = pac_inventory(payload, depth + 1, community14.PROFILE if encoded else 'original')
             except ValueError as exc:
                 entry['nested_error'] = str(exc)
         entries.append(entry)
     ranges = sorted((e['offset'], e['offset'] + e['size']) for e in entries if e['size'])
-    return dict(count=count, data_base=base, entries=entries,
+    return dict(encoding=community14.PROFILE if encoded else 'original', count=count, data_base=base, entries=entries,
                 overlapping=any(b[0] < a[1] for a, b in zip(ranges, ranges[1:])),
                 trailing_bytes=len(data) - base - max((e['offset'] + e['size'] for e in entries), default=0))
 
@@ -73,7 +95,9 @@ def dex_inventory(apk_path):
                     android_calls[target] += 1
     strings = dex.get_strings()
     return dict(package=apk.get_package(), version=apk.get_androidversion_name(),
-                version_code=apk.get_androidversion_code(), min_sdk=apk.get_min_sdk_version(),
+                version_code=apk.get_androidversion_code(), min_sdk=apk.get_min_sdk_version(), target_sdk=apk.get_target_sdk_version(),
+                certificates=[dict(sha256=c.sha256_fingerprint, subject=c.subject.human_friendly,
+                                   issuer=c.issuer.human_friendly) for c in apk.get_certificates()],
                 permissions=apk.get_permissions(), activities=apk.get_activities(),
                 class_count=len(classes), classes=classes,
                 gl_calls=dict(sorted(gl_calls.items())), android_calls=dict(sorted(android_calls.items())),

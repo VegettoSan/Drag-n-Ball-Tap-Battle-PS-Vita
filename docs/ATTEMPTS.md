@@ -275,3 +275,21 @@ No device or emulator is available, so selector/GPU/touch execution is untested.
 evidence/build_validation.json; symbols/relink archive includes the build log.
 **Result:** PARTIAL — BUILD CONFIRMED; HARDWARE/VITA3K PENDING.
 **Next:** run first-milestone device sequence in BUILD.md and capture runtime.log.
+
+## 2026-10-04 — Attempt 012 — Compare original and community Android14 APK
+
+**Baseline:** a04e264. **Goal:** identify exact packaging/code differences and
+usable data before assuming ordinary PAC or generic community-mod support.
+**Procedure:** inspect both ZIPs, DEX/manifest/signing subjects with androguard
+4.1.4, ext.o/ext.u bytecode, ARM Thumb libabc GL upload/inflate path; compare
+seven libraries with public SWB f4a275d; compare original PNG pixels using Pillow.
+**Observed:** community assets profile has 106 encoded PACs; 390 RGBA textures
+including nested SPR decode with bounded raw DEFLATE. 65 textures match original
+PNG after floor-alpha premultiplication; 37 identical/18 changed/2 absent/89 added
+logical resources. Seven native helpers identical to public SWB. Publisher and
+actual Android14/Vita behavior remain unconfirmed.
+**Evidence:** ANDROID14_APK.md, evidence/android14_{inventory,comparison}.json;
+reproducible audit_apk.py/compare_apks.py and pinned community14.py metadata.
+**Result:** SUCCESS (static/container/pixel facts); runtime INCONCLUSIVE.
+**Next:** preserve encoded data, normalize only confirmed aliases at import,
+and implement bounded native PAC/image decoding with correct alpha handling.
