@@ -120,3 +120,10 @@ resolved PAC's codec. Both supplied APKs decode 271 game records + one text
 record. ASan/UBSan tests preserve modified values and verify mixed-profile mod
 override/fallback, row/column bounds and atomic failed loads. This is HOST
 CONFIRMED; the Vita program still shows a diagnostic atlas after initialization.
+
+## 2026-10-04 — Private dual-profile Vita data ZIP
+
+**Attempt:** 016. Both APKs packaged under the real ux0: data layout, with 201
+unchanged runtime files, provenance manifests and per-file hashes. Archive CRC
+and content hashes pass. prepare_vita_data.py reproduces the package from the
+user's APKs and refuses overwrites; no game assets enter the source repository.

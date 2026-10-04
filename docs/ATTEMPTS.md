@@ -346,3 +346,16 @@ validated on Vita; do not describe it as an available Android runtime.
 for menu → character selection → one complete battle, using this same database
 and both existing texture/container codecs. Original-only gameplay also requires
 the character resources absent from the supplied original APK.
+
+## 2026-10-04 — Attempt 016 — Prepare private Vita data package
+
+**Baseline:** 2c3fecd. **Changes:** prepare_vita_data.py composes the validated
+raw/community importers under data/DBTapBattle/game and mods/Android14, without
+conversion. Exclusive same-filesystem link publishes only a verified archive.
+**Procedure:** re-extract both supplied APKs, validate all ZIP CRCs and SHA-256s;
+check 57 original + 144 community files. Nine importer regressions still pass.
+**Observed:** 83,321,665-byte ZIP; 205 members; unchanged payloads, two provenance
+manifests, Spanish installation instructions and SHA256SUMS. ZIP SHA-256:
+f1b899f8bd03821d46db72d561591908b9a38f3c84c7907762530504f84056ea.
+**Result:** SUCCESS (private downloadable user data). No commercial data is
+uploaded to Git or GitHub Releases. A data package does not establish gameplay.

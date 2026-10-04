@@ -63,7 +63,27 @@ Current source additionally initializes gamedata.pac/text00.pac before common
 preview; both are now required. Their converted table directories accept ordinary
 and audited community profiles per resolved file. Failure displays GAME DATA and
 logs the error (exit 8); success logs both paths and record counts. This change
-is host-tested and has not received a new Vita build or device run here.
+is host-tested; ARM build confirmation for source 2c3fecd is recorded below.
+No device run has been observed.
+
+**Update 2026-10-04:** source 2c3fecd now compiled/linked/packaged with the matching
+2026.08.1-1 hard-float SDK and the exact library versions above. New VPK size
+717864 bytes, SHA-256 37a866a9adc97881c2148c257f3dea77e0e3d65ffd2445e883efefe0588e92e0;
+ZIP CRC passes. This confirms the dual PAC/image and initial game-table code
+compiles for ARM; it does not confirm startup, menu or combat.
+Hardware/emulator remain pending, and this diagnostic is not published as a
+playable prerelease.
+
+To reproduce the user's dual-profile data ZIP locally:
+
+```sh
+python tools/prepare_vita_data.py /path/to/DBTapBattle.apk \
+  /path/to/community.apk DBTapBattle-Vita-Datos-Original-y-Android14.zip
+```
+
+Extract it and copy data/ to ux0:. APK/Dalvik/native Android binaries and saves
+are excluded. Keep this user-owned data package private; Releases contain port
+binaries/source, not the original game's data.
 
 1. vitaGL initializes; selector displays Original and discovered folders.
 2. D-pad/left stick moves; Cross or a front-screen tap confirms a visible row.
