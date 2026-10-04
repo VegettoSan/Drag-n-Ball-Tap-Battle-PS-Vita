@@ -63,3 +63,12 @@ The boot selector always exposes `Original` as entry 0 regardless of installed m
 Meaningful experiments must be recorded in `ATTEMPTS.md`; validated successes and failed approaches are promoted into their dedicated logs.
 
 **Reason:** repeated dead ends cost more time than maintaining concise engineering records.
+
+## ADR-008 — Independent writable namespaces and input service
+
+**Status:** accepted — 2026-10-04.
+Use config/, logs/ and saves/ alongside immutable game/ and mod overlays.
+Input adapters produce neutral menu commands and stable pointer events; original
+Controller/KeyData gameplay semantics will consume them, rather than reading
+SceCtrl inside combat. Touch/physical boot selector is implemented; combat
+mapping is a proposal until original command interpretation is reconstructed.

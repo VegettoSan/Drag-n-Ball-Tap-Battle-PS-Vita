@@ -225,3 +225,17 @@ entries and rejects invalid/truncated PNGs under ASan/UBSan. Decode budget 16 Mi
 artifact hashes will be recorded after the source commit is published/rebuilt.
 **Result:** PARTIAL — BUILD CONFIRMED; GPU/hardware INCONCLUSIVE.
 **Next:** verify selector and original atlas in Vita, then implement CNV/DAC metadata.
+
+## 2026-10-04 — Attempt 009 — Platform-neutral input events and touch selector
+
+**Goal / hypothesis:** keep Vita controls outside original gameplay logic and
+support front touch without inventing attack behavior.
+**Baseline:** 2c7fde7.
+**Changes:** input.hpp neutral menu commands/stable pointer phases; input.cpp Vita
+polling adapter; selector consumes this layer, supports front tap and left stick.
+**Procedure:** real VitaSDK compile/link/package including SceTouch_stub.
+**Expected / observed:** build succeeds with warnings enabled; no hardware test.
+**Evidence:** native build output. Runtime touch bounds come from panel info.
+**Result:** PARTIAL — BUILD CONFIRMED, input behavior PENDING hardware.
+**Next:** test pointer IDs/release phases and multi-page mod selection on device;
+connect pointer events to the recovered KeyData/Controller in the next phase.

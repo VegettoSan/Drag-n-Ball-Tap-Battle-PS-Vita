@@ -21,7 +21,7 @@ if(NOT DBTB_COMMIT)
   set(DBTB_COMMIT "unknown")
 endif()
 
-add_executable(${PROJECT_NAME} src/main.cpp src/vfs.cpp src/pac.cpp src/ui.cpp src/image.cpp src/log.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/vfs.cpp src/pac.cpp src/ui.cpp src/image.cpp src/log.cpp src/input.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE src)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -O2 $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
@@ -35,7 +35,7 @@ target_link_libraries(${PROJECT_NAME}
   vitashark SceShaccCgExt taihen_stub SceShaccCg_stub mathneon
   SceLibKernel_stub SceAppMgr_stub SceAppUtil_stub SceCommonDialog_stub
   SceGxm_stub SceDisplay_stub SceSysmodule_stub SceKernelDmacMgr_stub
-  SceCtrl_stub SceIofilemgr_stub m
+  SceCtrl_stub SceTouch_stub SceIofilemgr_stub m
 )
 vita_create_self(${PROJECT_NAME}.self ${PROJECT_NAME} UNSAFE)
 vita_create_vpk(${PROJECT_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self

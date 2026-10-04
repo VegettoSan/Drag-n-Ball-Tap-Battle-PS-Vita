@@ -1,10 +1,10 @@
 #include "ui.hpp"
 #include "log.hpp"
+#include "input.hpp"
 
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
-#include <psp2/ctrl.h>
 #include <psp2/kernel/threadmgr.h>
 #include <vitaGL.h>
 
@@ -108,20 +108,26 @@ void begin2D() {
 bool runBootSelector(const std::vector<std::string>& mods, bool original_data_present, BootChoice& choice) {
     const int total = static_cast<int>(mods.size()) + 1;
     int selected = 0;
-    uint32_t previous = 0;
-
-    sceCtrlSetSamplingMode(SCE_CTRL_MODE_ANALOG);
+    VitaInput input;
 
     for (;;) {
-        SceCtrlData pad{};
-        sceCtrlPeekBufferPositive(0, &pad, 1);
-        const uint32_t pressed = pad.buttons & ~previous;
-        previous = pad.buttons;
+        const InputFrame frame = input.poll();
+        if (frame.up && selected > 0) --selected;
+        if (frame.down && selected + 1 < total) ++selected;
+        const int visible = 8;
+        int first = std::max(0, selected - visible / 2);
+        first = std::min(first, std::max(0, total - visible));
+        bool confirm = frame.confirm;
+        for (size_t p = 0; p < frame.pointer_count; ++p) {
+            const PointerEvent& pointer = frame.pointers[p];
+            if (pointer.phase != PointerPhase::Begin || pointer.x < 44 || pointer.x > 916) continue;
+            for (int row = 0; row < visible && first + row < total; ++row) {
+                const float y = 120.0f + row * 44.0f;
+                if (pointer.y >= y - 7 && pointer.y <= y + 31) { selected = first + row; confirm = true; break; }
+            }
+        }
 
-        if ((pressed & SCE_CTRL_UP) && selected > 0) --selected;
-        if ((pressed & SCE_CTRL_DOWN) && selected + 1 < total) ++selected;
-
-        if (pressed & SCE_CTRL_CROSS) {
+        if (confirm) {
             if (selected == 0) {
                 choice.original = true;
                 choice.mod_directory.clear();
@@ -132,7 +138,7 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
             return true;
         }
 
-        if (pressed & SCE_CTRL_TRIANGLE) return false;
+        if (frame.back) return false;
 
         glClearColor(0.035f, 0.035f, 0.055f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -140,10 +146,6 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
 
         text(48, 32, 4, "DRAGON BALL TAP BATTLE VITA", 1.0f, 0.85f, 0.15f);
         text(50, 76, 2, "SELECT DATA SET", 0.75f, 0.82f, 1.0f);
-
-        const int visible = 8;
-        int first = std::max(0, selected - visible / 2);
-        first = std::min(first, std::max(0, total - visible));
 
         for (int row = 0; row < visible && first + row < total; ++row) {
             const int index = first + row;
@@ -162,7 +164,7 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
             text(62, y, 3, label, active ? 1.0f : 0.80f, active ? 1.0f : 0.82f, active ? 1.0f : 0.86f);
         }
 
-        text(50, 500, 2, "DPAD MOVE   X SELECT   TRIANGLE EXIT", 0.72f, 0.72f, 0.78f);
+        text(50, 500, 2, "DPAD / STICK MOVE   X / TOUCH SELECT   O BACK", 0.72f, 0.72f, 0.78f);
         vglSwapBuffers(GL_FALSE);
         sceKernelDelayThread(16000);
     }
@@ -190,17 +192,10 @@ void showPacResult(bool success, const std::string& detail, const RgbaImage* ima
             shown_detail = "TEXTURE UPLOAD FAILED - CHECK RUNTIME.LOG";
         } else runtimeLog("Texture upload accepted by vitaGL");
     }
-    // Seed edge detector from held controls so the selector's Cross cannot
-    // instantly dismiss this screen. A fresh press after release is required.
-    SceCtrlData initial{};
-    sceCtrlPeekBufferPositive(0, &initial, 1);
-    uint32_t previous = initial.buttons;
+    VitaInput input;
     for (;;) {
-        SceCtrlData pad{};
-        sceCtrlPeekBufferPositive(0, &pad, 1);
-        const uint32_t pressed = pad.buttons & ~previous;
-        previous = pad.buttons;
-        if (pressed & (SCE_CTRL_CROSS | SCE_CTRL_TRIANGLE | SCE_CTRL_START)) {
+        const InputFrame frame = input.poll();
+        if (frame.confirm || frame.back || frame.pause) {
             if (texture) glDeleteTextures(1, &texture);
             runtimeLog("Preview closed by user");
             return;
