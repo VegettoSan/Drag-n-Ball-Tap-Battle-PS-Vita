@@ -96,3 +96,65 @@ SUCCESS
 
 **Next action**
 Implement the same parser in C++ and validate it on Vita using an untouched original PAC.
+
+---
+
+## 2026-10-04 — Attempt 003 — Validate raw APK data extraction
+
+**Goal**
+Confirm that the user-supplied APK can be turned into the external `game/` directory without converting original resources.
+
+**Baseline**
+User-supplied `DBTapBattle.apk`.
+
+**Changes**
+Added `tools/extract_apk_data.py` using ZIP extraction of `res/raw/` with SHA-256 manifest generation.
+
+**Test procedure**
+Enumerated and extracted every regular file directly under `res/raw/` using the same copy-without-conversion strategy implemented by the repository tool.
+
+**Expected**
+All original raw runtime files should be independently extractable with their original bytes preserved.
+
+**Observed**
+57 files were extracted successfully: 19 `.pac`, 36 `.ogg`, plus auxiliary resources including `loading.png` and `mk.bin`.
+
+**Evidence**
+Per-file SHA-256 values were generated during validation. Example: `back00.pac` SHA-256 `a19c425b0496aadc780d3a12b47fad91363423c9b5944407bdd5f74d64f18012`.
+
+**Result**
+SUCCESS
+
+**Next action**
+Use these untouched files as the first real Vita dataset and verify the C++ VFS/PAC reader in an actual VitaSDK build.
+
+---
+
+## 2026-10-04 — Attempt 004 — Bootstrap Vita build implementation
+
+**Goal**
+Create the first VitaSDK/vitaGL executable path with mod selection, VFS fallback and PAC validation.
+
+**Baseline**
+Fresh repository plus validated APK/PAC research.
+
+**Changes**
+Added CMake VitaSDK/vitaGL project, `GameVfs`, `PacFile`, vitaGL selector UI and runtime logging.
+
+**Test procedure**
+Source and build configuration were reviewed against current VitaSDK/vitaGL sample conventions. A real VitaSDK toolchain is not available in the current execution environment, so no compile or hardware claim is made yet.
+
+**Expected**
+The next environment with VitaSDK should compile the bootstrap and allow Original/mod selection before validating `common.pac`.
+
+**Observed**
+Implementation is committed; build execution remains pending.
+
+**Evidence**
+Repository source and CMake configuration.
+
+**Result**
+INCONCLUSIVE
+
+**Next action**
+Compile with VitaSDK, fix any SDK/link issues, then run on Vita/Vita3K and promote only confirmed results to `SUCCESSES.md`.
