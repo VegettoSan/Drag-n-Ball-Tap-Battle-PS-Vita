@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <dirent.h>
 #include <fcntl.h>
 #include <memory>
 #include <sys/stat.h>
@@ -22,6 +23,8 @@
 
 namespace {
 constexpr size_t kSaveSize = 12906;
+constexpr const char* kSharedSaveDirectory = "shared";
+constexpr const char* kSharedMigrationMarker = ".migration-v1";
 std::unique_ptr<GameVfs> vfs;
 std::vector<uint8_t> pending;
 int pending_encoding=0;
@@ -61,6 +64,86 @@ bool publishSave(const std::vector<uint8_t>& out) {
     if (!ok) unlink(temporary.c_str());
     return ok;
 }
+bool regularSave(const std::string& path, struct stat* result = nullptr) {
+    struct stat info{};
+    if (lstat(path.c_str(), &info) != 0 || !S_ISREG(info.st_mode) || info.st_size <= 0 ||
+        uint64_t(info.st_size) > kSaveSize) return false;
+    if (result) *result = info;
+    return true;
+}
+bool writeMigrationMarker(const std::string& marker) {
+    const int fd = open(marker.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0600);
+    if (fd < 0) return false;
+    static const char note[] = "DBTB shared save migration v1\n";
+    const bool wrote = write(fd, note, sizeof(note) - 1) == static_cast<ssize_t>(sizeof(note) - 1);
+    const bool synced = wrote && fsync(fd) == 0;
+    const bool closed = close(fd) == 0;
+    return wrote && synced && closed;
+}
+bool prepareSharedSave(const std::string& base, const std::string& mod) {
+    const std::string saves = base + "/saves";
+    const std::string shared = saves + "/" + kSharedSaveDirectory;
+    if (!directory(saves) || !directory(shared)) return false;
+
+    save_path = shared + "/save.bin";
+    const std::string marker = shared + "/" + kSharedMigrationMarker;
+    struct stat info{};
+    const bool marker_exists = lstat(marker.c_str(), &info) == 0 && S_ISREG(info.st_mode);
+
+    // If a shared save already exists, adopt it and mark migration complete.
+    // This also covers users who manually placed a save in the new location.
+    if (regularSave(save_path)) {
+        if (!marker_exists && !writeMigrationMarker(marker)) return false;
+        std::printf("Shared save active: %s\n", save_path.c_str());
+        return true;
+    }
+
+    // A missing shared save after migration is intentional (for example after
+    // the original game deletes/reset its save). Never resurrect an old per-mod
+    // backup after that point.
+    if (marker_exists) {
+        std::printf("Shared save migration already completed; starting without save.bin\n");
+        return true;
+    }
+
+    // Pre-00.14 builds stored one save under saves/<profile>/save.bin. Import the
+    // most recently modified valid legacy save once, preferring the currently
+    // selected profile and then Original only when timestamps tie. Legacy files
+    // are copied, never moved/deleted, so they remain available as backups.
+    const std::string selected = mod.empty() ? std::string("original") : mod;
+    std::string best_path;
+    time_t best_time = 0;
+    int best_priority = -1;
+    DIR* root = opendir(saves.c_str());
+    if (!root) return false;
+    for (dirent* entry = readdir(root); entry; entry = readdir(root)) {
+        const std::string name = entry->d_name;
+        if (name == "." || name == ".." || name == kSharedSaveDirectory) continue;
+        const std::string profile_dir = saves + "/" + name;
+        struct stat dir_info{};
+        if (lstat(profile_dir.c_str(), &dir_info) != 0 || !S_ISDIR(dir_info.st_mode)) continue;
+        const std::string candidate = profile_dir + "/save.bin";
+        struct stat save_info{};
+        if (!regularSave(candidate, &save_info)) continue;
+        const int priority = name == selected ? 2 : (name == "original" ? 1 : 0);
+        if (best_path.empty() || save_info.st_mtime > best_time ||
+            (save_info.st_mtime == best_time && priority > best_priority)) {
+            best_path = candidate;
+            best_time = save_info.st_mtime;
+            best_priority = priority;
+        }
+    }
+    closedir(root);
+
+    if (!best_path.empty()) {
+        std::vector<uint8_t> legacy;
+        if (!readFile(best_path, legacy) || !publishSave(legacy)) return false;
+        std::printf("Shared save migrated from %s (%zu bytes)\n", best_path.c_str(), legacy.size());
+    } else {
+        std::printf("Shared save: no legacy save found; starting fresh\n");
+    }
+    return writeMigrationMarker(marker);
+}
 int upload(const RgbaImage& image, bool linear) {
     GLint old = 0; glGetIntegerv(GL_TEXTURE_BINDING_2D, &old);
     GLuint id = 0; glGenTextures(1, &id); glBindTexture(GL_TEXTURE_2D, id);
@@ -79,10 +162,7 @@ int upload(const RgbaImage& image, bool linear) {
 bool dbtb_initResources(const std::string& base, const std::string& mod) {
     vfs.reset(new GameVfs(base));
     if (!vfs->prepareDirectories() || (!mod.empty() && !vfs->selectMod(mod))) return false;
-    save_path = base + "/saves/" + (mod.empty() ? std::string("original") : mod);
-    if (!directory(save_path)) return false;
-    save_path += "/save.bin";
-    return true;
+    return prepareSharedSave(base, mod);
 }
 const GameVfs& dbtb_vfs() { if (!vfs) std::abort(); return *vfs; }
 void dbtb_forgetTexture(unsigned id) { textures.erase(id); }
