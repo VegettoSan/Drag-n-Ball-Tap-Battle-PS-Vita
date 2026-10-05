@@ -11,13 +11,22 @@
 namespace {
 
 void rect(float x, float y, float w, float h, float r, float g, float b, float a = 1.0f) {
+    // Do not use GL1 immediate mode here. The full-engine Vita build keeps
+    // vitaGL's legacy immediate-mode pool at zero because the original Android
+    // game is GLES/client-array based. Calling glBegin/glVertex* with that pool
+    // disabled leaves vitaGL's legacy vertex pointer null and crashes on real
+    // hardware. A tiny client-side array is enough for the selector UI.
+    const GLfloat vertices[] = {
+        x,     y,     0.0f,
+        x + w, y,     0.0f,
+        x + w, y + h, 0.0f,
+        x,     y + h, 0.0f,
+    };
     glColor4f(r, g, b, a);
-    glBegin(GL_QUADS);
-    glVertex3f(x, y, 0.0f);
-    glVertex3f(x + w, y, 0.0f);
-    glVertex3f(x + w, y + h, 0.0f);
-    glVertex3f(x, y + h, 0.0f);
-    glEnd();
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 const uint8_t* glyph(char input) {
@@ -109,6 +118,7 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
     const int total = static_cast<int>(mods.size()) + 1;
     int selected = 0;
     VitaInput input;
+    runtimeLog("Boot selector entered: " + std::to_string(total) + " choices");
 
     for (;;) {
         const InputFrame frame = input.poll();
@@ -212,18 +222,31 @@ void showPacResult(bool success, const std::string& detail, const RgbaImage* ima
             const float scale = std::min(700.0f / image->width, 286.0f / image->height);
             const float w = image->width * scale, h = image->height * scale;
             const float x = (960.0f - w) / 2, y = 195.0f;
+            const GLfloat vertices[] = {
+                x,     y,     0.0f,
+                x + w, y,     0.0f,
+                x + w, y + h, 0.0f,
+                x,     y + h, 0.0f,
+            };
+            const GLfloat texcoords[] = {
+                0.0f, 0.0f,
+                1.0f, 0.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+            };
             glEnable(GL_TEXTURE_2D);
             glEnable(GL_BLEND);
             glBlendFunc(image->premultiplied_alpha ? GL_ONE : GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
             glBindTexture(GL_TEXTURE_2D, texture);
             glColor4f(1, 1, 1, 1);
-            glBegin(GL_QUADS);
-            glTexCoord2f(0, 0); glVertex3f(x, y, 0);
-            glTexCoord2f(1, 0); glVertex3f(x+w, y, 0);
-            glTexCoord2f(1, 1); glVertex3f(x+w, y+h, 0);
-            glTexCoord2f(0, 1); glVertex3f(x, y+h, 0);
-            glEnd();
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glVertexPointer(3, GL_FLOAT, 0, vertices);
+            glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            glDisableClientState(GL_VERTEX_ARRAY);
             glDisable(GL_TEXTURE_2D);
         }
         text(50, 500, 2, "X / START / TRIANGLE TO EXIT", 0.75f, 0.75f, 0.78f);
