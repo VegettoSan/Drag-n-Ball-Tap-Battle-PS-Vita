@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-05",
+  "version": "00.11",
+  "purpose": "normalize verified Community14 BIN converted-table metadata before unchanged original GameData.binCnv character-selection path",
+  "source_commits": {
+    "bin_normalization": "3977953a2209f5c52e81eb5ca84f3068ae46cd80",
+    "host_regression": "e3a79b1e73baab5d648112697fcb2d0f4ac32770",
+    "version_bump": "b40cafb8129296f6ae23de444a7f9db16fd89051"
+  },
+  "host_validation": {
+    "command_result": "CHAR BIN NORMALISE PASS: 13/13, 43 records each",
+    "character_resources": "char00.pac through char12.pac",
+    "community_bin_tables_covered_by_repository_regression": 68,
+    "record_payload_preserved": true,
+    "cnv_and_unrelated_dac_not_decoded_as_converted_tables": true
+  },
+  "artifact": {
+    "name": "DBTapBattle-Vita-00.11-charbinfix.vpk",
+    "size": 2210294,
+    "sha256": "a39688235f3751689fd64c924bb7f11fc8a8212e29928705a3449db34292efe6",
+    "zip_test": "pass",
+    "title_id": "DBTB00001",
+    "app_ver": "00.11",
+    "contains_icon0": false
+  },
+  "eboot": {
+    "size": 2302649,
+    "sha256": "1f7967da03617df53909bafe829c9301c88cc5fbade0815594de2f8746f83c49"
+  },
+  "elf": {
+    "sha256": "fe102c24f441f2af707bed0ed6d0732a95ee4b52e579f5965da5303b3f07f430"
+  },
+  "confidence": "BUILD CONFIRMED + HOST DATA CONFIRMED; character-selection continuation still requires physical Vita test",
+  "next_test": "Android14 profile: navigate with touch into character selection, browse multiple characters, then attempt to continue toward battle"
+}
