@@ -16,6 +16,7 @@
 namespace {
 std::array<std::vector<uint8_t>, 3> client_data;
 std::array<int, 3> client_stride{}, client_size{}, client_type{};
+std::array<bool, 3> client_enabled{};
 [[noreturn]] void bad(const char* reason) {
     std::fprintf(stderr, "GL bridge: %s\n", reason); std::abort();
 }
@@ -37,9 +38,19 @@ void dbtb_glClear(void*, int32_t mask) { glClear(mask); }
 void dbtb_glClearColor(void*, float r, float g, float b, float a) { glClearColor(r, g, b, a); }
 void dbtb_glColor4f(void*, float r, float g, float b, float a) { glColor4f(r, g, b, a); }
 void dbtb_glDisable(void*, int32_t cap) { glDisable(cap); }
-void dbtb_glDisableClientState(void*, int32_t cap) { glDisableClientState(cap); }
+void dbtb_glDisableClientState(void*, int32_t cap) {
+    if (cap == GL_COLOR_ARRAY) client_enabled[0] = false;
+    else if (cap == GL_TEXTURE_COORD_ARRAY) client_enabled[1] = false;
+    else if (cap == GL_VERTEX_ARRAY) client_enabled[2] = false;
+    glDisableClientState(cap);
+}
 void dbtb_glEnable(void*, int32_t cap) { glEnable(cap); }
-void dbtb_glEnableClientState(void*, int32_t cap) { glEnableClientState(cap); }
+void dbtb_glEnableClientState(void*, int32_t cap) {
+    if (cap == GL_COLOR_ARRAY) client_enabled[0] = true;
+    else if (cap == GL_TEXTURE_COORD_ARRAY) client_enabled[1] = true;
+    else if (cap == GL_VERTEX_ARRAY) client_enabled[2] = true;
+    glEnableClientState(cap);
+}
 void dbtb_glHint(void*, int32_t t, int32_t mode) { glHint(t, mode); }
 void dbtb_glLoadIdentity(void*) { glLoadIdentity(); }
 void dbtb_glMatrixMode(void*, int32_t mode) { glMatrixMode(mode); }
@@ -83,9 +94,17 @@ void dbtb_glPointer(int32_t kind, int32_t size, int32_t type, int32_t stride, vo
     const int packed = size * elementSize(type);
     if (stride && stride < packed) bad("client stride is smaller than a vertex");
     auto& buffer = client_data[kind];
-    buffer.resize(bytes); if (bytes) std::memcpy(buffer.data(), data, bytes);
-    client_stride[kind] = stride ? stride : packed;
-    client_size[kind] = packed; client_type[kind] = type;
+    const int normalized_stride = stride ? stride : packed;
+    const bool unchanged = client_stride[kind] == normalized_stride &&
+                           client_size[kind] == packed && client_type[kind] == type &&
+                           buffer.size() == size_t(bytes) &&
+                           (!bytes || std::memcmp(buffer.data(), data, size_t(bytes)) == 0);
+    if (unchanged) return;
+    buffer.resize(bytes);
+    if (bytes) std::memcpy(buffer.data(), data, size_t(bytes));
+    client_stride[kind] = normalized_stride;
+    client_size[kind] = packed;
+    client_type[kind] = type;
     if (kind == 0) glColorPointer(size, type, stride, buffer.data());
     else if (kind == 1) glTexCoordPointer(size, type, stride, buffer.data());
     else glVertexPointer(size, type, stride, buffer.data());
@@ -102,9 +121,8 @@ void dbtb_glDraw(int32_t mode, int32_t count, int32_t type, void* data, int32_t 
         if (width == 2) { uint16_t value; std::memcpy(&value, indices + i * width, 2); index = value; }
         if (index > highest) highest = index;
     }
-    const GLenum states[3] = {GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY, GL_VERTEX_ARRAY};
     for (int i = 0; i < 3; ++i) {
-        if (!count || !glIsEnabled(states[i])) continue;
+        if (!count || !client_enabled[i]) continue;
         if (!client_stride[i] || uint64_t(highest) * client_stride[i] + client_size[i] > client_data[i].size())
             bad("draw index exceeds active client attribute");
     }
