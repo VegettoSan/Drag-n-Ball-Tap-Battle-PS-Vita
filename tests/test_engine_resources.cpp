@@ -13,6 +13,7 @@ uint16_t u16(const std::vector<uint8_t>& b, size_t p) { return b[p] | (uint16_t(
 uint32_t u32(const std::vector<uint8_t>& b, size_t p) {
     return b[p] | (uint32_t(b[p+1]) << 8) | (uint32_t(b[p+2]) << 16) | (uint32_t(b[p+3]) << 24);
 }
+void p32(std::vector<uint8_t>& b,size_t p,uint32_t v){for(size_t i=0;i<4;++i)b[p+i]=uint8_t(v>>(8*i));}
 std::vector<uint8_t> fileBytes(const std::string& path) {
     FILE* f=std::fopen(path.c_str(),"rb"); assert(f); assert(!std::fseek(f,0,SEEK_END));
     long n=std::ftell(f); assert(n>=0); std::rewind(f); std::vector<uint8_t> b(static_cast<size_t>(n));
@@ -53,6 +54,10 @@ void sameTable(const GameDataTable& a,const GameDataTable& b){
         }
     }
 }
+std::vector<uint8_t> encodingPac(const std::vector<uint8_t>& payload){
+    std::vector<uint8_t> pac(18+payload.size(),0);pac[0]=1;p32(pac,6,payload.size());
+    std::memcpy(pac.data()+10,"bin",3);std::memcpy(pac.data()+18,payload.data(),payload.size());return pac;
+}
 }
 
 int main(int argc,char** argv){
@@ -92,6 +97,11 @@ int main(int argc,char** argv){
         }closedir(dir);
     }
     assert(files==125&&containers==137&&textures==470&&converted_bins==68&&decoded_wavs==198&&wav_energy>0);
+    std::vector<uint8_t> utf8;for(int i=0;i<20;++i){utf8.push_back(0xe3);utf8.push_back(0x81);utf8.push_back(0x82);}utf8.push_back(0);
+    std::vector<uint8_t> sjis;for(int i=0;i<20;++i){sjis.push_back(0x82);sjis.push_back(0xa0);}sjis.push_back(0);
+    assert(detectEngineTextEncoding(encodingPac(utf8),0)==1);
+    assert(detectEngineTextEncoding(encodingPac(sjis),0)==0);
+    assert(detectEngineTextEncoding(encodingPac(sjis),1)==1);
     for(size_t n=0;n<18;++n){std::vector<uint8_t> b(n,0xFF);assert(!normaliseEnginePac(b,"common.pac",output,error));assert(output.empty());}
     std::vector<uint8_t> bad(18,0);bad[0]=1;bad[2]=0xFF;bad[3]=0xFF;bad[4]=0xFF;bad[5]=0xFF;
     assert(!normaliseEnginePac(bad,"common.pac",output,error));assert(output.empty());
