@@ -709,3 +709,32 @@ text probe pass. Current adapters regenerate through TeaVM 0.12.3 (465 classes,
 and full-engine source identification pass. Implementation commits: 9ef0c57,
 dc32531, 78b2b1d; packaged source 7f19f80. Hardware voice quality, cold/warm
 character latency, retained text and battle FPS remain PENDING.
+
+## 2026-10-05 — 00.21 audio worker startup regression repair
+
+**Hardware result for 00.20:** the user reports Original closes before the menu.
+The new 7f19f80 log records 20 output-port opens followed by 20 worker setup
+failures. Engine initialization passes and resources/text run, then at frame 570
+state 693 catches `IllegalStateException: BGM load failed: bgm_16` and leaves the
+game loop. BGM loading calls ensureAudio() before file resolution/decoding; its
+failure here is not evidence of a corrupt OGG/PAC. All three supplied APKs have
+a 278463-byte OggS bgm_16 entry (the Gen raw entry is an empty placeholder;
+its assets entry is populated). See `evidence/vita_hardware_audio_startup_00.20.json`.
+
+**Correction:** 2e71d51 restores 0x10000100, the priority used by the working
+00.19 worker and the VitaSDK thread-creation example. The 00.20 change to
+0x10000080 is the leading regression; the old log combines create/start failures
+and omits error codes, so neither exact failing syscall nor valid priority range
+is asserted. Split output-port, thread-create and thread-start failures, log each
+operation and hex/decimal result, release only owned handles once and latch setup
+failure until disposal. Preserve PAC filters/caches, voice DSP, PVF and graphics.
+Fix resource diagnostics' unsupported `%zu` formatting, which printed literal
+`zu` and shifted the reported duration on Vita's printf.
+
+**Host checks:** the real audio adapter passes ASan/UBSan for ready-path reuse,
+injected port/create/start errors, handle cleanup, exact operation/error logging,
+no repeated setup on subsequent loads, and recovery after disposal. Existing
+DSP/limiter/PCM/three-channel checks still pass, including 32.3 dB spectral-image
+reduction. Python's 12 regressions pass. The regenerated original engine has
+465 classes and 4059 methods; build source 07222bb packages 00.21.
+Physical worker startup and reaching the menu remain PENDING testing this VPK.

@@ -290,3 +290,13 @@ The complete regenerated original-engine ARM VPK 00.20 builds and its metadata,
 CRC and eboot identity pass. These host results do not establish audible clarity,
 physical selection latency or retained battle FPS; hardware testing is pending.
 See `evidence/vita_pac_voice_build_00.20.json`.
+
+## 2026-10-05 — Audio startup failure paths verified on host for 00.21
+
+**Scope: HOST CONFIRMED, platform calls mocked.** The real native adapter passes
+ASan/UBSan for successful setup reuse and failures during port-open, thread-create
+and thread-start. Error operation/code logging, ownership cleanup, no repeated
+setup during the same failed session and retry after disposal are verified.
+DSP tests and 12 Python regressions remain green. This corrects test coverage
+that previously assumed every thread setup succeeds. Restoring the working
+priority is implemented; physical worker startup/menu recovery is pending.

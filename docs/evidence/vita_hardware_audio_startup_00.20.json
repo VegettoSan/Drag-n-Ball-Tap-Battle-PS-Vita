@@ -1,0 +1,18 @@
+{
+  "version": "00.20",
+  "source_commit": "7f19f805d144cb9b17121e1fce82ce978d37cca2",
+  "log_sha256": "5ec8442c4eb3149dd1265ae149873e6a8287630f875634f1dc1d0d79a9197527",
+  "selected_profile": "Original",
+  "user_report": "Closes before reaching the menu",
+  "worker_setup_failures": 20,
+  "output_port_opens": 20,
+  "original_engine_init": "PASS",
+  "run_frames": 570,
+  "run_termination": "md=693: java.lang.IllegalStateException: BGM load failed: bgm_16",
+  "diagnosis": {
+    "confirmed": "Audio worker setup fails repeatedly. BGM load requires ensureAudio() before opening or decoding bgm_16. The engine catches the resulting Java exception and leaves its loop.",
+    "inference": "The 00.20 priority change from working 0x10000100 to 0x10000080 is the leading setup-failure regression. 00.20 did not distinguish create from start or log the exact kernel error; an exact priority-range or error-code diagnosis is not established.",
+    "asset_check": "bgm_16.ogg has valid OggS header and 278463 bytes in each supplied APK; gen.apk additionally has a zero-byte res/raw placeholder, so its assets entry is authoritative."
+  },
+  "correction": "Restore 0x10000100; log exact open/create/start errors, release owned handles once, latch initialization failure until disposal; preserve PAC/text/voice DSP changes. Correct resource printf z-modifier diagnostics."
+}

@@ -305,3 +305,17 @@ and caches bounded PAC results, immutable textures and decoded PCM. Host bytes
 and reuse behavior are verified. First-time loads and cache evictions still have
 work; no asynchronous prefetch is introduced and zero switching hitches cannot
 be promised before a physical test.
+
+## 2026-10-05 — 00.20 audio worker never starts; Original exits before menu
+
+Hardware log 7f19f80 records 20 worker setup failures and ends at frame 570 with
+`BGM load failed: bgm_16`. The change from working priority 0x10000100 to
+0x10000080 is the primary suspect. An always-successful thread mock in the old
+DSP probe could not detect a Vita setup rejection; build/CI success also does not
+validate kernel scheduling. Exact create/start error and priority range were not
+logged, so retain that uncertainty.
+
+Do not retry the encoded priority change merely because a lower number suggests
+higher priority. 00.21 restores the tested value and adds separate API error
+diagnostics, ownership cleanup and failed-setup latching. The real adapter's
+new injected-error tests cover those paths. Device startup must be retested.

@@ -4,7 +4,7 @@ Native PS Vita port/reconstruction of **Dragon Ball Tap Battle**, targeting Vita
 
 > This repository contains port code and documentation only. Original copyrighted game data is **not** committed. Users provide their own legally obtained APK/data.
 
-## Current full engine — 00.20 test build
+## Current full engine — 00.21 test build
 
 The original Java engine is generated privately through TeaVM and runs on real
 Vita: menus, character selection and combat are hardware confirmed. The user
@@ -16,14 +16,16 @@ rough and character switching still stalls.
 bounded caches of PAC results, immutable textures and decoded voices. A host
 probe reads 87% fewer source bytes for character filter 33 with identical selected
 payloads; this is not a measured Vita latency improvement. Character voices use
-bandlimited resampling at their original rate and duration, with higher audio
-worker priority and output-submission gap diagnostics. Text rendering, graphics
+bandlimited resampling at their original rate and duration, with
+output-submission gap diagnostics. Text rendering, graphics
 optimizations and gameplay remain unchanged. Host regressions and complete
-game VPK packaging pass; physical switching latency, audible quality and retained
-FPS in 00.20 await testing. See
-[00.20 install/test instructions](docs/TEST_VITA_00_20.md),
+game VPK packaging pass. The user's 00.20 test exits before the menu:
+the audio worker fails setup, then BGM loading ends the loop. 00.21 restores
+the audio thread priority used by working 00.19, adds exact setup-error logging
+and tests port/thread failure cleanup. Physical startup recovery awaits testing.
+See [00.21 install/test instructions](docs/TEST_VITA_00_21.md),
 [00.18 hardware evidence](docs/evidence/vita_hardware_performance_00.18.json) and
-[00.20 artifact evidence](docs/evidence/vita_pac_voice_build_00.20.json).
+[00.20 startup failure evidence](docs/evidence/vita_hardware_audio_startup_00.20.json).
 
 The sections below describe the earlier bootstrap milestone. Full engine build
 instructions are in [tools/aot/engine/README.md](tools/aot/engine/README.md).
