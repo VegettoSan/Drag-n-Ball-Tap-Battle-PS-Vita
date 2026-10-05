@@ -36,6 +36,22 @@
     "size": 6894780,
     "sha256": "861b4ef427dfd58b4201d60d963751b1569ddba68ff63c20ce3add2af416790a"
   },
-  "confidence": "BUILD CONFIRMED + HOST DATA CONFIRMED; character-selection continuation still requires physical Vita test",
-  "next_test": "Android14 profile: navigate with touch into character selection, browse multiple characters, select one, then attempt to continue toward battle"
+  "hardware_validation": {
+    "physical_vita": true,
+    "android14_profile": true,
+    "character_selection_continues": true,
+    "real_battle_reached": true,
+    "battle_playable": true,
+    "native_crash_observed": false,
+    "user_reported_normal_frame_rate": "60 FPS with occasional stalls",
+    "runtime_log_sha256": "e2322bb4109adc6a1a336d001cf6eecaa3933f32aca7b6739b9318def9537849"
+  },
+  "confidence": "HARDWARE CONFIRMED through real combat",
+  "remaining_issues": [
+    "Community14 character voice/WAV playback quality/completeness",
+    "dialogue text creation stalls",
+    "dialogue text vertical/spatial alignment",
+    "some 1-2 second black transition pauses"
+  ],
+  "next_test": "00.12: verify PS-ADPCM voices and optimized Android-like text metrics during a real battle"
 }
