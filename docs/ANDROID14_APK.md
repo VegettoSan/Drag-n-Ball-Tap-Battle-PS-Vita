@@ -34,8 +34,10 @@ All 106 outer tables and six nested SPR tables fit their files. There are no
 outer overlaps or trailing bytes. Outer records include 361 compressed RGBA
 textures, 198 wav-tagged payloads, CNV/DAC/BIN/SPR and five ignored metadata
 records. Nested SPR adds 29 RGBA textures: **390 textures decoded in the audit**.
-WAV payload bytes/formats still need an audio decoder; a type name proves no
-native playback. Raw CNV/DAC schemas must not be conflated with converted tables.
+The 198 top-level WAV payloads use a verified private wrapper and, when compressed,
+PlayStation ADPCM-style 16-byte frames rather than ordinary PCM/Ogg bytes. Build
+00.12 now decodes those streams natively before the unchanged original SoundEffect
+path. Raw CNV/DAC schemas must not be conflated with converted tables.
 
 **65 community textures corresponding to resources in the original APK match
 original PNGs exactly after floor(RGB × alpha / 255) premultiplication**, including
@@ -99,13 +101,16 @@ and ext.u table reads in this exact DEX; they are not universal mod constants.
   verified top-level `bin` GameData entries and the converted DAC tables in gamedata/text00;
   nested SPR `bin` payloads are a separate schema and remain untouched; raw CNV and
   other DAC schemas are deliberately not passed through this decoder.
-- WAV wrapper length: LE u32 XOR 42802 XOR i, followed by a encoding flag;
-  native sound decoding is pending. Do not call it an ordinary Ogg stream.
+- WAV wrapper decoded length: LE u32 XOR 42802 XOR i, followed by an encoding
+  flag. Flag 0 exposes wrapped PCM bytes; compressed streams use 16-byte
+  PlayStation ADPCM frames (28 mono samples per frame) with predictor/shift in
+  byte 0 and control/end flag in byte 1. Build 00.12 restores signed 16-bit PCM
+  before SoundEffect. Do not treat these payloads as Ogg streams.
 
-No Java/Dalvik or Android .so is run on Vita. These bounded metadata/pixel
-operations can be reimplemented independently using native C++ and zlib.
-Other mods changing names/constants/code need a newly audited profile, not
-silent trial decoding or an assumption of compatibility.
+No Java/Dalvik or Android .so is run on Vita. These bounded metadata/pixel/audio
+operations are reimplemented independently in native C++ from the verified format
+contract. Other mods changing names/constants/code need a newly audited profile,
+not silent trial decoding or an assumption of compatibility.
 
 ## Provenance: confirmed relationship, unconfirmed publisher
 
@@ -182,27 +187,23 @@ record IDs. The preview decodes either original PNG or community raw-DEFLATE
 RGBA directly into memory, records the codec in runtime.log and uses the correct
 alpha blend. Existing VFS overlay/fallback needs no new global codec switch.
 The actual new-source common preview is original 9 entries/community 6 entries,
-each with a first 512×512 atlas. No resource conversion or Android binary is needed.
+each with a first 512×512 atlas. No Android binary is required at runtime.
 
 Host ASan/UBSan tests read **125 outer PACs + 12 nested SPR containers** and
 **470 textures (80 original including nested sprites, 390 community)**. Original
 PNG corruption/budget regressions pass. Community tests cover wrong indexes,
 truncated/trailing/incorrect-size DEFLATE, allocation limits, metadata-first PAC,
 out-of-range encoded table entries, memory limits and clean state after failure.
-Nine extractor tests and real-byte-preservation checks also pass.
+The full resource regression additionally validates **68 top-level converted BIN
+GameData tables and 198 WAV streams**, with decoded WAV lengths matching wrapper
+metadata and nonzero PCM output. Nine extractor tests and real-byte-preservation
+checks also pass.
 
-Subsequent full-engine work has now progressed beyond this original preview-only
-milestone. On physical Vita, build 00.10 has HARDWARE CONFIRMED front touch,
-audible audio and Android14 navigation into character selection. That test also
-exposed a previously unnormalized layer: encoded `bin` payloads used by character
-GameData. The native bridge now restores only their verified converted-table
-metadata before handing them to the unchanged original `GameData.binCnv()` path;
-host regression compares all 68 top-level Community14 BIN GameData tables
-record-by-record before and after normalization. A deliberately over-broad recursive
-BIN conversion was rejected by the `back02.pac` nested-SPR regression, so nested BIN
-payloads remain untouched. Converted CNV/raw DAC formats remain separate schemas.
-
-Character-selection continuation and complete combat are still pending hardware
-verification. Code-dependent mod mechanics are not assumed compatible merely
-because asset encoding matches. Different private constants must fail explicitly
-or receive a new reviewed codec profile.
+Physical Vita build 00.11 is HARDWARE CONFIRMED through character selection and
+an actual playable battle using the Android14 profile. Front touch and ordinary
+BGM/SE are audible; the user observed normal gameplay at 60 FPS with intermittent
+stalls. Build 00.12 specifically addresses the remaining packed character voice
+ADPCM path plus dialogue text rasterization/layout. Complete 00.12 behavior still
+requires hardware confirmation; code-dependent mod mechanics are not assumed
+compatible merely because asset encoding matches. Different private constants
+must fail explicitly or receive a new reviewed codec profile.
