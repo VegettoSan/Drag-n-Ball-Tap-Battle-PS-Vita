@@ -18,7 +18,15 @@ La estructura final debe ser:
 
 En el selector del VPK:
   Original: usa game/.
-  Android14: usa mods/Android14/ y recurre a game/ si falta un archivo.
+  Android14: usa mods/Android14/ y recurre a game/ si falta un recurso.
+
+Cada perfil mantiene su propio save.bin dentro de su misma carpeta:
+  ux0:data/DBTapBattle/game/save.bin
+  ux0:data/DBTapBattle/mods/Android14/save.bin
+
+Si el APK extraido ya contiene save.bin, se conserva byte por byte. Si no lo
+contiene, el motor original crea uno en esa misma carpeta al guardar por primera
+vez. Los saves no se comparten ni hacen fallback entre perfiles.
 
 Los recursos se mantienen byte por byte; solo se normalizan los nombres
 codificados del APK comunitario. Cada carpeta incluye dbtb_manifest.json con
@@ -31,7 +39,8 @@ El APK original suministrado no incluye los paquetes de personajes descargados.
 El APK comunitario incluye 13 conjuntos de personajes; se mantienen en Android14.
 El archivo text00.pac contiene tablas; sus cadenas/renderizado requieren el motor.
 
-No se incluyen APK, clases Java/Dalvik, bibliotecas Android ni archivos de guardado.
+No se incluyen APK, clases Java/Dalvik ni bibliotecas Android. Un save.bin solo
+se incluye cuando forma parte del conjunto de datos extraido del APK del usuario.
 Este paquete es una copia preparada a partir de tus dos APK; no se publica
 en el repositorio ni en GitHub Releases.
 """
