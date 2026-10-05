@@ -1,0 +1,41 @@
+{
+  "date_local": "2026-10-04",
+  "timezone": "America/Bogota",
+  "scope": "real PS Vita hardware run of private full-engine build 00.07",
+  "hardware_observed": true,
+  "result": "engine initialized and ran 498 frames, then exited cleanly after the original Run() caught a NullPointerException in Game9 state 61",
+  "runtime_log_sha256": "e6d9150afa58fabd7200dcafd9c48861e4e535cf4ceb5354003d82fa75807f96",
+  "runtime_log_excerpt": [
+    "ORIGINAL ENGINE INIT PASS",
+    "[DBTB] NullPointerException TeaVM stack:",
+    "at com.namcobandaigames.dragonballtap.apk.TCBManajer.DrawText()",
+    "at com.namcobandaigames.dragonballtap.apk.TCBManajer.SetString()",
+    "at com.namcobandaigames.dragonballtap.apk.TCBManajer.TextGDTStringAlpha()",
+    "at com.namcobandaigames.dragonballtap.apk.TCBManajer.TextGDTString()",
+    "at com.namcobandaigames.dragonballtap.apk.TCBManajer.Game9()",
+    "Run: md=[61]:ERROR=java.lang.NullPointerException",
+    "ORIGINAL ENGINE RUN FRAMES=498"
+  ],
+  "additional_observation": "DrawExec also raised repeated caught NullPointerExceptions from the first rendered frames, indicating a renderer/text lifecycle resource was never initialized rather than a Game9-only data failure.",
+  "root_cause": {
+    "confirmed": true,
+    "details": "GlobalWork.bResume defaults to false. The original TCBManajer.Run() allocates StringTexture[0] and StringTexture[1], resets Graphics2D and restores BGM only on the bResume == true edge, then clears bResume itself. VitaEngine never generated the initial Android-style resume edge, so DrawExec and later DrawText accessed text surfaces that had never been initialized.",
+    "why_it_matches_the_trace": "The missing resume edge explains both the repeated DrawExec NPEs from the first frame and the final DrawText NPE in Game9(61), without requiring any modification to Game9 or GDT data."
+  },
+  "fix": {
+    "strategy": "Set gw.bResume=true once after successful original engine Init and before the first Run(), allowing the original lifecycle branch to perform its own StringTexture/Graphics2D/BGM initialization and clear the flag.",
+    "commits": [
+      "e69b1c9e31a9dc3e9accaabf2d44bf734d82263d",
+      "2e1ec10b92d75267ce2d68ecb467ddc7632df4f6"
+    ]
+  },
+  "next_private_test_artifact": {
+    "name": "DBTapBattle-Vita-00.08-resumefix.vpk",
+    "sha256": "155f74d33217017b9683deea07bc9105b5ccc30998a2734419bd302c768f806e",
+    "size": 2204822,
+    "eboot_sha256": "6a9c91d01ee15b287e51048132bd4855f8e4d592aae56d524d6a73038c8c2143",
+    "contains_icon0": false,
+    "build_confirmed": true,
+    "expected_next_checkpoint": "no repeated DrawExec text-surface NPEs; Game9 state 61 should be able to create/draw text and advance beyond the previous 498-frame clean exit"
+  }
+}
