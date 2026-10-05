@@ -10,6 +10,7 @@ bool dbtb_initFonts();
 
 struct DbtbAudioStats {
     uint32_t clipped_samples = 0;
+    uint32_t overload_samples = 0;
     uint32_t late_mix_blocks = 0;
     uint32_t max_mix_us = 0;
 };

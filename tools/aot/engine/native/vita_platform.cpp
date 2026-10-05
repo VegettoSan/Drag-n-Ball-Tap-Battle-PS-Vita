@@ -161,7 +161,7 @@ void dbtb_present(void) {
         "[Perf] fps=%.1f run_ms=%.2f run_max_ms=%.2f swap_ms=%.2f interval_max_ms=%.2f "
         "draws_per_frame=%.1f client_KiB=%llu loads=%u load_ms=%.1f textures=%u "
         "texture_ms=%.1f text_ms=%.1f audio_decode_ms=%.1f "
-        "audio_clip_samples=%u audio_late_mix=%u audio_mix_max_us=%u\n",
+        "audio_clip_samples=%u audio_overload_samples=%u audio_late_mix=%u audio_mix_max_us=%u\n",
         double(window_frames) * 1000000.0 / double(now - window_start),
         double(run_total) / (window_frames * 1000.0), double(run_max) / 1000.0,
         double(swap_total) / (window_frames * 1000.0), double(interval_max) / 1000.0,
@@ -169,7 +169,7 @@ void dbtb_present(void) {
         static_cast<unsigned long long>(perf.client_bytes / 1024), perf.resources,
         double(perf.resource_us) / 1000.0, perf.textures, double(perf.texture_us) / 1000.0,
         double(perf.text_us) / 1000.0, double(perf.audio_decode_us) / 1000.0,
-        audio.clipped_samples, audio.late_mix_blocks, audio.max_mix_us);
+        audio.clipped_samples, audio.overload_samples, audio.late_mix_blocks, audio.max_mix_us);
     dbtb_performance() = DbtbPerformance{};
     window_start = now;
     window_frames = 0;

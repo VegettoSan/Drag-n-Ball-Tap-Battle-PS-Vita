@@ -55,7 +55,9 @@ Voice bgm;
 int audio_port = -1;
 SceUID audio_thread = -1;
 std::atomic<bool> audio_running{false};
-std::atomic<uint32_t> clipped_samples{0}, late_mix_blocks{0}, max_mix_us{0};
+std::atomic<uint32_t> clipped_samples{0}, overload_samples{0}, late_mix_blocks{0}, max_mix_us{0};
+// Audio-worker-only envelope; callers join the worker before disposing it.
+float output_gain = 1.0f;
 
 Voice makeVoice(std::shared_ptr<Clip> clip, float gain, bool loop) {
     Voice voice;
@@ -146,6 +148,16 @@ std::shared_ptr<Clip> decodeVoiceBytes(const void* raw, int32_t size) {
         std::memcpy(clip->pcm.data(), data, clip->pcm.size() * 2);
     }
     clip->frame_count = clip->pcm.size() / size_t(clip->channels);
+    size_t source_rails = 0;
+    int source_peak = 0;
+    for (int16_t sample : clip->pcm) {
+        source_peak = std::max(source_peak, std::abs(int(sample)));
+        source_rails += sample == -32768 || sample == 32767;
+    }
+    runtimeLog("Voice PCM: rate=" + std::to_string(clip->rate) + " channels=" +
+        std::to_string(clip->channels) + " frames=" + std::to_string(clip->frames()) +
+        " peak=" + std::to_string(source_peak) + " source_rail_samples=" +
+        std::to_string(source_rails));
     return clip->frames() ? clip : nullptr;
 }
 
@@ -227,29 +239,54 @@ void dbtb_mixAudio(short* interleaved, int frames) {
     // game-thread commands do not wait for a whole output block's calculation.
     // These are source sample counts, not a claim about measured lock duration.
     constexpr int kMixChunk = 64;
-    uint32_t clipped = 0;
-    for (int base = 0; base < frames; base += kMixChunk) {
-        const int end = std::min(frames, base + kMixChunk);
-        AudioLockGuard lock;
-        for (int i = base; i < end; ++i) {
-            int32_t left = 0, right = 0;
-            mixVoice(bgm, left, right);
-            for (auto& v : active_effects) mixVoice(v, left, right);
-            for (auto& v : active_voices) mixVoice(v, left, right);
-            clipped += left < -32768 || left > 32767;
-            clipped += right < -32768 || right > 32767;
-            interleaved[i * 2] = static_cast<int16_t>(std::max<int32_t>(-32768, std::min<int32_t>(32767, left)));
-            interleaved[i * 2 + 1] = static_cast<int16_t>(std::max<int32_t>(-32768, std::min<int32_t>(32767, right)));
+    uint32_t clipped = 0, overloaded = 0;
+    alignas(64) int32_t mixed[kFrames * 2];
+    // Look at each already-generated output block before reducing it to PCM16.
+    // A stereo-linked gain preserves the summed waveform instead of flattening
+    // its peaks. Only overload reduces volume; release takes about 100 ms.
+    constexpr float kRelease = 1.0f / (0.1f * kOutputRate);
+    for (int block = 0; block < frames; block += kFrames) {
+        const int count = std::min(kFrames, frames - block);
+        int32_t peak = 0;
+        for (int base = 0; base < count; base += kMixChunk) {
+          const int end = std::min(count, base + kMixChunk);
+          AudioLockGuard lock;
+          for (int i = base; i < end; ++i) {
+              int32_t left = 0, right = 0;
+              mixVoice(bgm, left, right);
+              for (auto& v : active_effects) mixVoice(v, left, right);
+              for (auto& v : active_voices) mixVoice(v, left, right);
+              overloaded += left < -32768 || left > 32767;
+              overloaded += right < -32768 || right > 32767;
+              mixed[i * 2] = left;
+              mixed[i * 2 + 1] = right;
+              peak = std::max(peak, std::max(std::abs(left), std::abs(right)));
+          }
+          active_effects.erase(std::remove_if(active_effects.begin(), active_effects.end(), [](const Voice& v){ return !v.clip; }), active_effects.end());
+          active_voices.erase(std::remove_if(active_voices.begin(), active_voices.end(), [](const Voice& v){ return !v.clip; }), active_voices.end());
         }
-        active_effects.erase(std::remove_if(active_effects.begin(), active_effects.end(), [](const Voice& v){ return !v.clip; }), active_effects.end());
-        active_voices.erase(std::remove_if(active_voices.begin(), active_voices.end(), [](const Voice& v){ return !v.clip; }), active_voices.end());
+        // Leave a few integer units for float rounding. No per-block allocation,
+        // file access, extra hardware buffering or changes to source rate/pitch.
+        const float target = peak > 32767 ? 32760.0f / peak : 1.0f;
+        output_gain = std::min(output_gain, target);
+        for (int i = 0; i < count; ++i) {
+            output_gain += (target - output_gain) * kRelease;
+            for (int channel = 0; channel < 2; ++channel) {
+                const int32_t value = static_cast<int32_t>(mixed[i * 2 + channel] * output_gain);
+                clipped += value < -32768 || value > 32767;
+                interleaved[(block + i) * 2 + channel] = static_cast<int16_t>(
+                    std::max<int32_t>(-32768, std::min<int32_t>(32767, value)));
+            }
+        }
     }
     clipped_samples.fetch_add(clipped, std::memory_order_relaxed);
+    overload_samples.fetch_add(overloaded, std::memory_order_relaxed);
 }
 
 DbtbAudioStats dbtb_takeAudioStats() {
     DbtbAudioStats stats;
     stats.clipped_samples = clipped_samples.exchange(0, std::memory_order_relaxed);
+    stats.overload_samples = overload_samples.exchange(0, std::memory_order_relaxed);
     stats.late_mix_blocks = late_mix_blocks.exchange(0, std::memory_order_relaxed);
     stats.max_mix_us = max_mix_us.exchange(0, std::memory_order_relaxed);
     return stats;
@@ -349,5 +386,6 @@ void dbtb_audioDispose(void) {
     active_voices.clear();
     effects.clear();
     streamed_voice_clips.clear();
+    output_gain = 1.0f;
 }
 }
