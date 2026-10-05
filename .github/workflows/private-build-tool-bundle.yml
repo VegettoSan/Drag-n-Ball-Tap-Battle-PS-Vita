@@ -18,11 +18,11 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Collect pinned public tools
+      - name: Collect pinned public tools and source layer
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p tool-bundle/lib tool-bundle/dex2jar
+          mkdir -p tool-bundle/lib tool-bundle/dex2jar tool-bundle/repo
           curl -fL --retry 4 \
             https://github.com/pxb1988/dex2jar/releases/download/v2.4/dex-tools-v2.4.zip \
             -o tool-bundle/dex-tools-v2.4.zip
@@ -33,12 +33,17 @@ jobs:
           curl -fL --retry 4 \
             https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.37.0/ecj-3.37.0.jar \
             -o tool-bundle/ecj-3.37.0.jar
+          cp -a tools/aot tool-bundle/repo/
+          cp -a src tool-bundle/repo/
+          cp -a docs licenses CMakeLists.txt tool-bundle/repo/
+          git rev-parse HEAD > tool-bundle/repo/COMMIT.txt
           sha256sum tool-bundle/dex-tools-v2.4.zip tool-bundle/ecj-3.37.0.jar \
             tool-bundle/lib/*.jar > tool-bundle/SHA256SUMS.txt
           test -s tool-bundle/lib/teavm-cli-0.12.3.jar
           test -s tool-bundle/lib/teavm-classlib-0.12.3.jar
           test -s tool-bundle/lib/teavm-interop-0.12.3.jar
           test -s tool-bundle/lib/asm-9.7.1.jar
+          test -s tool-bundle/repo/tools/aot/engine/generate.py
 
       - name: Upload tool bundle
         uses: actions/upload-artifact@v4
