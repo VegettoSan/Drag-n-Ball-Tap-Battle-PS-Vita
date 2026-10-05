@@ -1,0 +1,35 @@
+{
+  "version": "00.22",
+  "source_commit": "c40ce0a96a0effb129fe7dd2970a44ec6c3a7257",
+  "runtime_log_sha256": "a211665e455086a4f223e182c5aa0df9e91fadf1558e938c196eaf5ab6ef84be",
+  "core_dump_gzip_sha256": "e007d21ada8c32e1121bd540975453acbecdd9dc532acd1fab56b8e773a49c45",
+  "core_dump_decoded_bytes": 5378648,
+  "selected_profile": "Original",
+  "device_dataset_sha256": "not supplied; menu label does not establish APK identity",
+  "user_report": {
+    "voices": "clean, no rasp",
+    "character_selection": "no observed stall",
+    "battle_start": "native crash"
+  },
+  "failure": "TeaVM managed allocator abort while allocating whole PAC byte[] before original GameData.Init(byte[]) can dispose old owner",
+  "resource": "char00.pac",
+  "filter": 0,
+  "bridge_bytes": 4739319,
+  "stack": [
+    "NativePlatform.readGameData:45",
+    "ResourceAdapter.load:16",
+    "GameData.Init",
+    "TCBManajer.SetLoad",
+    "TCBManajer.Game1"
+  ],
+  "fatal": "Application crashed due to lack of free memory",
+  "heap_min_max_mib": [
+    8,
+    48
+  ],
+  "newlib_heap_mib": 96,
+  "classification": "managed allocation failure; exact live/fragmentation split unavailable because dump does not include managed heap/GC global data",
+  "performance_scope": "00.22 reaches near-59.9 FPS pre-battle windows; no successful battle in this session",
+  "repair_target": "00.23 restore original stream parser with native PAC ownership; remove whole managed bridge array; keep original Dispose ordering and parser/finally logic",
+  "hardware_00_23": "PENDING"
+}

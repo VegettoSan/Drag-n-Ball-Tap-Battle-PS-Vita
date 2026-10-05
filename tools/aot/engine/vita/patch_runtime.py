@@ -28,7 +28,7 @@ def main():
     parser.add_argument('generated_directory', type=Path)
     args = parser.parse_args()
     root = args.generated_directory.resolve()
-    required = ['all.c', 'definitions.h', 'exceptions.h', 'memory.c', 'time.c', 'fiber.c', 'date.c', 'classes/org/teavm/runtime/ExceptionHandling.c']
+    required = ['all.c', 'definitions.h', 'exceptions.h', 'memory.c', 'time.c', 'fiber.c', 'date.c', 'classes/org/teavm/runtime/ExceptionHandling.c', 'classes/org/teavm/runtime/GC.c']
     missing = [name for name in required if not (root / name).is_file()]
     if missing:
         parser.error('Not a TeaVM 0.12.3 C output directory; missing: ' + ', '.join(missing))
@@ -55,6 +55,19 @@ def main():
     void* teavm_tmp_ptr_0;
     meth_otr_ExceptionHandling_throwException((teavm_tmp_ptr_0 = meth_otr_Allocator_allocate(&jl_NullPointerException_Cls), meth_jl_NullPointerException__init_(teavm_tmp_ptr_0), teavm_tmp_ptr_0));
 }''')
+
+    # Capture the failing allocation and managed GC budget without allocating
+    # Java objects. This is diagnostic only; collection/fatal behavior stays intact.
+    replace_once(root / 'classes/org/teavm/runtime/GC.c',
+                 "            meth_otr_ExceptionHandling_printStack();\n            teavm_outOfMemory();",
+                 """#if defined(__vita__)
+            fprintf(stderr, "[Memory] managed OOM requested=%d gc_free=%d available=%llu max=%llu chunks=%d\\n",
+                teavm_local_1, sfld_otr_GC_freeMemory,
+                (unsigned long long) teavm_gc_availableBytes,
+                (unsigned long long) teavm_gc_maxAvailableBytes, sfld_otr_GC_freeChunks);
+#endif
+            meth_otr_ExceptionHandling_printStack();
+            teavm_outOfMemory();""")
 
     replace_once(root / 'memory.c', 'static int64_t teavm_pageCount', '''
 #if defined(__vita__)

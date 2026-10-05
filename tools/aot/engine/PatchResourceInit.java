@@ -3,8 +3,9 @@ import java.util.*;
 import java.util.jar.*;
 import java.io.*;
 import org.objectweb.asm.*;
+import org.objectweb.asm.tree.*;
 
-/** Adapt one Android file-loading overload, keeping the original byte loader.
+/** Adapt Android stream opening, keeping both original parsers.
  * Input and output contain user-owned APK code and must remain outside Git.
  */
 public final class PatchResourceInit implements Opcodes {
@@ -98,32 +99,64 @@ public final class PatchResourceInit implements Opcodes {
         return cw.toByteArray();
     }
 
+    // Keep the original streaming parser, Dispose ordering and finally/close
+    // paths. Replace only the two Android resource-opening expressions.
     static byte[] adapt(byte[] bytes) throws Exception {
         verifyGameData(bytes);
-        ClassReader cr = new ClassReader(bytes);
-        ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
-        final int[] found = {0};
-        cr.accept(new ClassVisitor(ASM9, cw) {
-            @Override public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-                if (!name.equals("Init") || !descriptor.equals(DESC)) return super.visitMethod(access, name, descriptor, signature, exceptions);
-                found[0]++;
-                MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
-                mv.visitCode();
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitVarInsn(ALOAD, 2);
-                mv.visitVarInsn(ILOAD, 3);
-                mv.visitVarInsn(ILOAD, 4);
-                mv.visitMethodInsn(INVOKESTATIC, PKG + "ResourceAdapter", "load",
-                    "(L" + CLASS + ";" + GW + "Ljava/lang/String;II)Z", false);
-                mv.visitInsn(IRETURN);
-                mv.visitMaxs(0, 0);
-                mv.visitEnd();
-                return null;
+        ClassNode node = new ClassNode(ASM9);
+        new ClassReader(bytes).accept(node, ClassReader.SKIP_FRAMES);
+        int changed = 0;
+        for (MethodNode method : node.methods) {
+            if (!method.name.equals("Init") || !method.desc.equals(DESC)) continue;
+            AbstractInsnNode rawStart = null, rawEnd = null, fileStart = null, fileEnd = null;
+            for (AbstractInsnNode insn : method.instructions.toArray()) {
+                if (!(insn instanceof MethodInsnNode)) continue;
+                MethodInsnNode call = (MethodInsnNode) insn;
+                if (call.owner.equals(PKG + "ResourceMiner") && call.name.equals("getInstance")) rawStart = insn;
+                if (call.owner.equals("android/content/res/Resources") && call.name.equals("openRawResource")) rawEnd = insn;
+                if (call.owner.equals("android/content/Context") && call.name.equals("openFileInput")) {
+                    fileEnd = insn;
+                    AbstractInsnNode start = insn.getPrevious();
+                    while (start != null) {
+                        if (start instanceof FieldInsnNode && ((FieldInsnNode) start).name.equals("context")) {
+                            start = start.getPrevious();
+                            while (start != null && start.getOpcode() < 0) start = start.getPrevious();
+                            break;
+                        }
+                        start = start.getPrevious();
+                    }
+                    fileStart = start;
+                }
             }
-        }, 0);
-        if (found[0] != 1) throw new IOException("Expected exactly one Android resource overload");
-        return cw.toByteArray();
+            if (rawStart == null || rawEnd == null || fileStart == null || fileEnd == null ||
+                fileStart.getOpcode() != ALOAD || ((VarInsnNode) fileStart).var != 1)
+                throw new IOException("Unexpected Android stream-opening expression");
+            replaceOpen(method, rawStart, rawEnd, false);
+            replaceOpen(method, fileStart, fileEnd, true);
+            changed++;
+        }
+        if (changed != 1) throw new IOException("Expected one original streaming loader");
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    static void replaceOpen(MethodNode method, AbstractInsnNode start, AbstractInsnNode end, boolean fallback) {
+        InsnList open = new InsnList();
+        open.add(new VarInsnNode(ALOAD, 0));
+        open.add(new VarInsnNode(ALOAD, 2));
+        open.add(new VarInsnNode(ILOAD, 4));
+        open.add(new InsnNode(fallback ? ICONST_1 : ICONST_0));
+        open.add(new MethodInsnNode(INVOKESTATIC, PKG + "ResourceAdapter", "open",
+            "(L" + CLASS + ";Ljava/lang/String;IZ)Ljava/io/InputStream;", false));
+        method.instructions.insertBefore(start, open);
+        // Retain labels used by the original exception/finally table.
+        AbstractInsnNode after = end.getNext();
+        for (AbstractInsnNode current = start; current != after;) {
+            AbstractInsnNode next = current.getNext();
+            if (current.getOpcode() >= 0) method.instructions.remove(current);
+            current = next;
+        }
     }
 
     public static void main(String[] args) throws Exception {

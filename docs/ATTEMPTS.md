@@ -810,3 +810,40 @@ install roots are used for the recorded before/after checks.
 
 **Next:** compile/verify full VPK 00.22, then retest first character, repeated
 switches, voices, visible text and sustained battle FPS on Vita.
+
+
+## 2026-10-05 — 00.23 restore original streaming PAC parser for battle memory
+
+**00.22 hardware:** user confirms clean voices and character switching without
+observed stalls. Battle startup aborts in TeaVM's managed allocator while creating
+char00's whole 4,739,319-byte bridge array. Stack identifies readGameData →
+ResourceAdapter.load → GameData.Init → SetLoad → Game1. The supplied core is a
+gzip-compressed ARM core; it does not contain the GC globals/managed heap, so the
+exact live-memory/fragmentation split is not established. Archive metadata in
+[evidence](evidence/vita_hardware_battle_memory_00.22.json).
+
+**Original contract:** both original Init overloads begin with Dispose(gw). The
+previous Vita adapter allocated the entire managed PAC before calling the byte
+parser and thus before disposal. Restore the original String/InputStream parser;
+patch only its Android raw-ID and openFileInput opening expressions. Keep the
+original entry decoder, filters, conversion, skip/read, catch/finally and close
+paths. NativeResourceStream pins a cached native PAC with an explicit handle;
+Java reads individual original payload arrays. No larger heap or explicit GC.
+
+**Checks:** compare both preserved original parsers using private normalized Gen
+and Community14 character packs: 26 packs × 9 masks = 234 successful reloads,
+identical GameData/SpriteData/BIN/WAV state, no surviving stream handles.
+Largest PAC 4,819,351 bytes; largest Java stream read 380,395 bytes. GL and native
+I/O mocked on JVM, so this measures parser/bridge behavior, not Vita total memory.
+Real native cache/copy/PNG tests add pinned-owner survival after eviction, bad
+ranges/EOF, independent streams, handle limit, idempotent close and profile reset;
+ASan/UBSan PASS. LeakSanitizer cannot inspect /proc tasks in this runner; rerun
+with detect_leaks=0 and verify explicit owner/handle assertions instead. Fresh
+TeaVM generation has 467 classes / 4086 methods. Add allocation-free native OOM
+requested/free/available/max/chunk diagnostics; preserve 8/48 MiB managed and
+96 MiB Newlib budgets. Retain audio DSP/worker and texture cache behavior.
+
+**Result:** host parser/resource checks pass; physical 00.23 battle startup,
+repeat battles, memory headroom, texts and audible/selection regressions remain
+PENDING. This removes the observed whole-PAC allocation, not every possible
+memory limit. Deliver complete fresh engine, matching symbols and exact hashes.

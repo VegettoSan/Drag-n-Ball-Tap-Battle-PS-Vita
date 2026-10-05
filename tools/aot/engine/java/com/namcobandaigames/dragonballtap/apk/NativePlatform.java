@@ -42,5 +42,14 @@ public final class NativePlatform {
     public static byte[] cstr(String s) { byte[] b=s.getBytes(java.nio.charset.StandardCharsets.UTF_8);byte[] z=new byte[b.length+1];System.arraycopy(b,0,z,0,b.length);return z; }
     public static void unavailable(String s) { byte[] b=cstr(s);unsupported(Address.ofData(b));throw new UnsupportedOperationException(s); }
     public static byte[] read(String name,boolean save) { byte[] n=cstr(name);int size=save?readSave(Address.ofData(n)):resource(Address.ofData(n));if(size<0)return null;if(size>32*1024*1024)throw new IllegalStateException("Resource exceeds bridge budget");byte[] b=new byte[size];copyResource(Address.ofData(b),size);return b; }
-    public static byte[] readGameData(String name,int filter) {byte[] n=cstr(name);int size=resourceFiltered(Address.ofData(n),filter);if(size<0)return null;if(size>32*1024*1024)throw new IllegalStateException("Resource exceeds bridge budget");byte[] b=new byte[size];copyResource(Address.ofData(b),size);return b;}
+    @Import(name="dbtb_openResourceStream") public static native int openResourceStream(Address name,int filter);
+    @Import(name="dbtb_resourceStreamSize") public static native int resourceStreamSize(int handle);
+    @Import(name="dbtb_readResourceStream") public static native int readResourceStream(int handle,int position,Address target,int size);
+    @Import(name="dbtb_closeResourceStream") public static native void closeResourceStream(int handle);
+    public static java.io.InputStream openGameData(String name,int filter) {
+        byte[] n=cstr(name);
+        int handle=openResourceStream(Address.ofData(n),filter);
+        if(handle<=0)return null;
+        return new NativeResourceStream(handle,resourceStreamSize(handle));
+    }
 }

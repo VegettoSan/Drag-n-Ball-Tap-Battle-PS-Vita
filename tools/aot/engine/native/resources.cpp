@@ -12,6 +12,7 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 #endif
+#include <algorithm>
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
@@ -29,6 +30,9 @@ std::unique_ptr<GameVfs> vfs;
 std::vector<uint8_t> pending;
 EngineResourceCache resource_cache(8u * 1024u * 1024u);
 std::shared_ptr<CachedEngineResource> pending_resource;
+struct ResourceStream { std::shared_ptr<CachedEngineResource> resource; size_t largest_read=0; };
+std::unordered_map<int32_t,ResourceStream> resource_streams;
+int32_t next_stream_handle=1;
 int pending_encoding=0;
 int text_encodings[2]={0,0};
 std::string save_path;
@@ -118,6 +122,7 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
     save_path = mod.empty() ? base + "/game/save.bin" : base + "/mods/" + mod + "/save.bin";
     save_cache.clear();
     resource_exists_cache.clear();
+    resource_streams.clear();
     resource_cache.clear();
     pending_resource.reset();
     save_cache_exists = readFile(save_path, save_cache);
@@ -164,6 +169,40 @@ int32_t dbtb_resourceFiltered(void* name, int32_t filter) {
 }
 int32_t dbtb_resource(void* name) { return dbtb_resourceFiltered(name, 0); }
 int32_t dbtb_resourceEncoding() { return pending_encoding; }
+int32_t dbtb_openResourceStream(void* name, int32_t filter) {
+    if (resource_streams.size() >= 8) return -1;
+    const int32_t size=dbtb_resourceFiltered(name, filter);
+    if (size < 0) return -1;
+    if (size > 32 * 1024 * 1024) { pending_resource.reset(); return -1; }
+    const int32_t handle=next_stream_handle;
+    next_stream_handle=handle==INT32_MAX ? 1 : handle+1;
+    if (resource_streams.count(handle)) { pending_resource.reset(); return -1; }
+    resource_streams.emplace(handle, ResourceStream{pending_resource,0});
+    pending_resource.reset();
+    return handle;
+}
+int32_t dbtb_resourceStreamSize(int32_t handle) {
+    const auto stream=resource_streams.find(handle);
+    return stream==resource_streams.end() ? -1 : int32_t(stream->second.resource->bytes.size());
+}
+int32_t dbtb_readResourceStream(int32_t handle, int32_t position, void* target, int32_t size) {
+    auto stream=resource_streams.find(handle);
+    if (stream==resource_streams.end() || position<0 || size<0 || (size && !target)) return -1;
+    const auto& bytes=stream->second.resource->bytes;
+    if (size_t(position)>bytes.size() || size_t(size)>bytes.size()-size_t(position)) return -1;
+    if (size) std::memcpy(target,bytes.data()+position,size);
+    stream->second.largest_read=std::max(stream->second.largest_read,size_t(size));
+    return size;
+}
+void dbtb_closeResourceStream(int32_t handle) {
+    const auto stream=resource_streams.find(handle);
+    if (stream==resource_streams.end()) return;
+    std::fprintf(stderr,"Resource stream closed: bytes=%llu largest_read=%llu active=%u\n",
+        static_cast<unsigned long long>(stream->second.resource->bytes.size()),
+        static_cast<unsigned long long>(stream->second.largest_read),
+        unsigned(resource_streams.size()-1));
+    resource_streams.erase(stream);
+}
 int32_t dbtb_installedData() {
     // These are the 13 complete character triplets confirmed in the supplied
     // community APK, plus the shared assets needed for selection/combat.

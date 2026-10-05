@@ -10,16 +10,9 @@ public final class ResourceAdapter {
         GameData data=engine.ChrGameData[slot+(source==1?6:3)];
         String charset=encodings.get(data);return charset==null?"Shift_JIS":charset;
     }
-    public static boolean load(GameData data, GlobalWork gw, String name, int conversion, int filter) {
-        byte[] bytes;
-        try {
-            bytes = NativePlatform.readGameData(name, filter);
-            if(bytes==null)bytes=NativePlatform.readGameData(name + ".pac", filter);
-        } catch (Exception missingRaw) {
-            bytes = NativePlatform.readGameData(name + ".pac", filter);
-        }
-        if(bytes==null)return false;
-        encodings.put(data,NativePlatform.resourceEncoding()==1?"UTF-8":"Shift_JIS");
-        return data.Init(gw, bytes, conversion, filter);
+    public static java.io.InputStream open(GameData data, String name, int filter, boolean fallback) {
+        java.io.InputStream stream = NativePlatform.openGameData(fallback ? name + ".pac" : name, filter);
+        if (stream != null) encodings.put(data, NativePlatform.resourceEncoding()==1 ? "UTF-8" : "Shift_JIS");
+        return stream;
     }
 }

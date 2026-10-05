@@ -28,7 +28,7 @@ def main():
         parser.error('Use a fresh private work directory; refusing to overwrite')
     libs = args.lib_directory.resolve()
     for name in ['teavm-cli-0.12.3.jar', 'teavm-classlib-0.12.3.jar',
-                 'teavm-interop-0.12.3.jar', 'teavm-core-0.12.3.jar', 'asm-9.7.1.jar']:
+                 'teavm-interop-0.12.3.jar', 'teavm-core-0.12.3.jar', 'asm-9.7.1.jar', 'asm-tree-9.7.1.jar']:
         if not (libs / name).is_file():
             parser.error(f'Missing pinned dependency {name}')
     original, ecj = args.original_jar.resolve(), args.ecj.resolve()
@@ -53,10 +53,10 @@ def main():
             entry = zipfile.ZipInfo(path.relative_to(classes).as_posix())
             jar.writestr(entry, path.read_bytes())
     patch_classes = work / 'patch-classes'
-    run(['java', '-jar', ecj, '-8', '-d', patch_classes, '-cp', libs / 'asm-9.7.1.jar',
+    run(['java', '-jar', ecj, '-8', '-d', patch_classes, '-cp', f'{libs / "asm-9.7.1.jar"}:{libs / "asm-tree-9.7.1.jar"}',
          root / 'PatchResourceInit.java'], work / 'patch-build.log')
     patched = work / 'original-vfs.jar'
-    run(['java', '-cp', f'{patch_classes}:{libs / "asm-9.7.1.jar"}',
+    run(['java', '-cp', f'{patch_classes}:{libs / "asm-9.7.1.jar"}:{libs / "asm-tree-9.7.1.jar"}',
          'PatchResourceInit', original, patched], work / 'patch.log')
     run(['java', '-cp', f'{charset_registry}:{libs}/*:{adapters}:{patched}', 'org.teavm.cli.TeaVMRunner',
          '-t', 'c', '-d', work / 'c', '--min-heap', '8', '--max-heap', '48', '--strict',
