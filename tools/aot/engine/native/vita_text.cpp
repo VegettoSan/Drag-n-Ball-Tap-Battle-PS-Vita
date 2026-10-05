@@ -104,28 +104,35 @@ bool lineMetrics(int size, LineMetrics& out) {
     }
     if (!setSize(size)) return false;
 
-    // Android's original StringTexture uses Paint.getFontMetrics().top/bottom,
-    // i.e. font-wide metrics independent of the particular string. Use the PVF
-    // font-wide ascender/descender instead of deriving line height from each run.
-    int top = -std::max(1, size);
-    int bottom = std::max(1, size / 4);
-    ScePvfFontInfo info{};
-    if (scePvfGetFontInfo(font_id, &info) == 0) {
-        const int asc64 = info.maxIGlyphMetrics.ascender64;
-        const int desc64 = info.maxIGlyphMetrics.descender64;
-        if (asc64 > 0) {
-            // ceil(-ascender) matches Android's ceil(FontMetrics.top).
-            top = -std::max(1, asc64 >> 6);
-        }
-        if (desc64 != 0) {
-            const int magnitude = desc64 < 0 ? -desc64 : desc64;
-            bottom = std::max(1, (magnitude + 63) >> 6);
-        }
+    // Android StringTexture uses font-wide Paint.FontMetrics rather than metrics
+    // from the particular sentence. 00.12 tried ScePvfFontInfo.maxIGlyphMetrics,
+    // but on Vita those values do not track the active scePvfSetCharSize scale;
+    // the resulting 1-2 pixel RectF heights made DrawText sample text as thin
+    // horizontal lines. Build one stable envelope per requested size from scaled
+    // ScePvfCharInfo instead. The conservative size/quarter-size fallback is the
+    // same baseline that rendered legibly before the 00.12 optimization.
+    int ascent = std::max(1, size);
+    int descent = std::max(1, size / 4);
+    static const uint16_t probes[] = {
+        uint16_t('H'), uint16_t('g'), uint16_t('0'),
+        0x3042, // hiragana A
+        0x30A2, // katakana A
+        0x6F22, // common CJK ideograph
+        0x3001, // Japanese comma
+        0xFF10  // full-width zero
+    };
+    for (uint16_t c : probes) {
+        ScePvfCharInfo info{};
+        if (scePvfGetCharInfo(font_id, c, &info) != 0) continue;
+        const int bearing_y = info.glyphMetrics.horizontalBearingY64 >> 6;
+        ascent = std::max(ascent, bearing_y);
+        descent = std::max(descent, int(info.bitmapHeight) - bearing_y);
     }
+
     LineMetrics metrics;
-    metrics.top = top;
-    metrics.bottom = bottom;
-    metrics.height = std::max(1, std::abs(top) + std::abs(bottom));
+    metrics.top = -std::max(1, ascent);
+    metrics.bottom = std::max(1, descent);
+    metrics.height = std::max(1, -metrics.top + metrics.bottom);
     line_metrics_cache.emplace(size, metrics);
     out = metrics;
     return true;
