@@ -1,6 +1,7 @@
 package com.namcobandaigames.dragonballtap.apk;
 
 import org.teavm.interop.Address;
+import org.teavm.runtime.EventQueue;
 import android.content.Context;
 public final class VitaEngine {
     public static void main(String[] args){
@@ -24,7 +25,15 @@ public final class VitaEngine {
         while(gw.bThreadActive){int count=NativePlatform.frame(Address.ofData(events));if(count<0)break;if(count>10)throw new IllegalStateException("Input overflow");gw.bBackKey=events[40]!=0;
             for(int i=0;i<count;i++){int p=i*4,id=events[p],phase=events[p+3];int x=(int)(events[p+1]*gw.fScreenScale)-gw.iScreenOffsetX;int y=(int)(events[p+2]*gw.fScreenScale)-gw.iScreenOffsetY;
                 if(phase==2)gw.keyData.Clear(id);else gw.keyData.Set(x,y,phase==0?1:0,id);}
-            engine.Run(gw);NativePlatform.present();frames++;
+            engine.Run(gw);NativePlatform.present();
+            // TeaVM's C backend maps java.lang.Thread to cooperative fibers
+            // scheduled through EventQueue. Android normally pumps its scheduler,
+            // but this Vita entry point owns the main loop. Without this call the
+            // original AutoCardTask is queued forever, leaving the ability-card
+            // screen stuck on its processing overlay even though rendering/input
+            // keep running. Run at most one ready event per frame so background
+            // work progresses without draining unrelated delayed events at once.
+            EventQueue.processSingle();frames++;
         }
         System.out.println("ORIGINAL ENGINE RUN FRAMES="+frames);engine.Dispose(gw);
     }
