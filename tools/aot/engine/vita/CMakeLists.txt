@@ -72,6 +72,10 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   $<$<COMPILE_LANGUAGE:C>:-Wno-unused-function -Wno-unused-variable -Wno-unused-parameter>
   $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions -fno-rtti>
 )
+# TeaVM 0.12.3 emits the complete reachable Java program as one ~24 MiB C
+# amalgamation. -O2 exceeds the memory budget of modest builders; -O1 keeps
+# useful optimization while native render/audio/platform code remains at -O2.
+set_source_files_properties("${TEAVM_C_DIR}/all.c" PROPERTIES COMPILE_OPTIONS "-O1")
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-q")
 
 # Dependencies are ordered from consumers to providers, matching vitaGL ports.
