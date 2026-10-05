@@ -33,17 +33,18 @@
     "teavm_npe_trace_escape_fix": "767f8479302e6184bd815fc6fe60aeef2a18be52"
   },
   "build_00_13": {
-    "artifact": "DBTapBattle-Vita-00.13-text-voice-fix.vpk",
-    "size": 2217753,
-    "sha256": "4a2f896c6ba967e01835ee6e54a74fdeb5d519ef0fb94cf07c7a2fea7ea13a8d",
-    "eboot_sha256": "89c7b5914cf321892fddcda1e2563d966100a210670cb959af0b22b218140ca2",
-    "elf_sha256": "7c526efb018860f941a8414b01b55f9f7b557c97585371771237d3524b45742e",
+    "artifact": "DBTapBattle-Vita-00.13-text-voicefix.vpk",
+    "size": 2217384,
+    "sha256": "053f1d2f11c89b797a5e5f5f85c370d6ecbbd838a9bc742fe9a2ec2dcab9a187",
+    "eboot_sha256": "d392f9d880a8f927bd3204c914f84f9ea33ab657c9d633e35830820b32ad754a",
+    "elf_sha256": "c051a1474bf3f5cd7d4c902d0f5c8cf301cbd1e7f0281ccc73e64696be05f232",
     "zip_test": "pass",
     "title_id": "DBTB00001",
     "app_ver": "00.13",
     "contains_icon0": false,
     "pipeline": "fresh original APK -> dex2jar -> TeaVM private generation -> Vita runtime patch -> VitaSDK ARM ELF -> VELF -> SELF -> VPK",
-    "build_result": "success"
+    "build_result": "success",
+    "regeneration_note": "Artifact regenerated after chat/runtime interruption; dex2jar/TeaVM output and ZIP timestamps are not byte-for-byte deterministic, so this hash supersedes the earlier transient 00.13 artifact hash for the file being distributed for hardware testing."
   },
   "profile_support_in_build": {
     "Original": "included",
