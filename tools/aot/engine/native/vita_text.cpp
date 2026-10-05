@@ -32,6 +32,10 @@ struct Glyph {
     int advance = 1;
     int bearing_x = 0;
     int bearing_y = 0;
+    int bearing_x64 = 0;
+    int bearing_y64 = 0;
+    int bitmap_width = 0;
+    int bitmap_height = 0;
     int width = 0;
     int height = 0;
     int margin = 2;
@@ -153,8 +157,12 @@ Glyph* glyphFor(int size, uint16_t c, bool need_pixels, bool& raster_miss) {
         ScePvfCharInfo info{};
         if (scePvfGetCharInfo(font_id, c, &info) == 0) {
             glyph.advance = std::max(1, info.glyphMetrics.horizontalAdvance64 >> 6);
-            glyph.bearing_x = info.glyphMetrics.horizontalBearingX64 >> 6;
-            glyph.bearing_y = info.glyphMetrics.horizontalBearingY64 >> 6;
+            glyph.bearing_x64 = info.glyphMetrics.horizontalBearingX64;
+            glyph.bearing_y64 = info.glyphMetrics.horizontalBearingY64;
+            glyph.bearing_x = glyph.bearing_x64 >> 6;
+            glyph.bearing_y = glyph.bearing_y64 >> 6;
+            glyph.bitmap_width = static_cast<int>(info.bitmapWidth);
+            glyph.bitmap_height = static_cast<int>(info.bitmapHeight);
         }
         // Keep metrics for every character so RectF width remains identical to
         // Android, but defer bitmap generation until a glyph can actually touch
@@ -171,28 +179,25 @@ Glyph* glyphFor(int size, uint16_t c, bool need_pixels, bool& raster_miss) {
     glyph.rasterized = true;
     if (!setSize(size)) return &glyph;
 
-    ScePvfCharInfo info{};
-    ScePvfIrect rect{};
-    if (scePvfGetCharInfo(font_id, c, &info) == 0 && scePvfGetCharImageRect(font_id, c, &rect) == 0) {
-        glyph.advance = std::max(1, info.glyphMetrics.horizontalAdvance64 >> 6);
-        glyph.bearing_x = info.glyphMetrics.horizontalBearingX64 >> 6;
-        glyph.bearing_y = info.glyphMetrics.horizontalBearingY64 >> 6;
-        if (rect.width > 0 && rect.height > 0) {
-            glyph.width = int(rect.width) + glyph.margin * 2;
-            glyph.height = int(rect.height) + glyph.margin * 2;
-            if (glyph.width <= 1024 && glyph.height <= 1024) {
-                glyph.mask.assign(size_t(glyph.width) * glyph.height, 0);
-                ScePvfUserImageBufferRec image{};
-                image.pixelFormat = SCE_PVF_USERIMAGE_DIRECT8;
-                image.xPos64 = (glyph.margin << 6) - info.glyphMetrics.horizontalBearingX64;
-                image.yPos64 = (glyph.margin << 6) + info.glyphMetrics.horizontalBearingY64;
-                image.rect.width = static_cast<uint16_t>(glyph.width);
-                image.rect.height = static_cast<uint16_t>(glyph.height);
-                image.bytesPerLine = static_cast<uint16_t>(glyph.width);
-                image.buffer = glyph.mask.data();
-                glyph.drawable = scePvfGetCharGlyphImage(font_id, c, &image) == 0;
-                if (!glyph.drawable) glyph.mask.clear();
-            }
+    // scePvfGetCharInfo above already returns the bitmap dimensions and exact
+    // 26.6 bearings. Re-querying CharInfo and CharImageRect for every new CJK
+    // glyph was the dominant character-selection hitch on real hardware. Keep
+    // that metadata in the cache and make rasterization a single PVF call.
+    if (glyph.bitmap_width > 0 && glyph.bitmap_height > 0) {
+        glyph.width = glyph.bitmap_width + glyph.margin * 2;
+        glyph.height = glyph.bitmap_height + glyph.margin * 2;
+        if (glyph.width <= 1024 && glyph.height <= 1024) {
+            glyph.mask.assign(size_t(glyph.width) * glyph.height, 0);
+            ScePvfUserImageBufferRec image{};
+            image.pixelFormat = SCE_PVF_USERIMAGE_DIRECT8;
+            image.xPos64 = (glyph.margin << 6) - glyph.bearing_x64;
+            image.yPos64 = (glyph.margin << 6) + glyph.bearing_y64;
+            image.rect.width = static_cast<uint16_t>(glyph.width);
+            image.rect.height = static_cast<uint16_t>(glyph.height);
+            image.bytesPerLine = static_cast<uint16_t>(glyph.width);
+            image.buffer = glyph.mask.data();
+            glyph.drawable = scePvfGetCharGlyphImage(font_id, c, &image) == 0;
+            if (!glyph.drawable) glyph.mask.clear();
         }
     }
     return &glyph;
