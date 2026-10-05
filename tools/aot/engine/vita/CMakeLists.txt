@@ -36,6 +36,7 @@ add_executable(${PROJECT_NAME}
   "${REPO_ROOT}/tools/aot/engine/native/vita_platform.cpp"
   "${REPO_ROOT}/tools/aot/engine/native/vita_text.cpp"
   "${REPO_ROOT}/tools/aot/engine/native/vita_audio.cpp"
+  "${REPO_ROOT}/tools/aot/engine/native/vita_compat.c"
   "${REPO_ROOT}/tools/aot/engine/vita/heap.c"
   "${REPO_ROOT}/tools/aot/vita/utf16.c"
   "${REPO_ROOT}/src/vfs.cpp"
