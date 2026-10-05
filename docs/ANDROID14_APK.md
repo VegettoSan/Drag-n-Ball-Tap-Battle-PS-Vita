@@ -95,7 +95,9 @@ and ext.u table reads in this exact DEX; they are not universal mod constants.
   width × height × 4 bytes, uploaded GL_RGBA/GL_UNSIGNED_BYTE by libabc.so.
 - Nested SPR uses the same profile, restarting the record index at zero.
 - Converted tables: count XOR 34594, offset XOR unsigned(-1887452470) XOR i,
-  X/Y sizes XOR 23261/47592 XOR i. Native converted-table reading is pending.
+  X/Y sizes XOR 23261/47592 XOR i. Native normalization is implemented for
+  verified `bin` GameData entries and the converted DAC tables in gamedata/text00;
+  raw CNV and other DAC schemas are deliberately not passed through this decoder.
 - WAV wrapper length: LE u32 XOR 42802 XOR i, followed by a encoding flag;
   native sound decoding is pending. Do not call it an ordinary Ogg stream.
 
@@ -188,11 +190,16 @@ truncated/trailing/incorrect-size DEFLATE, allocation limits, metadata-first PAC
 out-of-range encoded table entries, memory limits and clean state after failure.
 Nine extractor tests and real-byte-preservation checks also pass.
 
-This session lacks VitaSDK/CMake and device/emulator execution. New native
-source/preview is therefore **HOST CONFIRMED**, ARM build/GPU PENDING. No new VPK
-was produced, and the earlier build_validation.json is not evidence of these
-changes. Character/menu/combat logic, community converted tables, WAV playback,
-saves and code-dependent mod mechanics remain pending. Asset mods retaining the
-verified profile can be imported/read now; "fully playable mod support" is not
-claimed. Different private constants must fail explicitly or receive a new
-reviewed codec profile.
+Subsequent full-engine work has now progressed beyond this original preview-only
+milestone. On physical Vita, build 00.10 has HARDWARE CONFIRMED front touch,
+audible audio and Android14 navigation into character selection. That test also
+exposed a previously unnormalized layer: encoded `bin` payloads used by character
+GameData. The native bridge now restores only their verified converted-table
+metadata before handing them to the unchanged original `GameData.binCnv()` path;
+host regression compares all 68 Community14 BIN tables record-by-record before
+and after normalization. Converted CNV/raw DAC formats remain separate schemas.
+
+Character-selection continuation and complete combat are still pending hardware
+verification. Code-dependent mod mechanics are not assumed compatible merely
+because asset encoding matches. Different private constants must fail explicitly
+or receive a new reviewed codec profile.
