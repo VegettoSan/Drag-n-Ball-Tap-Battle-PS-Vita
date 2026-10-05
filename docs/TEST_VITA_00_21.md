@@ -25,3 +25,5 @@ La compilación y las pruebas host no sustituyen tu comprobación en consola.
 Se probaron la mezcla/DSP y las rutas de error reales del adaptador con APIs
 Vita simuladas. La recuperación del menú y la calidad audible quedan pendientes.
 Evidencia del cierre: `evidence/vita_hardware_audio_startup_00.20.json`.
+El motor completo se compiló a ELF/VELF/SELF/VPK; se verificaron CRC, versión,
+título, eboot y fuente. Hashes: `evidence/vita_audio_startup_build_00.21.json`.

@@ -300,3 +300,8 @@ setup during the same failed session and retry after disposal are verified.
 DSP tests and 12 Python regressions remain green. This corrects test coverage
 that previously assumed every thread setup succeeds. Restoring the working
 priority is implemented; physical worker startup/menu recovery is pending.
+
+The complete privately regenerated original engine also builds and packages as
+00.21 at 07222bb. Native PAC/PNG/texture ownership checks pass ASan/UBSan; VPK
+CRC/SFO/title/eboot and original-engine/source markers pass. See
+`evidence/vita_audio_startup_build_00.21.json`. This is build/host evidence only.

@@ -1,0 +1,55 @@
+{
+  "version": "00.21",
+  "source_commit": "07222bb42f20ab2bac953531e42b8cf3796940ca",
+  "implementation_commit": "2e71d519939e9bf34b9f07b14ae58f0ecd14bf39",
+  "size_bytes": 2235382,
+  "sha256": "ec551654abc68dfc5494c4f6b22ca620727c8fb898ff76b1682bbf141554bc47",
+  "eboot_sha256": "e539e9f69772cde77538959f29e733b251d2092c6985ac4741307c16657ab55f",
+  "zip_crc": "PASS",
+  "sfo": {
+    "APP_VER": "00.21",
+    "ATTRIBUTE": 32768,
+    "ATTRIBUTE2": 0,
+    "ATTRIBUTE_MINOR": 16,
+    "BOOT_FILE": "",
+    "CATEGORY": "gd",
+    "CONTENT_ID": "",
+    "EBOOT_APP_MEMSIZE": 0,
+    "EBOOT_ATTRIBUTE": 0,
+    "EBOOT_PHY_MEMSIZE": 0,
+    "LAREA_TYPE": 0,
+    "NP_COMMUNICATION_ID": "",
+    "PARENTAL_LEVEL": 0,
+    "PSP2_DISP_VER": "00.000",
+    "PSP2_SYSTEM_VER": 0,
+    "STITLE": "Dragon Ball Tap Battle Vita",
+    "TITLE": "Dragon Ball Tap Battle Vita",
+    "TITLE_ID": "DBTB00001",
+    "VERSION": "00.00"
+  },
+  "entries": [
+    "sce_sys/param.sfo",
+    "eboot.bin",
+    "notices/THIRD_PARTY.md",
+    "notices/vitaGL-GPL-3.0.txt",
+    "notices/vitaGL-LGPL-3.0.txt"
+  ],
+  "contains_commercial_asset_data": false,
+  "audio_worker_priority": "0x10000100 (restored working 00.19 value)",
+  "checks": {
+    "audio_adapter": "ASan/UBSan PASS; real setup/error cleanup, ready reuse, no repeated attempts after failure, recovery after disposal; port/thread calls mocked",
+    "audio_dsp": "ASan/UBSan PASS; voice resampler spectrum (32.3 dB image reduction), DC/bounds/edges, original rates/duration, stereo/loops/3 voices, limiter, RIFF and PCM cache",
+    "native_resources": "ASan/UBSan PASS; real PNG decode and filtered PAC bridge/cache, unchanged pixels, ownership/modes/collision/idle eviction/render target/profile reset; GL mocked",
+    "python": "12 PASS",
+    "java_generation": "Pinned TeaVM 0.12.3 PASS; 465 classes and 4059 methods",
+    "full_engine": "Original generated ARM ELF/VELF/SELF/VPK PASS; VitaSDK 2026.08 GCC 15.2.0",
+    "artifact": "SFO version/title, ZIP CRC, eboot equality and ELF original-engine/version/source markers PASS"
+  },
+  "hardware_status": "PENDING: 00.21 worker startup and Original menu recovery; retained text, switching latency, audible quality and battle FPS",
+  "previous_hardware_failure": "See vita_hardware_audio_startup_00.20.json: 20 worker setup failures, caught BGM load exception and exit at frame 570",
+  "native_ci": {
+    "run_id": 37368539461,
+    "status": "queued at artifact verification",
+    "scope": "Independent native smoke link job; not this delivered full engine"
+  }
+}

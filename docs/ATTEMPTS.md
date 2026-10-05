@@ -738,3 +738,11 @@ DSP/limiter/PCM/three-channel checks still pass, including 32.3 dB spectral-imag
 reduction. Python's 12 regressions pass. The regenerated original engine has
 465 classes and 4059 methods; build source 07222bb packages 00.21.
 Physical worker startup and reaching the menu remain PENDING testing this VPK.
+
+The native resource probe also passes ASan/UBSan using the real supplied Gen
+PNGs/PACs with GL mocked. The first invocation used a flat extraction instead
+of the GameVfs game/ layout; another symlink fixture was correctly rejected by
+the VFS. A real game/ directory then passes all bridge/cache/texture checks.
+The complete 00.21 build succeeds through ELF/VELF/SELF/VPK. CRC, APP_VER 00.21,
+TITLE_ID DBTB00001, eboot equality and original-engine/source markers pass;
+see `evidence/vita_audio_startup_build_00.21.json`.
