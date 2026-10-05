@@ -1,0 +1,58 @@
+name: Import approved LiveArea assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/livearea/.payload/READY'
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reconstruct approved PNGs
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="assets/livearea"
+          for name in icon0.png bg0.png startup.png pic0.png; do
+            cat "$root/.payload/$name/"*.b64 | base64 --decode > "$root/$name"
+          done
+
+          sha256sum "$root/icon0.png" | grep -q '^26ea71975390073a76c69f83d526f039f7ffb96aaad34d0cc1e5203d9541b115  '
+          sha256sum "$root/bg0.png" | grep -q '^df12c6104b0b877c9848c2385a3c8d8a4e093ddc3e215169d99811aac4963b0a  '
+          sha256sum "$root/startup.png" | grep -q '^0f00cf71705d1a73de8f5a755505dd4d6f6b7d88b1966aa385c70dca6ba31cba  '
+          sha256sum "$root/pic0.png" | grep -q '^17d875946a077684ae62720967941d9d3b82ba3b080d52a3eb7f7e93abfab3ce  '
+
+          file "$root/icon0.png" | grep -q '128 x 128'
+          file "$root/bg0.png" | grep -q '840 x 500'
+          file "$root/startup.png" | grep -q '280 x 158'
+          file "$root/pic0.png" | grep -q '960 x 544'
+
+          cat > "$root/ASSET_HASHES.txt" <<'EOF'
+Approved LiveArea asset hashes:
+
+icon0.png  SHA-256 26ea71975390073a76c69f83d526f039f7ffb96aaad34d0cc1e5203d9541b115
+bg0.png     SHA-256 df12c6104b0b877c9848c2385a3c8d8a4e093ddc3e215169d99811aac4963b0a
+startup.png SHA-256 0f00cf71705d1a73de8f5a755505dd4d6f6b7d88b1966aa385c70dca6ba31cba
+pic0.png    SHA-256 17d875946a077684ae62720967941d9d3b82ba3b080d52a3eb7f7e93abfab3ce
+EOF
+
+      - name: Publish approved artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf assets/livearea/.payload
+          rm -f .github/workflows/import-livearea-assets.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A assets/livearea .github/workflows/import-livearea-assets.yml
+          git commit -m "Add approved PS Vita LiveArea artwork"
+          git push
