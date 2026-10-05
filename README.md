@@ -4,6 +4,23 @@ Native PS Vita port/reconstruction of **Dragon Ball Tap Battle**, targeting Vita
 
 > This repository contains port code and documentation only. Original copyrighted game data is **not** committed. Users provide their own legally obtained APK/data.
 
+## Current full engine — 00.18 test build
+
+The original Java engine is generated privately through TeaVM and runs on real
+Vita: menus, character selection and combat are hardware confirmed. The user
+confirmed the card-processing and startup fixes in 00.16, while reporting
+character-switch pauses, rough voices and 35–45 FPS during combat.
+
+00.18 adds in-memory PVF fonts, reusable GLES buffers, interpolated/faster audio
+mixing and timing diagnostics at full 960×544. The complete game VPK and separate
+native smoke both compile/package; actual performance gains await hardware
+verification. See [00.18 install/test instructions](docs/TEST_VITA_00_18.md) and
+[artifact evidence](docs/evidence/vita_performance_build_00.18.json).
+
+The sections below describe the earlier bootstrap milestone. Full engine build
+instructions are in [tools/aot/engine/README.md](tools/aot/engine/README.md).
+Each profile saves to its own `game/save.bin` or `mods/<profile>/save.bin`.
+
 ## Core goals
 
 - Reconstruct the original game behavior on PS Vita instead of redesigning it.
