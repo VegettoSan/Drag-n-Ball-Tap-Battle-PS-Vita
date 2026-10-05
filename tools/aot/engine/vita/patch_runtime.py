@@ -49,7 +49,7 @@ def main():
     meth_otr_ExceptionHandling_throwException((teavm_tmp_ptr_0 = meth_otr_Allocator_allocate(&jl_NullPointerException_Cls), meth_jl_NullPointerException__init_(teavm_tmp_ptr_0), teavm_tmp_ptr_0));
 }''', '''void teavm_throwNullPointerException() {
 #if defined(__vita__)
-    teavm_printString(u"[DBTB] NullPointerException TeaVM stack:\n");
+    teavm_printString(u"[DBTB] NullPointerException TeaVM stack:\\n");
     meth_otr_ExceptionHandling_printStack();
 #endif
     void* teavm_tmp_ptr_0;
