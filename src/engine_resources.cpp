@@ -30,6 +30,53 @@ const char* tag(uint32_t type) {
     }
 }
 
+bool strictUtf8Chunk(const uint8_t* data, size_t size, int& non_ascii) {
+    non_ascii = 0;
+    for (size_t i = 0; i < size;) {
+        const uint8_t c = data[i];
+        if (c < 0x80) { ++i; continue; }
+        size_t extra = 0;
+        uint8_t second_min = 0x80, second_max = 0xbf;
+        if (c >= 0xc2 && c <= 0xdf) {
+            extra = 1;
+        } else if (c >= 0xe0 && c <= 0xef) {
+            extra = 2;
+            if (c == 0xe0) second_min = 0xa0;
+            if (c == 0xed) second_max = 0x9f;
+        } else if (c >= 0xf0 && c <= 0xf4) {
+            extra = 3;
+            if (c == 0xf0) second_min = 0x90;
+            if (c == 0xf4) second_max = 0x8f;
+        } else {
+            return false;
+        }
+        if (i + extra >= size) return false;
+        if (data[i + 1] < second_min || data[i + 1] > second_max) return false;
+        for (size_t j = 2; j <= extra; ++j)
+            if ((data[i + j] & 0xc0) != 0x80) return false;
+        ++non_ascii;
+        i += extra + 1;
+    }
+    return true;
+}
+
+int utf8TextScore(const uint8_t* data, size_t size) {
+    int score = 0;
+    size_t start = 0;
+    for (size_t i = 0; i <= size; ++i) {
+        if (i != size && data[i] != 0) continue;
+        if (i > start) {
+            int non_ascii = 0;
+            if (strictUtf8Chunk(data + start, i - start, non_ascii) && non_ascii >= 2) {
+                score += non_ascii;
+                if (score >= 16) return score;
+            }
+        }
+        start = i + 1;
+    }
+    return score;
+}
+
 bool normaliseConvertedTable(std::vector<uint8_t>& payload, std::string& error) {
     GameDataTable table;
     if (!table.decode(payload, PacEncoding::Community14)) { error = table.error(); return false; }
@@ -185,6 +232,25 @@ bool normaliseEnginePac(const std::vector<uint8_t>& input, const std::string& lo
     std::vector<uint8_t> pending;
     if (!normalise(input, logical_name, pending, error, 0)) return false;
     output.swap(pending); return true;
+}
+
+int detectEngineTextEncoding(const std::vector<uint8_t>& normalised_pac, int fallback_encoding) {
+    const int fallback = fallback_encoding ? 1 : 0;
+    if (normalised_pac.size() < 2) return fallback;
+    const size_t count = le16(normalised_pac.data());
+    const size_t base = 2 + count * 16;
+    if (base > normalised_pac.size()) return fallback;
+    int score = 0;
+    for (size_t i = 0; i < count; ++i) {
+        const uint8_t* row = normalised_pac.data() + 2 + i * 16;
+        if (std::memcmp(row + 8, "bin", 3) != 0 && std::memcmp(row + 8, "dac", 3) != 0) continue;
+        const size_t offset = le32(row);
+        const size_t size = le32(row + 4);
+        if (offset > normalised_pac.size() - base || size > normalised_pac.size() - base - offset) continue;
+        score += utf8TextScore(normalised_pac.data() + base + offset, size);
+        if (score >= 16) return 1;
+    }
+    return fallback;
 }
 
 bool readEngineResource(const GameVfs& vfs, const std::string& name,
