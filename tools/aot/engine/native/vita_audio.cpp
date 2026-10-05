@@ -1,5 +1,6 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
+#include "log.hpp"
 
 #include <psp2/audioout.h>
 #include <psp2/kernel/threadmgr.h>
@@ -10,7 +11,6 @@
 #include <cstdint>
 #include <cstring>
 #include <memory>
-#include <mutex>
 #include <string>
 #include <vector>
 
@@ -31,7 +31,17 @@ struct Voice {
     bool loop = false;
 };
 
-std::mutex audio_mutex;
+std::atomic_flag audio_lock = ATOMIC_FLAG_INIT;
+
+struct AudioLockGuard {
+    AudioLockGuard() {
+        while (audio_lock.test_and_set(std::memory_order_acquire))
+            sceKernelDelayThread(50);
+    }
+    ~AudioLockGuard() { audio_lock.clear(std::memory_order_release); }
+    AudioLockGuard(const AudioLockGuard&) = delete;
+    AudioLockGuard& operator=(const AudioLockGuard&) = delete;
+};
 std::vector<std::shared_ptr<Clip>> effects;
 std::vector<std::shared_ptr<Clip>> streamed_voice_clips;
 std::vector<Voice> active_effects;
@@ -149,7 +159,8 @@ int audioThread(SceSize, void*) {
 bool ensureAudio() {
     if (audio_port >= 0) return true;
     audio_port = sceAudioOutOpenPort(SCE_AUDIO_OUT_PORT_TYPE_MAIN, kFrames, kOutputRate, SCE_AUDIO_OUT_MODE_STEREO);
-    if (audio_port < 0) return false;
+    if (audio_port < 0) { runtimeLog("Audio: sceAudioOutOpenPort failed: " + std::to_string(audio_port)); return false; }
+    runtimeLog("Audio: output port opened");
     audio_running.store(true);
     audio_thread = sceKernelCreateThread("DBTB audio", audioThread, 0x10000100, 0x10000, 0, 0, nullptr);
     if (audio_thread < 0 || sceKernelStartThread(audio_thread, 0, nullptr) < 0) {
@@ -158,15 +169,17 @@ bool ensureAudio() {
         audio_thread = -1;
         sceAudioOutReleasePort(audio_port);
         audio_port = -1;
+        runtimeLog("Audio: worker thread start failed");
         return false;
     }
+    runtimeLog("Audio: worker thread started");
     return true;
 }
 }
 
 void dbtb_mixAudio(short* interleaved, int frames) {
     if (!interleaved || frames <= 0) return;
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     for (int i = 0; i < frames; ++i) {
         int32_t left = 0, right = 0;
         mixVoice(bgm, left, right);
@@ -184,21 +197,21 @@ int32_t dbtb_effectLoad(void* raw_name) {
     if (!raw_name || !ensureAudio()) return -1;
     auto clip = decodeOgg(audioName(static_cast<const char*>(raw_name)));
     if (!clip) return -1;
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     effects.push_back(std::move(clip));
     return static_cast<int32_t>(effects.size());
 }
 
 void dbtb_effectPlay(int32_t id, float gain) {
     if (!ensureAudio()) return;
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     if (id <= 0 || size_t(id) > effects.size() || !effects[size_t(id - 1)]) return;
     if (active_effects.size() >= 32) active_effects.erase(active_effects.begin());
     active_effects.push_back({effects[size_t(id - 1)], 0.0, gain, false});
 }
 
 void dbtb_effectStop(void) {
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     active_effects.clear();
 }
 
@@ -206,26 +219,26 @@ int32_t dbtb_voiceLoad(void* data, int32_t size) {
     if (!ensureAudio()) return -1;
     auto clip = decodeVoiceBytes(data, size);
     if (!clip) return -1;
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     streamed_voice_clips.push_back(std::move(clip));
     return static_cast<int32_t>(streamed_voice_clips.size());
 }
 
 void dbtb_voicePlay(int32_t id, float gain) {
     if (!ensureAudio()) return;
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     if (id <= 0 || size_t(id) > streamed_voice_clips.size() || !streamed_voice_clips[size_t(id - 1)]) return;
     active_voices.push_back({streamed_voice_clips[size_t(id - 1)], 0.0, gain, false});
 }
 
 void dbtb_voiceRelease(void) {
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     active_voices.clear();
     streamed_voice_clips.clear();
 }
 
 void dbtb_voiceStop(void) {
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     active_voices.clear();
 }
 
@@ -233,13 +246,13 @@ int32_t dbtb_bgmPlay(void* raw_name, float gain, int32_t loop) {
     if (!raw_name || !ensureAudio()) return -1;
     auto clip = decodeOgg(audioName(static_cast<const char*>(raw_name)));
     if (!clip) return -1;
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     bgm = {std::move(clip), 0.0, gain, loop != 0};
     return 0;
 }
 
 void dbtb_bgmStop(void) {
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     bgm = Voice{};
 }
 
@@ -254,7 +267,7 @@ void dbtb_audioDispose(void) {
         sceAudioOutReleasePort(audio_port);
         audio_port = -1;
     }
-    std::lock_guard<std::mutex> lock(audio_mutex);
+    AudioLockGuard lock;
     bgm = Voice{};
     active_effects.clear();
     active_voices.clear();
