@@ -36,6 +36,7 @@ struct Glyph {
     int height = 0;
     int margin = 2;
     bool drawable = false;
+    bool rasterized = false;
     std::vector<uint8_t> mask;
 };
 
@@ -142,15 +143,34 @@ bool lineMetrics(int size, LineMetrics& out) {
     return true;
 }
 
-Glyph* glyphFor(int size, uint16_t c, bool& cache_miss) {
+Glyph* glyphFor(int size, uint16_t c, bool need_pixels, bool& raster_miss) {
     const uint64_t key = (uint64_t(uint32_t(size)) << 16) | uint64_t(c);
     auto existing = glyph_cache.find(key);
-    if (existing != glyph_cache.end()) return &existing->second;
-    cache_miss = true;
-    if (!setSize(size)) return nullptr;
+    if (existing == glyph_cache.end()) {
+        if (!setSize(size)) return nullptr;
+        Glyph glyph;
+        glyph.advance = std::max(1, size / 2);
+        ScePvfCharInfo info{};
+        if (scePvfGetCharInfo(font_id, c, &info) == 0) {
+            glyph.advance = std::max(1, info.glyphMetrics.horizontalAdvance64 >> 6);
+            glyph.bearing_x = info.glyphMetrics.horizontalBearingX64 >> 6;
+            glyph.bearing_y = info.glyphMetrics.horizontalBearingY64 >> 6;
+        }
+        // Keep metrics for every character so RectF width remains identical to
+        // Android, but defer bitmap generation until a glyph can actually touch
+        // the 512 px StringTexture. Large character-description strings often
+        // contain 450-585 characters even though only the visible prefix can be
+        // sampled; the old path rasterized the entire off-screen tail.
+        if (glyph_cache.size() >= 2048) glyph_cache.clear();
+        existing = glyph_cache.emplace(key, std::move(glyph)).first;
+    }
 
-    Glyph glyph;
-    glyph.advance = std::max(1, size / 2);
+    Glyph& glyph = existing->second;
+    if (!need_pixels || glyph.rasterized) return &glyph;
+    raster_miss = true;
+    glyph.rasterized = true;
+    if (!setSize(size)) return &glyph;
+
     ScePvfCharInfo info{};
     ScePvfIrect rect{};
     if (scePvfGetCharInfo(font_id, c, &info) == 0 && scePvfGetCharImageRect(font_id, c, &rect) == 0) {
@@ -175,12 +195,7 @@ Glyph* glyphFor(int size, uint16_t c, bool& cache_miss) {
             }
         }
     }
-
-    // Bound memory without making every dialogue pay PVF cost forever. The game
-    // normally stays far below this; clearing only occurs on pathological mods.
-    if (glyph_cache.size() >= 2048) glyph_cache.clear();
-    auto inserted = glyph_cache.emplace(key, std::move(glyph));
-    return &inserted.first->second;
+    return &glyph;
 }
 
 void sourceOver(uint8_t* dst, int r, int g, int b, int a, uint8_t coverage) {
@@ -189,6 +204,20 @@ void sourceOver(uint8_t* dst, int r, int g, int b, int a, uint8_t coverage) {
     const int sr = (r * sa + 127) / 255;
     const int sg = (g * sa + 127) / 255;
     const int sb = (b * sa + 127) / 255;
+    if (dst[3] == 0) {
+        dst[0] = static_cast<uint8_t>(sr);
+        dst[1] = static_cast<uint8_t>(sg);
+        dst[2] = static_cast<uint8_t>(sb);
+        dst[3] = static_cast<uint8_t>(sa);
+        return;
+    }
+    if (sa == 255) {
+        dst[0] = static_cast<uint8_t>(r);
+        dst[1] = static_cast<uint8_t>(g);
+        dst[2] = static_cast<uint8_t>(b);
+        dst[3] = 255;
+        return;
+    }
     const int inv = 255 - sa;
     dst[0] = static_cast<uint8_t>(std::min(255, sr + (dst[0] * inv + 127) / 255));
     dst[1] = static_cast<uint8_t>(std::min(255, sg + (dst[1] * inv + 127) / 255));
@@ -200,6 +229,7 @@ void drawGlyph(TextSurface& target, const Glyph& glyph, int pen_x, int baseline,
                int r, int g, int b, int a) {
     if (!glyph.drawable || glyph.mask.empty()) return;
     const int origin_x = pen_x + glyph.bearing_x - glyph.margin;
+    if (origin_x >= target.width || origin_x + glyph.width <= 0) return;
     const int origin_y = baseline - glyph.bearing_y - glyph.margin;
     for (int y = 0; y < glyph.height; ++y) {
         const int dy = origin_y + y;
@@ -324,10 +354,11 @@ int32_t dbtb_drawText(int32_t id, void* raw_text, int32_t length, int32_t size,
     int misses = 0;
     for (int i = 0; i < length; ++i) {
         bool cache_miss = false;
-        Glyph* glyph = glyphFor(size, text[i], cache_miss);
+        const bool need_pixels = pen < s->width + size;
+        Glyph* glyph = glyphFor(size, text[i], need_pixels, cache_miss);
         if (cache_miss) ++misses;
         if (!glyph) continue;
-        drawGlyph(*s, *glyph, pen, baseline, r, g, b, a);
+        if (need_pixels) drawGlyph(*s, *glyph, pen, baseline, r, g, b, a);
         pen += glyph->advance;
     }
 
