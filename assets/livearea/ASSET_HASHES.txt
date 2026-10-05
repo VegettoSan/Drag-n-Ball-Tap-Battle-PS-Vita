@@ -1,6 +1,6 @@
-Approved local asset hashes before repository packaging:
+Approved LiveArea asset hashes (exact PNG bytes reconstructed for VPK packaging):
 
-icon0.png  SHA-256 pending-recheck
+icon0.png  SHA-256 26ea71975390073a76c69f83d526f039f7ffb96aaad34d0cc1e5203d9541b115
 bg0.png     SHA-256 df12c6104b0b877c9848c2385a3c8d8a4e093ddc3e215169d99811aac4963b0a
 startup.png SHA-256 0f00cf71705d1a73de8f5a755505dd4d6f6b7d88b1966aa385c70dca6ba31cba
 pic0.png    SHA-256 17d875946a077684ae62720967941d9d3b82ba3b080d52a3eb7f7e93abfab3ce
