@@ -1,4 +1,7 @@
-# Runtime Data and Mod Layout
+# Runtime data and mod layout — 00.21
+
+Current contract, checked against `src/vfs.cpp` and native `resources.cpp` on
+2026-10-05. See [CURRENT_STATUS](CURRENT_STATUS.md) for verification scope.
 
 ## Base path
 
@@ -110,7 +113,8 @@ Recommended schema:
 ```
 
 Current implementation uses the directory name; mod.json parsing is PENDING.
-The diagnostic font is ASCII-only; paths retain UTF-8 bytes.
+The selector diagnostic font is ASCII-only; paths retain UTF-8 bytes. In-game
+StringTexture uses PVF and a separate charset/glyph service.
 
 ## Safety rules
 
@@ -122,7 +126,7 @@ The diagnostic font is ASCII-only; paths retain UTF-8 bytes.
 
 ## Writable paths and completeness
 
-Current bootstrap creates `config/`, `logs/`, `saves/`, `game/` and `mods/` for backward compatibility and diagnostics. The active save location, however, is now the selected data-set directory described above.
+Current VFS creates `config/`, `logs/`, `saves/`, `game/` and `mods/` for backward compatibility and diagnostics. The active save location, however, is now the selected data-set directory described above.
 
 Log:
 
@@ -143,3 +147,23 @@ install/mods/Android14/
 with canonical names and untouched encoded PACs. If the APK supplies `save.bin`, that file is preserved in the same directory. Otherwise the Vita runtime creates one there when needed.
 
 Format-3 import manifest records profile, alias mapping and original APK content hashes. Native codec detection is per PAC, not globally per active mod. See `ANDROID14_APK.md` for the exact profile and resource/engine compatibility boundary.
+
+## Resource cache and editing behavior
+
+Resource fallback is file-level, not a merge of entries from two PACs. A corrupt
+existing override reports its own parse/decode error. The GameData exclusion
+filter is honored before reading payloads; normalization is in memory and never
+rewrites the installed PAC. The result LRU is keyed by resolved physical path,
+filter and file metadata (size/mtime/ctime) and cleared on resource reinitialization.
+Caches do not hold save state or imply cross-profile progress sharing.
+
+Resource-existence results and save reads are also cached for the session. Do not
+promise live detection of every edited file or external save while the game is
+running; restart after installing/changing a dataset. Stat-based invalidation is
+not cryptographic content validation. Imported textures/voices require exact byte
+and mode checks after content hashes; see [PORTING_GUIDE](PORTING_GUIDE.md).
+
+The raw extractor and private two-source ZIP preserve a save when supplied.
+The audited original/Community14 pair has no bundled save; Gen does. Back up
+profile progress before importing that file. The two-source ZIP tool's raw-input
+contract is not a Gen importer; use the ordinary assets/auto extractor for Gen.

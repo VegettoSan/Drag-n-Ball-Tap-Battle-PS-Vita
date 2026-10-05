@@ -1,6 +1,9 @@
 # PAC Container Format
 
-Status: **validated against the supplied original APK** (`DBTapBattle.apk`).
+Status: ordinary outer format validated against original and Gen APKs; the
+pinned Community14 encoded variant is supported per file. Current runtime is
+full engine 00.21; physical startup recovery is pending. See
+[CURRENT_STATUS](CURRENT_STATUS.md).
 
 This document describes the outer `.pac` container. Internal formats such as `spr`, `act`, `cnv`, `dac`, `gdt`, etc. require their own reverse-engineering notes.
 
@@ -30,7 +33,8 @@ data_base = 2 + entry_count * 16
 absolute_resource_offset = data_base + entry.offset
 ```
 
-All integer fields observed so far are little-endian.
+These ordinary outer-directory numeric fields are little-endian. Internal
+CNV, text, animation and save schemas have their own signed/endian contracts.
 
 ## Validation example: `back00.pac`
 
@@ -116,7 +120,8 @@ Caller may select a different budget; this is a resource policy, not a discovere
 original-format limit. Files outside signed 32-bit seek range are unsupported.
 Unknown tags/reserved values are retained for future mods, not rejected merely
 because they differ from this corpus. Zero-count synthetic PACs parse safely.
-Native runtime on Vita and modified/community PAC variants remain PENDING.
+Subsequent native support includes the pinned Community14 variant and earlier
+physical menu/selection/combat; this does not certify every payload schema/mod.
 
 ## Encoded Android14 profile
 
@@ -136,3 +141,39 @@ read both variants and all nested SPRs. RGBA decoding checks dimensions, decoded
 allocation budget, exact output size and complete DEFLATE termination. Files
 stay unchanged; images are decoded in memory and alpha state stays attached to
 RgbaImage so ordinary PNG and premultiplied community data can coexist.
+
+## Original GameData filter and selective reads — 00.20 onward
+
+The original stream loader treats these bits as **exclusions**:
+
+| Type | Exclusion bit |
+|---|---:|
+| PNG / verified RGBA texture | 1 |
+| ACT | 2 |
+| BIN | 4 |
+| CNV | 8 |
+| DAC | 16 |
+| SPR | 32 |
+| WAV | 64 |
+
+Do not invert the mask as a requested-type set. ResourceAdapter forwards it to
+`dbtb_resourceFiltered`; `readEngineResource` reads only allowed payloads and
+rebuilds the bridge container in memory, preserving all directory slots/types/
+reserved fields/order. Excluded payload bytes are omitted without attempting
+their conversion; the original byte-array parser receives the same filter.
+SPR nested normalization retains its separate schema/index rules. Source files
+are never rewritten. Unknown types are preserved according to the verified
+original dispatch/normalization contract, not guessed into a known format.
+
+A single selected-payload file handle avoids per-entry reopen overhead. Plain
+non-SPR full reads avoid unnecessary payload rebuilding after directory checks;
+Community14 metadata/WAV/table adapters still run when required. The 8 MiB
+retained-result LRU keys resolved path + filter and file size/mtime/ctime; live
+shared/Java copies and temporary normalization memory lie outside that budget.
+
+Host tests on 26 character PACs and filters 1/33/64/127 compare exact selected
+bytes and stable directories. Filter 33 requested 11,707,264 rather than
+91,081,701 source bytes (87.146% reduction). This is not a Vita latency benchmark.
+Commands and fixture layout: [VALIDATION](VALIDATION.md). Implementation:
+`src/pac.cpp`, `src/engine_resources.cpp`, `src/resource_cache.hpp` and native
+`resources.cpp`. Renderer texture and voice caches are separate layers.

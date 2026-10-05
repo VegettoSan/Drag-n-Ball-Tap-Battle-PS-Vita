@@ -1,27 +1,54 @@
-# Third-party code in the test build
+# Third-party tools, runtime and test-build notices
 
-The port's original-source reconstruction is not being supplied as decompiled
-commercial Java. Commercial game data is also excluded. Original assets are
-provided separately by the user.
+Checkpoint 00.21 / 2026-10-05. Upstream license texts are not changed by this
+documentation update. The repository contains handwritten port source and
+non-commercial evidence; generated APK-derived Java/JAR/C stays private. The
+full-engine executable nonetheless contains original compiled game code.
+Excluding asset data is not an assertion that this executable is wholly open source.
 
-The native VPK statically links vitaGL and its graphics support libraries, plus
-libpng/zlib and the VitaSDK C/C++ runtime. Renderer package version and other
-installed packages are documented in BUILD.md. Public source:
+## Native dependencies
 
-- vitaGL: https://github.com/Rinnegatamante/vitaGL (LGPL-3.0).
-  Compiled package revision: 2bdbe89. API reference also reviewed at cdbba423.
-- vitaShaRK: https://github.com/Rinnegatamante/vitaShaRK
-- SceShaccCgExt: https://github.com/GrapheneCt/SceShaccCgExt
-- taiHEN: https://github.com/henkaku/taiHEN
-- libmathneon: https://github.com/vitasdk/packages/tree/master/libmathneon
-- libpng/zlib: https://github.com/vitasdk/packages/tree/master/libpng and
-  https://github.com/vitasdk/packages/tree/master/zlib
-- Toolchain/runtime: https://github.com/vitasdk
+The full VPK links vitaGL/support libraries, libpng/zlib, libvorbisfile/libvorbis/
+libogg, VitaSDK C/C++/pthread runtime and system stubs. Matching hard-float package
+versions and build options are recorded in [BUILD](BUILD.md).
 
-Full vitaGL GPL/LGPL license text is included under licenses/ and in the VPK.
-The symbols/relink bundle includes all port object files and the link invocation;
-users can build a modified compatible vitaGL/library package and relink the
-bootstrap using the repository CMake project and a matching VitaSDK ABI. The
-source repository is https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita.
-Changes in this audit do not change upstream library licenses or grant rights
-to original game content.
+- [vitaGL](https://github.com/Rinnegatamante/vitaGL): package revision 2bdbe89;
+  API mapping reviewed at cdbba423. GPL/LGPL texts supplied in `licenses/` and
+  the current VPK's notice entries; consult upstream for component terms.
+- [vitaShaRK](https://github.com/Rinnegatamante/vitaShaRK),
+  [SceShaccCgExt](https://github.com/GrapheneCt/SceShaccCgExt),
+  [taiHEN](https://github.com/henkaku/taiHEN).
+- [VitaSDK packages](https://github.com/vitasdk/packages): libmathneon,
+  libpng/zlib, Vorbis/ogg and their upstream licenses.
+- [VitaSDK toolchain/runtime](https://github.com/vitasdk).
+
+## Private AOT tools and generated runtime
+
+- [dex2jar 2.4](https://github.com/pxb1988/dex2jar/releases/tag/v2.4): private
+  APK bytecode conversion.
+- ECJ 3.37.0 and JDK 17: private adapter/generator compilation.
+- [TeaVM 0.12.3](https://github.com/konsoletyper/teavm): private AOT, generated
+  runtime/classlib; Apache-2.0 upstream project. Tool/runtime licensing does
+  not grant rights to original game bytecode.
+
+The shared community libabc.so/SWB are format-comparison sources, not linked
+Android dependencies. Their matching bytes establish lineage, not packager
+identity or an assumed license for copying the archive's commercial content.
+See [ANDROID14_APK](ANDROID14_APK.md).
+
+## Actual delivered materials and distribution gap
+
+The verified 00.21 VPK has eboot, param.sfo, THIRD_PARTY.md and vitaGL GPL/LGPL
+text entries. Its packaged notice is the snapshot at build source `07222bb`;
+editing this Markdown does not retroactively alter that delivered VPK.
+The 00.21 symbols ZIP contains ELF, VELF, a README and artifact evidence.
+**It does not contain all object files/link inputs and is not a complete relink
+kit.** Earlier bootstrap relink claims apply only to those older bundles.
+
+Before a public full-engine distribution, review all applicable generated-runtime/
+classlib/native notices and whether corresponding sources/relink materials and
+commercial-code distribution scope are appropriate. In particular, do not assert
+TeaVM runtime notices are already separately bundled when the current archive
+inventory shows only the entries above. This records unfinished packaging work;
+no new public full-engine release or license-compliance certification is made.
+The private build recipe is [BUILD](BUILD.md); source is this repository.

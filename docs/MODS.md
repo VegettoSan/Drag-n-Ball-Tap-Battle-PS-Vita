@@ -49,7 +49,7 @@ Examples: PAC, texture, audio or data replacements using formats already support
 
 ### Tier B — Added characters/cards/data using original formats
 
-Requires the reconstructed engine to support the same indexes/counts/loading behavior used by the mod.
+Requires the preserved original engine/adapters to support the same indexes/counts/loading behavior used by the mod.
 
 **Target:** high compatibility after the relevant engine limits/data rules are understood.
 
@@ -84,51 +84,66 @@ The initial selector intentionally works without JSON and uses the folder name. 
 
 The port must never require a mod installer to rewrite `game/`. Mod activation is a runtime decision only.
 
-## Audit result — 2026-10-04
+## Current compatibility checkpoint — 00.21
 
-Current compatibility is **container/file plumbing**, not gameplay compatibility.
-Original and mod folders resolve PAC files; a mod's common.pac can be validated
-and its first PNG decoded/displayed by the bootstrap. There is no actual mod
-battle/animation/audio test yet. File-level overlay cannot combine individual
-entries from two PACs; a modified PAC replaces the whole file.
+Earlier build 00.11 runs the supplied Android14 profile through character
+selection and a real Vita battle. Ordinary Gen assets are host-validated and
+used as an alternate base profile. This does not certify arbitrary asset mods,
+code-modified mechanics, every added index or a complete mode matrix. Latest
+00.21 startup recovery after 00.20 is still pending; see
+[CURRENT_STATUS](CURRENT_STATUS.md).
 
-Evidence from the GdGohan SWB at f4a275d includes modified GameData, private
-loaders and Android14 storage adapters. The supplied original DEX differs.
-This establishes resource replacements, additional data and code-dependent
-mods as real distinct categories. No protected payload was analyzed or bypassed.
-No sampled commercial/community mod dataset has been declared compatible.
+- Missing file → original fallback. Existing malformed/non-regular override →
+  explicit error; a full PAC replaces the entire file, not individual entries.
+- Original and verified Community14 PACs, converted GameData tables, PNG/private
+  RGBA and Community14 WAV wrappers are supported per resolved file. Unknown
+  private constants/aliases need another audited profile.
+- `classes.dex` from a mod is not dynamically executed. The port compiles the
+  original APK core privately to native C; changed mod mechanics require explicit
+  behavior adaptation and separate evidence.
+- Names/spaces/UTF-8 remain in paths. Folder name labels the selector; its font
+  is ASCII-limited. mod.json, metadata icons and previews remain unimplemented.
+- Save is only the selected `game/save.bin` or `mods/<Profile>/save.bin`, never
+  a shared fallback. Bundled saves are preserved; choose imports intentionally.
+- Format-valid data may still exceed original counts or depend on new code.
+  Complete character/shared local checks match the supplied 13-triplet datasets,
+  not a universal mod API.
+- Arbitrary protected containers and synchronized multiplayer are unsupported.
 
-- Missing file → original fallback. Existing malformed PAC/image → explicit
-  parse/decode error, never silent fallback hiding a broken mod.
-- Existing directory/non-regular override → error; added nested files supported.
-- Names/spaces/UTF-8 are preserved in paths; ASCII bootstrap glyph rendering is
-  limited. Many folders scroll in the selector; device behavior still PENDING.
-- mod.json is optional; currently ignored. Folder name is the label and key.
-  Metadata author/version/name parsing and icons/previews remain PENDING.
-- classes.dex is not executed; added character indexes/counts or changed battle
-  rules require separately recovered native logic. Protected containers require
-  an authorized, documented loader rather than an assumed standard PAC reader.
-- A complete APK mod may store resources in assets/ or external folders. The
-  extractor now recognizes raw, ordinary assets and the pinned community14
-  profile (see ANDROID14_APK.md); it is not a universal mod installer.
-
-## Audited community14 asset-mod family
-
-`a210795b` uses encoded PAC metadata, premultiplied RGBA DEFLATE images and alias
-names rather than ordinary res/raw PNG PACs. The importer normalizes verified
-names and preserves payloads. Native PAC detection is per file, so standard
-missing-file fallback still uses the original codec; a bad existing mod file
-raises an error. Full-container overrides do not merge PAC entries.
+## Import routes
 
 ```sh
-python tools/extract_apk_data.py mod.apk ./install --mod MyMod
+# Base original resources; does not include downloaded character triplets.
+python3 tools/extract_apk_data.py original.apk /private/install/game
+# Original-style populated assets plus characters; auto ignores empty raw stubs.
+python3 tools/extract_apk_data.py gen.apk /private/install-gen/game
+# Pinned Community14 aliases/codec, confined to its own profile.
+python3 tools/extract_apk_data.py community.apk /private/install --mod Android14
+# Other mods only when their layout/names/format contracts are supported.
+python3 tools/extract_apk_data.py mod.apk /private/install --mod MyMod
 ```
 
-Supported and host-tested: import layout/aliases, immutable data, file overlay,
-outer/nested container reads and PNG/private RGBA decoding. Code-only character
-count/mechanics changes, encoded converted-table semantics and WAV playback
-remain pending; all community gameplay is pending native engine implementation.
-Different private constants/aliases require another verified profile. The APK
-contains no demonstrated universal plugin/mod-folder loader; APK editing and
-asset replacement are not proof of generic native mod behavior. No author or
-particular release is inferred from a generic signing certificate.
+The extractor preserves data bytes, records hashes/aliases and refuses ambiguous
+or conflicting imports. Android .so/DEX are omitted. Unknown extensions can be
+preserved without claiming a runtime decoder. Do not install an encoded
+Community14 dataset over the only base copy just to fix a missing resource;
+its absent bobj00/font00 need base fallback. See [ANDROID14_APK](ANDROID14_APK.md),
+[DATA_LAYOUT](DATA_LAYOUT.md) and [Original+Characters](ORIGINAL_PLUS_CHARACTERS_APK.md).
+
+## Performance and cache limits
+
+Original GameData filter semantics now reach disk I/O. Bounded native PAC,
+immutable-texture and PCM caches reduce repeated work on host; no hardware
+selection-latency improvement is yet confirmed. Cold/evicted loads still do
+I/O, conversion and upload. Restart after modifying installed files; caches are
+not a general hot-reload API. Resource codec does not alone select text charset:
+Gen's ordinary text00 is UTF-8 while its game/character tables use Shift_JIS.
+
+## Compatibility evidence for a new mod
+
+Record source hash/profile, complete triplets/shared fallback, file codec and
+counts, character/card table bounds, charset, save expectations and whether
+Java logic differs. Test first/repeated selection, multiple voice events, text,
+actual battle/results and independent saves on the target build. Promote only
+those observed features. Shared helper-library bytes establish lineage but not
+publisher identity or a universal installed-mod loader.

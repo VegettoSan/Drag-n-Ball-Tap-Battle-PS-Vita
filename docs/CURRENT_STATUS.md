@@ -39,7 +39,7 @@ private test deliverables; public native smoke artifacts have a different scope.
 | Voice samples | Original PCM16 mono 22050 Hz or decoded Community14 wrapper; 3 voice channels | Format/host decoding verified; voices still bad in 00.19 |
 | Voice output | 16-tap/256-phase Q14 reconstruction to 48000 Hz, peak limiter, PCM cache | Host spectral image reduced 32.3 dB; audible improvement/cost on Vita pending |
 | Audio startup | Restored `0x10000100`; exact open/create/start diagnostics, failure cleanup/latch | 00.20 worker failed repeatedly and game exited; 00.21 simulated failure tests pass, physical recovery pending |
-| Saves | Active dataset's `save.bin`, max 12906 bytes; cached reads and temp/fsync/rename writes | Host ownership tests and historical user save evidence; full Android round-trip/mod progression matrix pending |
+| Saves | Active dataset's `save.bin`, max 12906 bytes; cached reads and temp/fsync/rename writes | Host ownership tests; full Android round-trip/mod progression matrix pending |
 | Input | Stable slots mapped from Vita touch IDs; original coordinate transform and Controller | Touch gameplay confirmed; physical buttons serve selector, are neutral during game |
 | Online / Bluetooth | Offline installed-data boundary; HTTP rejected; Bluetooth disconnected | Current local single-player path; multiplayer/billing/remote downloads unsupported |
 

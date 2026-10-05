@@ -7,19 +7,26 @@ reference, not a drop-in engine. Its licensing/completeness is not established.
 
 | System | Observed original responsibility | Native direction / current state |
 |---|---|---|
-| dragonballtap / AndroidGLView | Activity/GLSurfaceView lifecycle, multitouch, browser/Bluetooth/Smap launch | Replace with Vita app/input/lifecycle; original game loop still PENDING |
-| AndroidGLRender | Surface matrices; pause gating; TCBManajer.Init then Run per eligible draw callback | vitaGL init implemented; real Run/game states not ported |
-| GlobalWork | Shared services, screen/touch/timer/lifecycle fields | Preserve core state; replace Android references with service interfaces |
-| TCBManajer / TCB / ObjReq | Ordered task lists, Game1..17 dispatch, repeat/skip/sleep, object execution, drawing | Port semantics in stages; do not invent a single new state machine |
-| GameData / SpriteData | PAC dispatch, filter bits, images, raw action tables, nested SPR, sounds | Outer PAC/PNG implemented; original conversion/commands pending |
-| Graphics2D / AndroidGLTexture | Quad batching, matrix/blend state, texture decode/upload | Complete API map in RENDER_MAPPING.md; atlas preview only implemented |
-| offscreen / StringTexture | FBO rendering and Android Canvas-generated text | FBO adapter + text rasterizer PENDING; boot font is diagnostic only |
-| KeyData / Controller | Stable touch IDs, begin/move/end; virtual pad ranges, state/history and gesture timing | Neutral input layer implemented; original gesture/command logic PENDING |
-| ResourceMiner / Utility | Android raw ID reflection, files, HTTP, save operations | VFS for file lookup; filename→raw resource adapter must preserve extension rules |
-| SoundEffect | MediaPlayer BGM, SoundPool SE and AudioTrack for supplied PCM | Vorbis streaming + PCM mixer design; playback PENDING |
-| GameTimer | Millisecond intervals, suspended duration adjustment | Monotonic Vita timer with exact time units; PENDING |
-| Downloader / Smap | HTTP, catalog/device/news data and marketplace downloads/billing | Local dataset completeness replaces startup dependency; no online calls in current bootstrap |
+| dragonballtap / AndroidGLView | Activity/GLSurfaceView lifecycle, multitouch, browser/Bluetooth/Smap launch | VitaEngine/platform loop implemented; native selector before original Init |
+| AndroidGLRender | Surface matrices; pause gating; TCBManajer.Init then Run per eligible draw callback | Original Init/Run invoked; GLES bridge supplies original drawing |
+| GlobalWork | Shared services, screen/touch/timer/lifecycle fields | APK-derived state preserved; handwritten Vita platform objects replace Android references |
+| TCBManajer / TCB / ObjReq | Ordered task lists, Game1..17 dispatch, repeat/skip/sleep, object execution, drawing | Original methods generated privately, not replaced with a new state machine |
+| GameData / SpriteData | PAC dispatch, filter bits, images, raw action tables, nested SPR, sounds | Selective native PAC normalization feeds preserved original parser/commands |
+| Graphics2D / AndroidGLTexture | Quad batching, matrix/blend state, texture decode/upload | Original Graphics2D plus native GLES/texture ownership/cache bridge |
+| offscreen / StringTexture | FBO rendering and Android Canvas-generated text | Real FBOs and PVF text; boot diagnostic font remains a separate service |
+| KeyData / Controller | Stable touch IDs, begin/move/end; virtual pad ranges, state/history and gesture timing | Stable touch slots and screen transform feed preserved original Controller |
+| ResourceMiner / Utility | Android raw ID reflection, files, HTTP, save operations | VFS filename aliases/extensions, native file reads, profile-local save service |
+| SoundEffect | MediaPlayer BGM, SoundPool SE and AudioTrack for supplied PCM | Whole-clip Vorbis decode and native PCM worker; setup/DSP hardware quality pending in 00.21 |
+| GameTimer | Millisecond intervals, suspended duration adjustment | Original timer preserved; Vita wall-millis/monotonic-nanos backend |
+| Downloader / Smap | HTTP, catalog/device/news data and marketplace downloads/billing | Local installed-data path; HTTP rejected, offline catalog boundary |
 | BluetoothManajer / BluetoothSearch | RFCOMM discovery/transport; game receives/sends battle data | Transport adapter, not a generic input remap; multiplayer PENDING |
+
+## Current checkpoint — 00.21
+
+The original core is now privately AOT-compiled with TeaVM, not manually
+reconstructed. Earlier Vita builds run menus/front touch/selection/battle.
+00.21 startup recovery after the 00.20 audio failure is still pending. See
+[CURRENT_STATUS](CURRENT_STATUS.md) and [PORTING_GUIDE](PORTING_GUIDE.md).
 
 ## Main-loop ordering recovered
 
@@ -34,8 +41,8 @@ reference, not a drop-in engine. Its licensing/completeness is not established.
 FPS=40 and WAIT_FRAME_MILLITS=25 are declared by AndroidGLRender, but the
 inspected onDrawFrame does not use a 25-ms sleep to pace gameplay. Do **not**
 conclude fixed 40-Hz behavior from an unused constant. GameTimer units and actual
-hardware/reference behavior must settle update pacing. Bootstrap UI delay is
-unrelated to the future gameplay timing.
+hardware/reference behavior must settle update pacing. Selector UI delay is unrelated to original gameplay timing. The full loop
+presents with vitaGL and progresses one cooperative EventQueue event afterward.
 
 ## Dispatch ranges in the actual APK
 
@@ -62,8 +69,8 @@ unrelated to the future gameplay timing.
 Recover selection, battle actions/AI, practice, cards, results and options from
 these handlers and their resources. Merely listing all md cases is not a port.
 For example, case 198 prepares LoadData and SetLoad; case 809 is within results;
-952 is inside practice; 1014 inside selection/settings handlers. The audit has
-not executed those modes on Android/Vita.
+952 is inside practice; 1014 inside selection/settings handlers. The initial source audit did not execute those modes. Later Vita menu/selection/
+battle evidence is scoped in CURRENT_STATUS; all handlers/modes are not certified.
 
 ## Critical discrepancies with the community wiki/archive
 
@@ -80,10 +87,22 @@ not executed those modes on Android/Vita.
   calls. jadx plus DEX inspection confirms the original writes save.bin; never
   take broken decompiler output as intentional original behavior.
 
-## Reconstruction order
+## Current execution and modification order
 
-Get first hardware PAC/PNG evidence. Then implement a bounded GameData loader
-with exact filter bits, CNV rectangles and DAC actions, original DrawImage and
-DrawSprite. Bring in the original menu's task/panel logic and text service.
-Only after those agree should character selection, data-driven battle, AI,
-practice/cards/results and original saves be reconstructed.
+VitaEngine initializes platform/selector/VFS, creates original GlobalWork and
+engine, sets screen/GL state, calls original Init, sets first-frame resume,
+then loops native input → original Run → present → one EventQueue event.
+Original Dispose runs when the loop exits. A caught original exception can stop
+the loop without a native crash; 00.20's BGM setup failure is an example.
+
+Inspect actual methods and native imports before changing a boundary. Keep
+GameData filters, signed/endian arithmetic, sprite flush order, touch gestures,
+channel IDs and save offsets. Validate new adapters on host, then affected device
+paths. Do not infer a game implementation from a wiki state number or require
+manual reimplementation of already-preserved original interpreters.
+
+Source map: `tools/aot/engine/java/.../VitaEngine.java`, `PatchResourceInit.java`,
+`native/dbtb_bridge.h`, `vita_platform.cpp`, `gles.cpp`, `resources.cpp`,
+`vita_text.cpp`, `vita_audio.cpp`, and `src/engine_resources.cpp`. Full paths and
+reusable boundaries are listed in PORTING_GUIDE/BUILD. Generated original classes
+are intentionally absent from Git.
