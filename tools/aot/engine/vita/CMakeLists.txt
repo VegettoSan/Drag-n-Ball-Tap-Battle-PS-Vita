@@ -49,8 +49,11 @@ add_executable(${PROJECT_NAME}
   "${REPO_ROOT}/src/log.cpp"
 )
 
+# Do not add TEAVM_C_DIR as a global -I path. TeaVM emits runtime headers named
+# string.h/time.h; exposing that root to unrelated C++ sources shadows VitaSDK's
+# libc headers. The generated all.c and its nested sources resolve their own
+# quoted headers relative to the generated files.
 target_include_directories(${PROJECT_NAME} PRIVATE
-  "${TEAVM_C_DIR}"
   "${REPO_ROOT}/tools/aot/engine/native"
   "${REPO_ROOT}/tools/aot/vita"
   "${REPO_ROOT}/src"
