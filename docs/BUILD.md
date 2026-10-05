@@ -89,6 +89,37 @@ successful ELF link alone does not prove a valid SELF/package. Output remains
 960×544; the 16 MiB vglInitExtended argument is an allocation threshold, not a
 total GPU-memory cap. Its return describes resolution fallback, not success.
 
+## LiveArea packaging
+
+Both Vita CMake targets now use the same fail-closed LiveArea pipeline. Approved
+artwork is stored as base64 transport text under `assets/livearea/encoded/`;
+`cmake/LiveArea.cmake` runs `tools/decode_livearea_assets.py` during configure,
+reconstructs the exact PNG bytes into the build directory and rejects a SHA-256,
+dimension, indexed-PNG, transparency or size mismatch before packaging.
+
+The full-engine VPK maps the validated files to `sce_sys/icon0.png`,
+`sce_sys/pic0.png`, `sce_sys/livearea/contents/bg0.png`,
+`startup.png` and the verified style-`a1` `template.xml`.
+After building, run:
+
+```sh
+python3 tools/validate_livearea_vpk.py /private/build-vita/DBTapBattle-Vita-00.23.vpk
+```
+
+The 2026-10-05 native smoke run `37384814624` passes complete
+ELF→VELF→SELF→VPK packaging plus exact LiveArea validation. Its VPK uses a
+non-commercial dummy TeaVM main, so it proves the packaging path rather than game
+execution.
+
+For the already hardware-tested gameplay binary, a separate LiveArea-only repack is
+available as `DBTapBattle-Vita-00.23-LiveArea.vpk`, SHA-256
+`382927c8032fda1db5ec21078a006026daa78ef93f3bdfce7c8484f880fd4e50`.
+Every original entry from the tested 00.23 VPK is byte-identical; only the five
+presentation files above were added. See
+[evidence](evidence/vita_livearea_00.23.json) and
+[device test instructions](TEST_VITA_00_23_LIVEAREA.md). Physical installation and
+LiveArea appearance remain pending.
+
 ## Data preparation and installation
 
 ```sh
@@ -117,12 +148,15 @@ and is not installed. Front touch is the tested in-game control.
 
 ## Verify and test
 
-Follow [VALIDATION](VALIDATION.md) for host probes and artifact checks, then
-[TEST_VITA_00_23](TEST_VITA_00_23.md) on the device for the current checkpoint and extend it with repeated-battle/long-session coverage. Keep exact VPK SHA, SFO,
-build source, profile provenance, runtime.log and any psp2core together.
-Current VPK has eboot, param.sfo and three notice entries, no asset dataset.
-The generated original code is still commercial engine code; absence of data
-inside the VPK is not an assertion of an all-open-source executable.
+Follow [VALIDATION](VALIDATION.md) for host probes and artifact checks. The
+gameplay checkpoint remains [TEST_VITA_00_23](TEST_VITA_00_23.md); the immediate
+presentation check is [TEST_VITA_00_23_LIVEAREA](TEST_VITA_00_23_LIVEAREA.md).
+Keep exact VPK SHA, SFO, build source, profile provenance, `runtime.log` and any
+`psp2core` together. The base hardware-tested 00.23 VPK has eboot, param.sfo and
+three notice entries; the LiveArea derivative adds only five `sce_sys`
+presentation entries and still contains no asset dataset. The generated original
+code is still commercial engine code; absence of game data inside the VPK is not an
+assertion of an all-open-source executable.
 
 Old bootstrap build evidence at 2c3fecd remains historical in
 [build_validation.json](evidence/build_validation.json). It is not the current
