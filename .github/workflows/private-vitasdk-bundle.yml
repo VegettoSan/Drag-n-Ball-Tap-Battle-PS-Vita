@@ -1,0 +1,32 @@
+name: Private VitaSDK bundle
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/private-vitasdk-bundle.yml'
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    container: vitasdk/vitasdk:2026.08
+    steps:
+      - name: Package VitaSDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          du -sh /usr/local/vitasdk
+          tar -C /usr/local -czf /tmp/vitasdk-2026.08.tar.gz vitasdk
+          sha256sum /tmp/vitasdk-2026.08.tar.gz > /tmp/VITASDK-SHA256.txt
+          ls -lh /tmp/vitasdk-2026.08.tar.gz
+
+      - name: Upload VitaSDK
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbtb-private-vitasdk-2026.08
+          if-no-files-found: error
+          retention-days: 1
+          path: |
+            /tmp/vitasdk-2026.08.tar.gz
+            /tmp/VITASDK-SHA256.txt
