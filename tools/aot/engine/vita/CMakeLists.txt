@@ -1,0 +1,93 @@
+cmake_minimum_required(VERSION 3.16)
+
+if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+  if(DEFINED VITASDK)
+    set(CMAKE_TOOLCHAIN_FILE "${VITASDK}/share/vita.toolchain.cmake" CACHE PATH "toolchain file")
+  elseif(DEFINED ENV{VITASDK})
+    set(CMAKE_TOOLCHAIN_FILE "$ENV{VITASDK}/share/vita.toolchain.cmake" CACHE PATH "toolchain file")
+  else()
+    message(FATAL_ERROR "Set VITASDK or CMAKE_TOOLCHAIN_FILE to a real VitaSDK installation")
+  endif()
+endif()
+
+project(dbtb_original_engine LANGUAGES C CXX)
+include("${VITASDK}/share/vita.cmake" REQUIRED)
+
+set(REPO_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../../..")
+set(TEAVM_C_DIR "" CACHE PATH "Private TeaVM 0.12.3 generated C directory after patch_runtime.py")
+if(NOT TEAVM_C_DIR OR NOT EXISTS "${TEAVM_C_DIR}/all.c")
+  message(FATAL_ERROR "Pass -DTEAVM_C_DIR=/private/patched/c containing TeaVM all.c")
+endif()
+get_filename_component(TEAVM_C_DIR "${TEAVM_C_DIR}" ABSOLUTE)
+
+set(VITA_APP_NAME "Dragon Ball Tap Battle Vita")
+set(VITA_TITLEID "DBTB00001")
+set(VITA_VERSION "00.03")
+execute_process(COMMAND git rev-parse --short HEAD WORKING_DIRECTORY "${REPO_ROOT}"
+                OUTPUT_VARIABLE DBTB_COMMIT OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+if(NOT DBTB_COMMIT)
+  set(DBTB_COMMIT "unknown")
+endif()
+
+add_executable(${PROJECT_NAME}
+  "${TEAVM_C_DIR}/all.c"
+  "${REPO_ROOT}/tools/aot/engine/native/gles.cpp"
+  "${REPO_ROOT}/tools/aot/engine/native/resources.cpp"
+  "${REPO_ROOT}/tools/aot/engine/native/vita_platform.cpp"
+  "${REPO_ROOT}/tools/aot/engine/native/vita_text.cpp"
+  "${REPO_ROOT}/tools/aot/engine/native/vita_audio.cpp"
+  "${REPO_ROOT}/tools/aot/engine/vita/heap.c"
+  "${REPO_ROOT}/tools/aot/vita/utf16.c"
+  "${REPO_ROOT}/src/vfs.cpp"
+  "${REPO_ROOT}/src/pac.cpp"
+  "${REPO_ROOT}/src/image.cpp"
+  "${REPO_ROOT}/src/engine_resources.cpp"
+  "${REPO_ROOT}/src/game_data.cpp"
+  "${REPO_ROOT}/src/input.cpp"
+  "${REPO_ROOT}/src/ui.cpp"
+  "${REPO_ROOT}/src/log.cpp"
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+  "${TEAVM_C_DIR}"
+  "${REPO_ROOT}/tools/aot/engine/native"
+  "${REPO_ROOT}/tools/aot/vita"
+  "${REPO_ROOT}/src"
+)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS YES
+  CXX_STANDARD 14 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS YES
+)
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  _GNU_SOURCE=1
+  DBTB_VERSION="${VITA_VERSION}"
+  DBTB_COMMIT="${DBTB_COMMIT}"
+)
+target_compile_options(${PROJECT_NAME} PRIVATE
+  -O2 -Wall -Wextra
+  $<$<COMPILE_LANGUAGE:C>:-Wno-unused-function -Wno-unused-variable -Wno-unused-parameter>
+  $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions -fno-rtti>
+)
+set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-q")
+
+# Dependencies are ordered from consumers to providers, matching vitaGL ports.
+# pthread is kept whole because libstdc++ std::mutex uses its weak wrappers.
+target_link_libraries(${PROJECT_NAME}
+  -Wl,--whole-archive pthread -Wl,--no-whole-archive
+  stdc++
+  vorbisfile vorbis ogg
+  vitaGL png z
+  vitashark SceShaccCgExt taihen_stub SceShaccCg_stub mathneon
+  ScePvf_stub SceAudio_stub
+  SceLibKernel_stub SceAppMgr_stub SceAppUtil_stub SceCommonDialog_stub
+  SceGxm_stub SceDisplay_stub SceSysmodule_stub SceKernelDmacMgr_stub
+  SceCtrl_stub SceTouch_stub SceIofilemgr_stub m
+)
+
+vita_create_self(eboot.bin ${PROJECT_NAME} UNSAFE)
+vita_create_vpk(DBTapBattle-Vita-${VITA_VERSION}.vpk ${VITA_TITLEID} eboot.bin
+  VERSION ${VITA_VERSION} NAME ${VITA_APP_NAME}
+  FILE "${REPO_ROOT}/docs/THIRD_PARTY.md" notices/THIRD_PARTY.md
+  FILE "${REPO_ROOT}/licenses/vitaGL-GPL-3.0.txt" notices/vitaGL-GPL-3.0.txt
+  FILE "${REPO_ROOT}/licenses/vitaGL-LGPL-3.0.txt" notices/vitaGL-LGPL-3.0.txt
+)
