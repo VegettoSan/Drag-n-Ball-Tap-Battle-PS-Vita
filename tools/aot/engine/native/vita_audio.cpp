@@ -153,14 +153,17 @@ void mixVoice(Voice& v, int32_t& left, int32_t& right) {
     const size_t frame0 = static_cast<size_t>(v.phase >> 32);
     size_t frame1 = frame0 + 1;
     if (frame1 >= v.clip->frames()) frame1 = v.loop ? 0 : frame0;
-    const uint32_t frac = static_cast<uint32_t>(v.phase);
-    const uint64_t inv = uint64_t(UINT32_MAX) + 1ull - uint64_t(frac);
+    // Q16 interpolation is already far above 16-bit PCM precision and avoids
+    // a pair of 64-bit multiplies for every source mixed at 48 kHz. Keep the
+    // 32.32 position so long BGM tracks still have ample integer range.
+    const uint32_t frac = static_cast<uint32_t>((v.phase >> 16) & 0xffffu);
+    const uint32_t inv = 65536u - frac;
     const size_t channels = size_t(v.clip->channels);
     const int16_t* a = &v.clip->pcm[frame0 * channels];
     const int16_t* b = &v.clip->pcm[frame1 * channels];
 
     const auto interpolate = [frac, inv](int32_t x, int32_t y) -> int32_t {
-        return static_cast<int32_t>((int64_t(x) * int64_t(inv) + int64_t(y) * int64_t(frac)) >> 32);
+        return (x * static_cast<int32_t>(inv) + y * static_cast<int32_t>(frac)) >> 16;
     };
     const int32_t sample_l = interpolate(a[0], b[0]);
     const int32_t sample_r = v.clip->channels == 2 ? interpolate(a[1], b[1]) : sample_l;
@@ -207,17 +210,25 @@ bool ensureAudio() {
 
 void dbtb_mixAudio(short* interleaved, int frames) {
     if (!interleaved || frames <= 0) return;
-    AudioLockGuard lock;
-    for (int i = 0; i < frames; ++i) {
-        int32_t left = 0, right = 0;
-        mixVoice(bgm, left, right);
-        for (auto& v : active_effects) mixVoice(v, left, right);
-        for (auto& v : active_voices) mixVoice(v, left, right);
-        interleaved[i * 2] = static_cast<int16_t>(std::max<int32_t>(-32768, std::min<int32_t>(32767, left)));
-        interleaved[i * 2 + 1] = static_cast<int16_t>(std::max<int32_t>(-32768, std::min<int32_t>(32767, right)));
+    // Do not hold the shared command/state lock for an entire 1024-frame Vita
+    // output block (~21 ms). Battle emits effects/voices from the game thread;
+    // waiting behind that lock could consume a whole video frame. Mixing in
+    // short chunks bounds contention to roughly 1.3 ms at 48 kHz.
+    constexpr int kMixChunk = 64;
+    for (int base = 0; base < frames; base += kMixChunk) {
+        const int end = std::min(frames, base + kMixChunk);
+        AudioLockGuard lock;
+        for (int i = base; i < end; ++i) {
+            int32_t left = 0, right = 0;
+            mixVoice(bgm, left, right);
+            for (auto& v : active_effects) mixVoice(v, left, right);
+            for (auto& v : active_voices) mixVoice(v, left, right);
+            interleaved[i * 2] = static_cast<int16_t>(std::max<int32_t>(-32768, std::min<int32_t>(32767, left)));
+            interleaved[i * 2 + 1] = static_cast<int16_t>(std::max<int32_t>(-32768, std::min<int32_t>(32767, right)));
+        }
+        active_effects.erase(std::remove_if(active_effects.begin(), active_effects.end(), [](const Voice& v){ return !v.clip; }), active_effects.end());
+        active_voices.erase(std::remove_if(active_voices.begin(), active_voices.end(), [](const Voice& v){ return !v.clip; }), active_voices.end());
     }
-    active_effects.erase(std::remove_if(active_effects.begin(), active_effects.end(), [](const Voice& v){ return !v.clip; }), active_effects.end());
-    active_voices.erase(std::remove_if(active_voices.begin(), active_voices.end(), [](const Voice& v){ return !v.clip; }), active_voices.end());
 }
 
 extern "C" {
