@@ -1,5 +1,4 @@
 import java.nio.file.*;
-import java.security.MessageDigest;
 import java.util.*;
 import java.util.jar.*;
 import java.io.*;
@@ -13,22 +12,60 @@ public final class PatchResourceInit implements Opcodes {
     private static final String CLASS = PKG + "GameData";
     private static final String GW = "L" + PKG + "GlobalWork;";
     private static final String DESC = "(" + GW + "Ljava/lang/String;II)Z";
-    private static final String HASH = "6088ebbe8e714ce3d056c9bf029f8ce27307cb3276c6b39550425b94b4d50ad6";
+    private static final String BYTE_DESC = "(" + GW + "[BII)Z";
 
-    // TeaVM 0.12.3 emits an empty C literal for this uninitialized static byte.
-    // Verify the JVM-defined zero default; do not change the game's class/body.
+    // dex2jar 2.4 is not byte-for-byte deterministic for this large class: its
+    // generated constant-pool/label order can vary between otherwise identical
+    // conversions. Verify the exact field boundary we rely on instead of a
+    // brittle whole-class hash.
     static void verifyByteDefault(byte[] bytes) throws Exception {
-        if (bytes == null || !digest(bytes).equals("bbdbd5179e17be4da9099289dd9679c08e7f95f9c4e2e6bda855077d0934e0ec"))
-            throw new IOException("Unsupported TCBManajer.class");
-        final boolean[] valid = {false};
-        new ClassReader(bytes).accept(new ClassVisitor(ASM9) {
+        if (bytes == null) throw new IOException("TCBManajer.class absent");
+        ClassReader cr = new ClassReader(bytes);
+        if (!cr.getClassName().equals(PKG + "TCBManajer")) throw new IOException("Unexpected TCBManajer class name");
+        final int[] fields = {0};
+        cr.accept(new ClassVisitor(ASM9) {
             @Override public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-                if (name.equals("bEventFlagBuf"))
-                    valid[0] = (access & ACC_STATIC) != 0 && descriptor.equals("B") && value == null;
+                if (name.equals("bEventFlagBuf")) {
+                    fields[0]++;
+                    if ((access & ACC_STATIC) == 0 || !descriptor.equals("B") || value != null)
+                        throw new IllegalStateException("Unexpected bEventFlagBuf shape");
+                }
                 return null;
             }
         }, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-        if (!valid[0]) throw new IOException("Expected static byte bEventFlagBuf with no ConstantValue");
+        if (fields[0] != 1) throw new IOException("Expected exactly one static byte bEventFlagBuf with no ConstantValue");
+    }
+
+    // Verify the Android-only overload before replacing it. The byte-array
+    // overload is the original parser and must remain present and untouched.
+    static void verifyGameData(byte[] bytes) throws Exception {
+        if (bytes == null) throw new IOException("GameData.class absent");
+        ClassReader cr = new ClassReader(bytes);
+        if (!cr.getClassName().equals(CLASS)) throw new IOException("Unexpected GameData class name");
+        final int[] android = {0}, bytesInit = {0};
+        final int[] miner = {0}, field = {0}, resources = {0}, raw = {0}, reads = {0}, closes = {0};
+        cr.accept(new ClassVisitor(ASM9) {
+            @Override public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+                if (name.equals("Init") && descriptor.equals(BYTE_DESC)) bytesInit[0]++;
+                if (!name.equals("Init") || !descriptor.equals(DESC)) return null;
+                android[0]++;
+                return new MethodVisitor(ASM9) {
+                    @Override public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+                        if (owner.equals(PKG + "ResourceMiner") && name.equals("getInstance")) miner[0]++;
+                        if (owner.equals(PKG + "ResourceMiner") && name.equals("getFieldValue")) field[0]++;
+                        if (owner.equals("android/content/Context") && name.equals("getResources")) resources[0]++;
+                        if (owner.equals("android/content/res/Resources") && name.equals("openRawResource")) raw[0]++;
+                        if (owner.equals("java/io/InputStream") && name.equals("read")) reads[0]++;
+                        if (owner.equals("java/io/InputStream") && name.equals("close")) closes[0]++;
+                    }
+                };
+            }
+        }, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        if (android[0] != 1 || bytesInit[0] != 1 || miner[0] != 1 || field[0] != 1 ||
+            resources[0] != 1 || raw[0] != 1 || reads[0] < 1 || closes[0] < 1)
+            throw new IOException("Unsupported GameData Android loader shape: init=" + android[0] + "/" + bytesInit[0] +
+                " miner=" + miner[0] + "/" + field[0] + " resources=" + resources[0] + "/" + raw[0] +
+                " read/close=" + reads[0] + "/" + closes[0]);
     }
 
     // Retain the original GetString table traversal and String constructor;
@@ -61,14 +98,8 @@ public final class PatchResourceInit implements Opcodes {
         return cw.toByteArray();
     }
 
-    private static String digest(byte[] b) throws Exception {
-        StringBuilder s = new StringBuilder();
-        for (byte v : MessageDigest.getInstance("SHA-256").digest(b)) s.append(String.format("%02x", v & 255));
-        return s.toString();
-    }
-
     static byte[] adapt(byte[] bytes) throws Exception {
-        if (!digest(bytes).equals(HASH)) throw new IOException("Unsupported GameData.class; use the pinned original APK/dex2jar 2.4");
+        verifyGameData(bytes);
         ClassReader cr = new ClassReader(bytes);
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
         final int[] found = {0};
@@ -124,6 +155,6 @@ public final class PatchResourceInit implements Opcodes {
                 jar.putNextEntry(entry); jar.write(e.getValue()); jar.closeEntry();
             }
         }
-        System.out.println("Adapted resource I/O and GetString encoding boundary; all other class payloads retained");
+        System.out.println("Adapted verified Android resource I/O and text encoding boundaries; all other class payloads retained");
     }
 }
