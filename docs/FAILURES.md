@@ -173,3 +173,69 @@ but the custom selector still used `glBegin/glVertex3f` immediate mode.
 **Do not repeat:** no `glBegin/glVertex*` UI while the legacy pool is disabled.
 **Different approach:** selector and diagnostic quads now use
 `glVertexPointer`/`glTexCoordPointer` plus `glDrawArrays(GL_TRIANGLE_FAN)`.
+
+## 2026-10-05 — Vita 00.05 audio worker aborted on std::mutex
+
+**What failed:** both Original and Android14 entered the original engine and
+created their save data, then crashed from the `DBTB audio` worker.
+**Evidence:** both hardware dumps resolved to the same `_kill_r(SIGABRT)` path
+after `std::__throw_system_error` from the audio synchronization code.
+**Confirmed cause:** `std::mutex`/pthread locking was used inside a worker created
+with `sceKernelCreateThread`; a pthread lock error became `std::system_error` and
+terminated the no-exceptions native build.
+**Do not repeat:** do not use throwing `std::mutex` synchronization in this Vita
+audio worker.
+**Different approach:** the audio mixer uses a no-throw atomic/native lock path;
+hardware 00.10 now confirms audible audio and no recurrence of this crash.
+
+## 2026-10-05 — Vita 00.06/00.07 exited at md=61 because resume lifecycle was missing
+
+**What failed:** after the audio fix the application stopped without a crash at
+498 frames. TeaVM tracing later located repeated NPEs in `DrawExec()` and a final
+NPE in `DrawText()` while `Game9(61)` was active.
+**Confirmed cause:** the Vita entry point never supplied Android's initial resume
+transition. The original `Run()` initializes its two StringTexture surfaces and
+Graphics2D state only when `GlobalWork.bResume` is set.
+**Do not repeat:** do not manually construct replacement text surfaces or bypass
+Game9 to hide this lifecycle error.
+**Different approach:** set the original lifecycle `bResume` once before the first
+`Run()`, allowing the original engine to initialize and clear it itself. Build
+00.08 subsequently opened the real game on hardware.
+
+## 2026-10-05 — Vita 00.09 touch coordinates existed but original engine ignored raw Vita IDs
+
+**What failed:** the game rendered and the panel was initialized, but touching
+visible game controls produced no response.
+**Evidence:** hardware reported a valid front active area `0,0 -> 1919,1087`.
+Changing display-vs-active-area scaling alone did not restore input.
+**Confirmed cause:** SceTouch hardware report IDs were passed directly to KeyData,
+while the original game loop polls only logical pointer IDs 0–4.
+**Do not repeat:** do not pass arbitrary `SceTouchReport.id` values directly into
+the original KeyData contract.
+**Different approach:** retain raw IDs only for tracking and assign stable logical
+slots 0–4. Build 00.10 is HARDWARE CONFIRMED with responsive front touch.
+
+## 2026-10-05 — Vita 00.10 Android14 character selection left BIN metadata encoded
+
+**What failed:** Android14 navigated with real touch to character selection,
+displayed a character, then exited cleanly without a Vita crash dump.
+**Evidence:** the hardware log records a caught `NullPointerException` in
+`TCBManajer.Game3()` and `Run: md=[1018]`, followed by normal loop disposal at
+1502 frames. Bytecode flow shows state 1012 loads `ChrGameData[3]` from
+`charXX.pac` with filter 187; state 1013 sets md=1018 before reading that table.
+
+**Confirmed cause:** the Community14 outer PAC and RGBA entries were normalized,
+but its `bin` payload directory still used the private converted-table XOR fields.
+For `char00.pac`, the untouched first bytes `09 87 ...` make the original
+`binCnv()` interpret an impossible 34,569-record table. The failed GameData init
+leaves its `piGameData*` arrays null; Game3 later dereferences them. All 13
+`char00..12.pac` BIN entries reproduce the issue on host and decode correctly
+with the already-verified Community14 GameDataTable codec to 43 records each.
+
+**Do not repeat:** do not feed encoded Community14 BIN payloads directly to the
+original `GameData.Init(..., conversion=2, ...)`, and do not apply this converted-
+table decoder indiscriminately to CNV or every DAC payload; those schemas differ.
+**Different approach:** normalize only verified Community14 BIN converted-table
+metadata (plus the already-known gamedata/text00 DAC tables) while preserving
+record payload bytes. Host regression now validates all 68 Community14 BIN
+entries. Hardware confirmation is pending build 00.11.
