@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-04",
+  "scope": "real PS Vita hardware startup of private full-engine build 00.03",
+  "result": "crashed before selector because the port misinterpreted vitaGL's return value",
+  "hardware_observed": true,
+  "screen_observed": "black/no game UI before crash",
+  "runtime_log_sha256": "62c0ad4a13f3bd9c195f7d94faa83ed1215be2a8a45b4cef059fe76021f32f38",
+  "psp2dmp_gzip_sha256": "7392dbd6ef032d97cec8e399b95e4f33e63c0d78474705356a68e9a72c89c1e1",
+  "psp2dmp_uncompressed_sha256": "7f83fcbfce9f3730a65741a69a5168abe626cd49ce338d634b9ef0305b169ad9",
+  "psp2dmp_uncompressed_size": 5345824,
+  "runtime_log_excerpt": [
+    "--- full original engine Vita 00.03 boot ---",
+    "FATAL: vitaGL initialization failed",
+    "at com.namcobandaigames.dragonballtap.apk.VitaEngine.main(VitaEngine.java:7)"
+  ],
+  "root_cause": {
+    "confirmed": true,
+    "details": "vglInitExtended returns a framebuffer-resolution fallback flag, not a success flag. GL_FALSE is the normal result when 960x544 is accepted. The port treated GL_FALSE as initialization failure and returned 0, causing VitaEngine.main to throw Native startup failed.",
+    "vitaGL_behavior": "vglInitWithCustomSizes initializes res_fallback to GL_FALSE, sets it GL_TRUE only when requested width/height exceed the maximum framebuffer resolution, and returns res_fallback."
+  },
+  "fix_commits": [
+    "9293eb767c9a5b88dfc8e5b2be1002e529b13b18",
+    "3eef271f31a33f35a538a166dbe204666fa3ecea",
+    "055e8ae9ffb8e150e4041a89fdd2c2e895c05592"
+  ],
+  "next_private_test_artifact": {
+    "name": "DBTapBattle-Vita-00.04.vpk",
+    "sha256": "ffe1d2768f1e0341465042c0ca7573bed1e41d7fc4d1d2947cc4e20d782a9f8e",
+    "size": 2245716,
+    "expected_next_checkpoint": "vitaGL initialization log, then boot profile selector; full original engine behavior remains hardware-pending"
+  }
+}
