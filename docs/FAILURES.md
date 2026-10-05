@@ -235,7 +235,9 @@ with the already-verified Community14 GameDataTable codec to 43 records each.
 **Do not repeat:** do not feed encoded Community14 BIN payloads directly to the
 original `GameData.Init(..., conversion=2, ...)`, and do not apply this converted-
 table decoder indiscriminately to CNV or every DAC payload; those schemas differ.
-**Different approach:** normalize only verified Community14 BIN converted-table
-metadata (plus the already-known gamedata/text00 DAC tables) while preserving
-record payload bytes. Host regression now validates all 68 Community14 BIN
-entries. Hardware confirmation is pending build 00.11.
+**Different approach:** normalize only verified top-level Community14 BIN
+GameData metadata (plus the already-known gamedata/text00 DAC tables) while
+preserving record payload bytes. Host regression validates all 68 top-level BIN
+GameData entries. An attempted recursive conversion was rejected because a nested
+SPR BIN in `back02.pac` uses a different schema; nested SPR BIN payloads must remain
+untouched. Hardware confirmation is pending build 00.11.
