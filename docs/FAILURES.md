@@ -145,3 +145,31 @@ and U+2460 are present but unavailable. Resolve charset per table at the platfor
 text boundary instead of replacing characters or rejecting the whole table.
 Original startup still requests initial downloadable data; installed-resource
 offline startup remains to be validated.
+
+## 2026-10-04 — Vita 00.03 treated successful vitaGL init as failure
+
+**What failed:** the first full-engine hardware VPK went black and crashed before
+showing any selector/game UI.
+**Evidence:** `docs/evidence/vita_hardware_vgl_init_00.03.json` plus the submitted
+runtime log and psp2core dump.
+**Confirmed cause:** `vglInitExtended()` returns whether framebuffer resolution
+fallback happened, not whether initialization succeeded. Native 960x544 returns
+`GL_FALSE`; the port incorrectly returned startup failure and TeaVM threw.
+**Do not repeat:** never use the return value of `vglInitExtended()` as a generic
+success/failure flag.
+**Different approach:** initialize vitaGL, treat the return only as a resolution-
+fallback indicator, and log the post-init checkpoint.
+
+## 2026-10-04 — Vita 00.04 selector used disabled immediate-mode pool
+
+**What failed:** hardware showed the vitaGL logo and completed renderer/mod scan,
+then data-aborted before the Original/Android14 selector became visible.
+**Evidence:** `docs/evidence/vita_hardware_selector_crash_00.04.json`. The dump
+maps the fault to `glVertex3f`, called by the custom selector `rect()` helper, with
+DFAR `0x00000000`.
+**Confirmed cause:** the full engine intentionally starts vitaGL with
+`legacy_pool_size=0` because the original game renderer uses GLES client arrays,
+but the custom selector still used `glBegin/glVertex3f` immediate mode.
+**Do not repeat:** no `glBegin/glVertex*` UI while the legacy pool is disabled.
+**Different approach:** selector and diagnostic quads now use
+`glVertexPointer`/`glTexCoordPointer` plus `glDrawArrays(GL_TRIANGLE_FAN)`.
