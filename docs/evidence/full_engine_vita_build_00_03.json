@@ -19,11 +19,12 @@
   "full_engine": {
     "generated_c_file_count": 1066,
     "generated_c_size_approx": "24 MiB",
-    "elf_sha256": "15eeb0794f9729bfb1ea8f4ebea977eed42e506078a78c877763fcf61910bebf",
-    "eboot_sha256": "21395ec468550f39887d650868dd0630f2dcb3d074da22a744c48477ce7b37dc",
-    "vpk_sha256": "66b3b1dbaf22810cd2af45b0d8a57ba9a33870394a7d26494f7241705b0971fb",
-    "vpk_size_bytes": 2339647,
+    "elf_sha256": "40ec6282c3e204c09ca0308a4c41b745cd6df050f461cec1d7ca30c847791cb2",
+    "eboot_sha256": "386fc7014a87ba7712d62425a6acdfe3bcdc25e8e481a5c294a0b168a1595ce9",
+    "vpk_sha256": "1adb6f95a5853dd51e96fb5aeee47d4e5c41af58664d6e39fca00a8f7fe40298",
+    "vpk_size_bytes": 2204145,
     "vpk_crc_test": true,
+    "runtime_log": "ux0:data/DBTapBattle/logs/runtime.log",
     "symbols_confirmed": [
       "meth_cnda_VitaEngine_main",
       "meth_cnda_TCBManajer_Init",
@@ -49,6 +50,7 @@
     "playable_claim": false
   },
   "notes": [
+    "The final private build redirects TeaVM/native stdout and stderr into runtime.log after the data directories exist.",
     "The VPK contains privately generated APK-derived executable code and is not committed to the public source repository.",
     "The public repository retains adapters, build scripts and metadata-only evidence.",
     "Host execution had already confirmed original title/main-menu rendering; this record adds the complete Vita ARM link/package milestone only."
