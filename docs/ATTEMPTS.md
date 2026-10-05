@@ -462,3 +462,89 @@ update checking returns no pending remote items only when required PACs exist.
 Remote HTTP requests still fail honestly. No gameplay handler is replaced.
 **Result:** HOST MENU CONFIRMED; character selection/combat under test. Vita ARM
 build and hardware execution are separate checks, not established by host GL.
+
+## 2026-10-05 — Attempt 023 — Real Vita touch/audio and Android14 character selection
+
+**Goal:** progress the full original engine on physical Vita through real menu
+input and character selection for both installed data profiles.
+
+**Baseline:** builds 00.08–00.10 after the vitaGL selector, audio-thread and
+initial-resume fixes.
+
+**Changes:** calibrate the front panel from its active area, prevent Vita face
+buttons from being translated accidentally to Android Back during gameplay, and
+map arbitrary SceTouch report IDs to stable original-engine pointer slots 0–4.
+
+**Test procedure:** run Original and Android14 on a physical PS Vita, navigate
+with the front touchscreen, listen for game audio and continue into character
+selection. Inspect the captured TeaVM/runtime log rather than treating a clean
+process exit as a native crash.
+
+**Observed:** build 00.10 has responsive touch on hardware and audible audio.
+Original ran 1054 frames in the captured session. Android14 accepted touch through
+the menus, reached character selection, displayed a character and then exited
+cleanly at 1502 frames. TeaVM traced a caught NPE to `TCBManajer.Game3()` with
+the reported state md=1018. Some screen transitions show a 1–2 second black
+interval; this is retained as a separate loading/performance observation.
+
+**Root-cause follow-up:** original bytecode state 1012 loads `ChrGameData[3]`
+from `charXX.pac` with conversion 2/filter 187, enters 1013, and sets md=1018
+before the final table reads. The Community14 bridge normalized the outer PAC and
+RGBA textures but left each encoded `bin` converted-table header untouched.
+The original `binCnv()` therefore rejected the character table and later Game3
+dereferenced null GameData arrays. Host reproduction confirms all 13
+`char00..12.pac` BIN entries decode to 43 records with the established
+Community14 GameDataTable codec; the generalized regression covers all 68
+Community14 BIN entries.
+
+**Evidence:** `docs/evidence/vita_hardware_touch_character_00.10.json`, submitted
+`runtime.log`, commits `3977953a2209f5c52e81eb5ca84f3068ae46cd80`
+and `e3a79b1e73baab5d648112697fcb2d0f4ac32770`.
+
+**Result:** PARTIAL. Touch, audio, menu navigation and character-selection entry
+are HARDWARE CONFIRMED. Community BIN normalization is HOST CONFIRMED and awaits
+00.11 hardware verification. Character-selection continuation and a complete
+battle are not yet confirmed.
+
+**Next action:** build 00.11 with Community14 BIN normalization and retest
+Android14 character selection first. After functional progression is stable,
+profile the 1–2 second black transition stalls separately rather than mixing a
+performance optimization into the correctness fix.
+
+## 2026-10-05 — Attempt 024 — Normalize Community14 character BIN tables and build 00.11
+
+**Goal:** fix the clean Android14 exit after the first character appears without
+patching `Game3` or replacing original character-selection logic.
+
+**Baseline:** hardware-confirmed build 00.10, whose TeaVM log ends in a caught
+`TCBManajer.Game3()` NPE with reported `md=1018` after 1502 frames.
+
+**Changes:** `src/engine_resources.cpp` now applies the already-verified
+Community14 converted-table metadata decoder to encoded `bin` entries before
+the unchanged original Java `GameData.Init(..., conversion=2, ...)` path sees
+them. `tests/test_engine_resources.cpp` compares all Community14 BIN tables
+record-by-record before/after normalization. CNV and unrelated DAC payloads
+remain on their distinct schemas. Vita version advances to 00.11.
+
+**Host test:** the actual Android14 `char00.pac` through `char12.pac` from the
+private Vita dataset were passed through the production `readEngineResource()`
+path. All 13 normalized BIN tables decode as Original format with 43 records each,
+with matching positions, dimensions and cell values:
+`CHAR BIN NORMALISE PASS: 13/13, 43 records each`.
+
+**Vita build:** Release ARM build completed successfully through ELF, VELF, SELF
+and VPK. `DBTapBattle-Vita-00.11-charbinfix.vpk` is 2,210,294 bytes, SHA-256
+`a39688235f3751689fd64c924bb7f11fc8a8212e29928705a3449db34292efe6`.
+`eboot.bin` SHA-256 is
+`1f7967da03617df53909bafe829c9301c88cc5fbade0815594de2f8746f83c49`.
+VPK ZIP integrity passes, SFO is `DBTB00001` / `00.11`, and no icon0 is packaged.
+
+**Evidence:** `docs/evidence/vita_character_bin_fix_00.11.json`.
+
+**Result:** HOST DATA CONFIRMED + BUILD CONFIRMED. The fix specifically addresses
+the reproduced null character GameData table. Hardware confirmation of selection
+beyond the first rendered character and a complete battle is still pending.
+
+**Next action:** test Android14 first, browse several characters and proceed
+toward battle. If that succeeds, test Original again for regression and then
+profile the separate 1–2 second black transition stalls.
