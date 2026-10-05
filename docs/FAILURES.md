@@ -134,3 +134,14 @@ field is a static byte without ConstantValue, so its JVM initial value is zero.
 Generation now verifies both the class hash and field shape before replacing
 the one defective C initializer with zero; gameplay bytecode remains unchanged.
 The corrected output compiles. Do not reuse the uncorrected generated output.
+
+## 2026-10-05 — Direct-buffer GC and lossy charset conversion
+
+Attempt 021: ASan locates the old direct-buffer fault in TeaVM GC.freeBufferContent,
+triggered after rendering allocations. Use heap-backed Java buffer views with
+native-owned GL copies; do not suppress GC or enlarge its heap to hide the fault.
+Community UTF-8 cannot be losslessly converted to ordinary Shift_JIS: U+3231
+and U+2460 are present but unavailable. Resolve charset per table at the platform
+text boundary instead of replacing characters or rejecting the whole table.
+Original startup still requests initial downloadable data; installed-resource
+offline startup remains to be validated.

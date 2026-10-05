@@ -1,6 +1,7 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
 #include "engine_resources.hpp"
+#include "pac.hpp"
 #include "image.hpp"
 #if defined(__vita__)
 #include <vitaGL.h>
@@ -23,6 +24,7 @@ namespace {
 constexpr size_t kSaveSize = 12906;
 std::unique_ptr<GameVfs> vfs;
 std::vector<uint8_t> pending;
+int pending_encoding=0;
 std::string save_path;
 struct Size { int w, h; };
 std::unordered_map<unsigned, Size> textures;
@@ -86,13 +88,16 @@ void dbtb_forgetTexture(unsigned id) { textures.erase(id); }
 
 extern "C" {
 int32_t dbtb_resource(void* name) {
-    std::string path, error; pending.clear();
+    std::string path, error; pending.clear(); pending_encoding=0;
     if (!name || !readEngineResource(dbtb_vfs(), static_cast<const char*>(name), pending, path, error)) {
         std::fprintf(stderr, "Resource %s: %s\n", name ? static_cast<const char*>(name) : "(null)", error.c_str()); return -1;
     }
+    PacFile source;
+    if (source.open(path) && source.encoding()==PacEncoding::Community14) pending_encoding=1;
     std::printf("Resource: %s (%zu bridge bytes)\n", path.c_str(), pending.size());
     return int32_t(pending.size());
 }
+int32_t dbtb_resourceEncoding() { return pending_encoding; }
 void dbtb_copyResource(void* data, int32_t size) {
     if (size < 0 || size_t(size) != pending.size() || (size && !data)) std::abort();
     if (size) std::memcpy(data, pending.data(), size);

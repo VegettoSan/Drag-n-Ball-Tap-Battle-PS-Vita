@@ -10,6 +10,7 @@ public final class NativePlatform {
     @Import(name="dbtb_frame") public static native int frame(Address events);
     @Import(name="dbtb_present") public static native void present();
     @Import(name="dbtb_resource") public static native int resource(Address name);
+    @Import(name="dbtb_resourceEncoding") public static native int resourceEncoding();
     @Import(name="dbtb_copyResource") public static native void copyResource(Address target,int size);
     @Import(name="dbtb_readSave") public static native int readSave(Address name);
     @Import(name="dbtb_writeSave") public static native int writeSave(Address name,Address bytes,int size,int position,int truncate);

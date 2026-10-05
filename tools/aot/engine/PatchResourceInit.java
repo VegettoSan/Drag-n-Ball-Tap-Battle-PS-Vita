@@ -31,6 +31,32 @@ public final class PatchResourceInit implements Opcodes {
         if (!valid[0]) throw new IOException("Expected static byte bEventFlagBuf with no ConstantValue");
     }
 
+    // Retain the original GetString table traversal and String constructor;
+    // replace only its platform encoding token, selected per resolved table.
+    static byte[] adaptText(byte[] bytes) throws Exception {
+        verifyByteDefault(bytes);
+        ClassReader cr=new ClassReader(bytes);
+        ClassWriter cw=new ClassWriter(cr,ClassWriter.COMPUTE_MAXS);
+        final int[] found={0};
+        cr.accept(new ClassVisitor(ASM9,cw) {
+            @Override public MethodVisitor visitMethod(int access,String name,String desc,String signature,String[] exceptions) {
+                MethodVisitor mv=super.visitMethod(access,name,desc,signature,exceptions);
+                if(!name.equals("GetString") || !desc.equals("("+GW+"III)Ljava/lang/String;"))return mv;
+                return new MethodVisitor(ASM9,mv) {
+                    @Override public void visitLdcInsn(Object value) {
+                        if("Shift_JIS".equals(value)) {
+                            found[0]++;
+                            super.visitVarInsn(ILOAD,2);
+                            super.visitMethodInsn(INVOKESTATIC,PKG+"ResourceAdapter","textCharset","(I)Ljava/lang/String;",false);
+                        } else super.visitLdcInsn(value);
+                    }
+                };
+            }
+        },0);
+        if(found[0]!=1)throw new IOException("Expected one GetString charset boundary");
+        return cw.toByteArray();
+    }
+
     private static String digest(byte[] b) throws Exception {
         StringBuilder s = new StringBuilder();
         for (byte v : MessageDigest.getInstance("SHA-256").digest(b)) s.append(String.format("%02x", v & 255));
@@ -87,12 +113,13 @@ public final class PatchResourceInit implements Opcodes {
         if (original == null) throw new IOException("Original GameData absent");
         verifyByteDefault(entries.get(PKG + "TCBManajer.class"));
         entries.put(CLASS + ".class", adapt(original));
+        entries.put(PKG+"TCBManajer.class",adaptText(entries.get(PKG+"TCBManajer.class")));
         try (JarOutputStream jar = new JarOutputStream(Files.newOutputStream(out, StandardOpenOption.CREATE_NEW))) {
             for (Map.Entry<String, byte[]> e : entries.entrySet()) {
                 JarEntry entry = new JarEntry(e.getKey()); entry.setTime(0);
                 jar.putNextEntry(entry); jar.write(e.getValue()); jar.closeEntry();
             }
         }
-        System.out.println("Adapted one resource overload; all other class payloads retained");
+        System.out.println("Adapted resource I/O and GetString encoding boundary; all other class payloads retained");
     }
 }

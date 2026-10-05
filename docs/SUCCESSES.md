@@ -154,3 +154,9 @@ static-byte default repair. ASan/UBSan checks pass for 125 PAC files, 137 nested
 containers and 470 images across both profiles. Original bytes, community image
 indices, table cells and unknown metadata are preserved by the memory adapter.
 GL/resource services also compile for Vita. This does not confirm device play.
+
+## 2026-10-05 — Complete charset mapping and retained Unicode
+
+Attempt 021: all 65,792 single/two-byte Shift_JIS decode cases match Java.
+The resource-specific charset boundary keeps community UTF-8 strings intact and
+respects original fallback. Generation passes; native execution is a separate check.

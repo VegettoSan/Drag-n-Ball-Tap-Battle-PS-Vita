@@ -431,3 +431,17 @@ bEventFlagBuf. Hash/field-guarded generation substitutes its JVM default zero;
 the original TCBManajer.class is unchanged. The resulting full C core compiles.
 **Result:** RESOURCE/COMPILER SUCCESS. Linking and actual rendered gameplay are
 separate checks; production CMake still builds the diagnostic application.
+
+## 2026-10-05 — Attempt 021 — Text boundary and graphics-buffer lifecycle
+
+**Baseline:** 9a4285c plus recovered uncommitted native-service work.
+**Procedure:** complete core generation with TeaVM 0.12.3; exhaustive Shift_JIS
+decoder comparison against Java; preceding core native ASan execution.
+**Observed:** 65,792 decode cases match. The preceding core renders original
+logos/dialog and runs 1,800 frames with heap-backed client buffers. Community
+text was mojibake because it is UTF-8. Converting it to standard Shift_JIS fails
+on circled digits and corporation symbols. **Correction:** select encoding at
+the GetString platform boundary per resolved table; retain payload, string
+lengths and characters. Both tables independently fall back to original.
+Fresh generation: 460 classes/4,002 methods without diagnostics. Native menu
+progression and combat remain under test, not playable-release evidence.

@@ -3,6 +3,7 @@
 import argparse
 from pathlib import Path
 import subprocess
+import shutil
 import zipfile
 
 
@@ -33,10 +34,18 @@ def main():
     if not original.is_file() or not ecj.is_file():
         parser.error('Original JAR and ECJ must exist')
     work.mkdir(parents=True)
+    generators = work / 'generators'
+    run(['java', '-jar', ecj, '-8', '-d', generators, '-cp', libs / 'asm-9.7.1.jar',
+         root / 'GenerateSjis.java', root / 'PatchCharsets.java'], work / 'generators-build.log')
+    mapping = work / 'SjisMapping.java'
+    run(['java', '-cp', generators, 'GenerateSjis', mapping], work / 'sjis-generation.log')
+    charset_registry = work / 'charset-registry.jar'
+    run(['java', '-cp', f'{generators}:{libs / "asm-9.7.1.jar"}', 'PatchCharsets',
+         libs / 'teavm-classlib-0.12.3.jar', charset_registry], work / 'charset-registry.log')
     cp = f'{original}:{libs / "teavm-interop-0.12.3.jar"}'
     classes = work / 'classes'
     run(['java', '-jar', ecj, '-8', '-d', classes, '-cp', cp,
-         *sorted((root / 'java').rglob('*.java'))], work / 'java-build.log')
+         *sorted((root / 'java').rglob('*.java')), mapping], work / 'java-build.log')
     adapters = work / 'adapters.jar'
     with zipfile.ZipFile(adapters, 'x', zipfile.ZIP_DEFLATED) as jar:
         for path in sorted(classes.rglob('*.class')):
@@ -48,7 +57,7 @@ def main():
     patched = work / 'original-vfs.jar'
     run(['java', '-cp', f'{patch_classes}:{libs / "asm-9.7.1.jar"}',
          'PatchResourceInit', original, patched], work / 'patch.log')
-    run(['java', '-cp', f'{libs}/*:{adapters}:{patched}', 'org.teavm.cli.TeaVMRunner',
+    run(['java', '-cp', f'{charset_registry}:{libs}/*:{adapters}:{patched}', 'org.teavm.cli.TeaVMRunner',
          '-t', 'c', '-d', work / 'c', '--min-heap', '8', '--max-heap', '48', '--strict',
          '--', 'com.namcobandaigames.dragonballtap.apk.VitaEngine'], work / 'generation.log')
     # The patch tool verified the pinned original field is a static byte with no

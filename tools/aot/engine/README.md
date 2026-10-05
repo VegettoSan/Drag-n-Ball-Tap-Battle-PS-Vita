@@ -20,8 +20,10 @@ Graphics2D, GameData byte-array decoder and SpriteData remain APK-derived
 bytecode. They are not copied into Git. `PatchResourceInit` requires the exact
 original GameData.class SHA-256 from dex2jar 2.4, and replaces only its Android
 String/stream loading overload with ResourceAdapter. The original byte-array
-Init still receives the conversion and filter arguments. The 105 other JAR
-entry payloads are byte-for-byte unchanged. This is not an adaptation of the
+Init still receives the conversion and filter arguments. The GetString encoding token in TCBManajer is also adapted to the resolved
+table codec (original Shift_JIS or community UTF-8). Its byte traversal, String
+constructor and gameplay control flow are retained. The 104 other JAR
+entry payloads remain byte-for-byte unchanged. This is not an adaptation of the
 Android14 APK's changed Java behavior.
 
 ## Service contracts and limits
@@ -31,7 +33,8 @@ Android14 APK's changed Java behavior.
 - Java GL Buffer active ranges are copied to native-owned client buffers before
   drawing, so GC cannot move memory still referenced by GL.
 - Original touch scale/offset and stable IDs are passed to original KeyData.
-  Native frame events must contain at most ten entries; overflow is an error.
+  Native frame events can contain at most sixteen begin/move/end entries;
+  KeyData still owns ten active slots. Overflow is an error.
 - Original engine Init/Run/Dispose are invoked. The native frame loop must supply
   lifecycle/quit, touch events and back edges; actual controls remain unverified.
 - Sound, textures, text surfaces, FBOs and saves have real native service imports.
@@ -46,8 +49,14 @@ Android14 APK's changed Java behavior.
   VitaEngine explicitly clears bBluetoothEnebled before engine execution.
 - Only save.bin is writable, through the native per-profile save service.
   Partial writes retain position/size arguments; full writes request truncation.
-- TeaVM's stock charset implementation lacks Shift_JIS. Original text decoding
-  requires an adapter before claiming text/game fidelity.
+- TeaVM's stock charset implementation lacks Shift_JIS. The generated JDK
+  decoder mapping supplies it; 65,792 single/two-byte cases match Java. UTF-8
+  community strings retain all Unicode characters. Encoding is selected per
+  resolved gamedata/text00 resource, including mixed overlays.
+- TeaVM 0.12.3 direct-buffer GC faults on unreachable client buffers. Its
+  allocateDirect boundary uses heap-backed buffers; the native GL layer already
+  copies all active client arrays. Game bytecode and buffer ranges, native byte
+  order, positions and views are retained.
 - The input-probe-only runtime patch omits Date. Do not apply it unchanged to
   this core: original NewsData makes Date reachable and needs a real backend.
 
