@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-05",
+  "version": "00.12",
+  "purpose": "fix Community14 character voice decoding and reduce/correct Vita dialogue text stalls/layout drift",
+  "source_commits": {
+    "voice_decode": "324d435106522c3c2728e6d4e1d58984ae23c673",
+    "voice_regression": "f345175ce9b988cdc8ed0fc0285a89cc48ccebaf",
+    "text_backend": "fcd94d7d548f0c7932d11f3db490b44d2d374312",
+    "version_bump": "35b2492a244f6a633b27a31f7204de234d236da7"
+  },
+  "voice_fix": {
+    "problem": "Community14 top-level wav payloads were passed toward SoundEffect as if they were PCM although compressed streams use the APK loader's PlayStation ADPCM framing",
+    "solution": "decode verified Community14 wav wrappers to signed 16-bit mono PCM before the unchanged original SoundEffect path",
+    "format": "16-byte PS-ADPCM frames -> up to 28 PCM samples, predictor/shift in frame byte 0, terminator/control in byte 1",
+    "host_regression": {
+      "decoded_streams": 198,
+      "all_decoded_sizes_match_wrapper_metadata": true,
+      "nonzero_pcm_energy": true
+    }
+  },
+  "text_fix": {
+    "problem": "Vita PVF backend rasterized glyphs repeatedly, derived line metrics from each individual string and uploaded the full text surface even for small changes",
+    "solution": [
+      "cache PVF glyph masks by size/codepoint",
+      "cache font-wide line metrics and use baseline equivalent to Android Paint FontMetrics top/bottom semantics",
+      "track dirty row ranges and upload only affected rows with glTexSubImage2D",
+      "log text uploads taking at least 15 ms for hardware profiling"
+    ],
+    "engine_logic_changed": false
+  },
+  "artifact": {
+    "name": "DBTapBattle-Vita-00.12-voice-text-fix.vpk",
+    "size": 2217362,
+    "sha256": "13c5052d7dae21670174358b4c55c2b80a528d35767dafa79c6aadf72afc4306",
+    "zip_test": "pass",
+    "title_id": "DBTB00001",
+    "app_ver": "00.12",
+    "contains_icon0": false
+  },
+  "eboot": {
+    "size": 2309461,
+    "sha256": "3f223996f453ae5e90caa9f09afa523f39d5af57cc51104e2e423b6e9d9aac30"
+  },
+  "elf": {
+    "size": 6906140,
+    "sha256": "7b502ba7c877bd275e59de8f38cf63f054ad89a8f18f7e865ab1f27564413b8c"
+  },
+  "confidence": "BUILD CONFIRMED + HOST RESOURCE REGRESSION; voice quality, text placement and stall reduction require physical Vita confirmation",
+  "next_test": "Android14 profile: enter a real battle, trigger multiple character voices and dialogue boxes, compare voice clarity/completeness, text alignment and stalls; preserve runtime.log for Text upload timing lines"
+}
