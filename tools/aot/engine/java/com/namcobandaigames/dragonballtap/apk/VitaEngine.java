@@ -15,6 +15,11 @@ public final class VitaEngine {
         Utility.SetGlobalWork(gw);TCBManajer engine=new TCBManajer();gw.setTCBM(engine);
         if(!engine.Init(gw))throw new IllegalStateException("Original engine Init failed");
         System.out.println("ORIGINAL ENGINE INIT PASS");
+        // Android marks the first active frame as a resume transition. The
+        // original Run() uses this edge to allocate StringTexture[0..1], reset
+        // Graphics2D and restore BGM, then clears bResume itself. Without it the
+        // Vita port entered DrawExec with the text surfaces still null.
+        gw.bResume=true;
         int[] events=new int[42];int frames=0;
         while(gw.bThreadActive){int count=NativePlatform.frame(Address.ofData(events));if(count<0)break;if(count>10)throw new IllegalStateException("Input overflow");gw.bBackKey=events[40]!=0;
             for(int i=0;i<count;i++){int p=i*4,id=events[p],phase=events[p+3];int x=(int)(events[p+1]*gw.fScreenScale)-gw.iScreenOffsetX;int y=(int)(events[p+2]*gw.fScreenScale)-gw.iScreenOffsetY;
@@ -24,4 +29,3 @@ public final class VitaEngine {
         System.out.println("ORIGINAL ENGINE RUN FRAMES="+frames);engine.Dispose(gw);
     }
 }
-
