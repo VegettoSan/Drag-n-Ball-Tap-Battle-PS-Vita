@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-05",
+  "source": {
+    "label": "user supplied original-plus-characters APK",
+    "filename": "gen.apk",
+    "size": 78935671,
+    "sha256": "d52cbd7ef248d995ad17ba6ec8ec6fa08590a344ac2a9786e5ac839bf7715f28"
+  },
+  "layout": {
+    "assets_files": 147,
+    "res_raw_files": 57,
+    "res_raw_nonzero_files": 0,
+    "runtime_source": "assets/",
+    "resource_counts": {
+      "pac": 108,
+      "ogg": 36,
+      "png": 1,
+      "bin": 2
+    }
+  },
+  "pac_validation": {
+    "ordinary_pac_files": 108,
+    "invalid_outer_tables": 0,
+    "top_level_png_entries": 376,
+    "nested_spr_png_entries": 29,
+    "decoded_png_entries": 405,
+    "max_png_dimensions": "512x512",
+    "top_level_wav_entries": 198,
+    "top_level_bin_entries": 69,
+    "top_level_bin_game_tables_valid": 69,
+    "character_bin_tables": 13,
+    "character_records_each": 43,
+    "gamedata_records": 271,
+    "text00_records": 1
+  },
+  "audio_validation": {
+    "ogg_files": 36,
+    "ogg_codec": "Vorbis",
+    "ogg_sample_rate": 44100,
+    "bgm_stereo": 17,
+    "se_mono": 19,
+    "character_wav_entries": 198,
+    "character_wav_container": "RIFF/WAVE",
+    "character_wav_format": "PCM signed 16-bit mono 22050 Hz",
+    "unsupported_wav_entries": 0
+  },
+  "installed_data_contract": {
+    "char00_to_12": true,
+    "chardemo00_to_12": true,
+    "charf0000_to_0012": true,
+    "select0": true,
+    "effect": true,
+    "back00": true,
+    "bobj00": true,
+    "font00": true
+  },
+  "charset": {
+    "important_detail": "container codec and text charset are independent in this APK",
+    "gamedata_pac": "ordinary PAC / Shift_JIS text content",
+    "char00_to_12": "ordinary PAC / Shift_JIS text content",
+    "text00_pac": "ordinary PAC / UTF-8 text content",
+    "text00_relation": "text00 converted-table bytes match the normalized Android14 text00 table",
+    "previous_runtime_issue": "00.12 selected Shift_JIS only from ordinary PAC encoding and would misdecode text00",
+    "main_fix": "detectEngineTextEncoding scans normalized GameData BIN/DAC content for strong strict-UTF-8 evidence before falling back to container profile"
+  },
+  "extractor": {
+    "previous_issue": "auto mode rejected APKs containing both res/raw and assets even when res/raw consisted only of zero-byte stubs",
+    "main_fix": "auto mode now selects assets when res/raw has no payload bytes and assets contains real payloads",
+    "genuinely_mixed_nonempty_layouts_still_rejected": true
+  },
+  "confidence": "FORMAT CONFIRMED + HOST COMPATIBILITY CONFIRMED; physical Vita execution with this dataset pending",
+  "artifact_note": "DBTapBattle-Vita-00.12-voice-text-fix.vpk predates the hybrid charset fix and should not be used as evidence for this profile"
+}
