@@ -1,0 +1,73 @@
+name: Export private build tools
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/export-private-build-tools.yml'
+      - 'tools/aot/pom.xml'
+  workflow_dispatch:
+
+jobs:
+  aot-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Collect pinned open-source AOT tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p export/lib export/dex2jar
+
+          curl --fail --location --retry 3 \
+            https://github.com/pxb1988/dex2jar/releases/download/v2.4/dex-tools-v2.4.zip \
+            -o /tmp/dex2jar.zip
+          unzip -q /tmp/dex2jar.zip -d /tmp/dex2jar
+          cp -a /tmp/dex2jar/dex-tools-v2.4/. export/dex2jar/
+
+          curl --fail --location --retry 3 \
+            https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.37.0/ecj-3.37.0.jar \
+            -o export/ecj-3.37.0.jar
+
+          mvn -q -f tools/aot/pom.xml dependency:copy-dependencies \
+            -DincludeScope=runtime \
+            -DoutputDirectory="$PWD/export/lib"
+
+          for required in \
+            teavm-cli-0.12.3.jar \
+            teavm-classlib-0.12.3.jar \
+            teavm-interop-0.12.3.jar \
+            asm-9.7.1.jar; do
+            test -s "export/lib/$required"
+          done
+          test -x export/dex2jar/d2j-dex2jar.sh
+
+          find export -type f -print0 | sort -z | xargs -0 sha256sum > export/SHA256SUMS.txt
+          du -sh export
+          find export/lib -maxdepth 1 -type f -printf '%f\n' | sort
+
+      - name: Upload public tool bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbtb-private-aot-tools
+          if-no-files-found: error
+          compression-level: 6
+          path: export/
+
+  vitasdk-size:
+    runs-on: ubuntu-latest
+    container: vitasdk/vitasdk:2026.08
+    steps:
+      - name: Report VitaSDK footprint
+        shell: bash
+        run: |
+          set -euo pipefail
+          du -sh /usr/local/vitasdk
+          du -sh /usr/local/vitasdk/bin /usr/local/vitasdk/arm-vita-eabi /usr/local/vitasdk/share /usr/local/vitasdk/lib 2>/dev/null || true
+          find /usr/local/vitasdk -maxdepth 1 -mindepth 1 -printf '%f\n' | sort
