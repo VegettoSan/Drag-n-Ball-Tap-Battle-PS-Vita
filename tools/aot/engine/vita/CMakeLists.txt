@@ -64,8 +64,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 target_compile_definitions(${PROJECT_NAME} PRIVATE
   _GNU_SOURCE=1
-  DBTB_VERSION="${VITA_VERSION}"
-  DBTB_COMMIT="${DBTB_COMMIT}"
+)
+# Version/commit strings are only consumed by the Vita platform shim. Keeping
+# them off the TeaVM amalgamation prevents a version bump from recompiling the
+# complete ~24 MiB generated C translation unit.
+set_source_files_properties(
+  "${REPO_ROOT}/tools/aot/engine/native/vita_platform.cpp"
+  PROPERTIES COMPILE_DEFINITIONS
+    "DBTB_VERSION=\"${VITA_VERSION}\";DBTB_COMMIT=\"${DBTB_COMMIT}\""
 )
 target_compile_options(${PROJECT_NAME} PRIVATE
   -O2 -Wall -Wextra
