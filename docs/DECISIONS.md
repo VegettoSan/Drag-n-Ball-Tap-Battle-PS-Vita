@@ -148,3 +148,32 @@ observed user results, host mocks and hypotheses are labeled separately.
 Do not turn a historical pending item into a present blocker, or a later fix
 into retroactive proof for an older artifact. Docs-only commits do not rebuild
 or change the delivered 00.21 executable.
+
+<!-- DBTB_00_23_DETAIL:START -->
+## Decision — preserve original streaming PAC parsing across the Vita boundary (00.23)
+
+**Decision:** do not bridge full multi-megabyte character PAC files into one managed
+TeaVM array when the original engine already provides a streaming parser. Patch only
+the Android-specific stream-opening expressions and back them with a native Vita
+resource stream whose handle owns/pins the resource for the stream lifetime.
+
+**Why:** 00.22 demonstrated that a correct parser can still fail on constrained
+hardware if an adapter changes its allocation topology. The full `char00.pac`
+bridge added a ~4.74 MiB managed allocation at exactly the battle transition. The
+00.23 hardware retest succeeded after that allocation was removed.
+
+**Constraint:** keep original entry decoding, filters, conversion, `Dispose`
+ordering, exceptions/finally and close behavior unless a separately evidenced Vita
+incompatibility requires a narrower adaptation.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

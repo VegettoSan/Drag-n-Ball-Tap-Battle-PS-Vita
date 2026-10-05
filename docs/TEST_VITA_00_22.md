@@ -41,3 +41,23 @@ como copia/caché nativa, PNG real y el corpus 125 PAC/137 contenedores/470 text
 La generación privada Java/C de 00.21 se conserva y se recompila completa; el
 cambio es nativo. Perfil Original es una carpeta, no prueba de qué APK la pobló.
 Guía de diagnóstico: [VALIDATION](VALIDATION.md), [CURRENT_STATUS](CURRENT_STATUS.md).
+
+<!-- DBTB_00_22_RESOLUTION:START -->
+## Resolution in 00.23
+
+The battle-start memory failure recorded by this 00.22 test was retested after
+restoring the original streaming PAC parser. The physical-Vita 00.23 session passed
+the previously failing transition and gameplay proceeded normally with no error
+observed. See [TEST_VITA_00_23](TEST_VITA_00_23.md).
+<!-- DBTB_00_22_RESOLUTION:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

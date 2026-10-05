@@ -847,3 +847,34 @@ requested/free/available/max/chunk diagnostics; preserve 8/48 MiB managed and
 repeat battles, memory headroom, texts and audible/selection regressions remain
 PENDING. This removes the observed whole-PAC allocation, not every possible
 memory limit. Deliver complete fresh engine, matching symbols and exact hashes.
+
+<!-- DBTB_00_23_DETAIL:START -->
+## 2026-10-05 — 00.23 real-hardware battle-memory retest — SUCCESS
+
+**Input:** the 00.23 battle-memory test VPK built from `0e17b0bac33c47698b414b67a839c839f0e555ce`.  
+**Reason:** 00.22 reached the character selector with clean audio and responsive
+switching, but aborted when starting a fight while allocating a full ~4.74 MiB PAC
+bridge array in TeaVM managed memory.
+
+**Change under test:** restore the original streaming `GameData.Init` path; replace
+only Android resource opening with `NativeResourceStream`; keep original entry
+parsing, filters, conversion, `Dispose` ordering and close/finally behavior.
+
+**Hardware result:** user reports everything exercised in this session working as
+expected and no error found. Audio remained correct, character selection remained
+responsive, battle startup succeeded and gameplay proceeded normally.
+
+**Outcome:** accepted as the current 00.23 hardware checkpoint. Continue regression
+coverage rather than reopening the removed whole-PAC bridge design.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

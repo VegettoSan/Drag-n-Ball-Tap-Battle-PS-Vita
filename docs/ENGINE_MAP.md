@@ -107,3 +107,28 @@ Source map: `tools/aot/engine/java/.../VitaEngine.java`, `PatchResourceInit.java
 `vita_text.cpp`, `vita_audio.cpp`, and `src/engine_resources.cpp`. Full paths and
 reusable boundaries are listed in PORTING_GUIDE/BUILD. Generated original classes
 are intentionally absent from Git.
+
+<!-- DBTB_00_23_DETAIL:START -->
+## 00.23 GameData/PAC runtime path
+
+Current battle resource flow:
+
+`TCBManajer.SetLoad/Game1` → original `GameData.Init(...)` streaming parser →
+`ResourceAdapter.open(...)` → `NativeResourceStream` → native resource cache/VFS.
+
+The native stream pins its resource owner until close and supports ranged reads.
+The Java side sees the original parser's per-entry allocations rather than a whole
+PAC bridge array. This path is hardware-validated through successful battle startup
+in the reported 00.23 session.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

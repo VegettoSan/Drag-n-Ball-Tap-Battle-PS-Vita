@@ -71,3 +71,14 @@ la prueba física falla antes del menú.
 Regresión completa: 125 PACs, 137 contenedores, 470 texturas, 68 tablas BIN,
 198 WAVs decodificados; además 12 pruebas Python y probe JVM de buffers.
 Metadatos y hashes: `evidence/vita_pac_voice_build_00.20.json`.
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

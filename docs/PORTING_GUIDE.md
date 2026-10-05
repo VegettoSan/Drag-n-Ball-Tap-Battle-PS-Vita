@@ -165,3 +165,28 @@ before retrying an approach, [ATTEMPTS](ATTEMPTS.md) for experiments and
 [SUCCESSES](SUCCESSES.md) for confirmed results. Pin upstream notices and describe
 what a symbol bundle actually contains. Generated commercial code is not covered
 by the licenses of the compiler/runtime/adapters merely because it compiles.
+
+<!-- DBTB_00_23_DETAIL:START -->
+## Reusable lesson from 00.22 → 00.23: preserve streaming allocation topology
+
+On memory-constrained targets, an adapter can break a working original parser even
+when it returns byte-identical data. The failed 00.22 adapter first allocated an
+entire ~4.74 MiB PAC in TeaVM managed memory; the original method then performed its
+own normal work. That additional peak was enough to abort at battle startup.
+
+The successful 00.23 approach patches only platform-specific opening and leaves the
+original stream parser/lifetime structure intact. For future ports, prefer a native
+stream/handle bridge over whole-file managed copies for large resources, and test
+allocation **shape and timing**, not only total file size or final decoded content.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

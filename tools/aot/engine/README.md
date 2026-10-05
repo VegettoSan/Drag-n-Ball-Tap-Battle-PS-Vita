@@ -106,3 +106,24 @@ the adapters, reproducible generation/build tooling and non-commercial evidence.
 The root CMake target and CI native smoke are not this complete engine. Cache
 budgets and heap/compiler/link options are documented in BUILD/CURRENT_STATUS;
 future reuse is described in [PORTING_GUIDE](../../../docs/PORTING_GUIDE.md).
+
+<!-- DBTB_00_23_DETAIL:START -->
+## 00.23 engine-generation checkpoint
+
+`PatchResourceInit` must keep the original streaming loader structure and replace
+only Android-specific resource-opening expressions. `ResourceAdapter.open` returns a
+`NativeResourceStream` backed by native open/size/read/close imports. Do not restore
+the former whole-PAC `byte[]` shortcut: it caused the reproduced 00.22 battle-start
+managed-memory abort and 00.23 hardware testing validates the streaming repair.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

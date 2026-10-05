@@ -1,0 +1,25 @@
+{
+  "version": "00.23",
+  "date": "2026-10-05",
+  "source_commit": "0e17b0bac33c47698b414b67a839c839f0e555ce",
+  "test_vpk": "DBTapBattle-Vita-00.23-battle-memory-test.vpk",
+  "test_vpk_sha256": "8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd",
+  "device": "physical PS Vita",
+  "result": "PASS for reported test session",
+  "user_report": {
+    "overall": "everything exercised working as expected; no error found at this point",
+    "audio_voices": "working correctly; prior rasp remains resolved",
+    "character_selection": "working correctly; prior stalls remain resolved",
+    "battle_start": "succeeds; 00.22 crash not reproduced",
+    "battle_gameplay": "working normally in reported session"
+  },
+  "resolved_regression": {
+    "version": "00.22",
+    "resource": "char00.pac",
+    "whole_managed_bridge_bytes": 4739319,
+    "classification": "TeaVM managed allocation failure at battle transition",
+    "repair": "restore original streaming GameData parser with native-backed InputStream"
+  },
+  "failure_artifacts": "none supplied for 00.23 because no failure was observed",
+  "scope_limit": "not exhaustive across every character, mode, mod, repeated battle or long session"
+}

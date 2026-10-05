@@ -34,3 +34,14 @@ The port should eventually accept ordinary community asset/data mods without req
 Current checkpoint: full engine 00.22 compiled; original mask 187/251 preserved.
 00.21 worker/menu recovery is confirmed; 00.22 selection recovery is pending.
 See [CURRENT_STATUS](CURRENT_STATUS.md) and [PORTING_GUIDE](PORTING_GUIDE.md).
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

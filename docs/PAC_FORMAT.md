@@ -195,3 +195,24 @@ The 00.20/00.21 native range guard rejected char00 before opening its PAC.
 fails at char00/filter 187 on the previous source and passes after removing the
 guard. It checks exact selected bytes/slots, nonempty metadata, allowed voices,
 and actual native resource-copy/cache behavior; physical 00.22 remains pending.
+
+<!-- DBTB_00_23_DETAIL:START -->
+## Vita loading contract validated in 00.23
+
+PAC bytes and entry semantics are unchanged. The important port-side rule is to
+preserve the original streaming parser for large character archives. Vita provides
+a native-backed `InputStream`; it does not repack the PAC and does not materialize
+the entire archive as a Java bridge array. This allocation-shape correction is what
+allowed the reproduced battle-start path to pass on hardware in 00.23.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

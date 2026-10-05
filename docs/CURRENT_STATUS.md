@@ -1,5 +1,37 @@
 # Current status — 2026-10-05, full engine 00.22
 
+<!-- DBTB_00_23_DETAIL:START -->
+## Authoritative hardware checkpoint — 00.23 (2026-10-05)
+
+**Status:** hardware validated for the tested path; no error observed in the user's
+00.23 session.
+
+Verified together on a real PS Vita in the current progression:
+
+- startup and menu flow continue to work;
+- text remains visible;
+- audio/voices remain clean (the prior rasp/worker issue did not regress);
+- character selection remains responsive (the prior 1–2 second selection stalls did
+  not return in the reported session);
+- starting a fight now succeeds;
+- the fight can be played without the 00.22 battle-start crash.
+
+The specific 00.22 failure was a TeaVM managed-allocation abort while bridging the
+entire `char00.pac` (~4.74 MiB) into one Java `byte[]` before the original parser's
+disposal order could free the prior owner. 00.23 restores the original streaming
+parser contract and exposes the PAC through a Vita native `InputStream` bridge, so
+Java receives individual original payload arrays instead of one whole-PAC bridge
+array.
+
+This is a **checkpoint, not an exhaustive certification**: every character, mode,
+mod dataset, repeated battle sequence and long-duration memory behavior still need
+broader regression coverage before a final release claim.
+
+Test artifact SHA-256: `8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd`  
+Source checkpoint: `0e17b0bac33c47698b414b67a839c839f0e555ce`
+<!-- DBTB_00_23_DETAIL:END -->
+
+
 This is the current handoff. It describes implementation and evidence separately.
 Historical audit/test pages remain useful for their pinned APK/builds; their old
 pending statements do not override this page. The 00.21 device test now confirms worker/menu recovery, but selection rejects
@@ -89,3 +121,14 @@ established here.
 
 [Validation](VALIDATION.md) defines test scope and log interpretation.
 [Porting guide](PORTING_GUIDE.md) explains reusable techniques and failures.
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

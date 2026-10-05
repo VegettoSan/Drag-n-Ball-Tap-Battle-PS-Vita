@@ -56,3 +56,24 @@ validated platform contracts, not this APK's constants, state labels, memory
 budgets or formats without checking the next game's actual source. The GdGohan
 archive is a comparison reference; the original supplied APK remains behavioral
 source of truth. Historical stages/results live in [ATTEMPTS](ATTEMPTS.md).
+
+<!-- DBTB_00_23_DETAIL:START -->
+## Milestone update — 00.23 battle-start blocker closed for the reproduced path
+
+The immediate blocker carried from 00.22 (managed OOM while starting a fight) is now
+closed by the streaming PAC bridge and a successful physical-Vita retest. The next
+phase is regression breadth rather than another rewrite: repeated battles, more
+characters, both supported datasets/mod paths, longer sessions, control adaptation
+and release-quality performance/build reproducibility.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

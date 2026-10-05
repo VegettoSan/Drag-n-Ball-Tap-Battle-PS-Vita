@@ -1,5 +1,22 @@
 # Dragon Ball Tap Battle PS Vita
 
+<!-- DBTB_00_23_DETAIL:START -->
+## PS Vita hardware status — 00.23
+
+The current validated checkpoint is **00.23**. A real-hardware test on 2026-10-05
+reported the game working normally with no error observed in that session: the
+previously repaired audio remained clean, character selection remained responsive,
+and the game successfully entered and played a fight instead of crashing during
+character PAC loading. The tested VPK SHA-256 is `8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd` and its source
+checkpoint is `0e17b0bac33c47698b414b67a839c839f0e555ce`.
+
+The 00.22 battle-start crash remains documented as a historical failure. 00.23 fixes
+that specific regression by preserving the original streaming `GameData.Init`
+parser and replacing only Android resource opening with a Vita-backed native stream,
+avoiding the multi-megabyte managed bridge allocation that exhausted TeaVM memory.
+<!-- DBTB_00_23_DETAIL:END -->
+
+
 Native PS Vita port of Dragon Ball Tap Battle using VitaSDK, vitaGL and the
 original Java game core generated privately to C with TeaVM. The port replaces
 Android services while preserving the original task, drawing and combat logic.
@@ -91,3 +108,14 @@ and actual verification scope. Preserve original gameplay; do not replace its
 methods with guessed menus/combat. Front touch is the tested gameplay input;
 physical gameplay mappings, multiplayer and comprehensive save interoperability
 remain open. No stable-public-release claim is made for this test build.
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

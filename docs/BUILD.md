@@ -130,3 +130,31 @@ Old bootstrap build evidence at 2c3fecd remains historical in
 [build_validation.json](evidence/build_validation.json). It is not the current
 full-engine artifact. [THIRD_PARTY](THIRD_PARTY.md) documents notices and the
 limits of the current symbols bundle.
+
+<!-- DBTB_00_23_DETAIL:START -->
+## 00.23 hardware-tested package note
+
+The source checkpoint `0e17b0bac33c47698b414b67a839c839f0e555ce` introduces the streaming PAC bridge used by the
+successful 00.23 hardware test. The tested package is
+`DBTapBattle-Vita-00.23-battle-memory-test.vpk`, SHA-256 `8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd`.
+
+That package validated the runtime repair on hardware. It should be distinguished
+from a future release-quality reproducible package: the interactive build session
+used split compilation of TeaVM generated C to fit the build runner, with the large
+`TCBManajer.c` translation unit compiled at `-O0` while the rest retained the normal
+build settings. Do not infer final performance characteristics from that packaging
+exception. The source/runtime fix itself is the 00.23 checkpoint.
+
+For installation, update the VPK without deleting `ux0:data/DBTapBattle/` or saves.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

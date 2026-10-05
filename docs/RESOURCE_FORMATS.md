@@ -124,3 +124,23 @@ Private game bytes never enter tests committed to Git. Host probes use supplied
 external APK extractions; [VALIDATION](VALIDATION.md) gives commands, fixtures and
 which APIs are mocked. Current audible voice quality and 00.22 selection recovery need Vita
 confirmation even though decoding/normalization pass on host.
+
+<!-- DBTB_00_23_DETAIL:START -->
+## 00.23 resource-loading note
+
+Resource **formats** did not change in the battle-memory fix. The corrected layer is
+transport/lifetime: character PACs are exposed to the original Java parser as a
+stream backed by native Vita storage/cache ownership. Keep this distinction in
+future ports: format conversion and bridge allocation strategy are separate concerns.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

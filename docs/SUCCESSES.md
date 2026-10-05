@@ -346,3 +346,29 @@ as does full 125-file/137-container/470-texture/68-table/198-WAV ASan/UBSan regr
 The full original core is recompiled to ARM ELF/VELF/SELF/VPK 00.22; CRC/SFO/eboot,
 core symbols/source/version pass. Physical selection/voices/FPS remain pending.
 [Build evidence](evidence/vita_selection_filter_build_00.22.json).
+
+<!-- DBTB_00_23_DETAIL:START -->
+## 2026-10-05 — 00.23: first reported session with battle startup working after the memory crash
+
+A physical Vita test of 00.23 completed the path that failed in 00.22. Clean audio
+and responsive character selection were preserved, the fight started successfully,
+and the user reported no error during the tested session.
+
+The key reusable success is architectural: the port no longer copies an entire PAC
+into a TeaVM-managed `byte[]` merely to feed code that already had an original
+streaming parser. The Vita adapter now supplies a native-backed `InputStream` while
+preserving original parsing and resource-lifetime semantics.
+
+Test VPK SHA-256: `8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd`.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

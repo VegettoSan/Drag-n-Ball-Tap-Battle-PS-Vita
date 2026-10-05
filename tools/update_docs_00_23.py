@@ -18,12 +18,12 @@ CHECKPOINT = f"""<!-- DBTB_CURRENT_CHECKPOINT:START -->
 > commit `{SOURCE[:8]}` was tested on a real PS Vita. In the reported test path,
 > startup/menu flow, text, audio/voices, character selection and entry into/playing
 > a battle worked normally, with **no error observed in this session**. This makes
-> {VERSION} the current hardware checkpoint and resolves the {VERSION[:-1]}22 battle-start
+> {VERSION} the current hardware checkpoint and resolves the 00.22 battle-start
 > memory regression documented in the historical 00.22 records. Historical test
 > documents remain historical evidence; this note does not claim exhaustive coverage
 > of every character, mode, mod or long-duration session.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
-""".replace("0022", "00.22")
+"""
 
 DETAILS = {
     "README.md": f"""## PS Vita hardware status — {VERSION}

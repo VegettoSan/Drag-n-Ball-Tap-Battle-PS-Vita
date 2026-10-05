@@ -129,3 +129,26 @@ text, cards, sustained battle and repeated launches. Report exact profile data,
 clocks, version/hash and whether a clean exception exit or native crash occurs.
 Copy runtime.log; include psp2core only if produced. Screenshots prove visual
 results; recordings are necessary to assess audible noise the log cannot capture.
+
+<!-- DBTB_00_23_DETAIL:START -->
+## Latest hardware validation — 00.23
+
+See [TEST_VITA_00_23](TEST_VITA_00_23.md). The acceptance path that failed in 00.22
+now passes on a physical Vita: audio remains clean, character switching remains
+responsive, battle startup succeeds and gameplay proceeds without an error observed
+in the reported session.
+
+This does not close exhaustive regression. Keep exact VPK/source hashes and extend
+testing to repeated battles, additional characters, datasets/mods and long sessions.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

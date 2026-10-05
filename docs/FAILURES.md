@@ -361,3 +361,28 @@ away the null table, or diagnose this session as the previous audio setup failur
 mask/type tests. Before/after real-corpus and native copy/cache probes now test
 original 187/251 and high/sign bits. Host checks pass; physical selection recovery
 is pending. [Evidence](evidence/vita_hardware_selection_00.21.json).
+
+<!-- DBTB_00_23_DETAIL:START -->
+## Resolution note — 00.22 battle-start managed-memory abort resolved by 00.23
+
+The 00.22 failure is retained above as evidence. Its observed trigger was the
+whole-PAC managed bridge allocation (`char00.pac`, 4,739,319 bytes) during battle
+startup. 00.23 removed that bridge path and restored the original streaming parser
+with native stream ownership.
+
+**Real-hardware retest (2026-10-05):** battle startup and gameplay succeeded; the user
+reported no error in the tested session. Treat the 00.22 failure as **resolved for
+this reproduced path**, while keeping broader repeated-battle/long-session memory
+regression testing open.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

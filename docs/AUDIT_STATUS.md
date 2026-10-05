@@ -48,3 +48,14 @@ rectangle usage. Current audio setup logs distinguish actual failed syscalls.
 Next: run [00.22 test](TEST_VITA_00_22.md), then cold/repeated selection timing,
 recorded voices and retained text/FPS checks. [PORTING_PLAN](PORTING_PLAN.md)
 tracks subsequent work rather than restarting the completed atlas milestone.
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

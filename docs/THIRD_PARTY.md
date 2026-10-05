@@ -63,3 +63,14 @@ not alter the delivered bytes. The 00.22 symbols ZIP has ELF/VELF, README and
 artifact evidence only and is not a complete relink kit. The notice/distribution
 review above remains open; this is another private full-engine test delivery.
 [Artifact evidence](evidence/vita_selection_filter_build_00.22.json).
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->

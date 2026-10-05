@@ -141,3 +141,27 @@ No Vita multiplayer is implemented or tested at this checkpoint.
 
 Future reuse guidance: [PORTING_GUIDE](PORTING_GUIDE.md). Specific native imports
 are declared in `tools/aot/engine/native/dbtb_bridge.h`.
+
+<!-- DBTB_00_23_DETAIL:START -->
+## Native resource streams — hardware checkpoint 00.23
+
+The Vita platform layer now exposes open/size/read/close operations used by
+`NativeResourceStream`. Stream handles pin their native resource owner, remain valid
+across cache activity, reject invalid ranges, and are closed idempotently. This
+service exists to preserve the original engine's streaming PAC parser without
+copying the full archive into TeaVM-managed memory.
+
+The design fixed the reproduced 00.22 battle-start allocation failure on real
+hardware in the 00.23 test session.
+<!-- DBTB_00_23_DETAIL:END -->
+
+<!-- DBTB_CURRENT_CHECKPOINT:START -->
+> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
+> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
+> startup/menu flow, text, audio/voices, character selection and entry into/playing
+> a battle worked normally, with **no error observed in this session**. This makes
+> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
+> memory regression documented in the historical 00.22 records. Historical test
+> documents remain historical evidence; this note does not claim exhaustive coverage
+> of every character, mode, mod or long-duration session.
+<!-- DBTB_CURRENT_CHECKPOINT:END -->
