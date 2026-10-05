@@ -12,9 +12,11 @@ original APK lacks.
 
 The 57 `res/raw/` entries are zero-byte stubs. The actual runtime data lives in
 `assets/`: 147 files total, including 108 PACs, 36 OGGs, `loading.png`, `mk.bin`
-and an APK-bundled `save.bin`. The Vita port stores saves separately under
-`ux0:data/DBTapBattle/saves/`, so an `assets/save.bin` copied into `game/` is not
-used as the Vita save file.
+and an APK-bundled `save.bin`. The current port reads/writes the selected
+profile's save: game/save.bin for Original, mods/<Profile>/save.bin for a mod.
+Extraction preserves that bundled file; installing it can provide the profile's
+initial/current save. Back up existing progress before replacing it. Old saves/
+paths are not read automatically; no migration or cross-profile fallback occurs.
 
 `tools/extract_apk_data.py` auto mode now recognizes this pattern: when
 `res/raw/` contains only empty stubs and `assets/` contains real payloads, it
@@ -25,7 +27,16 @@ on both sides remain ambiguous and still require `--layout` explicitly.
 python tools/extract_apk_data.py gen.apk ./install/game
 ```
 
-Copy the resulting files to `ux0:data/DBTapBattle/game/`.
+Copy the resulting files to `ux0:data/DBTapBattle/game/`, preserving any existing
+save deliberately. To retain another base, import it separately instead:
+
+```sh
+python tools/extract_apk_data.py gen.apk ./install --mod Gen
+```
+
+Copy install/mods/Gen to ux0:data/DBTapBattle/mods/Gen. The dual-APK ZIP helper
+pins original raw + Community14 layouts; it is not the Gen import route.
+See [DATA_LAYOUT](DATA_LAYOUT.md).
 
 ## Runtime compatibility
 
@@ -62,6 +73,16 @@ strict-UTF-8 signal. This preserves:
 
 Evidence: `docs/evidence/original_plus_characters_apk_2026-10-05.json`.
 
-Status: **FORMAT CONFIRMED + HOST COMPATIBILITY CONFIRMED**. Physical Vita
-execution with this exact data profile still requires a build made from the
-current `main`; do not promote it to HARDWARE CONFIRMED from the 00.12 artifact.
+Status: **FORMAT CONFIRMED + HOST COMPATIBILITY CONFIRMED**. The full engine now
+builds as 00.21, but startup/voices and every mode with this exact source hash
+still need a physical run identified by its manifest. An Original selector label
+alone does not establish which dataset was tested. Do not promote this exact
+profile to complete HARDWARE CONFIRMED from generic earlier game observations.
+
+The mixed charset is handled at normalized payload boundaries; ordinary PAC
+headers do not imply Shift_JIS text00. 00.20 introduces selective character reads,
+texture/PCM reuse and voice sinc reconstruction; its startup regression prevents
+a device quality/latency conclusion. Current test: [TEST_VITA_00_21](TEST_VITA_00_21.md).
+Current saves have bounded/atomic host coverage, but bundled-save Android
+round-trip, all progress fields and a complete profile-isolation matrix remain
+pending. See [CURRENT_STATUS](CURRENT_STATUS.md) and [VALIDATION](VALIDATION.md).

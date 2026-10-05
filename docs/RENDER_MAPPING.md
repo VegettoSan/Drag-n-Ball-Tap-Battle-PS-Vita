@@ -3,7 +3,10 @@
 Source: supplied DEX, disassembled with androguard and decompiled locally with
 jadx 1.5.6. API availability checked against vitaGL commit
 `cdbba4232cb93a741ba190be9a32143dfed12d8d`. Availability is source-level evidence,
-**not a GPU fidelity or hardware test**.
+**not a GPU fidelity or hardware test**. The adapter is now implemented in the
+full AOT engine: earlier Vita menu/selection/battle are confirmed, and 00.19
+restores text. Exhaustive pixel/state parity and 00.21 startup are still pending.
+Current checkpoint: [CURRENT_STATUS](CURRENT_STATUS.md).
 
 | Original API | Vita equivalent | Classification / adaptation |
 |---|---|---|
@@ -13,7 +16,7 @@ jadx 1.5.6. API availability checked against vitaGL commit
 | `glClearColor` | `glClearColor` | Directly compatible API; preserve exact original state and parameters. |
 | `glColor4f` | `glColor4f` | Directly compatible API; preserve exact original state and parameters. |
 | `glColorPointer` | `glColorPointer` | Small adapter: direct native buffer pointers and lifetime; preserve GL_SHORT vertices, float color/UV, GL_UNSIGNED_BYTE indices. |
-| `glDeleteTextures` | `glDeleteTextures` | Small adapter: C pointer array (remove Java array offset). |
+| `glDeleteTextures` | Native texture release | Translate Java IDs/offset; preserve shared immutable-cache ownership and delete uncached/evicted storage exactly once. |
 | `glDisable` | `glDisable` | Review original enums: invalid legacy disables/hints must not poison error reporting. |
 | `glDisableClientState` | `glDisableClientState` | Directly compatible API; preserve exact original state and parameters. |
 | `glDrawElements` | `glDrawElements` | Small adapter: direct native buffer pointers and lifetime; preserve GL_SHORT vertices, float color/UV, GL_UNSIGNED_BYTE indices. |
@@ -56,16 +59,44 @@ jadx 1.5.6. API availability checked against vitaGL commit
   ONE/ONE_MINUS_SRC_ALPHA. Retain transitions and flush ordering.
 - `AndroidGLTexture`: nearest when pixcel=true, linear otherwise; MODULATE;
   CLAMP_TO_EDGE in both axes. PNG decode replaces BitmapFactory/GLUtils.
-  Android premultiplied Bitmap behavior versus native straight RGBA needs
-  reference-image validation for translucent assets (PENDING).
+  Native images retain straight/premultiplied state; confirmed Community14
+  premultiplication uses GL_ONE to avoid multiplying twice. Exact translucent
+  reference-image fidelity across all scenes remains pending.
 - `offscreen` uses GL_OES_framebuffer_object; allocation defaults 1024×512,
   with a 512-wide alternative. Do not replace those calls with framebuffer 0.
 - `StringTexture` uses Android Canvas/Paint/Typeface/Bitmap for generated text:
-  needs a font rasterizer service. The boot diagnostic font is not its substitute.
+  is implemented with PVF-backed mutable native surfaces. The boot diagnostic
+  font is separate. Visible glyph rectangles are restored in 00.19; exact
+  Android metrics, complete script coverage and all dialogues remain pending.
 - No glScissor or glAlphaFunc invocation was found in this DEX. Do not add
   alpha testing/scissor as an assumed renderer requirement.
 - No custom gameplay shaders are required by the observed original calls.
   vitaGL still needs its runtime shader compiler (`libshacccg.suprx`).
+
+## Implemented bridge ownership and performance
+
+Java buffer position/limit and element types are honored at the native boundary.
+Client arrays are copied into native-owned storage rather than retaining an
+unsafe pointer across moving-GC activity. Keep original batching/flush order.
+FBO calls target actual offscreen surfaces and maintain original texture state;
+text upload, mutable surfaces and image decoding are distinct paths.
+
+00.20's 4 MiB retained texture LRU uses content hash plus exact source comparison
+and sampling mode. Live owners prevent idle eviction/deletion. It is not a total
+GPU allocation cap. Mutable StringTexture/FBO storage is not content-cached.
+PVF memory-font fallback, cached advances and dirty-row uploads remain, while
+visible glyph coverage must still use scePvfGetCharImageRect.
+
+00.18 reaches stable 60 FPS in the user's battle test but hides text; 00.19
+restores visible text. Do not infer shader/pixel fidelity, zero selection pauses
+or latest-build startup from those observations. vglInitExtended's false return
+selects normal 960×544 operation here; treating it as initialization failure
+caused the historical 00.03 rejection. See [FAILURES](FAILURES.md).
+
+Implementation: tools/aot/engine/native/gles.cpp, native text service and
+handwritten Android GL/Bitmap/Canvas adapters. [BUILD](BUILD.md) distinguishes
+this full target from the earlier atlas renderer; [VALIDATION](VALIDATION.md)
+labels mocked host checks and real-device results.
 
 ## Sources
 

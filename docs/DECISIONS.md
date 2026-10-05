@@ -1,12 +1,12 @@
 # Architecture Decisions
 
-## ADR-001 — Native VitaSDK reconstruction
+## ADR-001 — Native VitaSDK execution (implementation refined by ADR-011)
 
 **Status:** accepted — 2026-10-04
 
 Use a native C/C++ VitaSDK application rather than attempting to run Android/Dalvik directly on Vita.
 
-**Reason:** the supplied APK has no native game `.so` layer and its game/runtime code is accessible as Java/Dalvik. A native reconstruction gives deterministic control over rendering, input, audio and filesystem behavior.
+**Reason:** the supplied APK has no native game `.so` layer and its game/runtime code is accessible as Java/Dalvik. Native execution gives control over rendering, input, audio and filesystem behavior. The accepted implementation preserves the original Java core through AOT; it does not manually rebuild combat.
 
 ## ADR-002 — vitaGL renderer
 
@@ -48,7 +48,7 @@ ux0:data/DBTapBattle/mods/<mod>/
 
 The virtual filesystem checks the active mod first and falls back to `game/` for missing resources.
 
-**Reason:** mods remain small, original data stays pristine and users can switch mods without reinstalling the game.
+**Reason:** resource overlays avoid changing base assets. Existing broken overrides report errors instead of falling back. Saves are profile-local writable exceptions (ADR-008); whole PAC files, not individual records, are overridden.
 
 ## ADR-006 — Original always selectable
 
@@ -64,14 +64,19 @@ Meaningful experiments must be recorded in `ATTEMPTS.md`; validated successes an
 
 **Reason:** repeated dead ends cost more time than maintaining concise engineering records.
 
-## ADR-008 — Independent writable namespaces and input service
+## ADR-008 — Profile-local saves and original input service
 
-**Status:** accepted — 2026-10-04.
-Use config/, logs/ and saves/ alongside immutable game/ and mod overlays.
-Input adapters produce neutral menu commands and stable pointer events; original
-Controller/KeyData gameplay semantics will consume them, rather than reading
-SceCtrl inside combat. Touch/physical boot selector is implemented; combat
-mapping is a proposal until original command interpretation is reconstructed.
+**Status:** updated to implemented contract — 2026-10-05.
+The early separate saves/ proposal is superseded: Original uses game/save.bin;
+a selected mod uses mods/<Profile>/save.bin. Only save.bin is writable through
+the resource adapter. No save fallback/migration crosses profiles. Exclusive
+temp creation, complete write/fsync/close/rename and session cache prevent partial
+publication; preserve backups before importing an APK-bundled save.
+
+Front touch feeds stable pointer IDs to original KeyData/Controller. Physical
+selector controls remain separate and physical gameplay buttons are neutral;
+there is no implemented physical combat mapping. See [PLATFORM_SERVICES](PLATFORM_SERVICES.md).
+Android save round-trip and the full progression/profile matrix remain pending.
 ## ADR-009 — Source facts before inferred internal schemas
 
 **Status:** accepted — 2026-10-04.
@@ -90,5 +95,56 @@ Normalize confirmed resource aliases during PC import and preserve every data
 byte/hash. Decode per file at runtime; keep the existing mod/original fallback.
 Carry premultiplied-alpha state explicitly rather than double-multiplying RGB.
 Do not import arbitrary SWB changes or infer changed game mechanics from shared
-helpers. New constants/code need a fresh audit. Full native gameplay remains
-separate from verified resource compatibility.
+helpers. New constants/code need a fresh audit. Full native gameplay has since been demonstrated on earlier Vita builds; resource encoding alone still does not establish compatibility with code-modified APK rules.
+
+
+## ADR-011 — Preserve the original core through private AOT
+
+**Status:** accepted and implemented — 2026-10-05.
+Use original APK bytecode, dex2jar, handwritten platform adapters and TeaVM C
+rather than a new combat/state interpreter. Init/Run/Dispose, Game1–17, tasks,
+GameData, Controller and Graphics2D stay original. Commit adapters/tools/evidence,
+not APK-derived Java/JAR/C/assets. The full target is tools/aot/engine/vita;
+root CMake and dummy-import CI are separate bootstrap/smoke targets.
+
+**Consequence:** changes to Java/native imports require regeneration, and private
+inputs/tool versions must be pinned. [BUILD](BUILD.md) provides the recipe.
+
+## ADR-012 — Preserve lifecycle and cooperative progress
+
+**Status:** implemented; exhaustive device lifecycle matrix pending.
+Set the first active bResume edge and pump one ready TeaVM EventQueue event after
+presentation. This restores original text initialization and queued card work.
+Do not simulate completed jobs or add a second concurrent core Run loop.
+
+## ADR-013 — Optimize resource ownership, not game semantics
+
+**Status:** implemented in 00.19/00.20; latest selection latency pending.
+Keep original exclusion-mask polarity, directory indices, selected payload bytes
+and action order. Cache normalized PAC results (8 MiB), immutable textures
+(4 MiB) and decoded voice sources (2 MiB) with identity/ownership checks.
+These are retained-cache budgets, not process memory caps. Mutable text/FBO
+surfaces stay outside immutable texture reuse. Restore PVF image rectangles for
+visible glyphs; metric caching alone cannot supply their raster coverage.
+
+## ADR-014 — Audio failure must retain its exact cause
+
+**Status:** 00.21 implemented and host-tested; device recovery pending.
+Restore previously working encoded worker priority 0x10000100; log output-port,
+thread-create and thread-start errors separately with native return codes.
+Dispose only owned handles, once; latch failed setup until disposal resets it.
+00.20's log establishes a worker setup failure, not which syscall failed.
+Keep character-voice sinc reconstruction separate from BGM/SE conversion and
+from output scheduling. Synthetic spectral/limiter tests do not prove clean
+voices or uninterrupted playback on Vita.
+
+## ADR-015 — Versioned evidence and reusable documentation
+
+**Status:** accepted — 2026-10-05.
+[CURRENT_STATUS](CURRENT_STATUS.md) states the current source/artifact and open
+hardware checks. Test sheets and journals retain the build they describe;
+observed user results, host mocks and hypotheses are labeled separately.
+[PORTING_GUIDE](PORTING_GUIDE.md) generalizes the method and failure lessons.
+Do not turn a historical pending item into a present blocker, or a later fix
+into retroactive proof for an older artifact. Docs-only commits do not rebuild
+or change the delivered 00.21 executable.

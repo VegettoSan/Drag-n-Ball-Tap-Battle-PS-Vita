@@ -1,6 +1,8 @@
 # APK audit — 2026-10-04
 
-Baseline: main `1e3699b`. Source: supplied `DBTapBattle.apk` version 1.4,
+Historical audit baseline: main `1e3699b`. Current engine status is maintained
+in [CURRENT_STATUS](CURRENT_STATUS.md); baseline findings below describe that
+source and early bootstrap, not the present implementation. Source: supplied `DBTapBattle.apk` version 1.4,
 version code 7, package `com.namcobandaigames.dragonballtap.apk`, minimum SDK 9.
 SHA-256: `b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b`.
 
@@ -31,7 +33,7 @@ calls. It contains no game payloads or decompiled source.
 - SPR is itself a PAC-like container with PNGs and BIN metadata. Opening the
   outer PAC alone does not decode original sprites or animations.
 
-## Baseline code review
+## Historical baseline code review
 
 All six native source/header files, CMake, extractor and existing documents
 were reviewed. The bootstrap selects a folder and parses `common.pac`; it
@@ -54,14 +56,20 @@ music/video activities are community additions; `ResourceMiner` is commented
 out there but implemented in the supplied APK. Do not import the whole archive
 or treat its mods/changed game-state wiki as original behavior.
 
-Native Vita build and execution are PENDING until a real toolchain and runtime
-test establish them. Host format tests cannot establish Vita behavior.
+At this audit baseline native Vita build/execution had not yet been established.
+Subsequent private AOT builds run original menu/selection/combat on Vita. Latest
+00.21 startup/audio recovery is still pending; host format tests alone cannot
+establish it. Baseline weaknesses were investigated in later attempts; see
+[ATTEMPTS](ATTEMPTS.md), [AUDIT_STATUS](AUDIT_STATUS.md) and [VALIDATION](VALIDATION.md).
 
 ## Supplied Android14 variant follow-up
 
 The above audit is the original APK baseline. The second supplied APK is now
 compared in ANDROID14_APK.md, with hashes, alias/profile contracts and independent
 metadata evidence. It has a genuine Android native *helper* layer, not a complete
-native game engine; the original Java-game reconstruction decision still applies.
-It supplies indexed character/card data missing from the baseline. Support is
-resource-level and host-tested; actual native menus/battle/audio remain pending.
+native game engine; the original core is preserved through private Java-to-C AOT (ADR-011).
+It supplies indexed character/card data missing from the baseline. Earlier Vita
+00.11 verifies its selection/battle and BGM/SE. Packed voices later decode, but
+audible quality remains unresolved. The ordinary-name bundled-character Gen
+profile is separately audited in [ORIGINAL_PLUS_CHARACTERS_APK](ORIGINAL_PLUS_CHARACTERS_APK.md);
+an Original selector label identifies a folder, not a particular APK hash.

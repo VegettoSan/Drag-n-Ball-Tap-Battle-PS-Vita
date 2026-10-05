@@ -1,7 +1,9 @@
 # Community Android 14 APK audit — 2026-10-04
 
 Baseline: main `a04e264`. This document concerns the two user-supplied files;
-"Android 14" is their supplied label, not an observed runtime test.
+"Android 14" is their supplied label, not proof of an Android 14 OS test.
+This remains a pinned source audit; current Vita checkpoint and later hardware
+results are in [CURRENT_STATUS](CURRENT_STATUS.md).
 
 | Property | DBTapBattle.apk | tap battle android 14.apk |
 |---|---|---|
@@ -28,7 +30,9 @@ DEX, but that file is absent. Preserve original fallback for those resources.
 The 89 added files are char00–12, chardemo00–12, charf0000–0012 (39 files) and
 card001–050 (50 files). The original already has card000. This establishes 13
 indexed character triplets and 51 indexed card files, not 13 universally playable
-characters: the native character/menu/battle logic remains to be reconstructed.
+characters in every possible version/mod. The original character/menu/battle
+logic is now retained via AOT, with earlier Vita gameplay confirmed; exhaustive
+character/mode compatibility remains pending.
 
 All 106 outer tables and six nested SPR tables fit their files. There are no
 outer overlaps or trailing bytes. Outer records include 361 compressed RGBA
@@ -149,7 +153,9 @@ and limitations are recorded with their implementation in subsequent commits.
 ## Import and installed-mod contract
 
 The extractor now supports `--layout auto|raw|assets|community14`. Auto rejects
-mixed raw/assets archives instead of choosing arbitrarily; it recognizes the
+archives with actual payloads on both raw/assets sides instead of choosing
+arbitrarily; Gen-style empty raw stubs with real assets are a verified exception.
+It recognizes the
 verified aliases and validates the encoded tables before publication. `assets`
 is also available for ordinary named asset mods. Unknown extensions are retained
 and listed. All earlier path/symlink/CRC/conflict/budget protections remain.
@@ -163,9 +169,10 @@ python tools/extract_apk_data.py community.apk ./install --mod Android14
 python tools/extract_apk_data.py my-community-mod.apk ./install --mod MyMod
 ```
 
-Copy `install/game/` and `install/mods/` into `ux0:data/DBTapBattle/`. Alternatively
-this community APK can be the sole base: extract directly to `install/game/`,
-but the two missing resources and future engine completeness still need review.
+Copy `install/game/` and `install/mods/` into `ux0:data/DBTapBattle/`. Keep the
+original base available for missing bobj00/font00 resources. Importing the
+community APK directly as the sole base is not an equivalent complete dataset;
+required shared files need an explicitly audited compatible source.
 Do not merge it over an existing original install. `--overwrite` operates only
 on the selected destination. `--mod NAME` confines output to `OUTPUT/mods/NAME`.
 
@@ -175,7 +182,7 @@ It is import provenance; the native reader detects PAC codecs per file so a
 missing override can still resolve an ordinary original PAC. No Android .so,
 DEX, resources.arsc or signing metadata is installed as game data.
 
-Host tests: nine extractor regressions pass, including alias collisions,
+Historical import checkpoint: nine extractor regressions passed, including alias collisions,
 different-codec refusal, ambiguous archives, safe nested assets and CLI protection
 of an existing game/common.pac. Both real APK extractions pass; every extracted
 file matches its APK entry byte-for-byte and all 13 triplets have canonical names.
@@ -201,9 +208,17 @@ checks also pass.
 
 Physical Vita build 00.11 is HARDWARE CONFIRMED through character selection and
 an actual playable battle using the Android14 profile. Front touch and ordinary
-BGM/SE are audible; the user observed normal gameplay at 60 FPS with intermittent
-stalls. Build 00.12 specifically addresses the remaining packed character voice
-ADPCM path plus dialogue text rasterization/layout. Complete 00.12 behavior still
-requires hardware confirmation; code-dependent mod mechanics are not assumed
-compatible merely because asset encoding matches. Different private constants
-must fail explicitly or receive a new reviewed codec profile.
+BGM/SE are audible, with intermittent stalls. 00.12 adds wrapper/ADPCM and text
+services; later user tests confirm stable battle performance (00.18) and restored
+texts (00.19), while voices still sound rough and character changes pause.
+00.20 selective PAC/caches and voice reconstruction pass host checks but its
+audio worker setup fails on Vita before the menu. 00.21 restores prior worker
+priority and precise failure reporting; its physical result is pending.
+
+Current extractor suite has 12 tests (the nine-test counts above are historical
+checkpoints). See [VALIDATION](VALIDATION.md) for fixtures/commands and scope.
+Different private constants must fail explicitly or receive a new reviewed
+codec profile. Code-dependent mod mechanics are not assumed compatible merely
+because asset encoding matches. Do not reinterpret an audio setup failure as
+proof of a PAC/ADPCM codec failure. Profile-local saves and source manifests:
+[DATA_LAYOUT](DATA_LAYOUT.md), [MODS](MODS.md).

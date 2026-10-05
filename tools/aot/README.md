@@ -1,6 +1,9 @@
-# Java core → native C experiment
+# Java core → native C: historical feasibility probes
 
-This is an isolated feasibility test, **not the gameplay engine or a release**.
+InputProbe and the unadapted EngineProbe below are historical feasibility tests,
+not release targets. The full original core is now the production port approach
+in [engine/README.md](engine/README.md); use [BUILD](../../docs/BUILD.md) for it.
+This document retains the early probe recipes/results and their limited scope.
 No generated game JAR, class, C source, executable or commercial data is in Git.
 The handwritten probes call classes supplied by the user's original APK.
 
@@ -24,8 +27,8 @@ with VitaSDK 2026.08.1-1/GCC 15.2. **Vita/Vita3K execution remains unverified.**
 It is not connected to src/input.cpp or the VPK; it proves neither all gestures,
 device GC/scheduler behavior nor the game loop/rendering/combat.
 
-EngineProbe attempts original GlobalWork, TCBManajer.Init and Run. With the basic
-Android 4.1.1.4 stub JAR and current classpath, TeaVM emits 203 diagnostics (44
+EngineProbe attempts original GlobalWork, TCBManajer.Init and Run. With the historical basic
+Android 4.1.1.4 stub JAR and probe classpath, TeaVM emits 203 diagnostics (44
 unique messages) and no full-engine C. Missing GL10/GL11ExtensionPack/JSON are
 classpath gaps; network/security/reflection/platform boundaries need replacement.
 On the JVM, Android's stub throws at BluetoothAdapter.getDefaultAdapter. These
@@ -33,7 +36,9 @@ results do not prove TeaVM cannot port the game; adding Android stubs does not
 provide its services. Replace VFS/raw lookup, texture/render/text, lifecycle,
 audio, save and obsolete online dependencies before retesting Init→Run→menu.
 Original/community resource codecs exist in C++; code-modified APK behavior still
-needs explicit recovery/adaptation. No production-engine choice is made here.
+needs explicit recovery/adaptation. The later accepted production choice is original-core AOT with real platform
+adapters (ADR-011 in [DECISIONS](../../docs/DECISIONS.md)); the failing unadapted
+probe is preserved as a baseline, not the current engine status.
 
 ## Reproduction
 
@@ -77,8 +82,9 @@ alongside main.cpp, which already defines the production bootstrap heap.
 
 Newlib lacks uchar.h. The local UTF-8↔UTF-16 implementation handles surrogate
 pairs, partial input and invalid sequences. tests/test_aot_utf16.c passes host
-ASan/UBSan with -Itools/aot/vita and tools/aot/vita/utf16.c. Native device runtime
-and complete event scheduling still need validation.
+ASan/UBSan with -Itools/aot/vita and tools/aot/vita/utf16.c. Those standalone tests do not establish device runtime/scheduling. The full
+engine later implements lifecycle edges and cooperative EventQueue progress;
+exhaustive device resume/restart coverage remains pending.
 
 ## References
 
@@ -94,9 +100,11 @@ and documented reproducible build. Only handwritten probes/adapters are committe
 
 ## Follow-up: complete core generation
 
-The unadapted EngineProbe result above remains a baseline. The new handwritten
-platform layer in [engine/README.md](engine/README.md) now generates the complete
-reachable original Init/Run path (456 classes/3989 methods). Native service imports
-have contracts; linking and engine execution remain separate pending milestones.
+The unadapted EngineProbe result above remains a baseline. The handwritten
+platform layer in [engine/README.md](engine/README.md) first generated the complete
+reachable original Init/Run path with 456 classes/3989 methods. That historical
+count is superseded by 00.21 generation (465 classes/4059 methods), full Vita
+link/package checks and earlier physical menu/selection/battle. 00.21 startup
+recovery/voice quality remain pending; see [CURRENT_STATUS](../../docs/CURRENT_STATUS.md).
 The original byte-array decoder and gameplay classes are preserved. Do not use
 the input-only runtime patch unchanged for this full engine.
