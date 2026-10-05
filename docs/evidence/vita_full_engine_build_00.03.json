@@ -29,15 +29,17 @@
   },
   "private_build_artifacts": {
     "elf_sha256": "15eeb0794f9729bfb1ea8f4ebea977eed42e506078a78c877763fcf61910bebf",
-    "elf_size_bytes": 6860000,
+    "elf_size_bytes": 6873832,
     "eboot_sha256": "21395ec468550f39887d650868dd0630f2dcb3d074da22a744c48477ce7b37dc",
     "eboot_size_bytes": 2294430,
     "final_vpk_sha256": "0090153fe650d116264217b3d9bd2fdd43ec02dd380247ed6fbe68bdc6773af4",
+    "final_vpk_size_bytes": 2242827,
     "vpk_members": 6,
     "vpk_includes_original_private_icon": true
   },
   "data_package": {
     "sha256": "48a0b9c69fe4800429ba35812de1b9bc7513f5135b1e4271a280db4c2a880bec",
+    "size_bytes": 83321256,
     "members": 205,
     "internal_hashes_checked": 204,
     "internal_hash_failures": 0,
