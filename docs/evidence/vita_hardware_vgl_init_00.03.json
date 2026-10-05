@@ -26,7 +26,7 @@
   "next_private_test_artifact": {
     "name": "DBTapBattle-Vita-00.04.vpk",
     "sha256": "ffe1d2768f1e0341465042c0ca7573bed1e41d7fc4d1d2947cc4e20d782a9f8e",
-    "size": 2245716,
+    "size": 2245976,
     "expected_next_checkpoint": "vitaGL initialization log, then boot profile selector; full original engine behavior remains hardware-pending"
   }
 }
