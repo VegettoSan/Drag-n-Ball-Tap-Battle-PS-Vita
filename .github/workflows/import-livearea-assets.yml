@@ -22,9 +22,8 @@ jobs:
         run: |
           set -euo pipefail
           root="assets/livearea"
-          for name in icon0.png bg0.png startup.png pic0.png; do
-            cat "$root/.payload/$name/"*.b64 | base64 --decode > "$root/$name"
-          done
+          cat "$root/.payload/bg0.png/"*.bin > "$root/bg0.png"
+          cat "$root/.payload/pic0.png/"*.bin > "$root/pic0.png"
 
           sha256sum "$root/icon0.png" | grep -q '^26ea71975390073a76c69f83d526f039f7ffb96aaad34d0cc1e5203d9541b115  '
           sha256sum "$root/bg0.png" | grep -q '^df12c6104b0b877c9848c2385a3c8d8a4e093ddc3e215169d99811aac4963b0a  '
