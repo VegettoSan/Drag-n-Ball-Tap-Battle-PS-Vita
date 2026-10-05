@@ -20,20 +20,154 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Correct one-shot checkpoint literal
+      - name: Update every Markdown document
+        run: python3 tools/update_docs_00_23.py
+
+      - name: Reconcile living documentation with 00.23
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p = Path('tools/update_docs_00_23.py')
-          s = p.read_text(encoding='utf-8')
-          s = s.replace('{VERSION[:-1]}22', '00.22')
-          s = s.replace('""".replace("0022", "00.22")', '"""')
-          p.write_text(s, encoding='utf-8')
-          PY
+          import re
 
-      - name: Update every Markdown document
-        run: python3 tools/update_docs_00_23.py
+          def read(path):
+              return Path(path).read_text(encoding='utf-8')
+
+          def write(path, text):
+              Path(path).write_text(text, encoding='utf-8')
+
+          def repl(path, old, new):
+              text = read(path)
+              if old not in text:
+                  raise SystemExit(f'expected text not found in {path}: {old[:80]!r}')
+              write(path, text.replace(old, new, 1))
+
+          # CURRENT_STATUS is the authoritative living handoff, so remove stale
+          # 00.21/00.22-as-current wording instead of merely superseding it below.
+          p = 'docs/CURRENT_STATUS.md'
+          repl(p, '# Current status — 2026-10-05, full engine 00.22',
+                  '# Current status — 2026-10-05, full engine 00.23')
+          repl(p,
+              'Historical audit/test pages remain useful for their pinned APK/builds; their old\n'
+              'pending statements do not override this page. The 00.21 device test now confirms worker/menu recovery, but selection rejects\n'
+              'char00 and exits. 00.22 fixes that mask contract; its physical result is pending.',
+              'Historical audit/test pages remain useful for their pinned APK/builds; their old\n'
+              'pending statements do not override this page. 00.21 and 00.22 failures are historical checkpoints.\n'
+              'The 00.23 physical-Vita retest preserves the audio/selection fixes and now enters and plays a battle without the 00.22 memory crash.')
+
+          text = read(p)
+          text = re.sub(
+              r'## Delivered build identity\n.*?\n## Implementation versus observation',
+              '''## Delivered build identity\n\n| Field | Value |\n|---|---|\n| Hardware-tested VPK | `DBTapBattle-Vita-00.23-battle-memory-test.vpk` |\n| Version / title ID | `00.23` / `DBTB00001` |\n| Source checkpoint | `0e17b0bac33c47698b414b67a839c839f0e555ce` |\n| Battle-memory repair | original streaming `GameData.Init` + native-backed `InputStream` |\n| Retained selection-mask repair | original masks 187/251 accepted |\n| Retained audio repair | worker startup + clean voice output in reported hardware path |\n| VPK SHA-256 | `8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd` |\n| Toolchain family | VitaSDK 2026.08, GCC 15.2.0, hard-float |\n| Private generator | dex2jar 2.4, ECJ 3.37.0, TeaVM 0.12.3, Java 17 |\n| Hardware result | startup/menu/text/audio/selection/battle path passed; no error observed in this session |\n\n[00.23 hardware evidence](evidence/vita_hardware_full_game_00.23.json) records the tested artifact and scope.\nThe package used for this hardware checkpoint was an interactive test build; see [BUILD](BUILD.md) for the split-compilation caveat before treating it as a release-quality performance artifact.\n\n## Implementation versus observation''',
+              text, flags=re.S)
+          if text == read(p):
+              raise SystemExit('CURRENT_STATUS delivered-build section replacement failed')
+          write(p, text)
+
+          replacements = {
+              '| PAC I/O | Original exclusion filter applied before payload reads; in-memory normalization; bounded result cache | 26 character PACs with original 187/251 and signed/high-bit masks pass host tests; range rejection fixed; real switching latency pending |':
+              '| PAC I/O | Original exclusion filter plus 00.23 native-backed streaming InputStream; bounded native cache/stream handles | 187/251 masks and stream ownership pass host probes; physical selection and battle startup pass in 00.23 |',
+              '| Voice samples | Original PCM16 mono 22050 Hz or decoded Community14 wrapper; 3 voice channels | Format/host decoding verified; voices still bad in 00.19 |':
+              '| Voice samples | Original PCM16 mono 22050 Hz or decoded Community14 wrapper; 3 voice channels | Format/host decoding verified; later physical tests report clean voices/audio |',
+              '| Voice output | 16-tap/256-phase Q14 reconstruction to 48000 Hz, peak limiter, PCM cache | Host spectral image reduced 32.3 dB; audible improvement/cost on Vita pending |':
+              '| Voice output | 16-tap/256-phase Q14 reconstruction to 48000 Hz, peak limiter, PCM cache | Clean audible result reported on the physical 00.22/00.23 path; broader character/phrase matrix remains open |',
+              '| Audio startup | Restored `0x10000100`; exact open/create/start diagnostics, failure cleanup/latch | 00.20 setup fails; 00.21 worker/menu recovery physically confirmed; audible voice quality remains open |':
+              '| Audio startup | Restored `0x10000100`; exact open/create/start diagnostics, failure cleanup/latch | 00.21 worker/menu recovery confirmed and no audio regression reported in 00.23 |'
+          }
+          text = read(p)
+          for old, new in replacements.items():
+              if old not in text:
+                  raise SystemExit(f'CURRENT_STATUS table row missing: {old[:60]}')
+              text = text.replace(old, new, 1)
+          text = re.sub(
+              r'## Latest observations and next work\n.*?\n## Evidence index',
+              '''## Latest observations and next work\n\n1. **Broaden 00.23 regression coverage.** Repeat battles, switch across more characters and revisit evicted resources to confirm the streaming fix under churn rather than only one successful progression.\n2. **Retest both supported dataset paths/mod overlays.** Keep original fallback rules and record exact dataset hashes when comparing behavior.\n3. **Measure release-quality performance.** The 00.23 hardware test package used split TeaVM compilation with `TCBManajer.c` at `-O0` because of the interactive build runner; create a normal reproducible full-engine package before making final FPS/performance claims for 00.23.\n4. **Extend lifecycle/control coverage.** Return-to-menu, repeated launches, suspend/resume, save round-trips and physical Vita control adaptation remain separate work.\n5. **Keep unsupported scope explicit.** Multiplayer/Bluetooth synchronization, billing/remote services and arbitrary code mods are not validated by the successful local single-player test.\n\nNo currently reproduced crash is open in the 00.23 tested path. New failures should be recorded with exact VPK hash, dataset/profile, `runtime.log` and `psp2core` when produced.\n\n## Evidence index''',
+              text, flags=re.S)
+          if '[00.23 hardware](evidence/vita_hardware_full_game_00.23.json)' not in text:
+              text = text.replace(
+                  '| [00.22 build](evidence/vita_selection_filter_build_00.22.json) | Before/after mask regression, full corpus and complete ARM artifact checks |',
+                  '| [00.22 build](evidence/vita_selection_filter_build_00.22.json) | Before/after mask regression, full corpus and complete ARM artifact checks |\n| [00.23 hardware](evidence/vita_hardware_full_game_00.23.json) | Physical Vita: clean audio, responsive selection, battle startup/gameplay pass; no error observed in reported session |')
+          write(p, text)
+
+          # BUILD: current version and test procedure must point to 00.23.
+          p = 'docs/BUILD.md'
+          repl(p, '# Build and install — full engine 00.22', '# Build and install — full engine 00.23')
+          repl(p,
+              'Current build evidence: [00.22](evidence/vita_selection_filter_build_00.22.json).',
+              'Current hardware evidence: [00.23](evidence/vita_hardware_full_game_00.23.json). The last fully pinned normal-build artifact evidence remains [00.22](evidence/vita_selection_filter_build_00.22.json); see the 00.23 test-build caveat below.')
+          repl(p,
+              '| `tools/aot/engine/vita` | APK-derived JAR → current adapters → generated all.c → `DBTapBattle-Vita-00.22.vpk` | Full original game engine |',
+              '| `tools/aot/engine/vita` | APK-derived JAR → current adapters → generated C → `DBTapBattle-Vita-00.23.vpk` | Full original game engine |')
+          repl(p,
+              'The delivered VPK is renamed `DBTapBattle-Vita-00.22-selection-filter-fix.vpk` after\nverification. Its embedded source is `c40ce0a`; a fresh build at a later main\ncommit embeds that later commit. Check the VITA_VERSION in the full target.',
+              'The currently hardware-tested package is `DBTapBattle-Vita-00.23-battle-memory-test.vpk`, SHA-256\n`8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd`, built from\nsource `0e17b0ba`. Check `VITA_VERSION` and the embedded source marker for every fresh package.')
+          repl(p,
+              'Generation checks the expected loader/string/static-field shapes and fails on\nunexpected inputs. It preserves original GameData byte-array parsing and core\nmethods. 00.21 generated 465 classes / 4059 methods; this is evidence for the\npinned recipe, not a required count for an intentionally changed engine.\n00.22 reuses that unchanged private generation and recompiles the complete\nall.c plus native services; no Java/native import signature changed. CMake\n4.4.4 was used for this full ARM build.',
+              'Generation checks the expected loader/string/static-field shapes and fails on\nunexpected inputs. 00.23 preserves the original streaming `GameData.Init` parser,\npatches only Android resource-opening expressions, and adds the native-backed\n`NativeResourceStream` import path. The fresh 00.23 generation produced 467 classes /\n4086 methods. CMake 4.4.4 and the VitaSDK 2026.08 toolchain family remain the validated build environment.')
+          repl(p,
+              'Follow [VALIDATION](VALIDATION.md) for host probes and artifact checks, then\n[TEST_VITA_00_22](TEST_VITA_00_22.md) on the device.',
+              'Follow [VALIDATION](VALIDATION.md) for host probes and artifact checks, then\n[TEST_VITA_00_23](TEST_VITA_00_23.md) on the device for the current checkpoint and extend it with repeated-battle/long-session coverage.')
+
+          # VALIDATION: current protocol is 00.23 and future regression breadth.
+          p = 'docs/VALIDATION.md'
+          repl(p, '# Validation and diagnostic reference — 00.22', '# Validation and diagnostic reference — 00.23')
+          text = read(p)
+          text = re.sub(
+              r'## Physical test protocol\n.*?\n<!-- DBTB_00_23_DETAIL:START -->',
+              '''## Physical test protocol\n\nUse [00.23 instructions](TEST_VITA_00_23.md) as the current baseline. First reproduce the now-successful startup/menu/text/audio/selection/battle path with the exact VPK and dataset hash. Then extend coverage with repeated battles, multiple characters, cold/repeated/evicted resource loads, both supported dataset paths, return-to-menu, repeated launches and longer sessions.\n\nReport exact profile/data provenance, version/hash and whether a clean exception exit or native crash occurs. Copy `runtime.log`; include `psp2core` only if produced. Screenshots prove visual state; recordings remain the right evidence for audible artifacts that counters cannot establish.\n\n<!-- DBTB_00_23_DETAIL:START -->''',
+              text, flags=re.S)
+          write(p, text)
+
+          # AUDIT_STATUS: convert pending 00.22 language into current 00.23 conclusions.
+          p = 'docs/AUDIT_STATUS.md'
+          repl(p,
+              'chronological details remain in [ATTEMPTS](ATTEMPTS.md). The latest test package\nis 00.22; 00.21 reaches the menu but fails selection. 00.22 physical recovery is pending. See [CURRENT_STATUS](CURRENT_STATUS.md).',
+              'chronological details remain in [ATTEMPTS](ATTEMPTS.md). The current hardware checkpoint\nis 00.23: the reported physical-Vita session preserves clean audio and responsive selection, enters a battle and plays without the 00.22 memory crash. See [CURRENT_STATUS](CURRENT_STATUS.md).')
+          repl(p,
+              '| Audio | Vorbis/PCM backend, voice reconstruction/limiter/cache, restored setup priority | 00.20 setup failure; 00.21 worker/menu physically recovered, voice quality pending |',
+              '| Audio | Vorbis/PCM backend, voice reconstruction/limiter/cache, restored setup priority | 00.21 worker/menu recovery; clean audio/voices reported in later 00.22/00.23 hardware path |')
+          repl(p,
+              '| Packaging | Full private ARM engine ELF/VELF/SELF/VPK 00.22 verified | Public CI smoke tests only native linking; no complete public relink-kit claim |',
+              '| Packaging | 00.23 hardware-tested VPK from source `0e17b0ba`; prior normal-build 00.22 evidence retained | 00.23 test package used split generated-C compilation; release-quality reproducible packaging remains open |')
+          repl(p,
+              '- 00.20\'s broad host pass missed platform thread setup rejection; 00.21 adds\n  injected failure paths and now starts/reaches menu on Vita. 00.21 selection\n  exposes a separate invalid filter range guard, fixed/host-tested in 00.22.',
+              '- 00.20\'s broad host pass missed platform thread setup rejection; 00.21 recovered the worker/menu. 00.21 then exposed the filter-mask guard, fixed in 00.22. 00.22 finally exposed the whole-PAC managed allocation at battle start; 00.23 replaces that bridge with the original streaming parser and passes the reproduced hardware path.')
+          repl(p,
+              'Next: run [00.22 test](TEST_VITA_00_22.md), then cold/repeated selection timing,\nrecorded voices and retained text/FPS checks. [PORTING_PLAN](PORTING_PLAN.md)\ntracks subsequent work rather than restarting the completed atlas milestone.',
+              'Next: extend [00.23 testing](TEST_VITA_00_23.md) to repeated battles, more characters/datasets, long sessions, lifecycle/save coverage and a release-quality normal build. [PORTING_PLAN](PORTING_PLAN.md) tracks that work rather than reopening resolved 00.20–00.22 blockers.')
+
+          # PORTING_PLAN: immediate work is regression breadth, not re-testing fixed blockers.
+          p = 'docs/PORTING_PLAN.md'
+          repl(p, '# Porting plan — checkpoint 00.22, 2026-10-05', '# Porting plan — checkpoint 00.23, 2026-10-05')
+          repl(p,
+              '| Audio | Decode/three channels/limiter/reconstruction; 00.21 setup repair | 00.21 worker/menu recovered; audible clean voices still pending |',
+              '| Audio | Decode/three channels/limiter/reconstruction; 00.21 setup repair | Clean audio/voices reported in the current hardware path; broaden character/phrase and long-session coverage |')
+          repl(p,
+              '| Product/distribution | Verified private test VPK and evidence, small main commits | Public notice/relink review; reliable latest-build device test |',
+              '| Product/distribution | 00.23 hardware-tested VPK/evidence, small main commits | Produce a normal reproducible release-quality 00.23+ package; public notice/relink review |')
+          text = read(p)
+          text = re.sub(
+              r'## Immediate physical checks\n.*?\n## Subsequent work',
+              '''## Immediate physical checks\n\n1. Repeat battle entry/exit and several consecutive fights to look for retained stream handles, cache churn or heap fragmentation.\n2. Exercise multiple characters and both supported dataset/profile paths; compare first, repeated and evicted resource loads.\n3. Reconfirm clean voices/text/FPS during those longer runs rather than assuming one successful battle proves all combinations.\n4. Test return-to-menu, repeated launches, save round-trips and suspend/resume separately.\n5. Build a release-quality package with the normal full-engine compilation recipe and compare its performance against the successful 00.23 test artifact.\n\n## Subsequent work''',
+              text, flags=re.S)
+          write(p, text)
+
+          # Source-audit pages keep historical facts but must not call fixed runtime issues current.
+          p = 'docs/APK_AUDIT.md'
+          repl(p,
+              'At this audit baseline native Vita build/execution had not yet been established.\nSubsequent private AOT builds run original menu/selection/combat on Vita. Latest\n00.21 startup/audio recovery is still pending; host format tests alone cannot\nestablish it. Baseline weaknesses were investigated in later attempts; see',
+              'At this audit baseline native Vita build/execution had not yet been established.\nSubsequent private AOT builds run original menu/selection/combat on Vita. By 00.23,\nphysical testing reports clean audio, responsive selection and successful battle startup/gameplay for the tested path. Host format tests alone still cannot establish hardware behavior. Baseline weaknesses were investigated in later attempts; see')
+          repl(p,
+              'It supplies indexed character/card data missing from the baseline. Earlier Vita\n00.11 verifies its selection/battle and BGM/SE. Packed voices later decode, but\naudible quality remains unresolved.',
+              'It supplies indexed character/card data missing from the baseline. Earlier Vita\n00.11 verifies its selection/battle and BGM/SE. Packed voices later decode; subsequent 00.22/00.23 hardware testing reports clean audio/voices in the tested path.')
+
+          p = 'docs/ANDROID14_APK.md'
+          repl(p,
+              'Physical Vita build 00.11 is HARDWARE CONFIRMED through character selection and\nan actual playable battle using the Android14 profile. Front touch and ordinary\nBGM/SE are audible, with intermittent stalls. 00.12 adds wrapper/ADPCM and text\nservices; later user tests confirm stable battle performance (00.18) and restored\ntexts (00.19), while voices still sound rough and character changes pause.\n00.20 selective PAC/caches and voice reconstruction pass host checks but its\naudio worker setup fails on Vita before the menu. 00.21 restores prior worker\npriority and precise failure reporting; worker/menu now recover on Vita.\nIts later selection failure rejects original mask 187; 00.22 preserves 187/251\nwith exact payload/slot host checks. Physical selection/audio-quality coverage\non 00.22 remains pending.',
+              'Physical Vita build 00.11 is HARDWARE CONFIRMED through character selection and\nan actual playable battle using the Android14 profile. Later checkpoints fixed the\nobserved stalls/voice/text regressions in stages: 00.18 restored stable battle\nperformance, 00.19 restored text, 00.21 recovered audio worker/menu startup, and\n00.22 accepted the original 187/251 selection masks with clean audio/selection reported on hardware. 00.22 then exposed a separate whole-PAC TeaVM allocation failure at battle startup. 00.23 restores the original streaming PAC parser through a native-backed stream; the reported physical-Vita retest enters and plays a battle with no error observed in that session.')
+
+          print('Reconciled living/status documentation with 00.23 hardware result')
+          PY
 
       - name: Verify every Markdown has current checkpoint
         shell: bash
@@ -48,6 +182,14 @@ jobs:
               raise SystemExit(1)
           assert Path('docs/TEST_VITA_00_23.md').is_file()
           assert Path('docs/evidence/vita_hardware_full_game_00.23.json').is_file()
+          current = Path('docs/CURRENT_STATUS.md').read_text(encoding='utf-8')
+          assert current.startswith('# Current status — 2026-10-05, full engine 00.23')
+          assert '00.22 physical result is pending' not in current
+          assert 'audible voice quality remains open' not in current
+          build = Path('docs/BUILD.md').read_text(encoding='utf-8')
+          assert build.startswith('# Build and install — full engine 00.23')
+          validation = Path('docs/VALIDATION.md').read_text(encoding='utf-8')
+          assert validation.startswith('# Validation and diagnostic reference — 00.23')
           PY
 
       - name: Commit synchronized documentation
@@ -60,5 +202,5 @@ jobs:
             echo 'No documentation changes to commit.'
             exit 0
           fi
-          git commit -m 'Document hardware-validated 00.23 across all Markdown'
+          git commit -m 'Reconcile living documentation with validated 00.23'
           git push origin HEAD:main
