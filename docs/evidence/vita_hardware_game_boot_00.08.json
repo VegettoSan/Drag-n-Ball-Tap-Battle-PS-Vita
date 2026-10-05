@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-05",
+  "scope": "real PS Vita hardware test of full original engine build 00.08",
+  "hardware_observed": true,
+  "result": "original game reached visible running game state without crash",
+  "runtime_log_sha256": "7d0586e43cfe660fdb190e8f811f14f3e620d85318106c1ddb53d10e7490e1f9",
+  "observed_runs": [
+    {
+      "profile": "Original",
+      "engine_init": "pass",
+      "run_frames": 1314,
+      "crash_dump": false
+    },
+    {
+      "profile": "Original",
+      "engine_init": "pass",
+      "run_frames": 624,
+      "crash_dump": false
+    }
+  ],
+  "runtime_confirmed": [
+    "vitaGL initialized at 960x544",
+    "boot profile selector displayed and accepted Original",
+    "resource VFS initialized",
+    "audio output port opened",
+    "audio worker thread started",
+    "original TCBManajer.Init completed",
+    "original TCBManajer.Run executed continuously beyond the prior frame-498 failure"
+  ],
+  "remaining_input_findings": {
+    "front_touch": "visible touch targets did not respond on hardware",
+    "physical_buttons": "Circle/Triangle/other button testing could trigger a clean engine exit because the Vita input adapter mapped physical back into Android Back",
+    "root_cause_touch": "SceTouchReport coordinates use the panel active-area range (minAa/maxAa), but the adapter scaled them using the display-area range (minDisp/maxDisp), causing clamping/misaligned pointer coordinates",
+    "root_cause_clean_exit": "gameplay adapter forwarded Circle/Triangle as Android Back; the original engine treats Back as an exit/menu lifecycle request in relevant states"
+  },
+  "fix_commits": [
+    "9e086a959e53de0a82da42d24dc1794be75f0ec2",
+    "8d52e82b73591e267a5a312cc5e5686e150b7b1e",
+    "365588846f0ca6d6e1ef0e8e2b78850fccf3b901"
+  ],
+  "next_private_test_artifact": {
+    "name": "DBTapBattle-Vita-00.09-touchfix.vpk",
+    "sha256": "907d694016c341dac3bfb7f97461ad7df9fe6b7cd6c2cb7afb2ef369e6772f77",
+    "size": 2207149,
+    "eboot_sha256": "249b6d27f31993b767f8dc5c5310f2235c725c8bc32c66384a934f7da2610e51",
+    "contains_icon0": false,
+    "expected_checkpoint": "Original game remains running; front touch maps correctly to visible Android touch targets; physical face buttons no longer close gameplay accidentally"
+  }
+}
