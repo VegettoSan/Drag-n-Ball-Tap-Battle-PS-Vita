@@ -29,6 +29,19 @@ const char* tag(uint32_t type) {
     }
 }
 
+bool normaliseConvertedTable(std::vector<uint8_t>& payload, std::string& error) {
+    GameDataTable table;
+    if (!table.decode(payload, PacEncoding::Community14)) { error = table.error(); return false; }
+    put16(payload, 0, table.records().size());
+    for (size_t j = 0; j < table.records().size(); ++j) {
+        const auto& record = table.records()[j];
+        put32(payload, 2 + j * 8, record.position);
+        put16(payload, 6 + j * 8, record.width);
+        put16(payload, 8 + j * 8, record.height);
+    }
+    return true;
+}
+
 bool normalise(const std::vector<uint8_t>& input, const std::string& name,
                std::vector<uint8_t>& output, std::string& error, unsigned depth) {
     if (input.size() < 2 || input.size() > kBudget || depth > 8) {
@@ -73,15 +86,16 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
             if (!normalise(payload, "", nested, error, depth + 1)) return false;
             if (nested != payload) changed = true;
             payload.swap(nested);
+        } else if (encoded && type == "bin") {
+            // Community14 protects the converted GameData directory inside BIN
+            // payloads as well as the outer PAC directory. The original Java
+            // GameData.Init(..., conversion=2, ...) expects the ordinary table
+            // header, so restore only that verified metadata and preserve all
+            // record payload bytes unchanged. Character selection relies on
+            // these tables for ChrGameData[*].piGameData/Pos/XSize/YSize.
+            if (!normaliseConvertedTable(payload, error)) return false;
         } else if (encoded && type == "dac" && (name == "gamedata.pac" || name == "text00.pac")) {
-            GameDataTable table;
-            if (!table.decode(payload, PacEncoding::Community14)) { error = table.error(); return false; }
-            put16(payload, 0, table.records().size());
-            for (size_t j = 0; j < table.records().size(); ++j) {
-                const auto& record = table.records()[j];
-                put32(payload, 2 + j * 8, record.position);
-                put16(payload, 6 + j * 8, record.width); put16(payload, 8 + j * 8, record.height);
-            }
+            if (!normaliseConvertedTable(payload, error)) return false;
         }
         if (payload.size() > kBudget - out.size()) { error = "normalised PAC exceeds budget"; return false; }
         put32(out, 2 + i * 16, out.size() - base);
