@@ -327,3 +327,22 @@ profile save paths and supplied APK differences are reconciled with source.
 Historical test sheets retain their protocol and identify subsequent outcomes;
 00.20 is marked with the startup regression, 00.21 physical recovery is pending.
 This success does not add a gameplay/device/audio confirmation or a new VPK.
+
+
+## 2026-10-05 — 00.21 audio worker and menu recover on physical Vita
+
+**Scope: HARDWARE CONFIRMED by user and new 07222bb session.** Port opens, worker
+starts and menu is reached. This closes the earlier startup checkpoint, not
+selection/voice/battle coverage: char00 is rejected next and Game3 exits.
+[Evidence](evidence/vita_hardware_selection_00.21.json).
+
+## 2026-10-05 — 00.22 original filter regression covered and full VPK verified
+
+**Scope: HOST/BUILD CONFIRMED only.** Previous source fails at real char00/filter187;
+corrected stream tests pass 26 Gen/Community14 packs with 187/251 and high/sign-bit
+masks, exact allowed payloads/slots, nonempty metadata and expected voice banks.
+Native filtered import/copy/cache and PNG/ownership probes pass (GL mocked),
+as does full 125-file/137-container/470-texture/68-table/198-WAV ASan/UBSan regression.
+The full original core is recompiled to ARM ELF/VELF/SELF/VPK 00.22; CRC/SFO/eboot,
+core symbols/source/version pass. Physical selection/voices/FPS remain pending.
+[Build evidence](evidence/vita_selection_filter_build_00.22.json).

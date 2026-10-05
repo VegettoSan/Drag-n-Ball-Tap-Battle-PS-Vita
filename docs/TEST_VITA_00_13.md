@@ -3,8 +3,8 @@
 **Archived test sheet.** These expectations describe 00.13 at publication and
 are not current unresolved-engine milestones. Later tests restore visible text
 (00.19), while rough voices and character pauses remain unresolved. Latest
-00.21 startup recovery is pending. See [CURRENT_STATUS](CURRENT_STATUS.md) and
-[TEST_VITA_00_21](TEST_VITA_00_21.md). Do not infer this exact Gen APK hash or every
+00.22 selection recovery is pending after 00.21 starts audio/reaches menu. See [CURRENT_STATUS](CURRENT_STATUS.md) and
+[TEST_VITA_00_22](TEST_VITA_00_22.md). Do not infer this exact Gen APK hash or every
 00.13 fix is hardware-confirmed from a later generic Original-profile test.
 
 Build 00.13 is a focused follow-up to the hardware-tested 00.12. It retains the 00.12 text glyph cache/partial texture upload and Community14 voice decoding, while correcting two hardware regressions and adding the hybrid charset handling needed by the user-supplied Original+Characters APK.

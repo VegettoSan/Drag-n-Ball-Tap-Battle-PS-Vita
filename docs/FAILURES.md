@@ -346,3 +346,18 @@ This is a synthesis of recorded failures, not a new failure or a hardware fix.
 00.20's higher-priority retry above is historical and was reverted in 00.21.
 Restart after changing installed data; no general hot-reload or asynchronous
 resource/voice prefetch is implemented. See [CURRENT_STATUS](CURRENT_STATUS.md).
+
+
+## 2026-10-05 — 00.21 character selection rejects the original mask 187
+
+00.21 audio/menu recovery is confirmed, but char00 fails with invalid GameData
+filter and Game3 catches NullPointerException at md=1018/frame 1273. The native
+0..127 guard introduced with selective I/O rejects legal original masks 187/251.
+Earlier probes tested only 1/33/64/127 and missed actual core call sites.
+
+**Do not repeat:** infer an enum range from the OR of known exclusion bits, catch
+away the null table, or diagnose this session as the previous audio setup failure.
+**Different retry:** 00.22 removes that guard while retaining the original int
+mask/type tests. Before/after real-corpus and native copy/cache probes now test
+original 187/251 and high/sign bits. Host checks pass; physical selection recovery
+is pending. [Evidence](evidence/vita_hardware_selection_00.21.json).

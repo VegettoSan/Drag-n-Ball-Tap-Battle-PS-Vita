@@ -1,6 +1,6 @@
 # Prueba Vita 00.21 — cierre antes del menú
 
-**Prueba activa; resultado físico pendiente al 2026-10-05.** Último VPK entregado:
+**Prueba archivada; resultado físico recibido al 2026-10-05.** VPK probado:
 `DBTapBattle-Vita-00.21-audio-startup-fix.vpk`, fuente
 `07222bb42f20ab2bac953531e42b8cf3796940ca`. Esta actualización documental no
 recompila el juego. Estado y próximas comprobaciones: [CURRENT_STATUS](CURRENT_STATUS.md).
@@ -29,7 +29,10 @@ perfil. El ZIP de símbolos solo sirve para diagnóstico; no se instala.
 
 La compilación y las pruebas host no sustituyen tu comprobación en consola.
 Se probaron la mezcla/DSP y las rutas de error reales del adaptador con APIs
-Vita simuladas. La recuperación del menú y la calidad audible quedan pendientes.
+Vita simuladas. La prueba posterior confirma worker y menú; luego rechaza char00 por el
+filtro187 y sale con NullPointerException en md=1018/frame 1273. La calidad
+audible y la pelea de esta versión no quedaron comprobadas. Nueva prueba:
+[TEST_VITA_00_22](TEST_VITA_00_22.md), [evidencia](evidence/vita_hardware_selection_00.21.json).
 Evidencia del cierre: `evidence/vita_hardware_audio_startup_00.20.json`.
 El motor completo se compiló a ELF/VELF/SELF/VPK; se verificaron CRC, versión,
 título, eboot y fuente. Hashes: `evidence/vita_audio_startup_build_00.21.json`.

@@ -4,7 +4,7 @@
 a 60 FPS; el log registra 15 ventanas estables a 59,9 FPS. Los textos desaparecen,
 las voces siguen roncas y persisten pausas de selección. El texto se recupera en
 00.19. Las instrucciones siguientes conservan el protocolo de 00.18; para la
-versión actual usa [TEST_VITA_00_21](TEST_VITA_00_21.md).
+versión actual usa [TEST_VITA_00_22](TEST_VITA_00_22.md).
 Evidencia: [prueba física 00.18](evidence/vita_hardware_performance_00.18.json).
 Estado general: [CURRENT_STATUS](CURRENT_STATUS.md).
 

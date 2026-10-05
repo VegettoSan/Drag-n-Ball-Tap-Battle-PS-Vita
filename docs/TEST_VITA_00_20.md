@@ -5,8 +5,8 @@ En Vita el worker de audio falla 20 veces y el motor sale antes del menú con
 `BGM load failed: bgm_16` (frame 570, estado 693). El log no permite distinguir
 creación de arranque del hilo; no prueba corrupción PAC/OGG ni crash nativo.
 Evidencia: [cierre 00.20](evidence/vita_hardware_audio_startup_00.20.json).
-00.21 revierte la prioridad y añade errores precisos/limpieza; su prueba física
-está pendiente en [TEST_VITA_00_21](TEST_VITA_00_21.md).
+00.21 revierte la prioridad y recupera worker/menú en Vita, pero falla después
+en selección por otra causa. La prueba activa es [TEST_VITA_00_22](TEST_VITA_00_22.md).
 
 Tu prueba confirma que los textos regresaron en 00.19, pero las voces siguen
 sonando mal y cambiar de personaje todavía causa pausas. 00.20 conserva el

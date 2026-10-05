@@ -5,7 +5,7 @@ vuelven a ver, pero las voces siguen mal y cambiar de personaje aún se traba.
 El log de esta sesión no registra recorte de salida, sobrecarga previa al
 limitador ni mezcla fuera de plazo. Esto no demuestra salida de audio limpia.
 Evidencia: [prueba física 00.19](evidence/vita_hardware_text_audio_00.19.json).
-Prueba actual: [TEST_VITA_00_21](TEST_VITA_00_21.md); [CURRENT_STATUS](CURRENT_STATUS.md).
+Prueba actual: [TEST_VITA_00_22](TEST_VITA_00_22.md); [CURRENT_STATUS](CURRENT_STATUS.md).
 
 00.18 queda confirmado a 60 FPS en pelea por tu prueba y el runtime.log.
 Esta actualización conserva los cambios gráficos y corrige dos puntos:

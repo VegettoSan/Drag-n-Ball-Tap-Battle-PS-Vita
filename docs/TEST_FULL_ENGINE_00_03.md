@@ -4,7 +4,7 @@
 installation recommendation. Its device startup rejected vitaGL's normal false
 return; that interpretation was corrected in subsequent builds. The original
 publication's pending checks below are retained as history. Current active test:
-[TEST_VITA_00_21](TEST_VITA_00_21.md), status: [CURRENT_STATUS](CURRENT_STATUS.md).
+[TEST_VITA_00_22](TEST_VITA_00_22.md), status: [CURRENT_STATUS](CURRENT_STATUS.md).
 Evidence: [00.03 startup finding](evidence/vita_hardware_vgl_init_00.03.json).
 
 This is the first PS Vita package built from the complete reachable original
