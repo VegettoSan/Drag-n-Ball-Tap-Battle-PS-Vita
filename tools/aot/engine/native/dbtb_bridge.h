@@ -11,6 +11,7 @@ int32_t dbtb_resourceEncoding(void);
 int32_t dbtb_installedData(void);
 int32_t dbtb_textEncoding(int32_t source);
 void dbtb_copyResource(void * target, int32_t size);
+int32_t dbtb_exists(void * name);
 int32_t dbtb_readSave(void * name);
 int32_t dbtb_writeSave(void * name, void * bytes, int32_t size, int32_t position, int32_t truncate);
 int32_t dbtb_deleteSave(void * name);
