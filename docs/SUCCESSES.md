@@ -177,3 +177,14 @@ fallback and completed the data/mod profile scan, finding the installed Android1
 profile. The following crash was isolated to the port's own immediate-mode selector,
 not to vitaGL initialization or the original game engine. See
 `docs/evidence/vita_hardware_selector_crash_00.04.json`.
+
+## 2026-10-05 — Original game boots and runs on real PS Vita
+
+**Scope: HARDWARE CONFIRMED for the Original profile startup/runtime path.**
+Build 00.08 displayed the actual original game on a physical PS Vita without a
+crash. The hardware log confirms vitaGL startup, the profile selector, Original
+VFS initialization, native audio startup, `TCBManajer.Init()` success and two
+continuous `TCBManajer.Run()` sessions reaching 1314 and 624 frames. The prior
+frame-498 text/lifecycle failure is resolved. Front-touch calibration and physical
+button mapping remained the next input-specific blockers; see
+`docs/evidence/vita_hardware_game_boot_00.08.json`.
