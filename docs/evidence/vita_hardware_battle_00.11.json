@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-05",
+  "version": "00.11",
+  "confidence": "HARDWARE CONFIRMED",
+  "profile": "Android14",
+  "hardware_result": {
+    "title_and_menus": true,
+    "front_touch": true,
+    "audio_worker": true,
+    "character_selection": true,
+    "real_battle_reached": true,
+    "battle_playable": true,
+    "native_crash_observed": false,
+    "user_reported_frame_rate": "60 FPS during gameplay, with occasional stalls",
+    "frame_rate_instrumented_by_runtime_log": false
+  },
+  "runtime_log": {
+    "sha256": "e2322bb4109adc6a1a336d001cf6eecaa3933f32aca7b6739b9318def9537849",
+    "bytes": 5220,
+    "sessions": [
+      {
+        "boot": "2026-10-05 01:52:17",
+        "selected_profile": "Android14",
+        "engine_init": "ORIGINAL ENGINE INIT PASS",
+        "audio": ["Audio: output port opened", "Audio: worker thread started"],
+        "touch": "multiple hardware IDs normalized to logical slot 0"
+      },
+      {
+        "boot": "2026-10-05 02:02:50",
+        "selected_profile": "Android14",
+        "engine_init": "ORIGINAL ENGINE INIT PASS",
+        "audio": ["Audio: output port opened", "Audio: worker thread started"],
+        "touch": "multiple hardware IDs normalized to logical slot 0"
+      }
+    ],
+    "fatal_or_npe_trace_present": false
+  },
+  "remaining_observations": [
+    "some screen changes pause on black for roughly 1-2 seconds",
+    "character voices and some packed sound effects are missing or decode incorrectly",
+    "dialogue text creation can stall for seconds",
+    "some dialogue text appears vertically or spatially misplaced"
+  ],
+  "interpretation": "00.11 promotes character selection and actual combat to HARDWARE CONFIRMED. The remaining audio/text items are platform-adapter defects, not evidence that the original game-state path failed.",
+  "next_build": "00.12"
+}
