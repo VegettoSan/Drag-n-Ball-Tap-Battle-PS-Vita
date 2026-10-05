@@ -29,19 +29,20 @@
     "zero_based_voice_fix": "7b0ecaf2afe4d176d05dd96eb832b92cce5ddf9c",
     "version_bump": "f2304b2717e351c10b8080221cc424e27eb6e5d7",
     "hybrid_charset_detection": "77444ac721ed4a8b4c13f602dd1071577498bcd2",
-    "hybrid_charset_runtime": "6365d3a038395b222171e807836d98b7fe4be8f0"
+    "hybrid_charset_runtime": "6365d3a038395b222171e807836d98b7fe4be8f0",
+    "teavm_npe_trace_escape_fix": "767f8479302e6184bd815fc6fe60aeef2a18be52"
   },
   "build_00_13": {
-    "artifact": "DBTapBattle-Vita-00.13-text-voice-profilefix.vpk",
-    "size": 2217904,
-    "sha256": "978024ea2c50ce77659099afba65f854699282c85aa13a826ce070a4794080be",
-    "eboot_sha256": "768df33610c27c850712fd208d695cb81f7ddd90c6e4d32f5dcbba24e80de982",
-    "elf_sha256": "2038d4504515d3728102ec62f33d25e2628ab7637a4ed6168ce005419becdf94",
+    "artifact": "DBTapBattle-Vita-00.13-text-voice-fix.vpk",
+    "size": 2217753,
+    "sha256": "4a2f896c6ba967e01835ee6e54a74fdeb5d519ef0fb94cf07c7a2fea7ea13a8d",
+    "eboot_sha256": "89c7b5914cf321892fddcda1e2563d966100a210670cb959af0b22b218140ca2",
+    "elf_sha256": "7c526efb018860f941a8414b01b55f9f7b557c97585371771237d3524b45742e",
     "zip_test": "pass",
     "title_id": "DBTB00001",
     "app_ver": "00.13",
     "contains_icon0": false,
-    "pipeline": "TeaVM private generation -> VitaSDK ARM ELF -> VELF -> SELF -> VPK",
+    "pipeline": "fresh original APK -> dex2jar -> TeaVM private generation -> Vita runtime patch -> VitaSDK ARM ELF -> VELF -> SELF -> VPK",
     "build_result": "success"
   },
   "profile_support_in_build": {
