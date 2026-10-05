@@ -55,16 +55,33 @@ def check_destination(path, overwrite, directory=False):
 
 
 def choose_layout(archive, layout):
-    files = [i.filename for i in archive.infolist() if not i.is_dir()]
-    raw = any(n.startswith(RAW_PREFIX) for n in files)
-    assets = any(n.startswith('assets/') for n in files)
+    infos = [i for i in archive.infolist() if not i.is_dir()]
+    raw_infos = [i for i in infos if i.filename.startswith(RAW_PREFIX)]
+    asset_infos = [i for i in infos if i.filename.startswith('assets/')]
+    raw = bool(raw_infos)
+    assets = bool(asset_infos)
     if layout == 'auto':
         if raw and assets:
-            raise ValueError('ambiguous res/raw + assets APK: choose --layout explicitly')
+            # Some later/community-derived builds keep the original res/raw names
+            # as zero-byte resource stubs while moving the real game data into
+            # assets/. Treat those as asset-backed APKs instead of forcing a
+            # manual --layout choice. If both sides contain payload bytes the
+            # archive is genuinely ambiguous and still requires an explicit mode.
+            raw_payload = any(i.file_size for i in raw_infos)
+            asset_payload = any(i.file_size for i in asset_infos)
+            if raw_payload and asset_payload:
+                raise ValueError('ambiguous res/raw + assets APK: choose --layout explicitly')
+            if asset_payload and not raw_payload:
+                raw = False
+            elif raw_payload and not asset_payload:
+                assets = False
+            else:
+                raise ValueError('APK contains only empty res/raw/assets entries')
         if raw:
             return 'raw'
         if assets:
-            return 'community14' if any(community14.canonical_name(n[7:]) != n[7:] for n in files if n.startswith('assets/')) else 'assets'
+            files = [i.filename for i in asset_infos]
+            return 'community14' if any(community14.canonical_name(n[7:]) != n[7:] for n in files) else 'assets'
         raise ValueError('APK contains no res/raw or assets files')
     return layout
 
