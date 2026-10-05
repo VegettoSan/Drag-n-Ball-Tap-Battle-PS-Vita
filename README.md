@@ -24,22 +24,31 @@ APK-derived JAR/classes/C and original game assets are not committed to Git.
 
 ## Current state — 2026-10-05
 
-Latest full-engine test: **00.22**, compiled from `c40ce0a`. It removes the
-incorrect 0..127 range check on the original GameData exclusion mask: character
-selection actually uses 187; other paths use 251. The 00.21 device test confirms
-worker/menu recovery but exits at selection after rejecting char00. **00.22
-physical selection recovery is pending.** Later documentation commits do not
-change the delivered binary's source identity.
+Latest hardware gameplay checkpoint: **00.23** from source `0e17b0ba`. On a real
+PS Vita the reported test path preserves visible text, clean audio/voices and
+responsive character selection, then enters and plays a battle without the 00.22
+managed-memory crash. The hardware-tested gameplay VPK SHA-256 is
+`8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd`.
+
+A presentation-only repack,
+`DBTapBattle-Vita-00.23-LiveArea.vpk` (SHA-256
+`382927c8032fda1db5ec21078a006026daa78ef93f3bdfce7c8484f880fd4e50`),
+adds the approved PS Vita bubble/LiveArea artwork while retaining every original
+00.23 VPK entry byte-for-byte, including the already tested `eboot.bin`.
+Its package structure and exact PNG hashes pass VitaSDK CI; physical installation
+and LiveArea appearance are the remaining check for that repack.
 
 | Tested version | Confirmed result | Remaining limitation |
 |---|---|---|
 | 00.11 | Android14 profile reaches character selection and a real battle on Vita | Does not certify arbitrary mods or every mode |
-| 00.16 | User confirms ability-card processing and long startup delay fixed | Character pauses, rough voices and then 35–45 FPS in battles |
+| 00.16 | User confirms ability-card processing and long startup delay fixed | Character pauses and rough voices remained |
 | 00.18 | User and log confirm steady battle 60 FPS / 59.9 logged at 960×544 | Text disappeared; voices and selection pauses remained |
 | 00.19 | User confirms text visible again | Voices still bad; character switching still stalls |
 | 00.20 | Host PAC/cache/DSP tests pass | Hardware audio worker fails setup; Original exits before menu |
-| 00.21 | Worker starts and user reaches menu on Vita | Character selection rejects char00 mask 187 and catches NullPointerException |
-| 00.22 | Original masks 187/251 accepted; before/after host regression and full VPK pass | Physical first-character/switching/voice/text/battle test pending |
+| 00.21 | Worker starts and user reaches menu on Vita | Character selection rejects char00 mask 187 |
+| 00.22 | Original masks 187/251 accepted; clean audio/selection reported | Battle startup exposes whole-PAC TeaVM managed allocation failure |
+| 00.23 | Physical Vita: text/audio/selection/battle path passes; no error observed in reported session | Broader regression matrix and release-quality normal build remain open |
+| 00.23 LiveArea repack | Exact assets/package structure pass CI; tested 00.23 eboot is unchanged | Physical install and shell appearance pending |
 
 Use [current status and evidence](docs/CURRENT_STATUS.md) for the authoritative
 feature matrix, artifact hash and open issues. Older test reports describe their
@@ -47,10 +56,13 @@ own builds; a host or CI result does not establish physical Vita behavior.
 
 ## Install and data
 
-Install the delivered `DBTapBattle-Vita-00.22-selection-filter-fix.vpk` over the
-existing application with VitaShell, preserving `ux0:data/DBTapBattle/` and saves.
-Follow [00.22 test instructions](docs/TEST_VITA_00_22.md). The full engine requires
-the vitaGL shader compiler setup; see [build/setup](docs/BUILD.md).
+For the current presentation test, install
+`DBTapBattle-Vita-00.23-LiveArea.vpk` over the existing application with VitaShell,
+preserving `ux0:data/DBTapBattle/` and saves. Follow the
+[00.23 LiveArea test instructions](docs/TEST_VITA_00_23_LIVEAREA.md). The gameplay
+binary in that repack is byte-identical to the already hardware-tested 00.23
+`eboot.bin`. The full engine requires the vitaGL shader compiler setup; see
+[build/setup](docs/BUILD.md).
 
 | Runtime path | Purpose |
 |---|---|
@@ -95,7 +107,7 @@ full gameplay engine. [BUILD.md](docs/BUILD.md) gives the current recipe.
 | Architecture and future ports | [ENGINE_MAP](docs/ENGINE_MAP.md), [PLATFORM_SERVICES](docs/PLATFORM_SERVICES.md), [RENDER_MAPPING](docs/RENDER_MAPPING.md), [PORTING_GUIDE](docs/PORTING_GUIDE.md), [DECISIONS](docs/DECISIONS.md) |
 | Data, formats and provenance | [APK_AUDIT](docs/APK_AUDIT.md), [ANDROID14_APK](docs/ANDROID14_APK.md), [Original+Characters](docs/ORIGINAL_PLUS_CHARACTERS_APK.md), [PAC_FORMAT](docs/PAC_FORMAT.md), [RESOURCE_FORMATS](docs/RESOURCE_FORMATS.md), [DATA_LAYOUT](docs/DATA_LAYOUT.md), [MODS](docs/MODS.md) |
 | Engineering history | [ATTEMPTS](docs/ATTEMPTS.md), [SUCCESSES](docs/SUCCESSES.md), [FAILURES](docs/FAILURES.md), [input AOT experiment](tools/aot/README.md) |
-| Test versions | [00.03](docs/TEST_FULL_ENGINE_00_03.md), [00.13](docs/TEST_VITA_00_13.md), [00.18](docs/TEST_VITA_00_18.md), [00.19](docs/TEST_VITA_00_19.md), [00.20](docs/TEST_VITA_00_20.md), [00.21](docs/TEST_VITA_00_21.md), [00.22](docs/TEST_VITA_00_22.md) |
+| Test versions | [00.03](docs/TEST_FULL_ENGINE_00_03.md), [00.13](docs/TEST_VITA_00_13.md), [00.18](docs/TEST_VITA_00_18.md), [00.19](docs/TEST_VITA_00_19.md), [00.20](docs/TEST_VITA_00_20.md), [00.21](docs/TEST_VITA_00_21.md), [00.22](docs/TEST_VITA_00_22.md), [00.23](docs/TEST_VITA_00_23.md), [00.23 LiveArea](docs/TEST_VITA_00_23_LIVEAREA.md) |
 | Attribution | [THIRD_PARTY](docs/THIRD_PARTY.md) and upstream license files in `licenses/` |
 
 `src/` contains native data/input/UI utilities; `tools/aot/engine/java/` contains
