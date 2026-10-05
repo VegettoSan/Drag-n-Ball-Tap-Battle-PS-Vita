@@ -14,6 +14,8 @@ project(dbtb_original_engine LANGUAGES C CXX)
 include("${VITASDK}/share/vita.cmake" REQUIRED)
 
 set(REPO_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../../..")
+include("${REPO_ROOT}/cmake/LiveArea.cmake")
+dbtb_prepare_livearea("${REPO_ROOT}" DBTB_LIVEAREA_DIR)
 set(TEAVM_C_DIR "" CACHE PATH "Private TeaVM 0.12.3 generated C directory after patch_runtime.py")
 if(NOT TEAVM_C_DIR OR NOT EXISTS "${TEAVM_C_DIR}/all.c")
   message(FATAL_ERROR "Pass -DTEAVM_C_DIR=/private/patched/c containing TeaVM all.c")
@@ -102,6 +104,11 @@ target_link_libraries(${PROJECT_NAME}
 vita_create_self(eboot.bin ${PROJECT_NAME} UNSAFE)
 vita_create_vpk(DBTapBattle-Vita-${VITA_VERSION}.vpk ${VITA_TITLEID} eboot.bin
   VERSION ${VITA_VERSION} NAME ${VITA_APP_NAME}
+  FILE "${DBTB_LIVEAREA_DIR}/icon0.png" sce_sys/icon0.png
+  FILE "${DBTB_LIVEAREA_DIR}/pic0.png" sce_sys/pic0.png
+  FILE "${DBTB_LIVEAREA_DIR}/bg0.png" sce_sys/livearea/contents/bg0.png
+  FILE "${DBTB_LIVEAREA_DIR}/startup.png" sce_sys/livearea/contents/startup.png
+  FILE "${REPO_ROOT}/assets/livearea/template.xml" sce_sys/livearea/contents/template.xml
   FILE "${REPO_ROOT}/docs/THIRD_PARTY.md" notices/THIRD_PARTY.md
   FILE "${REPO_ROOT}/licenses/vitaGL-GPL-3.0.txt" notices/vitaGL-GPL-3.0.txt
   FILE "${REPO_ROOT}/licenses/vitaGL-LGPL-3.0.txt" notices/vitaGL-LGPL-3.0.txt
