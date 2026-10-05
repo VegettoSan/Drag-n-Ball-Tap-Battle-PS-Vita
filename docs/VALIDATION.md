@@ -88,6 +88,24 @@ Keep ELF/VELF for diagnosis. A symbols ZIP is not automatically a relink bundle.
 Native CI compiles services against a non-commercial dummy main; tool-export CI
 only exports public tools. Neither runs the complete original game.
 
+For every VPK that carries the current presentation assets, also run:
+
+```sh
+python3 tools/validate_livearea_vpk.py /path/to/DBTapBattle-Vita-00.23.vpk
+```
+
+This verifies that the package contains the exact approved `icon0.png`,
+`pic0.png`, `bg0.png`, `startup.png` SHA-256 values and a style-`a1`
+`template.xml` that maps the expected background and startup gate. Native smoke
+run `37384814624` passed this check after VitaSDK built the ELF, SELF and VPK.
+
+For the presentation-only playable test package, compare it to the hardware-tested
+00.23 base as well: every pre-existing ZIP member must remain byte-identical and
+the member-set difference must contain only the five LiveArea paths. That exact
+comparison is recorded in
+[evidence/vita_livearea_00.23.json](evidence/vita_livearea_00.23.json).
+It establishes packaging identity, not physical shell rendering.
+
 ## Interpret runtime.log
 
 The log appends sessions. Analyze from the relevant `full original engine Vita`
@@ -122,9 +140,20 @@ unsupported diagnostics must not be treated as reliable numbers.
 
 ## Physical test protocol
 
-Use [00.23 instructions](TEST_VITA_00_23.md) as the current baseline. First reproduce the now-successful startup/menu/text/audio/selection/battle path with the exact VPK and dataset hash. Then extend coverage with repeated battles, multiple characters, cold/repeated/evicted resource loads, both supported dataset paths, return-to-menu, repeated launches and longer sessions.
+Use [00.23 instructions](TEST_VITA_00_23.md) as the gameplay baseline. For the current
+LiveArea-only derivative, follow
+[TEST_VITA_00_23_LIVEAREA](TEST_VITA_00_23_LIVEAREA.md): verify VitaShell
+installation, bubble icon, LiveArea background and startup gate first, then perform
+a short menu/selection/battle regression check without changing game data.
 
-Report exact profile/data provenance, version/hash and whether a clean exception exit or native crash occurs. Copy `runtime.log`; include `psp2core` only if produced. Screenshots prove visual state; recordings remain the right evidence for audible artifacts that counters cannot establish.
+After presentation is confirmed, extend gameplay coverage with repeated battles,
+multiple characters, cold/repeated/evicted resource loads, both supported dataset
+paths, return-to-menu, repeated launches and longer sessions.
+
+Report exact profile/data provenance, version/hash and whether a clean exception exit
+or native crash occurs. Copy `runtime.log`; include `psp2core` only if produced.
+Screenshots/photos establish physical LiveArea rendering; recordings remain the
+right evidence for audible artifacts that counters cannot establish.
 
 <!-- DBTB_00_23_DETAIL:START -->
 ## Latest hardware validation — 00.23
