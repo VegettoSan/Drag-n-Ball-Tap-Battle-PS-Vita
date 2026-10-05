@@ -1,0 +1,17 @@
+{
+  "version": "00.19",
+  "source_commit": "bb78269178cf2dfe16dc55d7df7a54de798fb57b",
+  "log_sha256": "07cf64fa378e09541d59ed20f5c342a0c7d62f289cae0d93dec94c8939a4985a",
+  "user_report": {
+    "text": "visible again",
+    "voices": "still sound bad",
+    "character_switch": "still stalls"
+  },
+  "perf_windows": 40,
+  "hard_clip_samples": 0,
+  "overload_samples": 0,
+  "late_mix_blocks": 0,
+  "max_run_ms": 3578.65,
+  "max_mix_us": 751,
+  "observation": "Stalls align with resource/texture loads and repeated voice bank loads; text glyph diagnostics have nonzero coverage. No saturation recorded in this session; a zero mix deadline counter does not exclude scheduler/output delivery gaps."
+}

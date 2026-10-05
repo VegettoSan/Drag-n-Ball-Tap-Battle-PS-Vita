@@ -1,0 +1,82 @@
+{
+  "source_commit": "7f19f805d144cb9b17121e1fce82ce978d37cca2",
+  "version": "00.20",
+  "size_bytes": 2235429,
+  "sha256": "c37644a90ffdf1f51ea1476cfce086b0c116f38ef692a869b3f5a420318d28ef",
+  "eboot_sha256": "9ab0798e0163d97cad53c00ec51f6bc6012b21dd45a15e4ab74d16195b79c9b3",
+  "zip_crc": "PASS",
+  "sfo": {
+    "APP_VER": "00.20",
+    "ATTRIBUTE": 32768,
+    "ATTRIBUTE2": 0,
+    "ATTRIBUTE_MINOR": 16,
+    "BOOT_FILE": "",
+    "CATEGORY": "gd",
+    "CONTENT_ID": "",
+    "EBOOT_APP_MEMSIZE": 0,
+    "EBOOT_ATTRIBUTE": 0,
+    "EBOOT_PHY_MEMSIZE": 0,
+    "LAREA_TYPE": 0,
+    "NP_COMMUNICATION_ID": "",
+    "PARENTAL_LEVEL": 0,
+    "PSP2_DISP_VER": "00.000",
+    "PSP2_SYSTEM_VER": 0,
+    "STITLE": "Dragon Ball Tap Battle Vita",
+    "TITLE": "Dragon Ball Tap Battle Vita",
+    "TITLE_ID": "DBTB00001",
+    "VERSION": "00.00"
+  },
+  "entries": [
+    "sce_sys/param.sfo",
+    "eboot.bin",
+    "notices/THIRD_PARTY.md",
+    "notices/vitaGL-GPL-3.0.txt",
+    "notices/vitaGL-LGPL-3.0.txt"
+  ],
+  "contains_commercial_asset_data": false,
+  "hardware_test": "PENDING: character-switch latency, audible voice quality, retained text and battle FPS on 00.20",
+  "pac_stream_probe": {
+    "character_pacs": 26,
+    "filters": [
+      1,
+      33,
+      64,
+      127
+    ],
+    "filter33_full_payload_read_bytes": 91081701,
+    "filter33_selected_payload_read_bytes": 11707264,
+    "source_read_reduction_percent": 87.14641484352603,
+    "scope": "Host source bytes, not a physical Vita latency benchmark"
+  },
+  "audio_probe": {
+    "resampling": "16-tap Hann-windowed sinc, 256 phases, Q14 coefficients; original 22050 Hz source and 48000 Hz output duration unchanged",
+    "test_source_hz": 8000,
+    "linear_image_amplitude": 2059.89,
+    "bandlimited_image_amplitude": 50.14,
+    "image_reduction_db": 32.3,
+    "bandlimited_fundamental_amplitude": 10048.21,
+    "input_amplitude": 10000,
+    "scope": "Host DSP with Vita calls mocked; audible hardware quality pending"
+  },
+  "cache_budgets_bytes": {
+    "pac": 8388608,
+    "immutable_texture_encoded_plus_rgba": 4194304,
+    "voice_raw_plus_pcm": 2097152
+  },
+  "checks": {
+    "resource_stream": "ASan/UBSan PASS, selected bytes exact, directory slots/order preserved, ordinary and Community14 containers, cache invalidation/limits",
+    "native_resources": "ASan/UBSan PASS; real PNG codec; GL mocked; ownership, modes, exact collision check, idle eviction, active protection and uncached render targets",
+    "audio": "ASan/UBSan PASS; resampler spectrum/DC/range/edges, RIFF, PCM cache collisions, limiter, original rates/duration/stereo/loops/three channels",
+    "full_resource_regression": "ASan/UBSan PASS: 125 PAC files, 137 containers, 470 textures, 68 BIN tables, 198 decoded WAV streams",
+    "gles_buffers": "JVM PASS; native imports mocked",
+    "text": "Existing 00.19 ASan/UBSan probe PASS; native text source unchanged",
+    "python_regressions": "12 PASS",
+    "java_generation": "Pinned TeaVM 0.12.3: 465 classes, 4059 methods; current resourceFiltered import present",
+    "full_engine": "Complete original engine ARM ELF/VELF/SELF/VPK build PASS; GCC 15.2.0, VitaSDK 2026.08"
+  },
+  "native_ci": {
+    "run_id": 37364096683,
+    "status": "queued at artifact verification",
+    "scope": "Independent native smoke job; not the delivered full engine"
+  }
+}

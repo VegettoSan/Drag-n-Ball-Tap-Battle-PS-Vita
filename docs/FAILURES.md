@@ -277,3 +277,31 @@ mix deadline misses. The supplied gen.apk also has samples at PCM rails in
 artifact. 8654f66 controls mix peaks and logs source amplitude, without changing
 pitch or rewriting voices. Device audio quality still needs validation; do not
 claim interpolation or zero mix-deadline misses proves clean audible output.
+
+## 2026-10-05 — 00.19 peak control does not cure reported voice roughness
+
+The user still hears bad voices after the peak limiter. The current 00.19 log
+reports zero output clipping and zero pre-limiter overload, so added mix clipping
+does not explain this session. Zero late mix blocks excludes only measured
+mix-computation overruns, not scheduler/output-delivery problems. Linear
+upsampling leaves a reproducible spectral image on host; this is evidence of
+conversion error, not proof it accounts for all reported noise.
+
+**Different retry:** 00.20 adds bandlimited voice reconstruction, higher audio
+worker priority and submission-gap counters, and reduces blocking reload/log work.
+Source PCM remains intact. A source recording and physical test are still needed
+to assess residual audible defects; do not declare clean voices from host tests.
+
+## 2026-10-05 — Whole PAC reads discard the original stream filter's I/O benefit
+
+The adapter read every character PAC and normalized/copied its excluded combat
+graphics before passing the original GameData filter to byte-array Init. Returning
+to characters also repeatedly decoded/uploaded immutable textures and re-parsed
+voice banks. The 00.19 hardware log still shows loading pauses despite stable
+steady battles achieved in 00.18.
+
+**Different retry:** 00.20 reads only selected payloads, retains directory indices
+and caches bounded PAC results, immutable textures and decoded PCM. Host bytes
+and reuse behavior are verified. First-time loads and cache evictions still have
+work; no asynchronous prefetch is introduced and zero switching hitches cannot
+be promised before a physical test.

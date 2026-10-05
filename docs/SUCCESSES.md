@@ -267,3 +267,26 @@ unchanged quiet unity output and RIFF metadata/truncation handling.
 Private validation reads/mixes all 198 supplied gen.apk RIFF voices, preserves
 their PCM samples byte-for-byte and adds no clipping when each plays alone.
 No source assets are committed. Audible quality/text recovery on Vita are pending.
+
+## 2026-10-05 — Text returns on Vita 00.19
+
+**Scope: HARDWARE CONFIRMED by the user's test.** Previously missing text is
+visible again with the restored PVF image-rectangle path. Latest 00.19 log also
+records nonzero glyph coverage. Voices and character switching remain failures;
+see `evidence/vita_hardware_text_audio_00.19.json`.
+
+## 2026-10-05 — Selective PAC bytes and voice DSP verified on host; 00.20 builds
+
+**Scope: HOST/BUILD CONFIRMED only.** The original filter is preserved before disk
+reads for ordinary and Community14 PACs, with exact selected payloads and stable
+directory slots. Across 26 character PACs, filter 33 reads 87.146% fewer requested
+source bytes. Bounded PAC/PCM caches and immutable texture reuse pass invalidation,
+collision, filtering, ownership and eviction checks under ASan/UBSan.
+
+The new voice reconstruction filter reduces a measured resampling image by
+32.3 dB for an 8 kHz source test without changing duration or original rates.
+Full resource/audio/text checks, 12 Python tests and JVM buffer probe pass.
+The complete regenerated original-engine ARM VPK 00.20 builds and its metadata,
+CRC and eboot identity pass. These host results do not establish audible clarity,
+physical selection latency or retained battle FPS; hardware testing is pending.
+See `evidence/vita_pac_voice_build_00.20.json`.

@@ -656,3 +656,56 @@ audio-thread cost remain PENDING hardware testing.
 Native source changes are separate commits 749fdb5 (text), 8654f66 (audio);
 full-engine version 00.19 is bb78269. Keep original graphics optimizations, clocks,
 960x544, game rules, mod fallback and profile saves.
+
+## 2026-10-05 — 00.20 selective PAC loading, reuse and voice reconstruction
+
+**Hardware evidence for 00.19:** user confirms text is visible again, voices
+still sound bad and character switching still stalls. Its current log contains
+40 performance windows, zero output clipping/overload and zero late mix blocks;
+maximum main-thread run is 3578.65 ms. Repeated resource/texture/voice bank loads
+coincide with pauses. Per-bank decode accounting includes synchronous diagnostic
+logging, so that measurement does not isolate PCM parsing. See
+`evidence/vita_hardware_text_audio_00.19.json`.
+
+**Original-engine evidence:** original APK GameData.Init stream bytecode skips
+payloads excluded by its type filter: PNG/RGBA=1, ACT=2, BIN=4, CNV=8, DAC=16,
+SPR=32, WAV=64. The port instead read the entire PAC, copied entries and applied
+the filter later in byte-array Init. Restore selective payload reads before
+normalization while retaining directory slots, types, reserved fields and order.
+Normalize Community14 fields without touching excluded entries; avoid a second
+container open and unnecessary plain-PAC copies. The original parser/gameplay
+bytecode remains unchanged.
+
+**Reuse:** an 8 MiB PAC-result LRU keys resolved profile path and filter and checks
+file size/mtime/ctime; profile changes clear it and saves are separate. Cache
+immutable imported textures up to 4 MiB of source bytes plus GPU RGBA cost,
+checking hash collisions with exact bytes and preserving filtering mode and
+live ownership. Delete only idle LRU textures; mutable render targets are uncached.
+Cache voice inputs plus decoded PCM up to 2 MiB across voice bank releases;
+audio disposal clears it. Reduce per-voice diagnostics to the first three loads.
+
+**Voice conversion:** replace linear low-rate character voice interpolation with
+a 16-tap Hann-windowed sinc table, 256 phases and Q14 coefficients. Preserve
+source PCM, original 22050 Hz playback, 32.32 phase and 48000 Hz output duration;
+BGM/effect paths are unchanged. Retain stereo-linked peak control. Increase audio
+worker priority and measure gaps between blocking output submissions separately
+from mix computation; gaps alone do not prove hardware underruns.
+
+**Host checks:** ASan/UBSan probes pass for 26 character PACs and filters 1/33/64/127,
+identical selected payloads, ordinary/Community14 directories, cache invalidation
+and bounds. Filter 33 requests 11,707,264 rather than 91,081,701 source bytes
+(87.146% reduction); not a measured Vita latency result. Native resources probe
+uses real PNG decoding and mocked GL and passes ownership/modes/collisions/idle
+eviction/live protection/render-target release. Audio probe passes exact DC,
+coefficient/PCM bounds, source boundaries, RIFF, collision-safe PCM reuse,
+limiter, stereo/loops/duration and three channels. An 8 kHz tone at 22050 Hz
+reduces its 14050 Hz resampling image by 32.3 dB with fundamental amplitude
+within 5%; audible Vita quality is still pending.
+
+Full resource ASan/UBSan regression passes 125 files, 137 containers, 470 textures,
+68 BIN tables and 198 decoded WAVs. Python 12 tests, JVM buffer probe and existing
+text probe pass. Current adapters regenerate through TeaVM 0.12.3 (465 classes,
+4059 methods) and the complete ARM engine packages as 00.20. VPK CRC/SFO/eboot
+and full-engine source identification pass. Implementation commits: 9ef0c57,
+dc32531, 78b2b1d; packaged source 7f19f80. Hardware voice quality, cold/warm
+character latency, retained text and battle FPS remain PENDING.
