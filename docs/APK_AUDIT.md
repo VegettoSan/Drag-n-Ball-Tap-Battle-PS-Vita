@@ -57,9 +57,8 @@ out there but implemented in the supplied APK. Do not import the whole archive
 or treat its mods/changed game-state wiki as original behavior.
 
 At this audit baseline native Vita build/execution had not yet been established.
-Subsequent private AOT builds run original menu/selection/combat on Vita. Latest
-00.21 startup/audio recovery is still pending; host format tests alone cannot
-establish it. Baseline weaknesses were investigated in later attempts; see
+Subsequent private AOT builds run original menu/selection/combat on Vita. By 00.23,
+physical testing reports clean audio, responsive selection and successful battle startup/gameplay for the tested path. Host format tests alone still cannot establish hardware behavior. Baseline weaknesses were investigated in later attempts; see
 [ATTEMPTS](ATTEMPTS.md), [AUDIT_STATUS](AUDIT_STATUS.md) and [VALIDATION](VALIDATION.md).
 
 ## Supplied Android14 variant follow-up
@@ -69,8 +68,7 @@ compared in ANDROID14_APK.md, with hashes, alias/profile contracts and independe
 metadata evidence. It has a genuine Android native *helper* layer, not a complete
 native game engine; the original core is preserved through private Java-to-C AOT (ADR-011).
 It supplies indexed character/card data missing from the baseline. Earlier Vita
-00.11 verifies its selection/battle and BGM/SE. Packed voices later decode, but
-audible quality remains unresolved. The ordinary-name bundled-character Gen
+00.11 verifies its selection/battle and BGM/SE. Packed voices later decode; subsequent 00.22/00.23 hardware testing reports clean audio/voices in the tested path. The ordinary-name bundled-character Gen
 profile is separately audited in [ORIGINAL_PLUS_CHARACTERS_APK](ORIGINAL_PLUS_CHARACTERS_APK.md);
 an Original selector label identifies a folder, not a particular APK hash.
 

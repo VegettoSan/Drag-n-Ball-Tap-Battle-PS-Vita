@@ -1,4 +1,4 @@
-# Current status — 2026-10-05, full engine 00.22
+# Current status — 2026-10-05, full engine 00.23
 
 <!-- DBTB_00_23_DETAIL:START -->
 ## Authoritative hardware checkpoint — 00.23 (2026-10-05)
@@ -34,29 +34,26 @@ Source checkpoint: `0e17b0bac33c47698b414b67a839c839f0e555ce`
 
 This is the current handoff. It describes implementation and evidence separately.
 Historical audit/test pages remain useful for their pinned APK/builds; their old
-pending statements do not override this page. The 00.21 device test now confirms worker/menu recovery, but selection rejects
-char00 and exits. 00.22 fixes that mask contract; its physical result is pending.
+pending statements do not override this page. 00.21 and 00.22 failures are historical checkpoints.
+The 00.23 physical-Vita retest preserves the audio/selection fixes and now enters and plays a battle without the 00.22 memory crash.
 
 ## Delivered build identity
 
 | Field | Value |
 |---|---|
-| Full-engine test VPK | `DBTapBattle-Vita-00.22-selection-filter-fix.vpk` |
-| Version / title ID | `00.22` / `DBTB00001` |
-| Source embedded at configure/build time | `c40ce0a96a0effb129fe7dd2970a44ec6c3a7257` |
-| Selection mask correction | `c40ce0a96a0effb129fe7dd2970a44ec6c3a7257` |
-| Retained audio startup correction | `2e71d519939e9bf34b9f07b14ae58f0ecd14bf39` |
-| Bytes | 2,235,731 |
-| VPK SHA-256 | `96796359179cd99253e16d5ade6e4f33dd59ffcbd5b486d052c4325c3e99ec47` |
-| Toolchain | VitaSDK 2026.08, GCC 15.2.0, hard-float |
+| Hardware-tested VPK | `DBTapBattle-Vita-00.23-battle-memory-test.vpk` |
+| Version / title ID | `00.23` / `DBTB00001` |
+| Source checkpoint | `0e17b0bac33c47698b414b67a839c839f0e555ce` |
+| Battle-memory repair | original streaming `GameData.Init` + native-backed `InputStream` |
+| Retained selection-mask repair | original masks 187/251 accepted |
+| Retained audio repair | worker startup + clean voice output in reported hardware path |
+| VPK SHA-256 | `8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd` |
+| Toolchain family | VitaSDK 2026.08, GCC 15.2.0, hard-float |
 | Private generator | dex2jar 2.4, ECJ 3.37.0, TeaVM 0.12.3, Java 17 |
-| Artifact verification | ZIP CRC, SFO version/title, eboot equality, original-engine/source markers pass |
+| Hardware result | startup/menu/text/audio/selection/battle path passed; no error observed in this session |
 
-[Build evidence](evidence/vita_selection_filter_build_00.22.json) records the exact
-artifact. Documentation changes after the source commit do not modify that VPK.
-The symbols ZIP contains ELF/VELF and evidence; it is diagnostic, not installable
-and not a complete object-file relink kit. Full commercial engine artifacts are
-private test deliverables; public native smoke artifacts have a different scope.
+[00.23 hardware evidence](evidence/vita_hardware_full_game_00.23.json) records the tested artifact and scope.
+The package used for this hardware checkpoint was an interactive test build; see [BUILD](BUILD.md) for the split-compilation caveat before treating it as a release-quality performance artifact.
 
 ## Implementation versus observation
 
@@ -67,11 +64,11 @@ private test deliverables; public native smoke artifacts have a different scope.
 | Cards/startup | Cooperative EventQueue progresses one ready event after present; local-data checks | User reports fixed in 00.16 |
 | Battle frame rate | Reused GLES client buffers, reduced adapter work; 960×544 | 00.18 steady battle windows 59.9 FPS, user reports stable 60; not every later build validated |
 | Text | Memory-based PVF with fallback; glyph metrics/cache, image rectangles, visible-only rasterization, dirty uploads | Text recovery confirmed by user in 00.19; exhaustive script/font/layout fidelity untested |
-| PAC I/O | Original exclusion filter applied before payload reads; in-memory normalization; bounded result cache | 26 character PACs with original 187/251 and signed/high-bit masks pass host tests; range rejection fixed; real switching latency pending |
+| PAC I/O | Original exclusion filter plus 00.23 native-backed streaming InputStream; bounded native cache/stream handles | 187/251 masks and stream ownership pass host probes; physical selection and battle startup pass in 00.23 |
 | Imported textures | Immutable byte/mode keyed cache; live-reference tracking and idle eviction | Native PNG/ownership host probes pass with GL mocked; hardware reuse/performance pending |
-| Voice samples | Original PCM16 mono 22050 Hz or decoded Community14 wrapper; 3 voice channels | Format/host decoding verified; voices still bad in 00.19 |
-| Voice output | 16-tap/256-phase Q14 reconstruction to 48000 Hz, peak limiter, PCM cache | Host spectral image reduced 32.3 dB; audible improvement/cost on Vita pending |
-| Audio startup | Restored `0x10000100`; exact open/create/start diagnostics, failure cleanup/latch | 00.20 setup fails; 00.21 worker/menu recovery physically confirmed; audible voice quality remains open |
+| Voice samples | Original PCM16 mono 22050 Hz or decoded Community14 wrapper; 3 voice channels | Format/host decoding verified; later physical tests report clean voices/audio |
+| Voice output | 16-tap/256-phase Q14 reconstruction to 48000 Hz, peak limiter, PCM cache | Clean audible result reported on the physical 00.22/00.23 path; broader character/phrase matrix remains open |
+| Audio startup | Restored `0x10000100`; exact open/create/start diagnostics, failure cleanup/latch | 00.21 worker/menu recovery confirmed and no audio regression reported in 00.23 |
 | Saves | Active dataset's `save.bin`, max 12906 bytes; cached reads and temp/fsync/rename writes | Host ownership tests; full Android round-trip/mod progression matrix pending |
 | Input | Stable slots mapped from Vita touch IDs; original coordinate transform and Controller | Touch gameplay confirmed; physical buttons serve selector, are neutral during game |
 | Online / Bluetooth | Offline installed-data boundary; HTTP rejected; Bluetooth disconnected | Current local single-player path; multiplayer/billing/remote downloads unsupported |
@@ -88,23 +85,13 @@ established here.
 
 ## Latest observations and next work
 
-1. **Retest 00.22 character selection.** The 00.21 worker starts and menu works.
-   Original then rejects char00 with invalid GameData filter and exits at frame
-   1273, md=1018, caught NullPointerException. Original Game3 uses 187, other
-   paths 251; the native 0..127 enum-style guard is wrong. 00.22 removes it,
-   retaining the exact mask/type tests and original parser/tasks. The new
-   regression fails on the previous code and passes on both PAC formats.
-2. **Then measure selection latency.** Compare first visits, immediate revisits,
-   evicted entries and each dataset. Host byte reduction is not measured Vita
-   time reduction; asynchronous prefetch has not been added.
-3. **Assess voices audibly.** Get character/phrase and a recording during steady
-   playback and switching. Source rail samples, summed clipping, reconstruction
-   images and delivery gaps are different phenomena; zero counters do not prove
-   clean output.
-4. **Recheck text and battles on 00.22.** Preserve confirmed 00.19 text behavior
-   and the earlier 60 FPS work while validating the new native audio code.
-5. Extend mode/save/mod/control coverage after the above; review distribution
-   notices and relink deliverables before a public full-engine release.
+1. **Broaden 00.23 regression coverage.** Repeat battles, switch across more characters and revisit evicted resources to confirm the streaming fix under churn rather than only one successful progression.
+2. **Retest both supported dataset paths/mod overlays.** Keep original fallback rules and record exact dataset hashes when comparing behavior.
+3. **Measure release-quality performance.** The 00.23 hardware test package used split TeaVM compilation with `TCBManajer.c` at `-O0` because of the interactive build runner; create a normal reproducible full-engine package before making final FPS/performance claims for 00.23.
+4. **Extend lifecycle/control coverage.** Return-to-menu, repeated launches, suspend/resume, save round-trips and physical Vita control adaptation remain separate work.
+5. **Keep unsupported scope explicit.** Multiplayer/Bluetooth synchronization, billing/remote services and arbitrary code mods are not validated by the successful local single-player test.
+
+No currently reproduced crash is open in the 00.23 tested path. New failures should be recorded with exact VPK hash, dataset/profile, `runtime.log` and `psp2core` when produced.
 
 ## Evidence index
 
@@ -118,6 +105,7 @@ established here.
 | [00.21 build](evidence/vita_audio_startup_build_00.21.json) | Complete engine compilation and native setup/DSP/resource tests |
 | [00.21 selection failure](evidence/vita_hardware_selection_00.21.json) | Physical worker/menu recovery, then rejected character mask and caught exception |
 | [00.22 build](evidence/vita_selection_filter_build_00.22.json) | Before/after mask regression, full corpus and complete ARM artifact checks |
+| [00.23 hardware](evidence/vita_hardware_full_game_00.23.json) | Physical Vita: clean audio, responsive selection, battle startup/gameplay pass; no error observed in reported session |
 
 [Validation](VALIDATION.md) defines test scope and log interpretation.
 [Porting guide](PORTING_GUIDE.md) explains reusable techniques and failures.

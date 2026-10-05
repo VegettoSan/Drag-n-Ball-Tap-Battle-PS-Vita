@@ -1,6 +1,6 @@
-# Build and install — full engine 00.22
+# Build and install — full engine 00.23
 
-Current build evidence: [00.22](evidence/vita_selection_filter_build_00.22.json).
+Current hardware evidence: [00.23](evidence/vita_hardware_full_game_00.23.json). The last fully pinned normal-build artifact evidence remains [00.22](evidence/vita_selection_filter_build_00.22.json); see the 00.23 test-build caveat below.
 Read [CURRENT_STATUS](CURRENT_STATUS.md) before interpreting build success as
 hardware success. Commands below run from the repository root; keep private
 inputs/outputs outside it.
@@ -9,14 +9,14 @@ inputs/outputs outside it.
 
 | Target | Inputs / output | Purpose |
 |---|---|---|
-| `tools/aot/engine/vita` | APK-derived JAR → current adapters → generated all.c → `DBTapBattle-Vita-00.22.vpk` | Full original game engine |
+| `tools/aot/engine/vita` | APK-derived JAR → current adapters → generated C → `DBTapBattle-Vita-00.23.vpk` | Full original game engine |
 | Root `CMakeLists.txt` | Native atlas preview → `dbtb_vita.vpk` | Historical bootstrap; not the game |
 | `.github/workflows/vita-engine-native-smoke.yml` | Tiny non-commercial all.c + real native services | Compile/link/package smoke; no game execution |
 | `tools/aot` input probe | Original KeyData/Controller only | JVM/C feasibility comparison; not the full runtime |
 
-The delivered VPK is renamed `DBTapBattle-Vita-00.22-selection-filter-fix.vpk` after
-verification. Its embedded source is `c40ce0a`; a fresh build at a later main
-commit embeds that later commit. Check the VITA_VERSION in the full target.
+The currently hardware-tested package is `DBTapBattle-Vita-00.23-battle-memory-test.vpk`, SHA-256
+`8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd`, built from
+source `0e17b0ba`. Check `VITA_VERSION` and the embedded source marker for every fresh package.
 
 ## Dependencies and ABI
 
@@ -55,12 +55,10 @@ python3 tools/aot/engine/vita/patch_runtime.py /private/engine-fresh/c
 ```
 
 Generation checks the expected loader/string/static-field shapes and fails on
-unexpected inputs. It preserves original GameData byte-array parsing and core
-methods. 00.21 generated 465 classes / 4059 methods; this is evidence for the
-pinned recipe, not a required count for an intentionally changed engine.
-00.22 reuses that unchanged private generation and recompiles the complete
-all.c plus native services; no Java/native import signature changed. CMake
-4.4.4 was used for this full ARM build.
+unexpected inputs. 00.23 preserves the original streaming `GameData.Init` parser,
+patches only Android resource-opening expressions, and adds the native-backed
+`NativeResourceStream` import path. The fresh 00.23 generation produced 467 classes /
+4086 methods. CMake 4.4.4 and the VitaSDK 2026.08 toolchain family remain the validated build environment.
 
 Use a fresh generation directory. The runtime patch is deliberately single-use;
 it rejects already-patched or incompatible shapes. Do not apply the input-only
@@ -120,7 +118,7 @@ and is not installed. Front touch is the tested in-game control.
 ## Verify and test
 
 Follow [VALIDATION](VALIDATION.md) for host probes and artifact checks, then
-[TEST_VITA_00_22](TEST_VITA_00_22.md) on the device. Keep exact VPK SHA, SFO,
+[TEST_VITA_00_23](TEST_VITA_00_23.md) on the device for the current checkpoint and extend it with repeated-battle/long-session coverage. Keep exact VPK SHA, SFO,
 build source, profile provenance, runtime.log and any psp2core together.
 Current VPK has eboot, param.sfo and three notice entries, no asset dataset.
 The generated original code is still commercial engine code; absence of data

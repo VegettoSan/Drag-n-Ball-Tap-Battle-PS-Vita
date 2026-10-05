@@ -1,4 +1,4 @@
-# Porting plan — checkpoint 00.22, 2026-10-05
+# Porting plan — checkpoint 00.23, 2026-10-05
 
 The original plan began with an atlas preview. The chosen implementation now
 preserves the original Java engine through private TeaVM AOT and replaces its
@@ -14,20 +14,17 @@ order. Completion below applies only to the stated scope/build.
 | Offline data | Local character/shared completeness, no dependency on dead catalog | Broader missing-data diagnostics and dataset coverage |
 | Performance | 00.16 startup/cards fixed; 00.18 steady battle 60 FPS confirmed | Retain results on latest build; cold/repeated resource timing |
 | Text | 00.19 image-rectangle fix restores visible text | Size/layout/script and lifecycle matrix |
-| Audio | Decode/three channels/limiter/reconstruction; 00.21 setup repair | 00.21 worker/menu recovered; audible clean voices still pending |
+| Audio | Decode/three channels/limiter/reconstruction; 00.21 setup repair | Clean audio/voices reported in the current hardware path; broaden character/phrase and long-session coverage |
 | Saves/mods | Profile-local save plus file overlay/per-file codec | Android save round-trip and real asset/code-mod compatibility matrix |
-| Product/distribution | Verified private test VPK and evidence, small main commits | Public notice/relink review; reliable latest-build device test |
+| Product/distribution | 00.23 hardware-tested VPK/evidence, small main commits | Produce a normal reproducible release-quality 00.23+ package; public notice/relink review |
 
 ## Immediate physical checks
 
-1. Test 00.22 first-character selection. 00.21 confirms audio/menu recovery but
-   rejects original mask 187 and exits at md=1018; do not misdiagnose it as another
-   audio startup failure. Record the new mask/resource line and any exception.
-2. Compare first character visit with immediate and evicted revisits in the same
-   profile. Correlate I/O/cache/decode/upload counters and elapsed frame timing.
-3. Record bad voices by phrase/character in steady playback and switching.
-   Separate source distortion, conversion images, mix clipping and delivery gaps.
-4. Retest names/descriptions/cards and sustained battle FPS with effects.
+1. Repeat battle entry/exit and several consecutive fights to look for retained stream handles, cache churn or heap fragmentation.
+2. Exercise multiple characters and both supported dataset/profile paths; compare first, repeated and evicted resource loads.
+3. Reconfirm clean voices/text/FPS during those longer runs rather than assuming one successful battle proves all combinations.
+4. Test return-to-menu, repeated launches, save round-trips and suspend/resume separately.
+5. Build a release-quality package with the normal full-engine compilation recipe and compare its performance against the successful 00.23 test artifact.
 
 ## Subsequent work
 

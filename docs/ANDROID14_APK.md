@@ -207,16 +207,10 @@ metadata and nonzero PCM output. Nine extractor tests and real-byte-preservation
 checks also pass.
 
 Physical Vita build 00.11 is HARDWARE CONFIRMED through character selection and
-an actual playable battle using the Android14 profile. Front touch and ordinary
-BGM/SE are audible, with intermittent stalls. 00.12 adds wrapper/ADPCM and text
-services; later user tests confirm stable battle performance (00.18) and restored
-texts (00.19), while voices still sound rough and character changes pause.
-00.20 selective PAC/caches and voice reconstruction pass host checks but its
-audio worker setup fails on Vita before the menu. 00.21 restores prior worker
-priority and precise failure reporting; worker/menu now recover on Vita.
-Its later selection failure rejects original mask 187; 00.22 preserves 187/251
-with exact payload/slot host checks. Physical selection/audio-quality coverage
-on 00.22 remains pending.
+an actual playable battle using the Android14 profile. Later checkpoints fixed the
+observed stalls/voice/text regressions in stages: 00.18 restored stable battle
+performance, 00.19 restored text, 00.21 recovered audio worker/menu startup, and
+00.22 accepted the original 187/251 selection masks with clean audio/selection reported on hardware. 00.22 then exposed a separate whole-PAC TeaVM allocation failure at battle startup. 00.23 restores the original streaming PAC parser through a native-backed stream; the reported physical-Vita retest enters and plays a battle with no error observed in that session.
 
 Current extractor suite has 12 tests (the nine-test counts above are historical
 checkpoints). See [VALIDATION](VALIDATION.md) for fixtures/commands and scope.

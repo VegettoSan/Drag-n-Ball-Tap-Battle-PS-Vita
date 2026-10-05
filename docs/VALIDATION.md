@@ -1,4 +1,4 @@
-# Validation and diagnostic reference — 00.22
+# Validation and diagnostic reference — 00.23
 
 Commands run from the repository root. Use private game data and temporary output
 outside tracked source. This page describes reproducible probes; it does not claim
@@ -122,13 +122,9 @@ unsupported diagnostics must not be treated as reliable numbers.
 
 ## Physical test protocol
 
-Use [00.22 instructions](TEST_VITA_00_22.md). First confirm worker/menu and first-character selection (00.21 failed at
-mask 187/md=1018), then
-same-profile first/repeated/evicted selection loads, recorded phrases, visible
-text, cards, sustained battle and repeated launches. Report exact profile data,
-clocks, version/hash and whether a clean exception exit or native crash occurs.
-Copy runtime.log; include psp2core only if produced. Screenshots prove visual
-results; recordings are necessary to assess audible noise the log cannot capture.
+Use [00.23 instructions](TEST_VITA_00_23.md) as the current baseline. First reproduce the now-successful startup/menu/text/audio/selection/battle path with the exact VPK and dataset hash. Then extend coverage with repeated battles, multiple characters, cold/repeated/evicted resource loads, both supported dataset paths, return-to-menu, repeated launches and longer sessions.
+
+Report exact profile/data provenance, version/hash and whether a clean exception exit or native crash occurs. Copy `runtime.log`; include `psp2core` only if produced. Screenshots prove visual state; recordings remain the right evidence for audible artifacts that counters cannot establish.
 
 <!-- DBTB_00_23_DETAIL:START -->
 ## Latest hardware validation — 00.23
