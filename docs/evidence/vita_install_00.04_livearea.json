@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-04",
+  "scope": "VitaShell installation of private full-engine build 00.04",
+  "result": "first 00.04 package rejected by VitaShell with 0x8010113D before launch",
+  "hardware_observed": true,
+  "error_code": "0x8010113D",
+  "bad_package": {
+    "name": "DBTapBattle-Vita-00.04.vpk",
+    "sha256": "ffe1d2768f1e0341465042c0ca7573bed1e41d7fc4d1d2947cc4e20d782a9f8e",
+    "size": 2245976,
+    "icon0": {
+      "path": "sce_sys/icon0.png",
+      "dimensions": "128x128",
+      "png_bit_depth": 8,
+      "png_color_type": "RGBA",
+      "alpha_present": true
+    }
+  },
+  "root_cause": {
+    "confirmed": true,
+    "details": "The 00.04 engine binary itself was unchanged and valid; the manually injected LiveArea icon0.png was an RGBA PNG with alpha. VitaShell promotion rejects incompatible LiveArea PNG formats with 0x8010113D. The source CMake VPK does not include this manual icon injection."
+  },
+  "corrected_package": {
+    "name": "DBTapBattle-Vita-00.04-installfix.vpk",
+    "sha256": "80d1d067d9e50d529f535ba32ad9c41b559c161255c5a5fb67e3076d8ee1349a",
+    "size": 2205139,
+    "icon0_present": false,
+    "zip_test": "pass",
+    "app_version": "00.04",
+    "title_id": "DBTB00001"
+  },
+  "binary_identity": {
+    "same_eboot_between_bad_and_corrected_packages": true,
+    "eboot_sha256": "419f8ba92cd7ea8c36a3177503ee9806f2f7d6cc1e26f4cfd508f576d72b26b7",
+    "same_param_sfo_between_bad_and_corrected_packages": true,
+    "param_sfo_sha256": "6fa4ac18186bb7b49c3e6bf1e086b63b13a5c49080396463ae7a2d6edef3aeda"
+  },
+  "next_checkpoint": "Install corrected package, launch, then observe vitaGL initialization and boot profile selector."
+}
