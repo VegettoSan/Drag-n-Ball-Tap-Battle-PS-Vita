@@ -35,13 +35,15 @@
     "strategy": "Keep the legacy pool at zero and convert selector/preview quads to GLES-style client vertex/texcoord arrays with glDrawArrays(GL_TRIANGLE_FAN).",
     "commits": [
       "d8f1a659cbf37e78350cf69f6424de68d86bbad1",
-      "a4f1e451f4bdcf36bfc5fbb3526dc1a06aa17df1"
+      "a4f1e451f4bdcf36bfc5fbb3526dc1a06aa17df1",
+      "a108516b1668e23fda1511f31f9d76d8cbccf3e7"
     ]
   },
   "next_private_test_artifact": {
-    "name": "DBTapBattle-Vita-00.05.vpk",
-    "sha256": "0619d4495de888c730f37d11a485deb9789d11e8ae92f7dd1843385be26c9424",
-    "size": 2204980,
+    "name": "DBTapBattle-Vita-00.05-selectorfix.vpk",
+    "sha256": "5ac635fae904fdd0461a9e18db21adc0a0b70b32038d1085c0474359adf183f2",
+    "size": 2205604,
+    "eboot_sha256": "c78abd5c3223b0da3ce62bc799448ff470692e1ac51e298f91487d36f26eeda7",
     "contains_icon0": false,
     "expected_next_checkpoint": "vitaGL splash, then Boot selector entered: 2 choices and a visible Original/Android14 selector; original-engine Init remains hardware-pending"
   }
