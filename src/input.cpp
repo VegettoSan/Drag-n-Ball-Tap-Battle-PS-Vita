@@ -1,6 +1,7 @@
 #include "input.hpp"
 #include "log.hpp"
 #include <algorithm>
+#include <string>
 #include <psp2/ctrl.h>
 #include <psp2/touch.h>
 
@@ -15,10 +16,20 @@ VitaInput::VitaInput() {
     SceTouchPanelInfo info{};
     touch_ready_ = sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, SCE_TOUCH_SAMPLING_STATE_START) >= 0 &&
                    sceTouchGetPanelInfo(SCE_TOUCH_PORT_FRONT, &info) >= 0 &&
-                   info.maxDispX > info.minDispX && info.maxDispY > info.minDispY;
+                   info.maxAaX > info.minAaX && info.maxAaY > info.minAaY;
     if (touch_ready_) {
-        min_x_ = info.minDispX; min_y_ = info.minDispY;
-        span_x_ = info.maxDispX - info.minDispX; span_y_ = info.maxDispY - info.minDispY;
+        // SceTouchReport coordinates are expressed in the panel ACTIVE AREA,
+        // not in the display-origin range. On a real Vita the active touch grid
+        // is higher resolution than 960x544; using minDisp/maxDisp caused raw
+        // touches to clamp against the screen edges and made the original game's
+        // visible touch targets effectively unusable.
+        min_x_ = info.minAaX; min_y_ = info.minAaY;
+        span_x_ = info.maxAaX - info.minAaX; span_y_ = info.maxAaY - info.minAaY;
+        runtimeLog("Front touch active area: " + std::to_string(info.minAaX) + "," +
+                   std::to_string(info.minAaY) + " -> " + std::to_string(info.maxAaX) + "," +
+                   std::to_string(info.maxAaY) + "; display area: " +
+                   std::to_string(info.minDispX) + "," + std::to_string(info.minDispY) + " -> " +
+                   std::to_string(info.maxDispX) + "," + std::to_string(info.maxDispY));
         // Prime held touches at screen transitions; only new touches select.
         poll();
     } else runtimeLog("Front touch unavailable; physical menu controls remain active");
