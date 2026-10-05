@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-05",
+  "hardware_observation_00_12": {
+    "device": "physical PS Vita",
+    "build": "00.12",
+    "confirmed_improvements": [
+      "dialogue/text appearance no longer causes the multi-second stalls observed on 00.11",
+      "character voice streams are decoded and audible"
+    ],
+    "regressions": [
+      "text in both Original and Android14 is vertically compressed until glyphs look like thin lines",
+      "some expected character voices are absent",
+      "some voice requests play the neighboring/wrong clip and some clips appear repeated"
+    ]
+  },
+  "root_causes": {
+    "text": {
+      "cause": "00.12 used ScePvfFontInfo.maxIGlyphMetrics as if it followed the active scePvfSetCharSize scale; the resulting line bounds were far too small on real Vita",
+      "fix": "retain the 00.12 glyph cache and dirty-row texture uploads, but derive one stable metric envelope per requested size from scaled ScePvfCharInfo representative glyphs"
+    },
+    "voice_identity": {
+      "cause": "the original TCBManajer requests character voices with iReqSENo-80 and SoundEffect.playAudio indexes wave[id] directly from zero, while the Vita backend treated streamed voice IDs as one-based",
+      "effects": "id 0 was discarded and every positive request selected the preceding loaded clip",
+      "fix": "dbtb_voicePlay now uses zero-based clip IDs and respects the original three AudioTrack playback-channel limit"
+    }
+  },
+  "source_commits": {
+    "text_metrics_fix": "5a020f34c0c8df9c92a5bc8a50ba5fc1bbeff238",
+    "zero_based_voice_fix": "7b0ecaf2afe4d176d05dd96eb832b92cce5ddf9c",
+    "version_bump": "f2304b2717e351c10b8080221cc424e27eb6e5d7",
+    "hybrid_charset_detection": "77444ac721ed4a8b4c13f602dd1071577498bcd2",
+    "hybrid_charset_runtime": "6365d3a038395b222171e807836d98b7fe4be8f0"
+  },
+  "build_00_13": {
+    "artifact": "DBTapBattle-Vita-00.13-text-voice-profilefix.vpk",
+    "size": 2217904,
+    "sha256": "978024ea2c50ce77659099afba65f854699282c85aa13a826ce070a4794080be",
+    "eboot_sha256": "768df33610c27c850712fd208d695cb81f7ddd90c6e4d32f5dcbba24e80de982",
+    "elf_sha256": "2038d4504515d3728102ec62f33d25e2628ab7637a4ed6168ce005419becdf94",
+    "zip_test": "pass",
+    "title_id": "DBTB00001",
+    "app_ver": "00.13",
+    "contains_icon0": false,
+    "pipeline": "TeaVM private generation -> VitaSDK ARM ELF -> VELF -> SELF -> VPK",
+    "build_result": "success"
+  },
+  "profile_support_in_build": {
+    "Original": "included",
+    "Android14": "included, including Community14 PS-ADPCM normalization",
+    "OriginalPlusCharacters_gen_apk": "included, including content-based UTF-8/Shift_JIS selection for the hybrid ordinary-PAC profile"
+  },
+  "confidence": "BUILD CONFIRMED. 00.12 improvements/regressions are HARDWARE CONFIRMED. 00.13 corrections require physical Vita verification."
+}
