@@ -96,23 +96,52 @@ void teavm_interrupt(void) { atomic_store(&teavm_vita_interrupt, 1); }
 #endif
 ''')
 
-    # TeaVM always emits date.c into all.c even when java.util.Date was removed
-    # by dependency analysis. Its Unix implementation needs GNU timegm, which
-    # Vita newlib does not provide. Omit it only when no generated game/classlib
-    # translation unit references the date runtime; otherwise fail loudly rather
-    # than providing a fake calendar implementation.
-    date_refs = []
-    for path in root.rglob('*.c'):
-        if path.name in {'all.c', 'date.c'}:
-            continue
-        if 'teavm_date_' in path.read_text(encoding='utf-8', errors='ignore'):
-            date_refs.append(path.relative_to(root).as_posix())
-    if date_refs:
-        raise ValueError('Generated program uses java.util.Date; Vita date backend required: ' + ', '.join(date_refs[:8]))
-    replace_once(root / 'all.c', '#include "date.c"',
-                 '/* date.c omitted: generated program has no teavm_date_* references */')
+    # NewsData keeps java.util.Date reachable in the real game. Vita newlib has
+    # mktime/localtime_r but not GNU timegm, so provide the missing UTC calendar
+    # conversion rather than dropping Date as the old input probe did.
+    replace_once(root / 'date.c', '''#if TEAVM_WINDOWS
+    #define timegm _mkgmtime
+    #define localtime_r(a, b) localtime_s(b, a)
+#endif
+''', '''#if TEAVM_WINDOWS
+    #define timegm _mkgmtime
+    #define localtime_r(a, b) localtime_s(b, a)
+#endif
 
-    print('TeaVM 0.12.3 runtime adapted for private PS Vita engine build')
+#if defined(__vita__)
+#define DBTB_VITA_DATE_BACKEND 1
+static int64_t dbtb_floor_div(int64_t value, int64_t divisor) {
+    int64_t q = value / divisor;
+    int64_t r = value % divisor;
+    return r < 0 ? q - 1 : q;
+}
+static int64_t dbtb_days_from_civil(int64_t year, unsigned month, unsigned day) {
+    year -= month <= 2;
+    const int64_t era = dbtb_floor_div(year, 400);
+    const unsigned yoe = (unsigned) (year - era * 400);
+    const unsigned doy = (153 * (month + (month > 2 ? -3 : 9)) + 2) / 5 + day - 1;
+    const unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    return era * 146097 + (int64_t) doe - 719468;
+}
+static time_t dbtb_vita_timegm(struct tm* value) {
+    int64_t year = (int64_t) value->tm_year + 1900;
+    int64_t month0 = value->tm_mon;
+    const int64_t year_adjust = dbtb_floor_div(month0, 12);
+    year += year_adjust;
+    month0 -= year_adjust * 12;
+    const unsigned month = (unsigned) month0 + 1;
+    const int64_t days = dbtb_days_from_civil(year, month, 1) + (int64_t) value->tm_mday - 1;
+    const int64_t seconds = days * 86400 + (int64_t) value->tm_hour * 3600
+                          + (int64_t) value->tm_min * 60 + value->tm_sec;
+    return (time_t) seconds;
+}
+#define timegm dbtb_vita_timegm
+#endif
+''')
+    replace_once(root / 'date.c', '    #if TEAVM_UNIX\n        struct tm t;',
+                 '    #if TEAVM_UNIX || defined(__vita__)\n        struct tm t;')
+
+    print('TeaVM 0.12.3 runtime adapted for private PS Vita engine build (Date retained)')
 
 
 if __name__ == '__main__':
