@@ -43,12 +43,16 @@ int32_t dbtb_start(void) {
     attachRuntimeStreams();
     runtimeLog("--- full original engine Vita 00.03 boot ---");
 
-    if (!vglInitExtended(0, 960, 544, 16 * 1024 * 1024, SCE_GXM_MULTISAMPLE_NONE)) {
-        runtimeLog("FATAL: vitaGL initialization failed");
-        return 0;
-    }
+    runtimeLog("Initializing vitaGL: 960x544, RAM threshold 16 MiB");
+    // vitaGL's return value is NOT a success flag. GL_TRUE means the requested
+    // resolution was too large and vitaGL fell back to the maximum supported
+    // framebuffer size; GL_FALSE is the normal result for native 960x544.
+    const GLboolean resolution_fallback =
+        vglInitExtended(0, 960, 544, 16 * 1024 * 1024, SCE_GXM_MULTISAMPLE_NONE);
     renderer_ready = true;
-    runtimeLog("vitaGL initialized: 960x544");
+    runtimeLog(resolution_fallback
+        ? "vitaGL initialized with framebuffer resolution fallback"
+        : "vitaGL initialized: 960x544 (no resolution fallback)");
 
     const std::vector<std::string> mods = selector_vfs.listMods();
     runtimeLog("Detected data/mod profiles: " + std::to_string(mods.size()));
