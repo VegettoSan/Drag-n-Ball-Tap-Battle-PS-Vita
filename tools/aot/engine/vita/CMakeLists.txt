@@ -22,7 +22,7 @@ get_filename_component(TEAVM_C_DIR "${TEAVM_C_DIR}" ABSOLUTE)
 
 set(VITA_APP_NAME "Dragon Ball Tap Battle Vita")
 set(VITA_TITLEID "DBTB00001")
-set(VITA_VERSION "00.05")
+set(VITA_VERSION "00.06")
 execute_process(COMMAND git rev-parse --short HEAD WORKING_DIRECTORY "${REPO_ROOT}"
                 OUTPUT_VARIABLE DBTB_COMMIT OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
 if(NOT DBTB_COMMIT)
@@ -85,7 +85,8 @@ set_source_files_properties("${TEAVM_C_DIR}/all.c" PROPERTIES COMPILE_OPTIONS "-
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-q")
 
 # Dependencies are ordered from consumers to providers, matching vitaGL ports.
-# pthread is kept whole because libstdc++ std::mutex uses its weak wrappers.
+# pthread stays whole because libstdc++ runtime facilities use its weak wrappers;
+# the native Vita audio worker itself deliberately avoids std::mutex/pthread locks.
 target_link_libraries(${PROJECT_NAME}
   -Wl,--whole-archive pthread -Wl,--no-whole-archive
   stdc++
