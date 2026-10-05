@@ -7,7 +7,7 @@ Packaging contract:
 - `icon0.png`: 128x128, indexed 8-bit PNG, opaque, <= 128 KiB.
 - `bg0.png`: 840x500, indexed 8-bit PNG, opaque, <= 128 KiB.
 - `startup.png`: 280x158, indexed 8-bit PNG, transparency allowed, <= 128 KiB.
-- `pic0.png`: 960x544, indexed 8-bit PNG, opaque, <= 1024 KiB.
+- `pic0.png`: 960x544, indexed 8-bit PNG, **exactly 256 palette entries**, opaque, <= 1024 KiB.
 - `template.xml`: minimal `style="a1"` layout with `bg0.png` and a `startup.png` gate.
 
 The gate uses the original Dragon Ball Tap Battle logo as the launch image over the
@@ -21,5 +21,23 @@ PNG bytes into the build directory before `vita_create_vpk` runs. It checks SHA-
 dimensions, indexed PNG format, palette/transparency requirements and size limits, and
 CMake fails closed if any check fails.
 
-Do not resize, recompress or re-encode the approved assets during packaging.
+The supplied Ready ZIP and failed Final VPK had a 192-entry `pic0.png` palette.
+The corrected source pads that PLTE to 256 entries; every decoded RGBA pixel and
+every IDAT byte is unchanged. This repairs a documented Vita splash requirement
+that the earlier hash/header checks missed. Hardware installation remains pending.
+Reproduce the lossless correction with:
+
+```sh
+python3 tools/normalize_livearea_palette.py /path/to/old/pic0.png /path/to/fixed/pic0.png
+```
+
+MetalSyntax toolkit reference: `MetalSyntax/psvita-port-toolkit-cli` commit
+`516e612b7470496a878cebb130da80361326bc44`, `psvita_toolkit/livearea.py` and
+`docs/dev-notes/livearea.md`. Dimensions, file limits and the minimal a1 gate match
+that toolkit. Its generic mode=P check alone does not require a 256-entry palette;
+the splash-specific rule comes from
+https://gist.github.com/Hammerill/64411eebf071b93396b7d310ba8d6776 .
+The XML content revision is now 2 to identify the corrected presentation payload.
+
+Do not resize, recompress or re-encode the corrected assets during packaging.
 `tools/validate_livearea_vpk.py` verifies the final VPK paths and exact PNG hashes.

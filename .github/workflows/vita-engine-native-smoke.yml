@@ -8,6 +8,9 @@ on:
       - 'cmake/LiveArea.cmake'
       - 'tools/decode_livearea_assets.py'
       - 'tools/validate_livearea_vpk.py'
+      - 'tools/normalize_livearea_palette.py'
+      - 'tools/repack_livearea_vpk.py'
+      - 'tests/test_livearea.py'
       - 'tools/aot/engine/native/**'
       - 'tools/aot/engine/vita/**'
       - 'tools/aot/vita/utf16.c'
@@ -28,6 +31,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m py_compile tools/decode_livearea_assets.py tools/validate_livearea_vpk.py
+          python3 -m unittest discover -s tests -p test_livearea.py -v
           rm -rf /tmp/dbtb-livearea-check
           python3 tools/decode_livearea_assets.py \
             --source assets/livearea \
@@ -47,6 +51,8 @@ jobs:
             tools/aot/vita \
             tools/decode_livearea_assets.py \
             tools/validate_livearea_vpk.py \
+            tools/normalize_livearea_palette.py \
+            tools/repack_livearea_vpk.py \
             assets/livearea \
             cmake \
             docs/THIRD_PARTY.md \
@@ -97,7 +103,7 @@ jobs:
       - name: Upload smoke build
         uses: actions/upload-artifact@v4
         with:
-          name: dbtb-vita-engine-native-smoke
+          name: dbtb-native-link-probe-NOT-PLAYABLE
           if-no-files-found: error
           path: |
             build-engine-smoke/dbtb_original_engine
