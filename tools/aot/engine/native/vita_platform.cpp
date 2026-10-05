@@ -1,6 +1,7 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
 #include "input.hpp"
+#include "log.hpp"
 #include "ui.hpp"
 #include "vfs.hpp"
 
@@ -19,6 +20,15 @@ void clearEvents(int32_t* events) {
     if (!events) return;
     for (int i = 0; i < 42; ++i) events[i] = 0;
 }
+
+void attachRuntimeStreams() {
+    // Preserve TeaVM System.out/System.err and native diagnostics for device
+    // testing. Append rather than truncate so an earlier crash remains visible.
+    FILE* out = std::freopen("ux0:data/DBTapBattle/logs/runtime.log", "ab", stdout);
+    FILE* err = std::freopen("ux0:data/DBTapBattle/logs/runtime.log", "ab", stderr);
+    if (out) std::setvbuf(stdout, nullptr, _IOLBF, 0);
+    if (err) std::setvbuf(stderr, nullptr, _IOLBF, 0);
+}
 }
 
 extern "C" {
@@ -30,28 +40,34 @@ int32_t dbtb_start(void) {
         std::fprintf(stderr, "Vita platform: %s\n", selector_vfs.error().c_str());
         return 0;
     }
+    attachRuntimeStreams();
+    runtimeLog("--- full original engine Vita 00.03 boot ---");
 
     if (!vglInitExtended(0, 960, 544, 16 * 1024 * 1024, SCE_GXM_MULTISAMPLE_NONE)) {
-        std::fprintf(stderr, "Vita platform: vitaGL initialization failed\n");
+        runtimeLog("FATAL: vitaGL initialization failed");
         return 0;
     }
     renderer_ready = true;
+    runtimeLog("vitaGL initialized: 960x544");
 
     const std::vector<std::string> mods = selector_vfs.listMods();
+    runtimeLog("Detected data/mod profiles: " + std::to_string(mods.size()));
     if (!selector_vfs.error().empty())
-        std::fprintf(stderr, "Vita platform: mod scan: %s\n", selector_vfs.error().c_str());
+        runtimeLog("Mod scan: " + selector_vfs.error());
 
     BootChoice choice;
     if (!runBootSelector(mods, selector_vfs.originalDataPresent(), choice)) {
-        std::fprintf(stderr, "Vita platform: data selection cancelled\n");
+        runtimeLog("Data selection cancelled");
         return 0;
     }
 
     const std::string mod = choice.original ? std::string() : choice.mod_directory;
+    runtimeLog(std::string("Selected profile: ") + (choice.original ? "Original" : choice.mod_directory));
     if (!dbtb_initResources(GameVfs::kBasePath, mod)) {
-        std::fprintf(stderr, "Vita platform: resource VFS initialization failed\n");
+        runtimeLog("FATAL: resource VFS initialization failed");
         return 0;
     }
+    runtimeLog("Resource VFS initialized; entering original engine");
 
     // Construct after the selector so held touches are primed and cannot leak
     // into the original title/menu as a new Begin event.
