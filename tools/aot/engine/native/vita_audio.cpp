@@ -17,6 +17,7 @@
 namespace {
 constexpr int kOutputRate = 48000;
 constexpr int kFrames = 1024;
+constexpr size_t kVoiceChannels = 3;
 
 struct Clip {
     std::vector<int16_t> pcm;
@@ -221,14 +222,22 @@ int32_t dbtb_voiceLoad(void* data, int32_t size) {
     if (!clip) return -1;
     AudioLockGuard lock;
     streamed_voice_clips.push_back(std::move(clip));
+    // The original loadAudioTrack returns a positive count, but TCBManajer only
+    // checks it for failure. Actual playback IDs come from iReqSENo-80 and are
+    // zero-based indexes into SoundEffect.wave[].
     return static_cast<int32_t>(streamed_voice_clips.size());
 }
 
 void dbtb_voicePlay(int32_t id, float gain) {
     if (!ensureAudio()) return;
     AudioLockGuard lock;
-    if (id <= 0 || size_t(id) > streamed_voice_clips.size() || !streamed_voice_clips[size_t(id - 1)]) return;
-    active_voices.push_back({streamed_voice_clips[size_t(id - 1)], 0.0, gain, false});
+    // Original SoundEffect.playAudio(int) indexes wave[id] directly. Do not
+    // translate this like SoundPool IDs, which are one-based.
+    if (id < 0 || size_t(id) >= streamed_voice_clips.size() || !streamed_voice_clips[size_t(id)]) return;
+    // Android owns exactly three AudioTrack playback channels. If all three are
+    // busy getAudioIndex() rejects the new request instead of creating overlap.
+    if (active_voices.size() >= kVoiceChannels) return;
+    active_voices.push_back({streamed_voice_clips[size_t(id)], 0.0, gain, false});
 }
 
 void dbtb_voiceRelease(void) {
