@@ -19,6 +19,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Pack current Vita source snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -cf dbtb-vita-source-current.tar \
+            src \
+            tools/aot/engine \
+            tools/aot/vita \
+            docs/THIRD_PARTY.md \
+            licenses
+
+      - name: Upload current Vita source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbtb-vita-source-current
+          if-no-files-found: error
+          path: dbtb-vita-source-current.tar
+
       - name: Create non-commercial TeaVM link probe
         shell: bash
         run: |
