@@ -14,6 +14,7 @@ public final class NativePlatform {
     @Import(name="dbtb_resourceEncoding") public static native int resourceEncoding();
     @Import(name="dbtb_installedData") public static native int installedData();
     @Import(name="dbtb_copyResource") public static native void copyResource(Address target,int size);
+    @Import(name="dbtb_exists") public static native int exists(Address name);
     @Import(name="dbtb_readSave") public static native int readSave(Address name);
     @Import(name="dbtb_writeSave") public static native int writeSave(Address name,Address bytes,int size,int position,int truncate);
     @Import(name="dbtb_deleteSave") public static native int deleteSave(Address name);
