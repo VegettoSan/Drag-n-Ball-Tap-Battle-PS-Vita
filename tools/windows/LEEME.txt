@@ -1,0 +1,67 @@
+DRAGON BALL TAP BATTLE - EXTRACTOR PARA WINDOWS 1.0
+
+Windows 10 / 11, con Windows PowerShell 5.1 integrado.
+No necesita instalar Python, 7-Zip, Java ni ejecutar como administrador.
+No descarga nada de Internet ni modifica tus APK.
+
+USO
+1. Extrae TODO este ZIP en una carpeta de tu PC.
+   Mantiene juntos Extraer_APK_para_Vita.bat y Extraer_APK_para_Vita.ps1.
+2. Arrastra uno o varios APK sobre Extraer_APK_para_Vita.bat.
+   Tambien puedes hacer doble clic en el BAT y elegir los APK en una ventana.
+3. Espera a que aparezca LISTO. Se abrira la carpeta del paquete generado.
+4. Copia su carpeta data a la raiz ux0: de la Vita con VitaShell.
+   Debe quedar ux0:data/DBTapBattle/; NO ux0:data/data/DBTapBattle/.
+5. Abre el VPK del port (00.23 o posterior) y selecciona el perfil indicado.
+
+SALIDA
+Junto al BAT se crea Listo_para_Vita/Paquete_fecha_hora_identificador/.
+Cada ejecucion genera un paquete nuevo, sin mezclar ni borrar los anteriores.
+
+PERFILES AUTOMATICOS
+- APK original, res/raw: data/DBTapBattle/game/ -> Original en el VPK.
+- Android14 codificado: data/DBTapBattle/mods/Android14/ -> Android14.
+- gen.apk conocido por su SHA-256: data/DBTapBattle/mods/Gen/ -> Gen.
+- Otros APK assets: data/DBTapBattle/mods/Nombre_del_APK/.
+Los nombres coincidentes reciben un sufijo; no se mezclan dos versiones.
+Puedes arrastrar los tres APK juntos para tenerlos en un solo paquete.
+Un Android14 o Gen completo puede seleccionarse sin base Original instalada;
+el selector puede mostrar Original - DATA MISSING. Elige el mod extraido.
+Los mods parciales necesitan ademas una base original compatible.
+
+El primer APK original suministrado NO contiene todos los personajes descargados.
+Se extrae todo lo que contiene, pero la herramienta no inventa los datos faltantes.
+Gen y Android14 suministrados incluyen los 13 conjuntos de personajes.
+Para usar Gen como base Original, copia deliberadamente el contenido de mods/Gen/
+a game/. Para jugarlo como Gen no hay que moverlo.
+
+PARTIDAS GUARDADAS
+Si un APK trae save.bin, se conserva exactamente en su perfil.
+Gen suministrado trae uno. Al copiar a una Vita donde ya tienes progreso,
+haz backup y omite save.bin; no reemplaces tu partida sin querer.
+El resultado incluye instrucciones para conservarla en la misma carpeta.
+No compartas partidas entre perfiles.
+
+VERIFICACION
+Se comprueban rutas seguras, duplicados, limites de tamano y CRC de cada dato ZIP.
+Android14 usa los nombres y el codec documentados por el port: se renombran sus
+PAC sin alterar sus bytes. No se descifran, recomprimen ni convierten los recursos.
+Cada perfil tiene dbtb_manifest.json y el paquete tiene SHA256SUMS.txt.
+RESULTADO.json identifica los perfiles y posibles personajes ausentes.
+Un error elimina la extraccion temporal y no publica un paquete incompleto.
+Los formatos de datos desconocidos se conservan en el perfil y se registran.
+No se copian DEX, clases Java ni bibliotecas Android fuera del area de datos.
+Un mod que cambia codigo Android puede requerir cambios del port para funcionar.
+
+SOLUCION DE PROBLEMAS
+- Si falta el PS1: extrae todos los archivos del ZIP antes de usar el BAT.
+- Si Windows marca el ZIP como descargado: Propiedades del ZIP > Desbloquear,
+  y luego extraelo. El BAT aplica Bypass solo al proceso que ejecuta esta
+  herramienta; no cambia la politica permanente de PowerShell.
+- Usa una carpeta corta y con permiso de escritura, por ejemplo C:\DBTBExtractor.
+- APK con datos no vacios en res/raw y assets: se rechaza por ambiguo.
+- Otro codec de Android14: se rechaza antes de publicar datos incompatibles.
+- Un equipo de empresa puede impedir PowerShell por politica: esta herramienta
+  no puede desactivar esas restricciones.
+
+La herramienta prepara datos. El VPK se instala por separado y no esta incluido.

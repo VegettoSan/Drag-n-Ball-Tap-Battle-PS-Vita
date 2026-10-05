@@ -1,0 +1,35 @@
+name: Windows APK data extractor
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/windows/**'
+      - 'tests/test_windows_extractor.py'
+      - '.github/workflows/windows-data-extractor.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test built-in Windows PowerShell 5.1 and BAT drag-and-drop transport
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSVersionTable
+          python -m unittest discover -s tests -p test_windows_extractor.py -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Package portable tool without game data
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Compress-Archive -LiteralPath tools/windows/Extraer_APK_para_Vita.bat,tools/windows/Extraer_APK_para_Vita.ps1,tools/windows/LEEME.txt -DestinationPath DBTapBattle-Extractor-Windows.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DBTapBattle-Extractor-Windows
+          path: DBTapBattle-Extractor-Windows.zip
