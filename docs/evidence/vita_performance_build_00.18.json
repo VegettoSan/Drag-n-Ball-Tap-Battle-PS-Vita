@@ -1,0 +1,29 @@
+{
+  "source_commit": "330230541d64a298ac7b6d136065b009e8b8fe54",
+  "version": "00.18",
+  "size_bytes": 2224366,
+  "sha256": "b9f40dcf01f31e002f46aab48055e24a307502cf4405b59b7fe84ce1835ca39d",
+  "eboot_sha256": "e05c6c0fc65ca19786eaad90d30617451f7a5bbfb0f052a6d20983b25e7b7b49",
+  "zip_crc": "PASS",
+  "sfo": {
+    "APP_VER": "00.18",
+    "TITLE_ID": "DBTB00001",
+    "TITLE": "Dragon Ball Tap Battle Vita",
+    "CATEGORY": "gd"
+  },
+  "contains_commercial_asset_data": false,
+  "hardware_test": "PENDING",
+  "tests": {
+    "mixer": "ASan/UBSan PASS; Vita audio calls mocked",
+    "gles_buffers": "JVM PASS; native imports mocked",
+    "python_regressions": "12 tests PASS",
+    "original_android14_resources": "125 PACs / 137 containers / 470 images / 68 converted tables / 198 WAVs PASS",
+    "gen_resources": "108 PACs / 405 PNGs / 198 aligned PCM entries PASS",
+    "native_smoke": "local ELF/VELF/SELF/VPK PASS"
+  },
+  "native_ci": {
+    "conclusion": "success",
+    "run_id": 37357204717,
+    "source_commit": "b6d859c9087131a5261f56eebbe213fd8a39784e"
+  }
+}

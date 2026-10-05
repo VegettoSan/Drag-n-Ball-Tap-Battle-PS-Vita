@@ -239,3 +239,9 @@ as uniformly 60 FPS.
 ELF/VELF/SELF/VPK packaging succeed. Mixer ASan/UBSan and JVM client-buffer
 behavioral probes pass. In-memory PVF font opening, buffer reuse and faster audio
 mixing are implemented, but their performance on physical Vita is still PENDING.
+
+00.18 resource regressions also pass for the actual supplied APKs: 125 Original/
+Android14 PAC files, 470 textures and 198 decoded WAV entries; gen.apk passes
+108 PAC files, 405 PNGs and 198 aligned PCM voice entries. All 12 Python tests
+pass. The native-only GitHub CI job is green at b6d859c (run 37357204717); that
+job remains a smoke link probe and is not the delivered full game VPK.
