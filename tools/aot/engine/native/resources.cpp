@@ -32,6 +32,7 @@ bool save_cache_known = false;
 bool save_cache_exists = false;
 struct Size { int w, h; };
 std::unordered_map<unsigned, Size> textures;
+std::unordered_map<std::string, bool> resource_exists_cache;
 
 bool readFile(const std::string& path, std::vector<uint8_t>& out) {
     out.clear(); struct stat info{};
@@ -84,6 +85,7 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
     // this same directory on its first successful save operation.
     save_path = mod.empty() ? base + "/game/save.bin" : base + "/mods/" + mod + "/save.bin";
     save_cache.clear();
+    resource_exists_cache.clear();
     save_cache_exists = readFile(save_path, save_cache);
     save_cache_known = true;
     std::printf("Profile save: %s (%s, %zu bytes)\n", save_path.c_str(),
@@ -132,6 +134,23 @@ void dbtb_copyResource(void* data, int32_t size) {
     if (size < 0 || size_t(size) != pending.size() || (size && !data)) std::abort();
     if (size) std::memcpy(data, pending.data(), size);
     std::vector<uint8_t>().swap(pending);
+}
+int32_t dbtb_exists(void* name) {
+    if (!name) return 0;
+    const std::string logical(static_cast<const char*>(name));
+    if (!GameVfs::safeRelativePath(logical)) return 0;
+    if (logical == "save.bin") {
+        if (save_cache_known) return save_cache_exists ? 1 : 0;
+        save_cache_exists = readFile(save_path, save_cache);
+        save_cache_known = true;
+        return save_cache_exists ? 1 : 0;
+    }
+    const auto cached = resource_exists_cache.find(logical);
+    if (cached != resource_exists_cache.end()) return cached->second ? 1 : 0;
+    std::string resolved;
+    const bool found = dbtb_vfs().resolve(logical, resolved);
+    resource_exists_cache.emplace(logical, found);
+    return found ? 1 : 0;
 }
 int32_t dbtb_readSave(void* name) {
     pending.clear();
