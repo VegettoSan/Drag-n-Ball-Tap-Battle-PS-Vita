@@ -7,6 +7,7 @@ int32_t dbtb_start(void);
 int32_t dbtb_frame(void * events);
 void dbtb_present(void);
 int32_t dbtb_resource(void * name);
+int32_t dbtb_resourceFiltered(void * name, int32_t filter);
 int32_t dbtb_resourceEncoding(void);
 int32_t dbtb_installedData(void);
 int32_t dbtb_textEncoding(int32_t source);

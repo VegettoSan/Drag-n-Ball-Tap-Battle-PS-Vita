@@ -13,9 +13,10 @@ public final class ResourceAdapter {
     public static boolean load(GameData data, GlobalWork gw, String name, int conversion, int filter) {
         byte[] bytes;
         try {
-            bytes = Utility.readDataRaw(gw.context, name);
+            bytes = NativePlatform.readGameData(name, filter);
+            if(bytes==null)bytes=NativePlatform.readGameData(name + ".pac", filter);
         } catch (Exception missingRaw) {
-            bytes = Utility.readDataFile(gw.context, name + ".pac");
+            bytes = NativePlatform.readGameData(name + ".pac", filter);
         }
         if(bytes==null)return false;
         encodings.put(data,NativePlatform.resourceEncoding()==1?"UTF-8":"Shift_JIS");

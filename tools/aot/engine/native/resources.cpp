@@ -2,6 +2,7 @@
 #include "services.hpp"
 #include "performance.hpp"
 #include "engine_resources.hpp"
+#include "resource_cache.hpp"
 #include "pac.hpp"
 #include "image.hpp"
 #if defined(__vita__)
@@ -25,6 +26,8 @@ namespace {
 constexpr size_t kSaveSize = 12906;
 std::unique_ptr<GameVfs> vfs;
 std::vector<uint8_t> pending;
+EngineResourceCache resource_cache(8u * 1024u * 1024u);
+std::shared_ptr<CachedEngineResource> pending_resource;
 int pending_encoding=0;
 int text_encodings[2]={0,0};
 std::string save_path;
@@ -87,6 +90,8 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
     save_path = mod.empty() ? base + "/game/save.bin" : base + "/mods/" + mod + "/save.bin";
     save_cache.clear();
     resource_exists_cache.clear();
+    resource_cache.clear();
+    pending_resource.reset();
     save_cache_exists = readFile(save_path, save_cache);
     save_cache_known = true;
     std::printf("Profile save: %s (%s, %zu bytes)\n", save_path.c_str(),
@@ -97,24 +102,29 @@ const GameVfs& dbtb_vfs() { if (!vfs) std::abort(); return *vfs; }
 void dbtb_forgetTexture(unsigned id) { textures.erase(id); }
 
 extern "C" {
-int32_t dbtb_resource(void* name) {
+int32_t dbtb_resourceFiltered(void* name, int32_t filter) {
     DbtbTimedScope timer(dbtb_performance().resource_us);
     ++dbtb_performance().resources;
-    std::string path, error; pending.clear(); pending_encoding=0;
-    if (!name || !readEngineResource(dbtb_vfs(), static_cast<const char*>(name), pending, path, error)) {
+    std::string error; pending.clear(); pending_resource.reset(); pending_encoding=0;
+    bool hit = false;
+    const uint64_t start = dbtb_timeUs();
+    if (!name || !resource_cache.read(dbtb_vfs(), static_cast<const char*>(name), filter, pending_resource, hit, error)) {
         std::fprintf(stderr, "Resource %s: %s\n", name ? static_cast<const char*>(name) : "(null)", error.c_str()); return -1;
     }
-    PacFile source;
-    const bool source_ok=source.open(path);
-    const int container_encoding=source_ok&&source.encoding()==PacEncoding::Community14?1:0;
-    pending_encoding=detectEngineTextEncoding(pending,container_encoding);
+    const std::string& path = pending_resource->path;
+    pending_encoding = pending_resource->encoding;
+    dbtb_performance().resource_cache_hits += hit;
+    if (!hit) dbtb_performance().resource_bytes += pending_resource->io_bytes;
     const std::string logical=path.substr(path.find_last_of('/')+1);
     if(logical=="gamedata.pac")text_encodings[0]=pending_encoding;
     if(logical=="text00.pac")text_encodings[1]=pending_encoding;
-    if(logical=="gamedata.pac"||logical=="text00.pac")std::printf("Text codec %s: %d (%s)\n",logical.c_str(),pending_encoding,source.error().c_str());
-    std::printf("Resource: %s (%zu bridge bytes)\n", path.c_str(), pending.size());
-    return int32_t(pending.size());
+    if(logical=="gamedata.pac"||logical=="text00.pac")std::fprintf(stderr,"Text codec %s: %d\n",logical.c_str(),pending_encoding);
+    std::fprintf(stderr, "Resource: %s filter=%d cache=%s io_bytes=%zu bridge_bytes=%zu us=%llu\n",
+        logical.c_str(), filter, hit ? "hit" : "miss", hit ? 0 : pending_resource->io_bytes,
+        pending_resource->bytes.size(), static_cast<unsigned long long>(dbtb_timeUs() - start));
+    return int32_t(pending_resource->bytes.size());
 }
+int32_t dbtb_resource(void* name) { return dbtb_resourceFiltered(name, 0); }
 int32_t dbtb_resourceEncoding() { return pending_encoding; }
 int32_t dbtb_installedData() {
     // These are the 13 complete character triplets confirmed in the supplied
@@ -134,8 +144,10 @@ int32_t dbtb_installedData() {
 }
 int32_t dbtb_textEncoding(int32_t source) { return source>=0 && source<2?text_encodings[source]:-1; }
 void dbtb_copyResource(void* data, int32_t size) {
-    if (size < 0 || size_t(size) != pending.size() || (size && !data)) std::abort();
-    if (size) std::memcpy(data, pending.data(), size);
+    const auto& bytes = pending_resource ? pending_resource->bytes : pending;
+    if (size < 0 || size_t(size) != bytes.size() || (size && !data)) std::abort();
+    if (size) std::memcpy(data, bytes.data(), size);
+    pending_resource.reset();
     std::vector<uint8_t>().swap(pending);
 }
 int32_t dbtb_exists(void* name) {
@@ -157,6 +169,7 @@ int32_t dbtb_exists(void* name) {
 }
 int32_t dbtb_readSave(void* name) {
     pending.clear();
+    pending_resource.reset();
     if (!name || std::strcmp(static_cast<const char*>(name), "save.bin")) return -1;
     if (!save_cache_known) {
         save_cache_exists = readFile(save_path, save_cache);

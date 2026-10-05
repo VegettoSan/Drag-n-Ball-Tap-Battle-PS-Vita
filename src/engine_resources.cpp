@@ -17,6 +17,21 @@ void put16(std::vector<uint8_t>& out, size_t p, uint32_t n) { out[p] = n; out[p 
 void put32(std::vector<uint8_t>& out, size_t p, uint32_t n) {
     for (size_t i = 0; i < 4; ++i) out[p + i] = n >> (8 * i);
 }
+void putBe32(std::vector<uint8_t>& out, size_t p, uint32_t n) {
+    for (size_t i = 0; i < 4; ++i) out[p + i] = n >> (24 - 8 * i);
+}
+// These are the original GameData.Init exclusion bits, not new Vita rules.
+// Keep directory slots/types in place even when a payload is not requested.
+int filterBit(const std::string& type) {
+    if (type == "png" || type == "rgba") return 1;
+    if (type == "act") return 2;
+    if (type == "bin") return 4;
+    if (type == "cnv") return 8;
+    if (type == "dac") return 16;
+    if (type == "spr") return 32;
+    if (type == "wav") return 64;
+    return 0;
+}
 const char* tag(uint32_t type) {
     switch (type) {
         case 0x5d93757fu: return "act";
@@ -154,7 +169,8 @@ bool normaliseCommunityWav(std::vector<uint8_t>& payload, uint32_t entry_index, 
 }
 
 bool normalise(const std::vector<uint8_t>& input, const std::string& name,
-               std::vector<uint8_t>& output, std::string& error, unsigned depth) {
+               std::vector<uint8_t>& output, std::string& error, unsigned depth,
+               int* container_encoding = nullptr, int filter = 0) {
     if (input.size() < 2 || input.size() > kBudget || depth > 8) {
         error = "invalid PAC size or nesting depth"; return false;
     }
@@ -167,9 +183,29 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
         }
     }
     const size_t count = encoded ? private_count : plain_count;
+    if (container_encoding) *container_encoding = encoded ? 1 : 0;
     const size_t base = 2 + count * 16;
     if (base > input.size()) { error = "PAC directory exceeds input"; return false; }
+    // Reserve once instead of growing/copying an entire character atlas several
+    // times while rebuilding a PAC. Plain unchanged data has a validation-only
+    // path below, with no temporary payload or reconstructed container.
+    if (!encoded && filter == 0) {
+        for (size_t i = 0; i < count; ++i) {
+            const uint8_t* row = input.data() + 2 + i * 16;
+            if (uint64_t(base) + le32(row) + le32(row + 4) > input.size()) {
+                error = "PAC entry outside input"; return false;
+            }
+        }
+        // A plain outer directory can still contain an encoded nested SPR.
+        // Fall through only for nested containers; ordinary character PACs
+        // contain top-level png/bin/wav and require no rebuilding at all.
+        bool nested = false;
+        for (size_t i = 0; i < count; ++i)
+            nested |= std::memcmp(input.data() + 10 + i * 16, "spr", 3) == 0;
+        if (!nested) { output = input; return true; }
+    }
     std::vector<uint8_t> out(base, 0);
+    out.reserve(input.size());
     put16(out, 0, count);
     bool changed = encoded;
     for (size_t i = 0; i < count; ++i) {
@@ -184,6 +220,15 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
         } else {
             size_t length = 0; while (length < 4 && row[8 + length]) ++length;
             type.assign(reinterpret_cast<const char*>(row + 8), length);
+        }
+        if (depth == 0 && (filter & filterBit(type))) {
+            changed = true;
+            put32(out, 2 + i * 16, out.size() - base);
+            if (encoded && type == "rgba") type = "png";
+            if (encoded) std::memcpy(out.data() + 10 + i * 16, type.data(), type.size());
+            else std::memcpy(out.data() + 10 + i * 16, row + 8, 4);
+            put32(out, 14 + i * 16, le32(row + 12));
+            continue;
         }
         std::vector<uint8_t> payload(input.begin() + base + offset, input.begin() + base + offset + size);
         if (encoded && type == "rgba") {
@@ -227,10 +272,11 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
 }
 
 bool normaliseEnginePac(const std::vector<uint8_t>& input, const std::string& logical_name,
-                        std::vector<uint8_t>& output, std::string& error) {
+                        std::vector<uint8_t>& output, std::string& error,
+                        int* container_encoding, int game_data_filter) {
     output.clear(); error.clear();
     std::vector<uint8_t> pending;
-    if (!normalise(input, logical_name, pending, error, 0)) return false;
+    if (!normalise(input, logical_name, pending, error, 0, container_encoding, game_data_filter)) return false;
     output.swap(pending); return true;
 }
 
@@ -254,8 +300,12 @@ int detectEngineTextEncoding(const std::vector<uint8_t>& normalised_pac, int fal
 }
 
 bool readEngineResource(const GameVfs& vfs, const std::string& name,
-                        std::vector<uint8_t>& output, std::string& path, std::string& error) {
+                        std::vector<uint8_t>& output, std::string& path, std::string& error,
+                        int* container_encoding, int game_data_filter, size_t* bytes_read) {
     output.clear(); path.clear(); error.clear();
+    if (container_encoding) *container_encoding = 0;
+    if (bytes_read) *bytes_read = 0;
+    if (game_data_filter < 0 || game_data_filter > 127) { error = "invalid GameData filter"; return false; }
     if (!GameVfs::safeRelativePath(name)) { error = "unsafe engine resource name"; return false; }
     std::string logical = name;
     if (name.find('.') == std::string::npos) {
@@ -265,6 +315,43 @@ bool readEngineResource(const GameVfs& vfs, const std::string& name,
         else logical += ".pac";
     }
     if (!vfs.resolve(logical, path)) { error = vfs.error(); return false; }
+    const bool is_pac = logical.size() >= 4 && logical.compare(logical.size() - 4, 4, ".pac") == 0;
+    if (is_pac && game_data_filter) {
+        PacFile source;
+        if (!source.open(path)) { error = source.error(); return false; }
+        const auto& entries = source.entries();
+        const bool encoded = source.encoding() == PacEncoding::Community14;
+        const size_t base = 2 + entries.size() * 16;
+        std::vector<uint8_t> packed(base, 0);
+        put16(packed, 0, entries.size() ^ (encoded ? 42802u : 0u));
+        FILE* file = std::fopen(path.c_str(), "rb");
+        if (!file) { error = "cannot open filtered resource"; return false; }
+        bool ok = true;
+        size_t read = base;
+        for (size_t i = 0; i < entries.size(); ++i) {
+            const auto& entry = entries[i];
+            const bool skip = game_data_filter & filterBit(source.typeString(i));
+            const size_t n = skip ? 0 : entry.size;
+            if (n > kBudget - packed.size()) { error = "filtered PAC exceeds budget"; ok = false; break; }
+            const size_t begin = packed.size();
+            put32(packed, 2 + i * 16, (begin - base) ^ (encoded ? (996678763u ^ uint32_t(i)) : 0u));
+            put32(packed, 6 + i * 16, n ^ (encoded ? (47633006u ^ uint32_t(i)) : 0u));
+            if (encoded) putBe32(packed, 10 + i * 16, entry.encoded_type ^ 0xc569e1efu ^ uint32_t(i));
+            else std::memcpy(packed.data() + 10 + i * 16, entry.type, 4);
+            put32(packed, 14 + i * 16, entry.reserved);
+            if (!n) continue;
+            packed.resize(begin + n);
+            if (std::fseek(file, long(uint64_t(source.dataBase()) + entry.offset), SEEK_SET) != 0 ||
+                std::fread(packed.data() + begin, 1, n, file) != n) {
+                error = "filtered resource read truncated"; ok = false; break;
+            }
+            read += n;
+        }
+        std::fclose(file);
+        if (!ok) return false;
+        if (bytes_read) *bytes_read = read;
+        return normaliseEnginePac(packed, logical, output, error, container_encoding, game_data_filter);
+    }
     FILE* file = std::fopen(path.c_str(), "rb");
     if (!file) { error = "cannot open engine resource"; return false; }
     if (std::fseek(file, 0, SEEK_END) != 0) { std::fclose(file); error = "cannot seek resource"; return false; }
@@ -276,8 +363,9 @@ bool readEngineResource(const GameVfs& vfs, const std::string& name,
     const bool ok = bytes.empty() || std::fread(bytes.data(), 1, bytes.size(), file) == bytes.size();
     std::fclose(file);
     if (!ok) { error = "resource read truncated"; return false; }
-    if (logical.size() >= 4 && logical.compare(logical.size() - 4, 4, ".pac") == 0) {
-        return normaliseEnginePac(bytes, logical, output, error);
+    if (bytes_read) *bytes_read = bytes.size();
+    if (is_pac) {
+        return normaliseEnginePac(bytes, logical, output, error, container_encoding);
     }
     output.swap(bytes); return true;
 }

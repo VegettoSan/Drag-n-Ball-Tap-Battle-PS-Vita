@@ -10,6 +10,7 @@ public final class NativePlatform {
     @Import(name="dbtb_frame") public static native int frame(Address events);
     @Import(name="dbtb_present") public static native void present();
     @Import(name="dbtb_resource") public static native int resource(Address name);
+    @Import(name="dbtb_resourceFiltered") public static native int resourceFiltered(Address name,int filter);
     @Import(name="dbtb_textEncoding") public static native int textEncoding(int source);
     @Import(name="dbtb_resourceEncoding") public static native int resourceEncoding();
     @Import(name="dbtb_installedData") public static native int installedData();
@@ -41,4 +42,5 @@ public final class NativePlatform {
     public static byte[] cstr(String s) { byte[] b=s.getBytes(java.nio.charset.StandardCharsets.UTF_8);byte[] z=new byte[b.length+1];System.arraycopy(b,0,z,0,b.length);return z; }
     public static void unavailable(String s) { byte[] b=cstr(s);unsupported(Address.ofData(b));throw new UnsupportedOperationException(s); }
     public static byte[] read(String name,boolean save) { byte[] n=cstr(name);int size=save?readSave(Address.ofData(n)):resource(Address.ofData(n));if(size<0)return null;if(size>32*1024*1024)throw new IllegalStateException("Resource exceeds bridge budget");byte[] b=new byte[size];copyResource(Address.ofData(b),size);return b; }
+    public static byte[] readGameData(String name,int filter) {byte[] n=cstr(name);int size=resourceFiltered(Address.ofData(n),filter);if(size<0)return null;if(size>32*1024*1024)throw new IllegalStateException("Resource exceeds bridge budget");byte[] b=new byte[size];copyResource(Address.ofData(b),size);return b;}
 }
