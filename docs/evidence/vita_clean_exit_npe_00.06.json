@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-04",
+  "scope": "real PS Vita hardware run of private full-engine build 00.06 using Android14 profile",
+  "hardware_observed": true,
+  "result": "no native crash; original engine caught a Java NullPointerException at game state md=61 and exited its main loop cleanly",
+  "runtime_log_sha256": "1e31d9a0714224546b4922272e51450494e7e288c186de6b65f6c3bc82c7bdc9",
+  "runtime_log_excerpt": [
+    "--- full original engine Vita 00.06 boot ---",
+    "Selected profile: Android14",
+    "Resource VFS initialized; entering original engine",
+    "Audio: output port opened",
+    "Audio: worker thread started",
+    "ORIGINAL ENGINE INIT PASS",
+    "Run: md=[61]:ERROR=java.lang.NullPointerException",
+    "ORIGINAL ENGINE RUN FRAMES=498"
+  ],
+  "interpretation": {
+    "native_audio_crash_fixed": true,
+    "controlled_exit": true,
+    "details": "TCBManajer.Run catches Exception, reports the current md state and sets GlobalWork.bThreadActive=false. VitaEngine therefore leaves its while loop after the caught NPE instead of crashing. There is no artificial 498-frame cap in VitaEngine."
+  },
+  "state_61": {
+    "dispatcher": "Game9",
+    "expected_transition": 62,
+    "operations_before_transition": [
+      "CreatePanelSingle id 24576",
+      "CreatePanelSingle id 24596",
+      "TextGDTString ids 256, 11 and 12",
+      "write tcbNow._work[14] = -1"
+    ],
+    "status": "exact null dereference not yet identified"
+  },
+  "next_diagnostic": {
+    "version": "00.07",
+    "commit": "562729234da00960a2cc15acd519b5d97595ca81",
+    "strategy": "print TeaVM shadow-stack immediately before constructing a NullPointerException while preserving original exception propagation"
+  }
+}
