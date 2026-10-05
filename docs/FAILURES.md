@@ -241,3 +241,12 @@ preserving record payload bytes. Host regression validates all 68 top-level BIN
 GameData entries. An attempted recursive conversion was rejected because a nested
 SPR BIN in `back02.pac` uses a different schema; nested SPR BIN payloads must remain
 untouched. Hardware confirmation is pending build 00.11.
+
+## 2026-10-05 — 00.17 native smoke VELF segment overlap
+
+The interrupted 00.17's native CI job linked ELF successfully but failed at
+vita-elf-create: `Cannot allocate 3552 bytes for SCE data at end of segment 0;
+segment 1 overlaps`. This is packaging evidence, not a Vita runtime crash.
+Retry differs by using `-z,max-page-size=0x10000` at link time so loadable segments
+leave room for SCE metadata. Full 00.18 ELF→VELF→SELF→VPK succeeded locally;
+a small native-only smoke rebuild is checked independently.

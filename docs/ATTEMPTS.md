@@ -580,3 +580,37 @@ conversion allocations without batching/reordering the original draws.
 
 ECJ 3.37.0 compiled the adapter successfully. Full TeaVM regeneration, buffer
 range checks and Vita compilation are the next checks; hardware FPS is PENDING.
+
+### Follow-up — Audio, frame measurements and complete build 00.18
+
+Recovered a concurrent committed follow-up, `1351457`, reducing mixer state-lock
+work to 64-sample chunks and using Q16 interpolation with a 32.32 phase. Retained
+it; sample chunk duration is not a measured bound on lock contention.
+
+Cache clip frame counts and clamp gains once at playback start, removing integer
+sample-count divisions and gain clamps from each output sample. Preserve original
+22050 Hz mono voices, three voice channels, track pitch and clip ordering. The
+original APK SoundEffect bytecode independently confirms AudioTrack is created
+at 22050 Hz (its buffer-size query at 44100 Hz is not the playback rate).
+
+Add main-thread frame summaries every 120 frames and atomic audio statistics.
+`run_ms` includes Java/GL/resource work; `swap_ms` includes GPU/pacing waits;
+`interval_max_ms` includes cooperative tasks after present. These are elapsed
+wall times, not CPU utilization counters. Record resource, texture/text and OGG
+load costs, draws, native copied bytes, clipped output samples and blocks whose
+mix calculation exceeds the 1024-frame audio deadline. No file writes occur in
+the audio worker.
+
+Set public clock requests to CPU 444, bus 166, GPU 222, crossbar 166 MHz and log
+return values plus effective clocks. Keep 960x544, original update frequency,
+resources/mod fallback and separate profile saves. No overclock plugin is needed.
+
+**Host checks:** the real mixer passes ASan/UBSan tests for fractional/extreme
+interpolation, 22050→48000 duration, stereo, loops, three-channel rejection and
+clipping counters (`tests/test_vita_audio.cpp`; platform calls mocked). The Java
+adapter passes active direct/read-only ranges, backing-array slice offsets,
+shrinking limits, steady buffer reuse and oversize rejection via
+`tools/aot/engine/tests/run_gles_buffer_probe.py` (native imports mocked).
+Complete current Java adapters regenerated through pinned TeaVM 0.12.3; complete
+ARM engine compiled and packaged as VPK 00.18. Device smoothness, voice quality
+and a stable 60 FPS remain PENDING user hardware testing.

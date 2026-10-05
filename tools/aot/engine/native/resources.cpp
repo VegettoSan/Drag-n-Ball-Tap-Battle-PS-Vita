@@ -1,5 +1,6 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
+#include "performance.hpp"
 #include "engine_resources.hpp"
 #include "pac.hpp"
 #include "image.hpp"
@@ -97,6 +98,8 @@ void dbtb_forgetTexture(unsigned id) { textures.erase(id); }
 
 extern "C" {
 int32_t dbtb_resource(void* name) {
+    DbtbTimedScope timer(dbtb_performance().resource_us);
+    ++dbtb_performance().resources;
     std::string path, error; pending.clear(); pending_encoding=0;
     if (!name || !readEngineResource(dbtb_vfs(), static_cast<const char*>(name), pending, path, error)) {
         std::fprintf(stderr, "Resource %s: %s\n", name ? static_cast<const char*>(name) : "(null)", error.c_str()); return -1;
@@ -193,6 +196,8 @@ int32_t dbtb_deleteSave(void* name) {
     return 1;
 }
 int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
+    DbtbTimedScope timer(dbtb_performance().texture_us);
+    ++dbtb_performance().textures;
     if (!data || size < 0 || size > 16 * 1024 * 1024) return -1;
     const auto* b = static_cast<const uint8_t*>(data);
     RgbaImage image; std::string error; bool ok;

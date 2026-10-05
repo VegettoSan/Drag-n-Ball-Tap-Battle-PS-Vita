@@ -1,5 +1,6 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
+#include "performance.hpp"
 #include "log.hpp"
 
 #include <psp2/audioout.h>
@@ -24,7 +25,8 @@ struct Clip {
     std::vector<int16_t> pcm;
     int channels = 0;
     int rate = 0;
-    size_t frames() const { return channels > 0 ? pcm.size() / size_t(channels) : 0; }
+    size_t frame_count = 0;
+    size_t frames() const { return frame_count; }
 };
 struct Voice {
     std::shared_ptr<Clip> clip;
@@ -53,11 +55,12 @@ Voice bgm;
 int audio_port = -1;
 SceUID audio_thread = -1;
 std::atomic<bool> audio_running{false};
+std::atomic<uint32_t> clipped_samples{0}, late_mix_blocks{0}, max_mix_us{0};
 
 Voice makeVoice(std::shared_ptr<Clip> clip, float gain, bool loop) {
     Voice voice;
     voice.clip = std::move(clip);
-    voice.gain = gain;
+    voice.gain = std::max(0.0f, std::min(2.0f, gain));
     voice.loop = loop;
     if (voice.clip && voice.clip->rate > 0)
         voice.step = (uint64_t(uint32_t(voice.clip->rate)) << 32) / uint64_t(kOutputRate);
@@ -72,6 +75,7 @@ std::string audioName(const char* raw) {
 }
 
 std::shared_ptr<Clip> decodeOgg(const std::string& relative) {
+    DbtbTimedScope timer(dbtb_performance().audio_decode_us);
     std::string path;
     if (!dbtb_vfs().resolve(relative, path)) return nullptr;
     OggVorbis_File vf{};
@@ -95,10 +99,12 @@ std::shared_ptr<Clip> decodeOgg(const std::string& relative) {
         std::memcpy(clip->pcm.data() + old, buffer, size_t(got));
     }
     ov_clear(&vf);
+    clip->frame_count = clip->pcm.size() / size_t(clip->channels);
     return clip->frames() ? clip : nullptr;
 }
 
 std::shared_ptr<Clip> decodeVoiceBytes(const void* raw, int32_t size) {
+    DbtbTimedScope timer(dbtb_performance().audio_decode_us);
     if (!raw || size <= 1) return nullptr;
     const auto* data = static_cast<const uint8_t*>(raw);
     auto clip = std::make_shared<Clip>();
@@ -139,6 +145,7 @@ std::shared_ptr<Clip> decodeVoiceBytes(const void* raw, int32_t size) {
         clip->pcm.resize(size_t(size) / 2);
         std::memcpy(clip->pcm.data(), data, clip->pcm.size() * 2);
     }
+    clip->frame_count = clip->pcm.size() / size_t(clip->channels);
     return clip->frames() ? clip : nullptr;
 }
 
@@ -167,9 +174,8 @@ void mixVoice(Voice& v, int32_t& left, int32_t& right) {
     };
     const int32_t sample_l = interpolate(a[0], b[0]);
     const int32_t sample_r = v.clip->channels == 2 ? interpolate(a[1], b[1]) : sample_l;
-    const float gain = std::max(0.0f, std::min(2.0f, v.gain));
-    left += static_cast<int32_t>(sample_l * gain);
-    right += static_cast<int32_t>(sample_r * gain);
+    left += static_cast<int32_t>(sample_l * v.gain);
+    right += static_cast<int32_t>(sample_r * v.gain);
 
     v.phase += v.step;
     if (v.phase >= total) {
@@ -181,7 +187,14 @@ void mixVoice(Voice& v, int32_t& left, int32_t& right) {
 int audioThread(SceSize, void*) {
     alignas(64) int16_t buffer[kFrames * 2];
     while (audio_running.load()) {
+        const uint64_t start = dbtb_timeUs();
         dbtb_mixAudio(buffer, kFrames);
+        const uint32_t elapsed = static_cast<uint32_t>(dbtb_timeUs() - start);
+        if (elapsed > uint32_t(kFrames * 1000000 / kOutputRate))
+            late_mix_blocks.fetch_add(1, std::memory_order_relaxed);
+        uint32_t previous = max_mix_us.load(std::memory_order_relaxed);
+        while (previous < elapsed && !max_mix_us.compare_exchange_weak(
+                   previous, elapsed, std::memory_order_relaxed)) {}
         if (sceAudioOutOutput(audio_port, buffer) < 0) break;
     }
     return 0;
@@ -210,11 +223,11 @@ bool ensureAudio() {
 
 void dbtb_mixAudio(short* interleaved, int frames) {
     if (!interleaved || frames <= 0) return;
-    // Do not hold the shared command/state lock for an entire 1024-frame Vita
-    // output block (~21 ms). Battle emits effects/voices from the game thread;
-    // waiting behind that lock could consume a whole video frame. Mixing in
-    // short chunks bounds contention to roughly 1.3 ms at 48 kHz.
+    // Release the state lock between small portions of the mixing workload so
+    // game-thread commands do not wait for a whole output block's calculation.
+    // These are source sample counts, not a claim about measured lock duration.
     constexpr int kMixChunk = 64;
+    uint32_t clipped = 0;
     for (int base = 0; base < frames; base += kMixChunk) {
         const int end = std::min(frames, base + kMixChunk);
         AudioLockGuard lock;
@@ -223,12 +236,23 @@ void dbtb_mixAudio(short* interleaved, int frames) {
             mixVoice(bgm, left, right);
             for (auto& v : active_effects) mixVoice(v, left, right);
             for (auto& v : active_voices) mixVoice(v, left, right);
+            clipped += left < -32768 || left > 32767;
+            clipped += right < -32768 || right > 32767;
             interleaved[i * 2] = static_cast<int16_t>(std::max<int32_t>(-32768, std::min<int32_t>(32767, left)));
             interleaved[i * 2 + 1] = static_cast<int16_t>(std::max<int32_t>(-32768, std::min<int32_t>(32767, right)));
         }
         active_effects.erase(std::remove_if(active_effects.begin(), active_effects.end(), [](const Voice& v){ return !v.clip; }), active_effects.end());
         active_voices.erase(std::remove_if(active_voices.begin(), active_voices.end(), [](const Voice& v){ return !v.clip; }), active_voices.end());
     }
+    clipped_samples.fetch_add(clipped, std::memory_order_relaxed);
+}
+
+DbtbAudioStats dbtb_takeAudioStats() {
+    DbtbAudioStats stats;
+    stats.clipped_samples = clipped_samples.exchange(0, std::memory_order_relaxed);
+    stats.late_mix_blocks = late_mix_blocks.exchange(0, std::memory_order_relaxed);
+    stats.max_mix_us = max_mix_us.exchange(0, std::memory_order_relaxed);
+    return stats;
 }
 
 extern "C" {

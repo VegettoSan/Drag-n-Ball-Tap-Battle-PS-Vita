@@ -227,3 +227,15 @@ multiple normalized front-touch events without a fatal/NPE trace. Remaining
 adapter defects observed during real combat are character voice/WAV playback and
 dialogue text stalls/layout drift; these are addressed separately in build 00.12.
 See `docs/evidence/vita_hardware_battle_00.11.json`.
+
+## 2026-10-05 — 00.16 cards and startup; 00.18 build/host checks
+
+**00.16 HARDWARE CONFIRMED:** user reports the ability-card processing and long
+startup delay are fixed. Character-switch pauses, rough voices and combat
+35–45 FPS remain user-observed issues in this same report; do not describe 00.16
+as uniformly 60 FPS.
+
+**00.18 HOST/BUILD CONFIRMED:** current TeaVM generation and complete Vita ARM
+ELF/VELF/SELF/VPK packaging succeed. Mixer ASan/UBSan and JVM client-buffer
+behavioral probes pass. In-memory PVF font opening, buffer reuse and faster audio
+mixing are implemented, but their performance on physical Vita is still PENDING.

@@ -22,7 +22,7 @@ get_filename_component(TEAVM_C_DIR "${TEAVM_C_DIR}" ABSOLUTE)
 
 set(VITA_APP_NAME "Dragon Ball Tap Battle Vita")
 set(VITA_TITLEID "DBTB00001")
-set(VITA_VERSION "00.17")
+set(VITA_VERSION "00.18")
 execute_process(COMMAND git rev-parse --short HEAD WORKING_DIRECTORY "${REPO_ROOT}"
                 OUTPUT_VARIABLE DBTB_COMMIT OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
 if(NOT DBTB_COMMIT)
@@ -82,7 +82,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 # amalgamation. -O2 exceeds the memory budget of modest builders; -O1 keeps
 # useful optimization while native render/audio/platform code remains at -O2.
 set_source_files_properties("${TEAVM_C_DIR}/all.c" PROPERTIES COMPILE_OPTIONS "-O1")
-set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-q")
+set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-q,-z,max-page-size=0x10000")
 
 # Dependencies are ordered from consumers to providers, matching vitaGL ports.
 # pthread stays whole because libstdc++ runtime facilities use its weak wrappers;
@@ -96,7 +96,7 @@ target_link_libraries(${PROJECT_NAME}
   ScePvf_stub SceAudio_stub
   SceLibKernel_stub SceAppMgr_stub SceAppUtil_stub SceCommonDialog_stub
   SceGxm_stub SceDisplay_stub SceSysmodule_stub SceKernelDmacMgr_stub
-  SceCtrl_stub SceTouch_stub SceIofilemgr_stub m
+  SceCtrl_stub SceTouch_stub SceIofilemgr_stub ScePower_stub m
 )
 
 vita_create_self(eboot.bin ${PROJECT_NAME} UNSAFE)

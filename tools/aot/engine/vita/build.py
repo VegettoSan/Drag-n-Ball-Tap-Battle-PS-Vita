@@ -50,9 +50,10 @@ def main():
          f'-DTEAVM_C_DIR={private_c}'])
     run(['cmake', '--build', cmake_build, f'-j{args.jobs}'])
 
-    vpk = cmake_build / 'DBTapBattle-Vita-00.03.vpk'
-    if not vpk.is_file() or vpk.stat().st_size == 0:
-        raise RuntimeError('build completed without the expected VPK')
+    artifacts = list(cmake_build.glob('DBTapBattle-Vita-*.vpk'))
+    if len(artifacts) != 1 or artifacts[0].stat().st_size == 0:
+        raise RuntimeError('build completed without exactly one versioned VPK')
+    vpk = artifacts[0]
     print('VPK:', vpk)
     print('Private TeaVM copy retained only in:', private_c)
 

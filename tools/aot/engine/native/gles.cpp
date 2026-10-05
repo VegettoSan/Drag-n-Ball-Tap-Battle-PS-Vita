@@ -1,5 +1,6 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
+#include "performance.hpp"
 #if defined(__vita__)
 #include <vitaGL.h>
 #else
@@ -102,6 +103,7 @@ void dbtb_glPointer(int32_t kind, int32_t size, int32_t type, int32_t stride, vo
     if (unchanged) return;
     buffer.resize(bytes);
     if (bytes) std::memcpy(buffer.data(), data, size_t(bytes));
+    dbtb_performance().client_bytes += bytes;
     client_stride[kind] = normalized_stride;
     client_size[kind] = packed;
     client_type[kind] = type;
@@ -127,5 +129,6 @@ void dbtb_glDraw(int32_t mode, int32_t count, int32_t type, void* data, int32_t 
             bad("draw index exceeds active client attribute");
     }
     glDrawElements(mode, count, type, data);
+    ++dbtb_performance().draws;
 }
 }

@@ -1,5 +1,6 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
+#include "performance.hpp"
 #include "log.hpp"
 
 #include <psp2/kernel/processmgr.h>
@@ -261,6 +262,7 @@ void drawGlyph(TextSurface& target, const Glyph& glyph, int pen_x, int baseline,
 
 void upload(TextSurface& s) {
     if (!s.dirty || !s.texture) return;
+    DbtbTimedScope timer(dbtb_performance().text_us);
     const uint64_t start = sceKernelGetProcessTimeWide();
     const int top = std::max(0, s.dirty_top);
     const int bottom = std::min(s.height, s.dirty_bottom);
@@ -353,6 +355,7 @@ void dbtb_clearText(int32_t id) {
 
 int32_t dbtb_drawText(int32_t id, void* raw_text, int32_t length, int32_t size,
                       int32_t r, int32_t g, int32_t b, int32_t a, void* raw_bounds) {
+    DbtbTimedScope timer(dbtb_performance().text_us);
     TextSurface* s = surface(id);
     if (!s || !raw_text || !raw_bounds || length < 0 || length > 4096 || size <= 0 || s->ypos >= s->height)
         return 0;

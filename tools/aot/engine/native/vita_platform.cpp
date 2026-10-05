@@ -1,5 +1,6 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
+#include "performance.hpp"
 #include "input.hpp"
 #include "log.hpp"
 #include "ui.hpp"
@@ -11,14 +12,21 @@
 #include <string>
 #include <vector>
 #include <vitaGL.h>
+#include <psp2/power.h>
 
 #ifndef DBTB_VERSION
 #define DBTB_VERSION "dev"
+#endif
+#ifndef DBTB_COMMIT
+#define DBTB_COMMIT "unknown"
 #endif
 
 namespace {
 std::unique_ptr<VitaInput> input;
 bool renderer_ready = false;
+uint64_t frame_start = 0, previous_frame = 0, window_start = 0;
+uint64_t run_total = 0, run_max = 0, swap_total = 0, interval_max = 0;
+unsigned window_frames = 0;
 
 void clearEvents(int32_t* events) {
     if (!events) return;
@@ -45,7 +53,22 @@ int32_t dbtb_start(void) {
         return 0;
     }
     attachRuntimeStreams();
-    runtimeLog(std::string("--- full original engine Vita ") + DBTB_VERSION + " boot ---");
+    runtimeLog(std::string("--- full original engine Vita ") + DBTB_VERSION +
+               " boot (" + DBTB_COMMIT + ") ---");
+
+    // Public Vita clock settings; no overclock plugin is required. The original
+    // frame loop, full-resolution renderer and audio worker share the CPU.
+    const int cpu_result = scePowerSetArmClockFrequency(444);
+    const int bus_result = scePowerSetBusClockFrequency(166);
+    const int gpu_result = scePowerSetGpuClockFrequency(222);
+    const int xbar_result = scePowerSetGpuXbarClockFrequency(166);
+    runtimeLog("Clocks CPU=" + std::to_string(scePowerGetArmClockFrequency()) +
+               " bus=" + std::to_string(scePowerGetBusClockFrequency()) +
+               " GPU=" + std::to_string(scePowerGetGpuClockFrequency()) +
+               " xbar=" + std::to_string(scePowerGetGpuXbarClockFrequency()) +
+               " results=" + std::to_string(cpu_result) + "," +
+               std::to_string(bus_result) + "," + std::to_string(gpu_result) +
+               "," + std::to_string(xbar_result));
 
     runtimeLog("Initializing vitaGL: 960x544, RAM threshold 16 MiB");
     // vitaGL's return value is NOT a success flag. GL_TRUE means the requested
@@ -86,6 +109,11 @@ int32_t dbtb_start(void) {
 
 int32_t dbtb_frame(void* raw_events) {
     if (!renderer_ready || !input || !raw_events) return -1;
+    frame_start = dbtb_timeUs();
+    if (!window_start) window_start = frame_start;
+    if (previous_frame)
+        interval_max = std::max(interval_max, frame_start - previous_frame);
+    previous_frame = frame_start;
     auto* events = static_cast<int32_t*>(raw_events);
     clearEvents(events);
 
@@ -114,6 +142,37 @@ int32_t dbtb_frame(void* raw_events) {
 }
 
 void dbtb_present(void) {
-    if (renderer_ready) vglSwapBuffers(GL_FALSE);
+    if (!renderer_ready) return;
+    const uint64_t before_swap = dbtb_timeUs();
+    const uint64_t run_us = frame_start ? before_swap - frame_start : 0;
+    run_total += run_us;
+    run_max = std::max(run_max, run_us);
+    vglSwapBuffers(GL_FALSE);
+    const uint64_t now = dbtb_timeUs();
+    swap_total += now - before_swap;
+    if (++window_frames < 120 || !window_start || now <= window_start) return;
+
+    const auto& perf = dbtb_performance();
+    const auto audio = dbtb_takeAudioStats();
+    // Swap includes pacing/GPU waits. Run includes Java/GL/loads; neither is a
+    // hardware CPU utilization counter. Interval also includes cooperative work
+    // after present(), making it possible to spot an event-queue loading pause.
+    std::fprintf(stderr,
+        "[Perf] fps=%.1f run_ms=%.2f run_max_ms=%.2f swap_ms=%.2f interval_max_ms=%.2f "
+        "draws_per_frame=%.1f client_KiB=%llu loads=%u load_ms=%.1f textures=%u "
+        "texture_ms=%.1f text_ms=%.1f audio_decode_ms=%.1f "
+        "audio_clip_samples=%u audio_late_mix=%u audio_mix_max_us=%u\n",
+        double(window_frames) * 1000000.0 / double(now - window_start),
+        double(run_total) / (window_frames * 1000.0), double(run_max) / 1000.0,
+        double(swap_total) / (window_frames * 1000.0), double(interval_max) / 1000.0,
+        double(perf.draws) / window_frames,
+        static_cast<unsigned long long>(perf.client_bytes / 1024), perf.resources,
+        double(perf.resource_us) / 1000.0, perf.textures, double(perf.texture_us) / 1000.0,
+        double(perf.text_us) / 1000.0, double(perf.audio_decode_us) / 1000.0,
+        audio.clipped_samples, audio.late_mix_blocks, audio.max_mix_us);
+    dbtb_performance() = DbtbPerformance{};
+    window_start = now;
+    window_frames = 0;
+    run_total = run_max = swap_total = interval_max = 0;
 }
 }
