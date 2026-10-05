@@ -94,7 +94,9 @@ int32_t dbtb_resource(void* name) {
         std::fprintf(stderr, "Resource %s: %s\n", name ? static_cast<const char*>(name) : "(null)", error.c_str()); return -1;
     }
     PacFile source;
-    if (source.open(path) && source.encoding()==PacEncoding::Community14) pending_encoding=1;
+    const bool source_ok=source.open(path);
+    const int container_encoding=source_ok&&source.encoding()==PacEncoding::Community14?1:0;
+    pending_encoding=detectEngineTextEncoding(pending,container_encoding);
     const std::string logical=path.substr(path.find_last_of('/')+1);
     if(logical=="gamedata.pac")text_encodings[0]=pending_encoding;
     if(logical=="text00.pac")text_encodings[1]=pending_encoding;
