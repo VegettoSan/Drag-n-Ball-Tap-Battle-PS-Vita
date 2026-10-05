@@ -28,7 +28,8 @@ struct Clip {
 };
 struct Voice {
     std::shared_ptr<Clip> clip;
-    double position = 0.0;
+    uint64_t phase = 0;       // 32.32 source-frame position
+    uint64_t step = 0;        // 32.32 source frames per 48 kHz output frame
     float gain = 1.0f;
     bool loop = false;
 };
@@ -52,6 +53,16 @@ Voice bgm;
 int audio_port = -1;
 SceUID audio_thread = -1;
 std::atomic<bool> audio_running{false};
+
+Voice makeVoice(std::shared_ptr<Clip> clip, float gain, bool loop) {
+    Voice voice;
+    voice.clip = std::move(clip);
+    voice.gain = gain;
+    voice.loop = loop;
+    if (voice.clip && voice.clip->rate > 0)
+        voice.step = (uint64_t(uint32_t(voice.clip->rate)) << 32) / uint64_t(kOutputRate);
+    return voice;
+}
 
 std::string audioName(const char* raw) {
     if (!raw) return {};
@@ -132,21 +143,36 @@ std::shared_ptr<Clip> decodeVoiceBytes(const void* raw, int32_t size) {
 }
 
 void mixVoice(Voice& v, int32_t& left, int32_t& right) {
-    if (!v.clip || !v.clip->frames()) return;
-    size_t frame = static_cast<size_t>(v.position);
-    if (frame >= v.clip->frames()) {
+    if (!v.clip || !v.clip->frames() || !v.step) return;
+    const uint64_t total = uint64_t(v.clip->frames()) << 32;
+    if (v.phase >= total) {
         if (!v.loop) { v.clip.reset(); return; }
-        v.position = std::fmod(v.position, double(v.clip->frames()));
-        frame = static_cast<size_t>(v.position);
+        v.phase %= total;
     }
-    const int16_t* sample = &v.clip->pcm[frame * size_t(v.clip->channels)];
+
+    const size_t frame0 = static_cast<size_t>(v.phase >> 32);
+    size_t frame1 = frame0 + 1;
+    if (frame1 >= v.clip->frames()) frame1 = v.loop ? 0 : frame0;
+    const uint32_t frac = static_cast<uint32_t>(v.phase);
+    const uint64_t inv = uint64_t(UINT32_MAX) + 1ull - uint64_t(frac);
+    const size_t channels = size_t(v.clip->channels);
+    const int16_t* a = &v.clip->pcm[frame0 * channels];
+    const int16_t* b = &v.clip->pcm[frame1 * channels];
+
+    const auto interpolate = [frac, inv](int32_t x, int32_t y) -> int32_t {
+        return static_cast<int32_t>((int64_t(x) * int64_t(inv) + int64_t(y) * int64_t(frac)) >> 32);
+    };
+    const int32_t sample_l = interpolate(a[0], b[0]);
+    const int32_t sample_r = v.clip->channels == 2 ? interpolate(a[1], b[1]) : sample_l;
     const float gain = std::max(0.0f, std::min(2.0f, v.gain));
-    const int32_t l = static_cast<int32_t>(sample[0] * gain);
-    const int32_t r = static_cast<int32_t>((v.clip->channels == 2 ? sample[1] : sample[0]) * gain);
-    left += l; right += r;
-    v.position += double(v.clip->rate) / double(kOutputRate);
-    if (v.position >= v.clip->frames() && v.loop)
-        v.position = std::fmod(v.position, double(v.clip->frames()));
+    left += static_cast<int32_t>(sample_l * gain);
+    right += static_cast<int32_t>(sample_r * gain);
+
+    v.phase += v.step;
+    if (v.phase >= total) {
+        if (v.loop) v.phase %= total;
+        else v.clip.reset();
+    }
 }
 
 int audioThread(SceSize, void*) {
@@ -214,7 +240,7 @@ void dbtb_effectPlay(int32_t id, float gain) {
     // SoundEffect.soundPoolMap by zero-based logical IDs (se_00 -> 0, se_01 -> 1).
     if (id < 0 || size_t(id) >= effects.size() || !effects[size_t(id)]) return;
     if (active_effects.size() >= kEffectChannels) active_effects.erase(active_effects.begin());
-    active_effects.push_back({effects[size_t(id)], 0.0, gain, false});
+    active_effects.push_back(makeVoice(effects[size_t(id)], gain, false));
 }
 
 void dbtb_effectStop(void) {
@@ -243,7 +269,7 @@ void dbtb_voicePlay(int32_t id, float gain) {
     // Android owns exactly three AudioTrack playback channels. If all three are
     // busy getAudioIndex() rejects the new request instead of creating overlap.
     if (active_voices.size() >= kVoiceChannels) return;
-    active_voices.push_back({streamed_voice_clips[size_t(id)], 0.0, gain, false});
+    active_voices.push_back(makeVoice(streamed_voice_clips[size_t(id)], gain, false));
 }
 
 void dbtb_voiceRelease(void) {
@@ -262,7 +288,7 @@ int32_t dbtb_bgmPlay(void* raw_name, float gain, int32_t loop) {
     auto clip = decodeOgg(audioName(static_cast<const char*>(raw_name)));
     if (!clip) return -1;
     AudioLockGuard lock;
-    bgm = {std::move(clip), 0.0, gain, loop != 0};
+    bgm = makeVoice(std::move(clip), gain, loop != 0);
     return 0;
 }
 
