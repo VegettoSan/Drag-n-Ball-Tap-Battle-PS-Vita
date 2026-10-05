@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-05",
+  "status": "BUILD_CONFIRMED_HARDWARE_PENDING",
+  "title_id": "DBTB00001",
+  "version": "00.03",
+  "original_apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+  "community_android14_apk_sha256": "a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4",
+  "private_original_jar_sha256": "33c5e148a67d5987fc3d167b1092caf975c076a862ed392f1701bd46eef631e4",
+  "toolchain": {
+    "vitasdk_channel": "2026.08",
+    "gcc": "15.2.0",
+    "abi": "ARM EABI5 hard-float",
+    "teavm": "0.12.3",
+    "dex2jar": "2.4",
+    "ecj": "3.37.0",
+    "teavm_amalgamation_optimization": "-O1",
+    "native_optimization": "-O2"
+  },
+  "full_engine": {
+    "generated_c_file_count": 1066,
+    "generated_c_size_approx": "24 MiB",
+    "elf_sha256": "15eeb0794f9729bfb1ea8f4ebea977eed42e506078a78c877763fcf61910bebf",
+    "eboot_sha256": "21395ec468550f39887d650868dd0630f2dcb3d074da22a744c48477ce7b37dc",
+    "vpk_sha256": "66b3b1dbaf22810cd2af45b0d8a57ba9a33870394a7d26494f7241705b0971fb",
+    "vpk_size_bytes": 2339647,
+    "vpk_crc_test": true,
+    "symbols_confirmed": [
+      "meth_cnda_VitaEngine_main",
+      "meth_cnda_TCBManajer_Init",
+      "meth_cnda_TCBManajer_Run",
+      "dbtb_start",
+      "dbtb_drawText",
+      "dbtb_bgmPlay"
+    ]
+  },
+  "private_data_package": {
+    "sha256": "48a0b9c69fe4800429ba35812de1b9bc7513f5135b1e4271a280db4c2a880bec",
+    "layout": [
+      "data/DBTapBattle/game",
+      "data/DBTapBattle/mods/Android14"
+    ],
+    "required_android14_character_triplets": 13,
+    "combined_required_resource_missing_count": 0,
+    "bobj00_resolution": "Android14 profile falls back to original game/bobj00.pac"
+  },
+  "device_evidence": {
+    "vita3k": "PENDING",
+    "real_vita": "PENDING",
+    "playable_claim": false
+  },
+  "notes": [
+    "The VPK contains privately generated APK-derived executable code and is not committed to the public source repository.",
+    "The public repository retains adapters, build scripts and metadata-only evidence.",
+    "Host execution had already confirmed original title/main-menu rendering; this record adds the complete Vita ARM link/package milestone only."
+  ]
+}
