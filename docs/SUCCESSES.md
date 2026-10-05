@@ -188,3 +188,24 @@ continuous `TCBManajer.Run()` sessions reaching 1314 and 624 frames. The prior
 frame-498 text/lifecycle failure is resolved. Front-touch calibration and physical
 button mapping remained the next input-specific blockers; see
 `docs/evidence/vita_hardware_game_boot_00.08.json`.
+
+## 2026-10-05 — Front touch, audio and menu navigation on real PS Vita
+
+**Scope: HARDWARE CONFIRMED through Android14 character-selection entry.**
+Build 00.10 fixed the Vita touch-ID bridge by mapping hardware report IDs onto
+the original engine's logical pointer slots 0–4. On a physical PS Vita the front
+touchscreen then responded correctly throughout the game. The submitted runtime
+log confirms the 1919×1087 active touch grid, multiple Begin events mapped to
+logical slot 0, and continuous original-engine execution.
+
+The user also confirmed native game audio is audible. The Original profile ran
+1054 frames in the captured session. The Android14 profile ran 1502 frames,
+accepted real touch navigation through the menus and reached character selection,
+where at least one character rendered before a caught Java exception ended the
+session cleanly. No `psp2core` was produced.
+
+Short black intervals of roughly 1–2 seconds were observed during some screen
+transitions. They are currently recorded as a loading/transition performance
+issue, not as a crash or rendering correctness result. Character-selection
+continuation and a complete battle remain pending hardware confirmation. See
+`docs/evidence/vita_hardware_touch_character_00.10.json`.
