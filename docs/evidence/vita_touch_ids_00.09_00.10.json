@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-05",
+  "hardware_observed": true,
+  "source_build": "00.09",
+  "symptom": "Original and Android14 profiles run on real PS Vita, but front-touch presses do not activate the original game's touch controls.",
+  "runtime_observations": {
+    "touch_panel_initializes": true,
+    "front_active_area": "0,0 -> 1919,1087",
+    "front_display_area": "0,0 -> 1919,1087",
+    "original_engine_init_pass": true,
+    "crash": false
+  },
+  "engine_contract": {
+    "evidence": "Original TCBManajer.Run queries KeyData using IDs 0 through 4 each frame before ClearBegin().",
+    "problem": "The Vita input adapter passed SceTouchReport.id directly. Hardware IDs are continuity identifiers and are not guaranteed to equal the compact 0..4 IDs consumed by the original engine.",
+    "fix": "Track raw Vita IDs privately and map active contacts to stable logical IDs 0..4 before publishing Begin/Move/End events to VitaEngine/KeyData."
+  },
+  "commits": [
+    "6126ccdfdd721922e2e508cd0fa009c1d59c51ca",
+    "191ef876dee48580bdf67e61d0c120f8a3b5d8f8",
+    "776b27586868fb8308ea23fd90dae39870dbb75f"
+  ],
+  "next_private_test_artifact": {
+    "name": "DBTapBattle-Vita-00.10-touchidfix.vpk",
+    "sha256": "85f74c5ef88c9545156c794d39df4c36327ee0549b4c9768da47c90e8172bddd",
+    "size": 2210050,
+    "eboot_sha256": "89c58e93984f0c4cf901e4a841da5425d9242d5e84a74f4e3971b81bc22bf99c",
+    "contains_icon0": false,
+    "diagnostic_strings": [
+      "Front touch polling active",
+      "Touch begin raw=... logical=..."
+    ]
+  }
+}
