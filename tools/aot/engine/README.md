@@ -1,10 +1,19 @@
-# Original core integration (experimental)
+# Original core integration — full engine 00.21
 
 This directory contains the handwritten platform layer for the original APK's
 Java core. The full private engine can now be generated with TeaVM and built for
 PS Vita through `vita/CMakeLists.txt`. Native imports are declared in
 `native/dbtb_bridge.h`. Generated game C and APK-derived JAR/classes remain
 outside Git; a successful build is not by itself hardware-playability evidence.
+
+## Current checkpoint
+
+Latest full-engine artifact is 00.21 at `07222bb`; device startup recovery is
+pending after 00.20 audio setup failures. Earlier menu/touch/selection/combat
+and 00.19 text recovery are hardware confirmed at their own builds. Read
+[CURRENT_STATUS](../../../docs/CURRENT_STATUS.md),
+[BUILD](../../../docs/BUILD.md) and [VALIDATION](../../../docs/VALIDATION.md).
+The original core is preserved; 00.21 generation has 465 classes / 4059 methods.
 
 ## Confirmed generation and Vita build
 
@@ -23,7 +32,7 @@ boundaries are also counted and adapted explicitly. Unexpected shapes fail the
 private generation step.
 
 A complete private build has been demonstrated with VitaSDK GCC 15.2.0
-hard-float: TeaVM C + native services -> ARM ELF -> Sony SELF -> VPK 00.03. The
+hard-float: TeaVM C + native services -> ARM ELF -> VELF -> Sony SELF -> VPK 00.21. The
 TeaVM amalgamation is compiled at `-O1` because optimizing its ~24 MiB single C
 translation unit at `-O2` exceeded a modest builder's memory budget. Native
 render/audio/platform code remains at `-O2`.
@@ -31,15 +40,18 @@ render/audio/platform code remains at `-O2`.
 ## Service contracts and limits
 
 - ResourceAdapter tries raw lookup then `<name>.pac` through the native VFS.
-  Ordinary/community codecs are selected per resolved file. Resource writes are
-  not allowed.
+  The original GameData exclusion filter reaches disk reads before normalization.
+  Ordinary/community codecs are selected per resolved file. General resource
+  writes are not allowed; the dedicated save.bin service is writable.
 - Java GL Buffer active ranges are copied to native-owned client buffers before
   drawing, so GC cannot move memory still referenced by GL.
 - Original touch scale/offset and stable IDs are passed to original KeyData.
-  Native frame events are bounded and preserve Begin/Move/End phases.
+  Native frame events are bounded and preserve Begin/Move/End phases. Raw Vita
+  touch IDs map to stable slots 0–4 before entering the original Controller.
 - Original engine Init/Run/Dispose are invoked. The Vita frame loop supplies
-  front-touch events and Android-style Back edges; physical gameplay mappings
-  beyond that are still unverified.
+  front-touch events; physical gameplay Back/pause edges are deliberately neutral.
+  First-frame resume initializes text; one EventQueue event progresses after
+  present for original background card tasks. Physical gameplay mappings are open.
 - Texture upload, FBO, save, system-PVF text, Vorbis BGM/SE and PCM/RIFF voice
   services have real Vita implementations. They are not successful no-ops.
 - Android14 text uses its confirmed UTF-8 table codec; original text uses the
@@ -56,9 +68,11 @@ render/audio/platform code remains at `-O2`.
   reachable. Vita provides the missing UTC calendar conversion instead of
   dropping Date as the old input-only experiment did.
 
-These are build/implementation confirmations. The full 00.03 VPK still requires
-Vita3K or real-hardware execution before menu, character selection, battle,
-audio and saves can be promoted to VITA3K/HARDWARE CONFIRMED.
+The current native bridge retains bounded PAC/texture/voice caches, PVF glyph
+rectangles and bandlimited character-voice output. Audio worker priority is the
+restored 0x10000100, with explicit failure cleanup/diagnostics. Implementations
+and host probes do not substitute for the pending 00.21 physical test.
+See [PLATFORM_SERVICES](../../../docs/PLATFORM_SERVICES.md) for exact contracts.
 
 ## Reproduce privately
 
@@ -81,7 +95,11 @@ cmake -S tools/aot/engine/vita -B /private/build-vita \
 cmake --build /private/build-vita -j2
 ```
 
-The private output is `DBTapBattle-Vita-00.03.vpk`. The work directories must be
+The private output is `DBTapBattle-Vita-00.21.vpk`. The work directories must be
 outside the repository. Generated C, original/adapted JARs, classes, APKs and
 commercial payloads must not be committed. The source repository contains only
 the adapters, reproducible generation/build tooling and non-commercial evidence.
+
+The root CMake target and CI native smoke are not this complete engine. Cache
+budgets and heap/compiler/link options are documented in BUILD/CURRENT_STATUS;
+future reuse is described in [PORTING_GUIDE](../../../docs/PORTING_GUIDE.md).

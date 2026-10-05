@@ -1,73 +1,49 @@
-# Audit completion and next milestone — 2026-10-04
+# Audit status — 2026-10-05
 
-Baseline 1e3699b; original APK hash and references pinned in APK_AUDIT.md.
-All original native source/build/tool/documentation files were reviewed. Changes
-are directly on main, published in small commits. Repository remains a
-source-level reconstruction project, not an Android APK runner.
+The 2026-10-04 bootstrap audit was followed by full original-core AOT integration
+and physical Vita testing. This page replaces its obsolete current-state table;
+chronological details remain in [ATTEMPTS](ATTEMPTS.md). The latest test package
+is 00.21; its startup recovery is pending. See [CURRENT_STATUS](CURRENT_STATUS.md).
 
-| Area | Result | Evidence / limit |
+| Area | Present conclusion | Evidence / boundary |
 |---|---|---|
-| APK architecture | FORMAT CONFIRMED | 77 ZIP files; 91 DEX classes; 57 raw resources; no native .so |
-| Outer PAC | FORMAT CONFIRMED | All 19 parsed; every entry read by native host reader |
-| Nested SPR | Container FORMAT CONFIRMED | Six nested packs; native animation/composition pending |
-| PNG | Host decode confirmed | 51 exterior PNGs; corrupt/dimension-budget tests; GPU untested |
-| Mod overlay | Host tests + Vita build confirmed | Original/mod precedence, missing fallback, bad override errors, 258 folders; real mod gameplay pending |
-| Selector/input | BUILD CONFIRMED | D-pad/stick/Cross/back + touch events compiled; device behavior pending |
-| Build/VPK | BUILD CONFIRMED | Real ARM compiler→VELF→SELF→VPK; final provenance/hashes in evidence |
-| Audio | Format confirmed, playback PENDING | All 36 Vorbis streams probed; source channel/volume rules documented |
-| Original game flow | Source map established | Actual task dispatch, state discrepancies recorded; no game loop implemented |
-| Save | Source allocation/read/write confirmed | 12906 bytes; actual interoperability PENDING without a user save fixture |
-| External data | Missing character triplets confirmed | Original download-wrapper naming recovered; survivor completeness/server status UNCONFIRMED |
-| Bluetooth | Original transport/core boundary identified | RFCOMM and synchronization; native multiplayer PENDING |
-| mod.json/Unicode typography | PENDING | Optional metadata ignored; folder names retained, ASCII diagnostic font |
-| Vita3K/hardware | PENDING | No emulator/device execution in this environment |
+| Original APK | 77 ZIP files, 91 DEX classes, 57 raw resources, no native engine .so | [APK_AUDIT](APK_AUDIT.md); original character data absent |
+| Community14 | 144 assets, verified XOR/DEFLATE/table/ADPCM contracts | [ANDROID14_APK](ANDROID14_APK.md); exact source hash, not universal mod codec |
+| Gen dataset | 147 actual assets; empty raw stubs; ordinary PACs with hybrid charset | [Original+Characters](ORIGINAL_PLUS_CHARACTERS_APK.md) |
+| PAC/SPR/images/tables | Native adaptation plus original parser/interpreters | [RESOURCE_FORMATS](RESOURCE_FORMATS.md); host corpus checks, earlier hardware rendering |
+| Engine | Original Java task/core methods generated privately with TeaVM | [ENGINE_MAP](ENGINE_MAP.md); no handwritten replacement combat |
+| Renderer/text | GLES bridge, real FBOs, PVF glyph service, immutable texture reuse | Earlier hardware gameplay/text; newest cache performance pending |
+| Input | Stable touch mapping and original Controller | Touch confirmed; full physical gameplay mapping pending |
+| Audio | Vorbis/PCM backend, voice reconstruction/limiter/cache, restored setup priority | 00.20 setup failure; 00.21 host fixes, hardware pending |
+| Saves | Profile-local save.bin with atomic publication path | Implementation/host tests; exhaustive compatibility pending |
+| Frame rate | 00.18 steady combat reaches logged 59.9/user-observed 60 FPS | Not a universal all-version/all-mode guarantee |
+| Online/multiplayer | Local dataset checks, HTTP rejection, disconnected Bluetooth | Remote services and synchronized multiplayer unimplemented |
+| Packaging | Full private ARM engine ELF/VELF/SELF/VPK 00.21 verified | Public CI smoke tests only native linking; no complete public relink-kit claim |
 
-## What was sound
+## Completed corrections from the bootstrap audit
 
-Original PAC layout arithmetic, external immutable game data, file-level mod
-fallback, staged roadmap and explicit verification categories were good starting
-choices. No need to replace their architecture or repack assets.
+Extraction validates aliases/conflicts/CRC and preserves raw bytes. VFS rejects
+unsafe/non-regular overrides and preserves missing-file fallback. PAC reads
+validate extents and allocation budgets. Subsequent integration fixed missing
+resume initialization, direct-buffer GC ownership, charset boundaries, stable
+touch IDs, Community14 BIN/WAV normalization, card-task scheduling and PVF
+rectangle usage. Current audio setup logs distinguish actual failed syscalls.
 
-## What needed correction
+## Remaining risks and verification gaps
 
-Extractor conflict/manifest handling, nested data preservation, CRC failure
-publication; VFS NUL/component validation and original presence; PAC allocation
-budget/backing revalidation/partial table state; missing entry→PNG step; unchecked
-renderer init/upload; held-button screen transition; logging/provenance and
-build dependency order. These were fixed and tested within their actual scope.
+- Full downloadable character data is absent in the first original APK.
+- A file named Original in the selector does not prove installed provenance.
+- Imported Community14 assets do not reproduce altered Java mechanics.
+- PAC LE fields do not imply CNV/text/save fields are LE.
+- Format and build success do not establish audible fidelity or stable gameplay.
+- 00.20's broad host pass missed platform thread setup rejection; 00.21 adds
+  injected failure paths but still needs a physical test.
+- Save interoperability, return/suspend lifecycle, arbitrary mods, all secondary
+  modes, complete font coverage and physical controls lack a full device matrix.
+- mod.json/selector Unicode labels, remembered choice and log rotation are open.
+- Verify full-engine notices/attribution and relink materials before public
+  distribution; [THIRD_PARTY](THIRD_PARTY.md) records actual delivered scope.
 
-## Important discoveries and risks
-
-1. The APK lacks full playable character data, not just optional cosmetic DLC.
-2. GdGohan code/wiki is modified; state numbers, counts and adapters cannot be
-   copied blindly. Actual original save writes must not be lost to DAD output.
-3. PAC LE does not imply every internal field is LE; CNV uses BE rectangles.
-4. DAC animation is not the same schema as converted gamedata/text DAC tables.
-5. Entire PAC replacement may require a matching CNV/DAC/SPR set and engine
-   logic; file lookup alone does not make a community mod playable.
-6. Actual GPU memory/shader/alpha/FBO orientation, font rasterization, touch
-   gestures and gameplay timing need original-reference/device evidence.
-7. A valid VPK is a build artifact, not HARDWARE CONFIRMED.
-8. The current preview opens one dataset then exits; returning to selector,
-   persistence of last choice, richer metadata and log rotation remain pending.
-
-## Next milestone
-
-First validate this VPK on Vita: Original selector→common.pac 9 entries→first
-512×512 atlas plus logs, then repeat with a mod override/fallback. After that,
-implement the original GameData filter/metadata path, CNV DrawImage and DAC
-_SetAct/_ActReqMain, followed by SPR DrawSprite and original task/panel menu.
-Add audio/text/input services along the recovered boundaries. Obtain a user-owned
-complete character dataset before character selection/battle work. Do not invent
-menu coordinates, frame durations, collision formulas or a new combat system.
-
-## Android14 follow-up — 2026-10-04
-
-Audited supplied SHA a210795b alongside b84f98a3. Shared native helpers match the
-GdGohan SWB exactly; publisher unconfirmed. Import/extraction, aliases, PAC/SPR
-and DEFLATE RGBA have HOST CONFIRMED results: 9 Python regressions, 125 outer
-PACs, 12 nested SPRs and 470 textures. New diagnostic source tracks alpha and
-codec. Vita SDK/build/GPU verification of **this follow-up** remains PENDING;
-previous build evidence applies only to its source hash. Added 13 triplets/51
-cards are installed data, not implemented native character/battle behavior.
-See ANDROID14_APK.md and evidence/android14_validation.json for scope/commands.
+Next: run [00.21 test](TEST_VITA_00_21.md), then cold/repeated selection timing,
+recorded voices and retained text/FPS checks. [PORTING_PLAN](PORTING_PLAN.md)
+tracks subsequent work rather than restarting the completed atlas milestone.

@@ -1,151 +1,122 @@
-# Build and first test — bootstrap 00.02
+# Build and install — full engine 00.21
 
-## Confirmed compilation
+Current build evidence: [00.21](evidence/vita_audio_startup_build_00.21.json).
+Read [CURRENT_STATUS](CURRENT_STATUS.md) before interpreting build success as
+hardware success. Commands below run from the repository root; keep private
+inputs/outputs outside it.
 
-A real VitaSDK GCC 15.2.0 **hard-float** build has compiled, linked and packaged
-this bootstrap. Installed package set: vitasdk-core 2026.08.1-1; vitaGL
-0.0.0.r1488.g2bdbe89-1; libpng 1.6.58-1; zlib 1.3.2-2; libmathneon
-0.0.0.r11.g0faab81-1; vitaShaRK 1.7-1; SceShaccCgExt 1.0.1-1; taihen 0.11-1.
-Final source commit/artifact hashes are recorded in evidence/build_validation.json.
-Do not mix soft-float libraries or a different renderer ABI into this build.
+## Choose the correct target
 
-Use official VitaSDK installation/package guidance at https://vitasdk.org/.
-A complete release channel is preferable to a partially rebuilt nightly package
-set. Install the matching core before renderer dependencies. Package names and
-link archive names differ (e.g. vitaShaRK installs libvitashark.a).
+| Target | Inputs / output | Purpose |
+|---|---|---|
+| `tools/aot/engine/vita` | APK-derived JAR → current adapters → generated all.c → `DBTapBattle-Vita-00.21.vpk` | Full original game engine |
+| Root `CMakeLists.txt` | Native atlas preview → `dbtb_vita.vpk` | Historical bootstrap; not the game |
+| `.github/workflows/vita-engine-native-smoke.yml` | Tiny non-commercial all.c + real native services | Compile/link/package smoke; no game execution |
+| `tools/aot` input probe | Original KeyData/Controller only | JVM/C feasibility comparison; not the full runtime |
+
+The delivered VPK is renamed `DBTapBattle-Vita-00.21-audio-startup-fix.vpk` after
+verification. Its embedded source is `07222bb`; a fresh build at a later main
+commit embeds that later commit. Check the VITA_VERSION in the full target.
+
+## Dependencies and ABI
+
+Validated private build: VitaSDK 2026.08 / GCC 15.2.0, ARM hard-float;
+vitasdk-core 2026.08.1-1, vitaGL package r1488/2bdbe89, libpng 1.6.58,
+zlib 1.3.2, libmathneon, vitaShaRK, SceShaccCgExt, taihen, Vorbis/ogg and
+VitaSDK C/C++/pthread runtime. These describe the validated environment, not a
+promise that every later package release is equivalent. Use matching target
+ABI libraries throughout; do not combine softfp and hard-float archives.
+
+Use the official [VitaSDK setup](https://vitasdk.org/) and package channel.
+The linker archive is `vitashark` even when the package is named vitaShaRK.
+Full native dependency order is maintained in the full-engine CMake file.
+A device also needs the shader compiler module required by vitaGL
+(`libshacccg.suprx`); it is not included in this VPK.
+
+Private Java tools: JDK 17, dex2jar 2.4, ECJ 3.37.0 and TeaVM 0.12.3 dependencies
+from `tools/aot/pom.xml`. `Export private build tools` CI can provide public tool
+bundles; it does not contain the original JAR or generated commercial C.
+
+## Generate the original core privately
+
+The engine input is the **original** b84f98a3 APK. Alternate APKs supply datasets,
+not substitute game bytecode for this recipe. See [APK_AUDIT](APK_AUDIT.md).
+
+```sh
+# /private denotes your own directory outside tracked source.
+bash /tools/dex-tools-v2.4/d2j-dex2jar.sh -f /private/DBTapBattle.apk -o /private/original.jar
+mvn -f tools/aot/pom.xml dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=/private/lib
+python3 tools/aot/engine/generate.py   --original-jar /private/original.jar   --ecj /tools/ecj-3.37.0.jar   --lib-directory /private/lib   --work-directory /private/engine-fresh
+python3 tools/aot/engine/vita/patch_runtime.py /private/engine-fresh/c
+```
+
+Generation checks the expected loader/string/static-field shapes and fails on
+unexpected inputs. It preserves original GameData byte-array parsing and core
+methods. 00.21 generated 465 classes / 4059 methods; this is evidence for the
+pinned recipe, not a required count for an intentionally changed engine.
+
+Use a fresh generation directory. The runtime patch is deliberately single-use;
+it rejects already-patched or incompatible shapes. Do not apply the input-only
+patch under `tools/aot/vita` to the full engine. Do not add the generated C root
+to global include paths: its string.h/time.h would shadow native libc headers.
+Re-generate after Java/import adapter changes; changing C++ alone does not
+require Java regeneration when import contracts are unchanged.
+
+## Build the complete engine
 
 ```sh
 export VITASDK=/your/vitasdk
 export PATH="$VITASDK/bin:$PATH"
-# Install through the supported channel's package manager as documented there:
-vdpm install vitaGL libpng zlib libmathneon vitaShaRK SceShaccCgExt taihen
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build -j4
+cmake -S tools/aot/engine/vita -B /private/build-vita   -DCMAKE_BUILD_TYPE=Release -DTEAVM_C_DIR=/private/engine-fresh/c
+cmake --build /private/build-vita -j2
 ```
 
-CMake also accepts -DVITASDK or an explicit toolchain file. Dependencies must
-come from the same target ABI. CMake uses C++14, no exceptions/RTTI, warning flags,
-64-MiB application heap, standard 960×544 output, and no legacy vitaGL pool.
-The vglInitExtended fourth argument is a RAM allocation threshold, **not** a
-hard total GPU-memory cap. Native SELF is created with homebrew unsafe permission
-(-s equivalent) required by this graphics/runtime stack; it is not signed retail.
+Compile generated all.c once; do not also compile its included constituents.
+TeaVM all.c uses `-O1` to bound compiler memory; native services use `-O2`, C++14,
+no exceptions/RTTI. The full process reserves a 96 MiB Newlib heap and generated
+managed heap min/max 8/48 MiB plus GC metadata. These are distinct budgets.
+Do not link the input-only or root-bootstrap heap definitions into this target.
 
-Artifact: build/dbtb_vita.vpk. Title ID: DBTB00001. Version: 00.02.
-No commercial data is packaged. Native code source and relinking files are
-available alongside the test deliverable; see THIRD_PARTY.md.
+Link uses `-Wl,-q,-z,max-page-size=0x10000` to leave room for SCE relocation
+metadata. ELF→VELF→unsafe homebrew SELF→VPK packaging must all succeed. A
+successful ELF link alone does not prove a valid SELF/package. Output remains
+960×544; the 16 MiB vglInitExtended argument is an allocation threshold, not a
+total GPU-memory cap. Its return describes resolution fallback, not success.
 
-## Data preparation
+## Data preparation and installation
 
 ```sh
-python tools/extract_apk_data.py /path/to/DBTapBattle.apk ./original-data
+# First original APK alone: 57 base resources, no character triplets.
+python3 tools/extract_apk_data.py /private/DBTapBattle.apk /private/install/game
+# Or use the ordinary complete supplied Gen dataset as your base.
+python3 tools/extract_apk_data.py /private/gen.apk /private/install-gen/game
+# Audited Community14, isolated from base data.
+python3 tools/extract_apk_data.py /private/community.apk /private/install --mod Android14
+# Optional private two-source ZIP; it excludes saves and Android binaries.
+python3 tools/prepare_vita_data.py /private/DBTapBattle.apk   /private/community.apk /private/DBTapBattle-data.zip
 ```
 
-Copy the complete output directory contents to ux0:data/DBTapBattle/game/.
-The manifest includes per-file exact hashes and unknown raw formats. Extraction
-preflights conflicts (including manifest), rejects traversal/duplicates/symlinks,
-stages and CRC-checks data before publication. --overwrite permits replacement
-of regular files. Disk/concurrent publication failure into an existing output
-is not an all-or-nothing transaction; preserve a backup when using overwrite.
-For community assets, the extractor now supports explicit/audited layout selection;
-see ANDROID14_APK.md. External Android folders are not silently imported.
+The ordinary extractor preserves a bundled save; the two-source ZIP tool excludes
+saves. Choose the intended initial save and back up existing profile progress
+before copying. Do not use --overwrite over your only working copy. Extraction
+preflights/stages/CRC-checks but publication into an existing directory is not
+an all-or-nothing transaction. See [DATA_LAYOUT](DATA_LAYOUT.md).
 
-This supplied APK alone is sufficient for common.pac preview, **not battle**:
-character triplets are absent. Read PLATFORM_SERVICES.md before calling it a
-complete game installation.
+Install the VPK over the existing application and copy your dataset under
+`ux0:data/DBTapBattle/`; APKs and Android .so/DEX are not runtime files. Do not
+replace data or saves merely to update a port VPK. Symbols ZIP is diagnostic
+and is not installed. Front touch is the tested in-game control.
 
-Optional mod: place replacement files inside
-ux0:data/DBTapBattle/mods/MyMod/. Missing files fall back to game/. A mod need
-not duplicate all 57 files. mod.json is optional and currently ignored.
+## Verify and test
 
-## Expected test sequence (not yet observed on device)
+Follow [VALIDATION](VALIDATION.md) for host probes and artifact checks, then
+[TEST_VITA_00_21](TEST_VITA_00_21.md) on the device. Keep exact VPK SHA, SFO,
+build source, profile provenance, runtime.log and any psp2core together.
+Current VPK has eboot, param.sfo and three notice entries, no asset dataset.
+The generated original code is still commercial engine code; absence of data
+inside the VPK is not an assertion of an all-open-source executable.
 
-Current source additionally initializes gamedata.pac/text00.pac before common
-preview; both are now required. Their converted table directories accept ordinary
-and audited community profiles per resolved file. Failure displays GAME DATA and
-logs the error (exit 8); success logs both paths and record counts. This change
-is host-tested; ARM build confirmation for source 2c3fecd is recorded below.
-No device run has been observed.
-
-**Update 2026-10-04:** source 2c3fecd now compiled/linked/packaged with the matching
-2026.08.1-1 hard-float SDK and the exact library versions above. New VPK size
-717864 bytes, SHA-256 37a866a9adc97881c2148c257f3dea77e0e3d65ffd2445e883efefe0588e92e0;
-ZIP CRC passes. This confirms the dual PAC/image and initial game-table code
-compiles for ARM; it does not confirm startup, menu or combat.
-Hardware/emulator remain pending, and this diagnostic is not published as a
-playable prerelease.
-
-To reproduce the user's dual-profile data ZIP locally:
-
-```sh
-python tools/prepare_vita_data.py /path/to/DBTapBattle.apk \
-  /path/to/community.apk DBTapBattle-Vita-Datos-Original-y-Android14.zip
-```
-
-Extract it and copy data/ to ux0:. APK/Dalvik/native Android binaries and saves
-are excluded. Keep this user-owned data package private; Releases contain port
-binaries/source, not the original game's data.
-
-1. vitaGL initializes; selector displays Original and discovered folders.
-2. D-pad/left stick moves; Cross or a front-screen tap confirms a visible row.
-   Circle/Triangle cancels. More than eight rows scroll using physical controls.
-3. Selected overlay resolves common.pac; parser validates its table.
-4. First PNG is read unchanged and decoded. For supplied original this is a
-   512×512 texture atlas, shown scaled as a diagnostic resource preview.
-   **It is not a reconstructed original menu or a playable game.**
-5. Green PAC OK + atlas after successful upload; errors show a red diagnostic.
-   Release/repress Cross, Start or Circle/Triangle to exit result.
-6. ux0:data/DBTapBattle/logs/runtime.log records timestamp/version/ref, selected
-   data source/path, entry count, decoded dimensions and render/input errors.
-
-vitaGL requires libshacccg.suprx on the system according to its official setup
-instructions. This module is not supplied in the VPK. No audio is expected.
-Touch/UI rendering, driver/shader behavior and lifecycle are PENDING runtime
-verification; a successfully packaged binary does not prove startup.
-
-## Evidence to return
-
-Exact VPK/build, logs/runtime.log, photo of selector and atlas, Original/mod
-choice, whether front touch/D-pad/stick worked. On a failure include any Vita
-crash dump; symbols/relink bundle contains the native ELF. Do not supply raw
-commercial data to Git.
-
-## Host regression commands
-
-```sh
-python -m unittest discover -s tests -p 'test_*.py' -v
-mkdir -p build-host
-g++ -std=c++14 -Wall -Wextra -Werror -fsanitize=address,undefined -g -Isrc \
-  src/pac.cpp src/vfs.cpp tests/test_core.cpp -o build-host/test_core
-ASAN_OPTIONS=detect_leaks=0 build-host/test_core /path/to/original-data/*.pac
-# Requires host libpng development headers/library:
-g++ -std=c++14 -Wall -Wextra -Werror -fsanitize=address,undefined -g -Isrc \
-  src/image.cpp src/pac.cpp tests/test_image.cpp -lpng -lz -o build-host/test_image
-ASAN_OPTIONS=detect_leaks=0 build-host/test_image /path/to/original-data/*.pac
-```
-
-Only leak scanning was disabled in this restricted runner; ASan/UBSan remained
-active. The core test enumerates 258 folders, including a 255-byte name. PNG
-tests reject truncated data and valid-CRC IHDRs exceeding decoded-memory budget.
-
-## Android14 resource support and current ARM build
-
-The new PAC/RGBA reader, alpha-aware diagnostic preview and initial game/text
-table reader are host-tested and ARM BUILD CONFIRMED at source 2c3fecd. The
-2026-10-04 artifact size/hash are recorded above; device execution is pending.
-Existing build_validation.json remains historical and must not be reused as
-proof of the newer artifact. zlib was already linked by CMake; no Android helper
-library is added.
-
-```sh
-python tools/extract_apk_data.py community.apk ./install --mod Android14
-# Host libpng/zlib development headers/libraries required:
-g++ -std=c++14 -Wall -Wextra -Werror -fsanitize=address,undefined -g -Isrc \
-  src/image.cpp src/pac.cpp tests/test_community.cpp -lpng -lz -o build-host/test_community
-ASAN_OPTIONS=detect_leaks=0 build-host/test_community ./original-data/*.pac ./install/mods/Android14/*.pac
-```
-
-Expected new-source device preview: original common.pac has 9 entries; community
-common.pac (imported from 2752.pac) has 6 entries. Both first textures are 512×512;
-logs identify the actual PAC codec and resolved folder. The community decoded
-pixel data is premultiplied, so its preview uses GL_ONE/ONE_MINUS_SRC_ALPHA.
-Do not expect original menus, characters, sound or battle from this bootstrap.
+Old bootstrap build evidence at 2c3fecd remains historical in
+[build_validation.json](evidence/build_validation.json). It is not the current
+full-engine artifact. [THIRD_PARTY](THIRD_PARTY.md) documents notices and the
+limits of the current symbols bundle.

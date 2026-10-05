@@ -1,122 +1,58 @@
-# Porting Plan
+# Porting plan — checkpoint 00.21, 2026-10-05
 
-This plan intentionally grows from verifiable platform/data milestones into gameplay reconstruction. Do not skip ahead by hardcoding visual/gameplay results that the original engine already defines.
+The original plan began with an atlas preview. The chosen implementation now
+preserves the original Java engine through private TeaVM AOT and replaces its
+Android platform services. Do not restart handwritten combat reconstruction.
+[CURRENT_STATUS](CURRENT_STATUS.md) is the evidence matrix; this page is the work
+order. Completion below applies only to the stated scope/build.
 
-## Phase 0 — Bootstrap and data plumbing
+| Stage | Established work | Remaining exit condition |
+|---|---|---|
+| Bootstrap/data | Native selector, VFS, original/Community14 containers, byte-preserving import | Maintain path/error/fallback tests |
+| Original core | APK-derived Init/Run/tasks/Controller/drawing/AI generated privately | Preserve method boundaries during future adaptations |
+| Vita integration | GLES/FBO/PVF/touch/Vorbis/PCM/save/time services; real menu and battle on earlier builds | Exercise every required lifecycle/mode, not only a compile |
+| Offline data | Local character/shared completeness, no dependency on dead catalog | Broader missing-data diagnostics and dataset coverage |
+| Performance | 00.16 startup/cards fixed; 00.18 steady battle 60 FPS confirmed | Retain results on latest build; cold/repeated resource timing |
+| Text | 00.19 image-rectangle fix restores visible text | Size/layout/script and lifecycle matrix |
+| Audio | Decode/three channels/limiter/reconstruction; 00.21 setup repair | Physical startup recovery and audible clean voices |
+| Saves/mods | Profile-local save plus file overlay/per-file codec | Android save round-trip and real asset/code-mod compatibility matrix |
+| Product/distribution | Verified private test VPK and evidence, small main commits | Public notice/relink review; reliable latest-build device test |
 
-- VitaSDK + vitaGL project builds a VPK.
-- Runtime directories are created under `ux0:data/DBTapBattle/`.
-- Original/mod boot selector works.
-- Virtual filesystem resolves active-mod overrides then original fallback.
-- Original `common.pac` is parsed without conversion.
-- Runtime log is written for test evidence.
+## Immediate physical checks
 
-**Exit condition:** BUILD CONFIRMED and at least one untouched original PAC parsed on Vita/Vita3K.
+1. Test 00.21 Original startup. If setup still fails, use its exact
+   open/create/start error; do not assume the old combined log proved a syscall
+   or kernel priority range.
+2. Compare first character visit with immediate and evicted revisits in the same
+   profile. Correlate I/O/cache/decode/upload counters and elapsed frame timing.
+3. Record bad voices by phrase/character in steady playback and switching.
+   Separate source distortion, conversion images, mix clipping and delivery gaps.
+4. Retest names/descriptions/cards and sustained battle FPS with effects.
 
-## Phase 1 — Original resource decoding
+## Subsequent work
 
-Reverse engineer and implement only what the game needs, in dependency order:
+- Keep the original frame/task order; improve loading only at verified adapter
+  boundaries. Prefetch/async loading is a future design requiring ownership,
+  scheduling and real-device measurements, not a current implemented feature.
+- Validate all supported single-player flows, return-to-menu, repeated launches
+  and suspend/resume before claiming complete gameplay fidelity.
+- Confirm profile save isolation and backups with real fixtures; document any
+  migration rather than silently sharing progress.
+- Design physical controls around original gesture/command semantics. In-game
+  button neutrality currently prevents accidental Android-Back exits.
+- Extend asset mods first; Java/code-mod mechanics and new codecs require
+  independent audits. File fallback does not merge PAC entries.
+- Optional selector metadata/Unicode, remembered profile and log rotation remain
+  secondary to reliable gameplay.
+- Bluetooth/network synchronization requires packet/timing analysis. Billing,
+  browser and obsolete catalog services are not single-player requirements.
+- Before public full-engine release, review upstream notices, commercial-code
+  distribution scope and whether a true relink bundle is available.
 
-1. PNG/BMP texture payloads from PAC.
-2. `spr` sprite/layout data.
-3. `act` animation/action data.
-4. `cnv`, `dac`, `gdt`, `bin`, `dat`, `plt`, `db` as required by real code paths.
-5. Original font data/UI assets.
+## Future port reuse
 
-Each format receives its own document and validation fixture/hash notes.
-
-**Exit condition:** render an untouched original menu/background resource according to its original metadata.
-
-## Phase 2 — Android platform abstraction replacement
-
-Map original Android-facing systems to Vita equivalents:
-
-- OpenGL ES 1.x style drawing -> vitaGL.
-- Touch input -> Vita front touch, with physical-button mappings layered on top.
-- Audio/SoundPool/MediaPlayer behavior -> Vita audio implementation.
-- Android file/resource APIs -> `GameVfs` and native Vita I/O.
-- Timers/frame pacing -> Vita timing APIs.
-- Save/config handling -> dedicated writable save path.
-
-**Exit condition:** platform services are available without changing game semantics.
-
-## Phase 3 — Core engine/game-state reconstruction
-
-Use the original APK/decompiled logic plus community reverse-engineering as references, with the APK as behavioral source of truth.
-
-Priority systems:
-
-- Main state machine / `TCBManajer` equivalents.
-- `Game1...Game17` flows as applicable.
-- `DrawSprite`, panel/UI creation and transitions.
-- Character/resource loading.
-- Input/touch command buffers.
-- Battle initialization and active battle state.
-
-**Exit condition:** original menu -> character select -> battle transition works with original data.
-
-## Phase 4 — Battle fidelity
-
-- Player movement/position/state.
-- Attack/guard/special systems.
-- CPU behavior and difficulty.
-- Cards and player loadout data.
-- HUD, effects and results.
-- Training mode.
-
-**Exit condition:** a complete original battle can be played and completed.
-
-## Phase 5 — Audio, saves and secondary modes
-
-- BGM and sound effects.
-- Save/config compatibility strategy.
-- Ranking/data/card screens.
-- Versus/local behavior where practical.
-- Original downloaded-content behavior replaced by local-data checks rather than dead servers.
-
-## Phase 6 — Mod compatibility
-
-Test real community mods in categories:
-
-1. Asset-only replacements.
-2. Character/card/data additions using standard Tap Battle formats.
-3. Mods that alter executable/Dalvik logic.
-4. Protected/private mods.
-
-The first two categories are the primary compatibility target. Code-modified APKs require explicit compatibility work rather than attempting to execute their Android `classes.dex` on Vita.
-
-## Phase 7 — Packaging and user experience
-
-- Friendly missing-data diagnostics.
-- Mod metadata (`mod.json`) and preview support.
-- Remember last selected dataset optionally.
-- Stable VPK/ZIP release packaging without copyrighted game data.
-- Reproducible GitHub Actions build once the local toolchain is confirmed.
-
-## External reverse-engineering reference
-
-A useful community reference exists at `GdGohan/Dragon-Ball-Tap-Battle-Decompilation`, including documentation of `TCBManajer`, game states, resource loading, touch/button systems and several important arrays/variables. Treat it as a reference, not as a replacement for validation against the user's original APK.
-
-## Audit checkpoint — 2026-10-04
-
-Phase 0 compile/package is BUILD CONFIRMED and the bootstrap now reads/decodes
-a real PAC PNG. Hardware exit condition remains PENDING. See AUDIT_STATUS.md
-for evidence and risks; do not begin battle reconstruction from community wiki
-labels without the original handlers and a complete user-owned data set.
-
-## User priority — first playable path, both profiles (2026-10-04)
-
-Concentrate implementation on original menu → character selection → one complete
-battle, reusing one native engine and the per-file original/community resource
-codecs. Native InitGameData table loading is now implemented and host-tested;
-sprite/action interpretation, task dispatch, rendering and combat are still
-required. Complete the required systems for this path together rather than
-treating additional atlas previews as a playable milestone. Core touch input,
-battle sound and exit behavior belong to this path; secondary network modes,
-news/downloader UI and mod metadata can wait. A packaged diagnostic is not a
-playable game, and source compatibility is not hardware validation.
-
-Keep asset/data overlays from both APK profiles. A mod changing Java behavior
-needs an explicit native behavior adaptation. The original APK lacks character
-packages; full original-only play requires those user-provided resources. The
-community APK's character files are available when its dataset is selected.
+Use [PORTING_GUIDE](PORTING_GUIDE.md) for the workflow and failure lessons. Reuse
+validated platform contracts, not this APK's constants, state labels, memory
+budgets or formats without checking the next game's actual source. The GdGohan
+archive is a comparison reference; the original supplied APK remains behavioral
+source of truth. Historical stages/results live in [ATTEMPTS](ATTEMPTS.md).
