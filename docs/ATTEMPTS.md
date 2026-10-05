@@ -614,3 +614,45 @@ shrinking limits, steady buffer reuse and oversize rejection via
 Complete current Java adapters regenerated through pinned TeaVM 0.12.3; complete
 ARM engine compiled and packaged as VPK 00.18. Device smoothness, voice quality
 and a stable 60 FPS remain PENDING user hardware testing.
+
+## 2026-10-05 — 00.19 text regression and audio peak control
+
+**Hardware result for 00.18:** user reports stable 60 FPS in battles, raspy
+voices persist, previously working text disappears. Latest supplied runtime.log
+boots 3302305; steady battle windows are 59.9 FPS. No mix-computation deadline
+misses; summed PCM clips 1345 channel samples across this session. Exact metrics
+and log SHA are in `evidence/vita_hardware_performance_00.18.json`. Selection
+resource/texture pauses remain separate from steady battle performance.
+
+**Text:** 0205adf replaced `scePvfGetCharImageRect` with CharInfo bitmap dimensions.
+A host probe of the real adapter reproduces zero coverage when those dimensions
+are zero but the image rectangle is valid. Restore the authoritative rectangle
+once per visible glyph/size; retain memory font, cached advances/bearings,
+deferred off-screen glyphs and dirty-row uploads. First eight glyphs report
+rectangle and nonzero pixel count to distinguish PVF from upload failures.
+The same probe then passes ASCII/CJK coverage, bounds, cache reuse, deferred
+rasterization and failed-image handling under ASan/UBSan. Device recovery is
+still PENDING testing 00.19.
+
+**Audio:** retain original PCM16 mono 22050 Hz voices and fixed-point linear
+resampling to 48000 Hz. The original SoundEffect audio worker skips the 44-byte
+WAV header; the adapter's RIFF parser retains the same source samples and supports
+additional chunks. All 198 gen.apk voices match their PCM payload byte-for-byte
+and add no clipping when mixed alone (host ASan/UBSan). 36 source clips contain
+4140 samples exactly at the PCM rails; this is source evidence, not proof of
+all audible roughness. No filtering or asset rewriting is introduced.
+
+Replace hard saturation of the summed signal with a stereo-linked block peak
+limiter and gradual ~100 ms release. Use an 8 KiB fixed scratch buffer, keep
+64-frame lock portions, and add no output buffering/delay or per-block allocation.
+Below-threshold audio at unity remains unchanged. Host probes verify shape and
+stereo balance, extreme overlap, release across calls, non-1024 block counts,
+RIFF metadata/truncation, interpolation/duration and the original three-channel
+limit. `audio_overload_samples` counts pre-limiter overflow, while
+`audio_clip_samples` now counts actual post-limiter saturation. Source PCM
+rate/peak/rail counts are logged at voice load. Audible improvement and Vita
+audio-thread cost remain PENDING hardware testing.
+
+Native source changes are separate commits 749fdb5 (text), 8654f66 (audio);
+full-engine version 00.19 is bb78269. Keep original graphics optimizations, clocks,
+960x544, game rules, mod fallback and profile saves.

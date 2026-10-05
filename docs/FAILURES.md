@@ -250,3 +250,30 @@ segment 1 overlaps`. This is packaging evidence, not a Vita runtime crash.
 Retry differs by using `-z,max-page-size=0x10000` at link time so loadable segments
 leave room for SCE metadata. Full 00.18 ELF→VELF→SELF→VPK succeeded locally;
 a small native-only smoke rebuild is checked independently.
+
+## 2026-10-05 — 00.18 PVF dimension shortcut removes text
+
+**Conditions:** full engine 00.18 / 3302305 on the user's Vita. User confirms
+formerly visible text has disappeared; steady battles now reach 60 FPS.
+
+**Failure:** 0205adf assumed `ScePvfCharInfo.bitmapWidth/Height` could substitute
+for `scePvfGetCharImageRect`. Zero/unsuitable dimensions skip all rasterization.
+The real-adapter host probe reproduces this with valid metrics and an independent
+image rectangle. Device metadata was not logged in 00.18, so its exact values
+are not asserted.
+
+**Retry change:** 749fdb5 restores the image-rectangle call once per visible
+glyph/size, keeps caching and memory-backed font, and adds pixel-coverage logging.
+The reproduction passes after the correction; hardware text recovery in 00.19
+awaits the user. Do not retry the dimension substitution without PVF pixel
+coverage validation on hardware. See `ATTEMPTS.md`, 00.19 entry.
+
+## 2026-10-05 — Interpolation alone does not resolve raspy voices
+
+The user still hears raspy character voices on 00.18 despite fixed-point linear
+resampling. Its log proves some summed output hard clipping, with zero measured
+mix deadline misses. The supplied gen.apk also has samples at PCM rails in
+36/198 voice files. These are separate facts; neither establishes every audible
+artifact. 8654f66 controls mix peaks and logs source amplitude, without changing
+pitch or rewriting voices. Device audio quality still needs validation; do not
+claim interpolation or zero mix-deadline misses proves clean audible output.

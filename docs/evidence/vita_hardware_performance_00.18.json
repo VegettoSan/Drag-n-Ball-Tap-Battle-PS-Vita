@@ -1,0 +1,25 @@
+{
+  "tested_version": "00.18",
+  "source_commit": "330230541d64a298ac7b6d136065b009e8b8fe54",
+  "log_sha256": "282ef2e791043a75682eb6fe313f06582e9ea6b3e1c180764947161ceb4472a7",
+  "user_report": {
+    "battle_fps": "stable at 60",
+    "voices": "still raspy",
+    "text": "previously visible text disappeared"
+  },
+  "battle_windows": 15,
+  "battle_fps_min": 59.9,
+  "battle_fps_max": 59.9,
+  "mixed_hard_clip_samples": 1345,
+  "late_mix_blocks": 0,
+  "max_mix_us": 4340,
+  "effective_clocks_mhz": {
+    "cpu": 444,
+    "bus": 222,
+    "gpu": 222,
+    "crossbar": 166
+  },
+  "remaining_character_loading_pauses": "Resource/texture loads remain; not fixed by 60 FPS steady battle result",
+  "text_root_cause": "CharInfo bitmap dimensions substituted for CharImageRect in 0205adf; host reproduction and restored rectangle call pass. Exact PVF values on device await 00.19 diagnostics.",
+  "voice_scope": "Output summation clipped on device. Some supplied gen.apk PCM reaches sample rails before mixing; this does not establish the complete audible cause."
+}

@@ -1,0 +1,42 @@
+{
+  "source_commit": "bb78269178cf2dfe16dc55d7df7a54de798fb57b",
+  "version": "00.19",
+  "size_bytes": 2228868,
+  "sha256": "0cef17b50701761882664288c1d6e6b1ea2282a8fa87497b58c737ab6bfb5c9e",
+  "eboot_sha256": "153d4c203661d181bec2838eab42d530f59c96c0a5183dcb9b12580a9629f61c",
+  "zip_crc": "PASS",
+  "sfo": {
+    "APP_VER": "00.19",
+    "BOOT_FILE": "",
+    "CATEGORY": "gd",
+    "CONTENT_ID": "",
+    "NP_COMMUNICATION_ID": "",
+    "PSP2_DISP_VER": "00.000",
+    "STITLE": "Dragon Ball Tap Battle Vita",
+    "TITLE": "Dragon Ball Tap Battle Vita",
+    "TITLE_ID": "DBTB00001",
+    "VERSION": "00.00"
+  },
+  "entries": [
+    "sce_sys/param.sfo",
+    "eboot.bin",
+    "notices/THIRD_PARTY.md",
+    "notices/vitaGL-GPL-3.0.txt",
+    "notices/vitaGL-LGPL-3.0.txt"
+  ],
+  "contains_commercial_asset_data": false,
+  "hardware_test": "PENDING: text recovery, audible voice quality and retained FPS on 00.19",
+  "tests": {
+    "text": "ASan/UBSan PASS; original adapter regression reproduced before fix; PVF/GL mocked",
+    "audio": "ASan/UBSan PASS; limiter, shape/stereo, release, RIFF, interpolation/duration, 3-channel rejection; hardware calls mocked",
+    "real_gen_voices": "198 RIFFs / 4011895 samples byte-exact, no added solo output clipping; 4140 source rail samples in 36 clips",
+    "gles_buffers": "JVM PASS; native imports mocked",
+    "python_regressions": "12 PASS",
+    "full_engine": "private original TeaVM engine ARM ELF/VELF/SELF/VPK build PASS"
+  },
+  "native_ci": {
+    "source_commit": "bb78269178cf2dfe16dc55d7df7a54de798fb57b",
+    "run_id": 37360041901,
+    "conclusion": "success"
+  }
+}

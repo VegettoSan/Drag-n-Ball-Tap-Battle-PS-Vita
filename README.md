@@ -4,18 +4,22 @@ Native PS Vita port/reconstruction of **Dragon Ball Tap Battle**, targeting Vita
 
 > This repository contains port code and documentation only. Original copyrighted game data is **not** committed. Users provide their own legally obtained APK/data.
 
-## Current full engine — 00.18 test build
+## Current full engine — 00.19 test build
 
 The original Java engine is generated privately through TeaVM and runs on real
 Vita: menus, character selection and combat are hardware confirmed. The user
-confirmed the card-processing and startup fixes in 00.16, while reporting
-character-switch pauses, rough voices and 35–45 FPS during combat.
+confirmed card/startup fixes, and 00.18 now holds 60 FPS in steady battles at
+960×544. Character-loading pauses remain; 00.18 also regressed text visibility
+and voices still sound rough.
 
-00.18 adds in-memory PVF fonts, reusable GLES buffers, interpolated/faster audio
-mixing and timing diagnostics at full 960×544. The complete game VPK and separate
-native smoke both compile/package; actual performance gains await hardware
-verification. See [00.18 install/test instructions](docs/TEST_VITA_00_18.md) and
-[artifact evidence](docs/evidence/vita_performance_build_00.18.json).
+00.19 restores PVF image rectangles while keeping the font/glyph caches, and
+limits mixed audio peaks instead of hard clipping them. It retains the graphics
+optimizations that reached 60 FPS. Host regressions, actual supplied PCM voices,
+complete game VPK packaging and native CI pass. Text recovery, audible voice
+quality and retained FPS in 00.19 await hardware testing. See
+[00.19 install/test instructions](docs/TEST_VITA_00_19.md),
+[00.18 hardware evidence](docs/evidence/vita_hardware_performance_00.18.json) and
+[00.19 artifact evidence](docs/evidence/vita_text_audio_build_00.19.json).
 
 The sections below describe the earlier bootstrap milestone. Full engine build
 instructions are in [tools/aot/engine/README.md](tools/aot/engine/README.md).

@@ -245,3 +245,25 @@ Android14 PAC files, 470 textures and 198 decoded WAV entries; gen.apk passes
 108 PAC files, 405 PNGs and 198 aligned PCM voice entries. All 12 Python tests
 pass. The native-only GitHub CI job is green at b6d859c (run 37357204717); that
 job remains a smoke link probe and is not the delivered full game VPK.
+
+## 2026-10-05 — 00.18 steady battle performance reaches 60 FPS on Vita
+
+**Scope:** HARDWARE CONFIRMED by user report and current 3302305 runtime.log.
+Steady battle windows record 59.9 FPS at 960x544 with original game behavior.
+Requested clock API succeeds; effective CPU 444, bus 222, GPU 222, crossbar 166.
+No measured mix-computation deadline misses. Resource-loading pauses, missing
+text and raspy audio remain unresolved in this tested version; performance
+success does not validate those systems. See
+`evidence/vita_hardware_performance_00.18.json`.
+
+## 2026-10-05 — Host regressions cover PVF rectangles and audio saturation
+
+**Scope:** HOST CONFIRMED only, native PVF/audio hardware calls mocked.
+`tests/test_vita_text.cpp` fails with 00.18's shortcut and passes after restoring
+the independent image rectangle, including actual nonzero ASCII/CJK surface
+coverage. `tests/test_vita_audio.cpp` passes ASan/UBSan with no post-limiter
+clipping under overlap, preserved waveform/stereo ratios, bounded release,
+unchanged quiet unity output and RIFF metadata/truncation handling.
+Private validation reads/mixes all 198 supplied gen.apk RIFF voices, preserves
+their PCM samples byte-for-byte and adds no clipping when each plays alone.
+No source assets are committed. Audible quality/text recovery on Vita are pending.
