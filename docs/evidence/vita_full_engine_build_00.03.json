@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-05",
+  "artifact_version": "00.03",
+  "title_id": "DBTB00001",
+  "classification": "PRIVATE_BUILD_CONFIRMED_DEVICE_PENDING",
+  "source": {
+    "original_apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+    "android14_apk_sha256": "a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4",
+    "generated_commercial_sources_committed": false,
+    "commercial_data_committed": false
+  },
+  "aot": {
+    "teavm": "0.12.3",
+    "java": "Temurin 17.0.20.1",
+    "dex2jar": "2.4",
+    "ecj": "3.37.0",
+    "classes": 465,
+    "methods": 4053,
+    "generated_c_approx_mib": 24,
+    "diagnostics": 0
+  },
+  "vita": {
+    "sdk": "2026.08",
+    "gcc": "15.2.0",
+    "abi": "ARM EABI5 hard-float",
+    "teavm_optimization": "-O1",
+    "native_service_optimization": "-O2",
+    "pipeline": ["ARM ELF", "Sony VELF", "SELF", "VPK"]
+  },
+  "private_build_artifacts": {
+    "elf_sha256": "15eeb0794f9729bfb1ea8f4ebea977eed42e506078a78c877763fcf61910bebf",
+    "elf_size_bytes": 6860000,
+    "eboot_sha256": "21395ec468550f39887d650868dd0630f2dcb3d074da22a744c48477ce7b37dc",
+    "eboot_size_bytes": 2294430,
+    "final_vpk_sha256": "0090153fe650d116264217b3d9bd2fdd43ec02dd380247ed6fbe68bdc6773af4",
+    "vpk_members": 6,
+    "vpk_includes_original_private_icon": true
+  },
+  "data_package": {
+    "sha256": "48a0b9c69fe4800429ba35812de1b9bc7513f5135b1e4271a280db4c2a880bec",
+    "members": 205,
+    "internal_hashes_checked": 204,
+    "internal_hash_failures": 0,
+    "original_profile_files": 58,
+    "android14_profile_files": 145
+  },
+  "linked_core_symbols_confirmed": [
+    "cnda_VitaEngine_Cls",
+    "meth_cnda_VitaEngine_main",
+    "dbtb_start",
+    "dbtb_frame",
+    "dbtb_present"
+  ],
+  "limits": [
+    "This proves generation, ARM compilation, linking, SELF creation and VPK packaging only.",
+    "Real PS Vita or Vita3K execution of this exact full-engine VPK is still pending.",
+    "Menu, character selection, complete battle, audio and save behavior must not be labeled Vita-confirmed until runtime evidence is captured."
+  ]
+}
