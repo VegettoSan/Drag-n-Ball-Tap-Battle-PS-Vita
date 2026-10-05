@@ -10,7 +10,7 @@ public final class Utility {
     public static byte[] readDataRaw(Context c,String name)throws Exception {byte[] out=NativePlatform.read(name,false);if(out==null)throw new IOException("Missing raw resource: "+name);return out;}
     public static byte[] readDataFile(Context c,String name){return NativePlatform.read(name,name.equals("save.bin"));}
     public static byte[] readDataFile(Context c,String name,int off,int size){byte[] b=readDataFile(c,name);if(b==null||off<0||size<0||off>b.length-size)return null;byte[] out=new byte[size];System.arraycopy(b,off,out,0,size);return out;}
-    public static boolean checkFile(Context c,String name){return readDataFile(c,name)!=null;}
+    public static boolean checkFile(Context c,String name){byte[] n=NativePlatform.cstr(name);return NativePlatform.exists(Address.ofData(n))!=0;}
     public static boolean writeDataFile(Context c,String name,byte[] b,boolean external){return writeDataFile(name,b,0,b.length,0,external,true);}
     public static boolean writeDataFile(String name,byte[] b,int off,int size,int pos,boolean external){return writeDataFile(name,b,off,size,pos,external,false);}
     private static boolean writeDataFile(String name,byte[] b,int off,int size,int pos,boolean external,boolean truncate){if(!name.equals("save.bin")||off<0||size<0||off>b.length-size||pos<0)return false;byte[] n=NativePlatform.cstr(name);return NativePlatform.writeSave(Address.ofData(n),Address.ofData(b).add(off),size,pos,truncate?1:0)!=0;}
