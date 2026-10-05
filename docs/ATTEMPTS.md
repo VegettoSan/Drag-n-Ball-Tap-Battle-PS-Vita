@@ -548,3 +548,23 @@ beyond the first rendered character and a complete battle is still pending.
 **Next action:** test Android14 first, browse several characters and proceed
 toward battle. If that succeeds, test Original again for regression and then
 profile the separate 1–2 second black transition stalls.
+
+## 2026-10-05 — Attempt 025 — Recover interrupted 00.17 and reduce PVF I/O
+
+**Baseline:** `fddbba5`, including voice interpolation (`910f9d3`), GL client
+state tracking (`5608826`) and PVF metric reuse (`0205adf`). These commits were
+already on main when the interrupted session was resumed; no delivered full
+00.17 build or hardware confirmation was found.
+
+**Hardware evidence:** submitted 00.16 runtime.log shows text draws of 18–184 ms
+and uploads of 19–20 ms. User confirms cards/startup fixed, but character
+switching still stalls, some voices are rough, and battles run at 35–45 FPS.
+The log does not yet identify the combat CPU/GPU bottleneck.
+
+**Change:** open the identical selected system font with
+`SCE_PVF_MEMORYBASEDSTREAM`, falling back to file streaming if PVF rejects it.
+VitaSDK's pvf.h defines mode 0 as FILEBASEDSTREAM and mode 1 as MEMORYBASEDSTREAM.
+This avoids font seeks on each new glyph without changing text, layout or sizes.
+
+**Check:** current VitaSDK 2026.08 GCC 15.2.0 compiled vita_text.cpp successfully;
+`git diff --check` passes. A real-device timing improvement is still PENDING.

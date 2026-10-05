@@ -74,7 +74,17 @@ ScePvfFontId openSystemFont(ScePvfLibId lib, ScePvfLanguageCode language) {
     ScePvfError error = 0;
     const ScePvfFontIndex index = scePvfFindOptimumFont(lib, &style, &error);
     if (error != 0 || index < 0) return nullptr;
-    ScePvfFontId font = scePvfOpen(lib, index, 0, &error);
+    // File streaming seeks into the system CJK font on every cache miss. The
+    // supplied hardware log shows roughly 8-11 ms per new glyph. Keep the same
+    // font/metrics, but let PVF hold it in memory rather than doing per-glyph I/O.
+    ScePvfFontId font = scePvfOpen(lib, index, SCE_PVF_MEMORYBASEDSTREAM, &error);
+    if (error == 0 && font) {
+        runtimeLog("PVF font opened in memory (language=" + std::to_string(language) + ")");
+        return font;
+    }
+    runtimeLog("PVF memory font unavailable; trying file stream");
+    error = 0;
+    font = scePvfOpen(lib, index, SCE_PVF_FILEBASEDSTREAM, &error);
     return error == 0 ? font : nullptr;
 }
 
