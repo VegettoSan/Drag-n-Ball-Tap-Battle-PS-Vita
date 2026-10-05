@@ -209,3 +209,21 @@ transitions. They are currently recorded as a loading/transition performance
 issue, not as a crash or rendering correctness result. Character-selection
 continuation and a complete battle remain pending hardware confirmation. See
 `docs/evidence/vita_hardware_touch_character_00.10.json`.
+
+## 2026-10-05 — Android14 reaches and plays a real battle on PS Vita
+
+**Scope: HARDWARE CONFIRMED through actual combat.**
+Build 00.11 fixes the Community14 top-level character GameData BIN metadata and,
+on a physical PS Vita, proceeds beyond the former first-character exit into an
+actual battle. Character selection, front-touch navigation, game sound and combat
+execution are therefore hardware confirmed for the Android14 profile. The user
+reported gameplay holding 60 FPS in normal operation, with intermittent stalls;
+that frame-rate observation is not an instrumented benchmark and is recorded as
+user-observed hardware behavior rather than a timing guarantee.
+
+The submitted 00.11 `runtime.log` contains two Android14 sessions, both reaching
+`ORIGINAL ENGINE INIT PASS`, starting the Vita audio output/worker and accepting
+multiple normalized front-touch events without a fatal/NPE trace. Remaining
+adapter defects observed during real combat are character voice/WAV playback and
+dialogue text stalls/layout drift; these are addressed separately in build 00.12.
+See `docs/evidence/vita_hardware_battle_00.11.json`.
