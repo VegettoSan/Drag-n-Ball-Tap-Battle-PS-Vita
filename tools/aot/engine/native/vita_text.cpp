@@ -51,6 +51,7 @@ std::unordered_map<int, std::unique_ptr<TextSurface>> surfaces;
 std::unordered_map<uint64_t, Glyph> glyph_cache;
 std::unordered_map<int, LineMetrics> line_metrics_cache;
 int next_surface = 1;
+int current_font_size = -1;
 
 void* pvfAlloc(void*, unsigned int size) {
     return memalign(8, (size + 7u) & ~7u);
@@ -79,7 +80,10 @@ TextSurface* surface(int id) {
 
 bool setSize(int size) {
     if (!font_id || size <= 0) return false;
-    return scePvfSetCharSize(font_id, static_cast<float>(size), static_cast<float>(size)) == 0;
+    if (current_font_size == size) return true;
+    if (scePvfSetCharSize(font_id, static_cast<float>(size), static_cast<float>(size)) != 0) return false;
+    current_font_size = size;
+    return true;
 }
 
 void markDirtyRows(TextSurface& s, int top, int bottom) {
@@ -258,6 +262,7 @@ bool dbtb_initFonts() {
         return false;
     }
     scePvfSetResolution(font_lib, 72.0f, 72.0f);
+    current_font_size = -1;
     return true;
 }
 
