@@ -1,6 +1,8 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
+#include "log.hpp"
 
+#include <psp2/kernel/processmgr.h>
 #include <psp2/pvf.h>
 #include <vitaGL.h>
 #include <algorithm>
@@ -10,6 +12,7 @@
 #include <cstring>
 #include <malloc.h>
 #include <memory>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -19,13 +22,34 @@ struct TextSurface {
     int height = 0;
     int ypos = 0;
     GLuint texture = 0;
-    bool dirty = true;
+    bool dirty = false;
+    int dirty_top = 0;
+    int dirty_bottom = 0;
     std::vector<uint8_t> rgba;
+};
+
+struct Glyph {
+    int advance = 1;
+    int bearing_x = 0;
+    int bearing_y = 0;
+    int width = 0;
+    int height = 0;
+    int margin = 2;
+    bool drawable = false;
+    std::vector<uint8_t> mask;
+};
+
+struct LineMetrics {
+    int top = -1;
+    int bottom = 1;
+    int height = 2;
 };
 
 ScePvfLibId font_lib = nullptr;
 ScePvfFontId font_id = nullptr;
 std::unordered_map<int, std::unique_ptr<TextSurface>> surfaces;
+std::unordered_map<uint64_t, Glyph> glyph_cache;
+std::unordered_map<int, LineMetrics> line_metrics_cache;
 int next_surface = 1;
 
 void* pvfAlloc(void*, unsigned int size) {
@@ -58,9 +82,94 @@ bool setSize(int size) {
     return scePvfSetCharSize(font_id, static_cast<float>(size), static_cast<float>(size)) == 0;
 }
 
-bool metrics(uint16_t c, ScePvfCharInfo& info, ScePvfIrect& image) {
-    return font_id && scePvfGetCharInfo(font_id, c, &info) == 0 &&
-           scePvfGetCharImageRect(font_id, c, &image) == 0;
+void markDirtyRows(TextSurface& s, int top, int bottom) {
+    top = std::max(0, std::min(s.height, top));
+    bottom = std::max(0, std::min(s.height, bottom));
+    if (bottom <= top) return;
+    if (!s.dirty) {
+        s.dirty = true;
+        s.dirty_top = top;
+        s.dirty_bottom = bottom;
+    } else {
+        s.dirty_top = std::min(s.dirty_top, top);
+        s.dirty_bottom = std::max(s.dirty_bottom, bottom);
+    }
+}
+
+bool lineMetrics(int size, LineMetrics& out) {
+    auto cached = line_metrics_cache.find(size);
+    if (cached != line_metrics_cache.end()) {
+        out = cached->second;
+        return setSize(size);
+    }
+    if (!setSize(size)) return false;
+
+    // Android's original StringTexture uses Paint.getFontMetrics().top/bottom,
+    // i.e. font-wide metrics independent of the particular string. Use the PVF
+    // font-wide ascender/descender instead of deriving line height from each run.
+    int top = -std::max(1, size);
+    int bottom = std::max(1, size / 4);
+    ScePvfFontInfo info{};
+    if (scePvfGetFontInfo(font_id, &info) == 0) {
+        const int asc64 = info.maxIGlyphMetrics.ascender64;
+        const int desc64 = info.maxIGlyphMetrics.descender64;
+        if (asc64 > 0) {
+            // ceil(-ascender) matches Android's ceil(FontMetrics.top).
+            top = -std::max(1, asc64 >> 6);
+        }
+        if (desc64 != 0) {
+            const int magnitude = desc64 < 0 ? -desc64 : desc64;
+            bottom = std::max(1, (magnitude + 63) >> 6);
+        }
+    }
+    LineMetrics metrics;
+    metrics.top = top;
+    metrics.bottom = bottom;
+    metrics.height = std::max(1, std::abs(top) + std::abs(bottom));
+    line_metrics_cache.emplace(size, metrics);
+    out = metrics;
+    return true;
+}
+
+Glyph* glyphFor(int size, uint16_t c, bool& cache_miss) {
+    const uint64_t key = (uint64_t(uint32_t(size)) << 16) | uint64_t(c);
+    auto existing = glyph_cache.find(key);
+    if (existing != glyph_cache.end()) return &existing->second;
+    cache_miss = true;
+    if (!setSize(size)) return nullptr;
+
+    Glyph glyph;
+    glyph.advance = std::max(1, size / 2);
+    ScePvfCharInfo info{};
+    ScePvfIrect rect{};
+    if (scePvfGetCharInfo(font_id, c, &info) == 0 && scePvfGetCharImageRect(font_id, c, &rect) == 0) {
+        glyph.advance = std::max(1, info.glyphMetrics.horizontalAdvance64 >> 6);
+        glyph.bearing_x = info.glyphMetrics.horizontalBearingX64 >> 6;
+        glyph.bearing_y = info.glyphMetrics.horizontalBearingY64 >> 6;
+        if (rect.width > 0 && rect.height > 0) {
+            glyph.width = int(rect.width) + glyph.margin * 2;
+            glyph.height = int(rect.height) + glyph.margin * 2;
+            if (glyph.width <= 1024 && glyph.height <= 1024) {
+                glyph.mask.assign(size_t(glyph.width) * glyph.height, 0);
+                ScePvfUserImageBufferRec image{};
+                image.pixelFormat = SCE_PVF_USERIMAGE_DIRECT8;
+                image.xPos64 = (glyph.margin << 6) - info.glyphMetrics.horizontalBearingX64;
+                image.yPos64 = (glyph.margin << 6) + info.glyphMetrics.horizontalBearingY64;
+                image.rect.width = static_cast<uint16_t>(glyph.width);
+                image.rect.height = static_cast<uint16_t>(glyph.height);
+                image.bytesPerLine = static_cast<uint16_t>(glyph.width);
+                image.buffer = glyph.mask.data();
+                glyph.drawable = scePvfGetCharGlyphImage(font_id, c, &image) == 0;
+                if (!glyph.drawable) glyph.mask.clear();
+            }
+        }
+    }
+
+    // Bound memory without making every dialogue pay PVF cost forever. The game
+    // normally stays far below this; clearing only occurs on pathological mods.
+    if (glyph_cache.size() >= 2048) glyph_cache.clear();
+    auto inserted = glyph_cache.emplace(key, std::move(glyph));
+    return &inserted.first->second;
 }
 
 void sourceOver(uint8_t* dst, int r, int g, int b, int a, uint8_t coverage) {
@@ -76,59 +185,47 @@ void sourceOver(uint8_t* dst, int r, int g, int b, int a, uint8_t coverage) {
     dst[3] = static_cast<uint8_t>(std::min(255, sa + (dst[3] * inv + 127) / 255));
 }
 
-int glyphAdvance(const ScePvfCharInfo& info) {
-    const int advance = info.glyphMetrics.horizontalAdvance64 >> 6;
-    return std::max(1, advance);
-}
-
-bool drawGlyph(TextSurface& target, uint16_t c, int pen_x, int baseline,
-               int r, int g, int b, int a, int& advance) {
-    ScePvfCharInfo info{};
-    ScePvfIrect rect{};
-    if (!metrics(c, info, rect)) return false;
-    advance = glyphAdvance(info);
-    const int bearing_x = info.glyphMetrics.horizontalBearingX64 >> 6;
-    const int bearing_y = info.glyphMetrics.horizontalBearingY64 >> 6;
-    const int margin = 2;
-    const int gw = std::max<int>(1, rect.width + margin * 2);
-    const int gh = std::max<int>(1, rect.height + margin * 2);
-    if (gw > 1024 || gh > 1024) return false;
-
-    std::vector<uint8_t> mask(size_t(gw) * gh, 0);
-    ScePvfUserImageBufferRec image{};
-    image.pixelFormat = SCE_PVF_USERIMAGE_DIRECT8;
-    image.xPos64 = (margin << 6) - info.glyphMetrics.horizontalBearingX64;
-    image.yPos64 = (margin << 6) + info.glyphMetrics.horizontalBearingY64;
-    image.rect.width = static_cast<uint16_t>(gw);
-    image.rect.height = static_cast<uint16_t>(gh);
-    image.bytesPerLine = static_cast<uint16_t>(gw);
-    image.buffer = mask.data();
-    if (scePvfGetCharGlyphImage(font_id, c, &image) != 0) return false;
-
-    const int origin_x = pen_x + bearing_x - margin;
-    const int origin_y = baseline - bearing_y - margin;
-    for (int y = 0; y < gh; ++y) {
+void drawGlyph(TextSurface& target, const Glyph& glyph, int pen_x, int baseline,
+               int r, int g, int b, int a) {
+    if (!glyph.drawable || glyph.mask.empty()) return;
+    const int origin_x = pen_x + glyph.bearing_x - glyph.margin;
+    const int origin_y = baseline - glyph.bearing_y - glyph.margin;
+    for (int y = 0; y < glyph.height; ++y) {
         const int dy = origin_y + y;
         if (dy < 0 || dy >= target.height) continue;
-        for (int x = 0; x < gw; ++x) {
+        for (int x = 0; x < glyph.width; ++x) {
             const int dx = origin_x + x;
             if (dx < 0 || dx >= target.width) continue;
-            const uint8_t coverage = mask[size_t(y) * gw + x];
+            const uint8_t coverage = glyph.mask[size_t(y) * glyph.width + x];
             if (!coverage) continue;
             sourceOver(&target.rgba[(size_t(dy) * target.width + dx) * 4], r, g, b, a, coverage);
         }
     }
-    return true;
 }
 
 void upload(TextSurface& s) {
     if (!s.dirty || !s.texture) return;
+    const uint64_t start = sceKernelGetProcessTimeWide();
+    const int top = std::max(0, s.dirty_top);
+    const int bottom = std::min(s.height, s.dirty_bottom);
+    if (bottom <= top) { s.dirty = false; return; }
+
     GLint old = 0;
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &old);
     glBindTexture(GL_TEXTURE_2D, s.texture);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, s.width, s.height, GL_RGBA, GL_UNSIGNED_BYTE, s.rgba.data());
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, top, s.width, bottom - top,
+                    GL_RGBA, GL_UNSIGNED_BYTE, s.rgba.data() + size_t(top) * s.width * 4);
+    const GLenum error = glGetError();
     glBindTexture(GL_TEXTURE_2D, old);
-    s.dirty = glGetError() != GL_NO_ERROR;
+    if (error == GL_NO_ERROR) {
+        s.dirty = false;
+        s.dirty_top = s.dirty_bottom = 0;
+    }
+    const uint64_t elapsed = sceKernelGetProcessTimeWide() - start;
+    if (elapsed >= 15000) {
+        runtimeLog("Text upload: " + std::to_string(elapsed / 1000) + " ms rows=" +
+                   std::to_string(bottom - top));
+    }
 }
 }
 
@@ -189,48 +286,52 @@ int32_t dbtb_createText(int32_t w, int32_t h) {
 void dbtb_clearText(int32_t id) {
     TextSurface* s = surface(id);
     if (!s) return;
-    std::fill(s->rgba.begin(), s->rgba.end(), 0);
+    const int used_rows = std::max(0, std::min(s->height, s->ypos));
+    if (used_rows > 0) {
+        std::fill(s->rgba.begin(), s->rgba.begin() + size_t(used_rows) * s->width * 4, 0);
+        markDirtyRows(*s, 0, used_rows);
+    }
     s->ypos = 0;
-    s->dirty = true;
 }
 
 int32_t dbtb_drawText(int32_t id, void* raw_text, int32_t length, int32_t size,
                       int32_t r, int32_t g, int32_t b, int32_t a, void* raw_bounds) {
     TextSurface* s = surface(id);
-    if (!s || !raw_text || !raw_bounds || length < 0 || length > 4096 || size <= 0 || s->ypos >= s->height || !setSize(size))
+    if (!s || !raw_text || !raw_bounds || length < 0 || length > 4096 || size <= 0 || s->ypos >= s->height)
         return 0;
 
+    const uint64_t start = sceKernelGetProcessTimeWide();
     const auto* text = static_cast<const uint16_t*>(raw_text);
     auto* bounds = static_cast<int32_t*>(raw_bounds);
-    int ascent = std::max(1, size);
-    int descent = std::max(1, size / 4);
+    LineMetrics metrics{};
+    if (!lineMetrics(size, metrics) || s->ypos + metrics.height > s->height) return 0;
 
-    // Android Paint uses font-wide top/bottom. Approximate those from all glyph
-    // metrics in this run, then draw every glyph on the same baseline.
-    for (int i = 0; i < length; ++i) {
-        ScePvfCharInfo info{};
-        ScePvfIrect rect{};
-        if (!metrics(text[i], info, rect)) continue;
-        ascent = std::max(ascent, info.glyphMetrics.horizontalBearingY64 >> 6);
-        descent = std::max(descent, int(info.bitmapHeight) - (info.glyphMetrics.horizontalBearingY64 >> 6));
-    }
-    const int line_height = std::max(1, ascent + std::max(0, descent));
-    if (s->ypos + line_height > s->height) return 0;
-    const int baseline = s->ypos + ascent;
-
+    const int top = s->ypos;
+    const int baseline = s->ypos - metrics.top; // Android: canvas.drawText(..., ypos - FontMetrics.top, ...)
     int pen = 0;
+    int misses = 0;
     for (int i = 0; i < length; ++i) {
-        int advance = std::max(1, size / 2);
-        drawGlyph(*s, text[i], pen, baseline, r, g, b, a, advance);
-        pen += advance;
+        bool cache_miss = false;
+        Glyph* glyph = glyphFor(size, text[i], cache_miss);
+        if (cache_miss) ++misses;
+        if (!glyph) continue;
+        drawGlyph(*s, *glyph, pen, baseline, r, g, b, a);
+        pen += glyph->advance;
     }
 
     bounds[0] = 0;
-    bounds[1] = s->ypos;
+    bounds[1] = top;
     bounds[2] = pen;
-    bounds[3] = s->ypos + line_height;
-    s->ypos += line_height;
-    s->dirty = true;
+    bounds[3] = top + metrics.height;
+    s->ypos += metrics.height;
+    markDirtyRows(*s, top, s->ypos);
+
+    const uint64_t elapsed = sceKernelGetProcessTimeWide() - start;
+    if (elapsed >= 15000) {
+        runtimeLog("Text draw: " + std::to_string(elapsed / 1000) + " ms chars=" +
+                   std::to_string(length) + " misses=" + std::to_string(misses) +
+                   " size=" + std::to_string(size));
+    }
     return 1;
 }
 
