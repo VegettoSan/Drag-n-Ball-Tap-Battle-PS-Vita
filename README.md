@@ -1,5 +1,11 @@
 # Dragon Ball Tap Battle PS Vita
 
+Latest LiveArea test: **DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk**. It preserves
+the hardware-tested 00.23 engine and fixes the splash palette. The previous
+LiveArea-Final VPK contained a non-playable CI probe and must be discarded.
+See [current status](docs/CURRENT_STATUS.md) and
+[corrected device test](docs/TEST_VITA_00_23_LIVEAREA_FIXED.md).
+
 <!-- DBTB_00_23_DETAIL:START -->
 ## PS Vita hardware status — 00.23
 

@@ -55,15 +55,25 @@ The 00.23 physical-Vita retest preserves the audio/selection fixes and now enter
 [00.23 hardware evidence](evidence/vita_hardware_full_game_00.23.json) records the tested artifact and scope.
 The package used for this hardware checkpoint was an interactive test build; see [BUILD](BUILD.md) for the split-compilation caveat before treating it as a release-quality performance artifact.
 
-A LiveArea-only derivative, `DBTapBattle-Vita-00.23-LiveArea.vpk`, SHA-256
-`382927c8032fda1db5ec21078a006026daa78ef93f3bdfce7c8484f880fd4e50`,
-retains every entry of that hardware-tested package byte-for-byte and adds only
-`icon0.png`, `pic0.png`, `bg0.png`, `startup.png` and `template.xml`.
-The exact assets and VPK layout pass the VitaSDK smoke workflow. Physical Vita
-installation and shell appearance are still pending, so this does not replace or
-expand the existing 00.23 gameplay hardware claim. See
-[LiveArea evidence](evidence/vita_livearea_00.23.json) and
-[the focused device test](TEST_VITA_00_23_LIVEAREA.md).
+The current presentation test is `DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk`,
+SHA-256 `19fae90627b1ddf4f42902ec228b0c50d992cb7c3cce6d3fbb6d8a8843d9edee`. It uses the exact hardware-tested 00.23
+executable/SFO and retains every original package entry byte-for-byte, adding
+only the five LiveArea files. `pic0.png` now has the required 256-entry palette
+without changing any decoded pixels; the minimal MetalSyntax a1 gate uses XML
+content revision 2. This package passes the toolkit and strengthened local
+validators; its installation/appearance on real hardware remains pending.
+
+The previous `DBTapBattle-Vita-00.23-LiveArea-Final.vpk` is **rejected**: its
+`eboot.bin` matches the non-playable CI native link probe (run `37387861902`),
+not the hardware-tested full engine. The user reported installation and
+presentation failures. The supplied artwork also had a separate 192-entry
+splash palette mismatch; its exact causal role in the installer failure is
+unconfirmed because no VitaShell error code was supplied. The historical
+LiveArea-only package/evidence remains a record of that earlier attempt, not
+acceptance of the Final VPK.
+
+See [corrected package evidence](evidence/vita_livearea_fixed_00.23.json) and
+[the corrected device test](TEST_VITA_00_23_LIVEAREA_FIXED.md).
 
 ## Implementation versus observation
 
@@ -95,7 +105,7 @@ established here.
 
 ## Latest observations and next work
 
-1. **Confirm the LiveArea repack on hardware.** Install the exact 00.23 LiveArea-only VPK and verify VitaShell promotion, bubble icon, Shenlong background, launch gate/logo and a short launch/battle regression pass.
+1. **Confirm the LiveArea repack on hardware.** Install the corrected `DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk` and verify VitaShell promotion, bubble icon, Shenlong background, launch gate/logo and a short launch/battle regression pass.
 2. **Broaden 00.23 regression coverage.** Repeat battles, switch across more characters and revisit evicted resources to confirm the streaming fix under churn rather than only one successful progression.
 3. **Retest both supported dataset paths/mod overlays.** Keep original fallback rules and record exact dataset hashes when comparing behavior.
 4. **Measure release-quality performance.** The 00.23 hardware test package used split TeaVM compilation with `TCBManajer.c` at `-O0` because of the interactive build runner; create a normal reproducible full-engine package before making final FPS/performance claims for 00.23.

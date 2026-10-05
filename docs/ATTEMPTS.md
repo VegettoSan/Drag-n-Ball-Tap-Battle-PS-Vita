@@ -878,3 +878,18 @@ coverage rather than reopening the removed whole-PAC bridge design.
 > documents remain historical evidence; this note does not claim exhaustive coverage
 > of every character, mode, mod or long-duration session.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## 2026-10-05 — Repair the failed Final LiveArea VPK
+
+User reported both installation and presentation failure. Inspection found two
+separate defects: `pic0.png` had 192 palette slots despite the documented 256-slot
+splash rule, and the Final executable matched the CI native link probe exactly
+(`450313712e506ae637501f57a5d521316304d0df74b611bdd416e0b19c360a22`).
+That probe is not the game. We retrieved and hash-verified the hardware-tested
+00.23 VPK, then rebuilt the presentation package with unmodified VitaSDK
+`vita-pack-vpk`, retaining every original entry. PNG pixel identity, toolkit
+validation, archive CRC/paths, stricter source/VPK validation and three regressions
+pass. Repack input is now hash-pinned, and base executable/SFO identity is checked.
+CI artifacts are renamed `dbtb-native-link-probe-NOT-PLAYABLE`.
+Hardware confirmation of the new LiveArea is pending; no installer code was supplied.
+See [evidence](evidence/vita_livearea_fixed_00.23.json).

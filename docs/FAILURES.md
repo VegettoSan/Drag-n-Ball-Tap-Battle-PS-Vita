@@ -386,3 +386,15 @@ regression testing open.
 > documents remain historical evidence; this note does not claim exhaustive coverage
 > of every character, mode, mod or long-duration session.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## 2026-10-05 — Final VPK contained a native CI probe
+
+`DBTapBattle-Vita-00.23-LiveArea-Final.vpk` must not be used as a playable build.
+Its executable is byte-identical to run `37387861902`'s native link probe, not the
+00.23 engine tested on hardware. Correct LiveArea paths/hashes did not prove the
+runtime identity. The older PNG validation also accepted a 192-slot splash palette.
+The user reports installer and image problems; the exact installer error and the
+palette defect's causal role remain unconfirmed. Repair: use the hash-pinned real
+00.23 base, losslessly pad pic0 to 256 entries, compare all original entries after
+repacking, and label CI probe downloads NOT-PLAYABLE. Never promote a smoke VPK to
+a gameplay artifact. See [evidence](evidence/vita_livearea_fixed_00.23.json).

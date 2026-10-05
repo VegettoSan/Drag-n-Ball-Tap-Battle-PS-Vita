@@ -190,3 +190,24 @@ For installation, update the VPK without deleting `ux0:data/DBTapBattle/` or sav
 > documents remain historical evidence; this note does not claim exhaustive coverage
 > of every character, mode, mod or long-duration session.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## Corrected LiveArea repack — 2026-10-05
+
+Use the real, hardware-tested full engine as the base. A CI native link probe is
+not a playable engine even when its filename/version match. The checked repack
+requires the expected base archive hash and preserves the original executable,
+SFO and notices. For this 00.23 checkpoint:
+
+```sh
+python3 tools/repack_livearea_vpk.py \
+  --base-vpk /path/to/DBTapBattle-Vita-00.23-battle-memory-test.vpk \
+  --expected-base-sha256 8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd \
+  --output /path/to/DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk
+```
+
+`vita-pack-vpk` must be on PATH, or pass `--packer /absolute/path/vita-pack-vpk`.
+The wrapper reconstructs approved assets, calls the SDK packer and checks every
+non-presentation base entry. Exact archive hashes can vary with packer timestamps;
+entry identity and validation are the reproducible contract. See
+[LiveArea asset contract](../assets/livearea/README.md) and
+[corrected package evidence](evidence/vita_livearea_fixed_00.23.json).

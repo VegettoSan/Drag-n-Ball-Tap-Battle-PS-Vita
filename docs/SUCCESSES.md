@@ -372,3 +372,13 @@ Test VPK SHA-256: `8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b58
 > documents remain historical evidence; this note does not claim exhaustive coverage
 > of every character, mode, mod or long-duration session.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## 2026-10-05 — Corrected LiveArea packaging passes host verification
+
+The repaired package retains every entry of the hardware-tested 00.23 VPK exactly,
+including eboot/SFO. MetalSyntax's LiveArea checks pass; pic0 now has 256 palette
+entries with identical decoded RGBA pixels and retained IDAT bytes. Three targeted
+regressions pass: short-palette rejection/repair, PNG CRC rejection and prevention
+of executable substitution. These are host/package successes; the new LiveArea
+installation and rendering still need physical Vita confirmation.
+See [evidence](evidence/vita_livearea_fixed_00.23.json).

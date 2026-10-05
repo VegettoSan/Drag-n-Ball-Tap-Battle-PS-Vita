@@ -1,5 +1,10 @@
 # PS Vita test — 00.23 LiveArea-only repack
 
+Historical test instructions. For the corrected package after the reported Final
+failure, use [the Fixed VPK test](TEST_VITA_00_23_LIVEAREA_FIXED.md). The Final
+package's native CI executable was not the hardware-tested engine, and its splash
+palette did not satisfy the 256-entry rule.
+
 This test is intentionally narrower than the 00.23 gameplay validation. The runtime
 binary is unchanged from the hardware-tested 00.23 package; this package adds only
 the PS Vita presentation files used by the bubble and LiveArea.

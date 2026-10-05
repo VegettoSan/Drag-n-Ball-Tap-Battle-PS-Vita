@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-05",
+  "artifact": "DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk",
+  "sha256": "19fae90627b1ddf4f42902ec228b0c50d992cb7c3cce6d3fbb6d8a8843d9edee",
+  "size_bytes": 2620686,
+  "base_artifact": "DBTapBattle-Vita-00.23-battle-memory-test.vpk",
+  "base_sha256": "8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd",
+  "eboot_sha256": "fad6135add0a29a3f0ff67dca9cee79c04233502cf2bb7cfa944537887c3894f",
+  "param_sfo_sha256": "eaecfecbc28f342176dd45445d3a2208b2b5c56f3839a81d306e8a8c9d9f76da",
+  "palette": {
+    "old_pic0_sha256": "17d875946a077684ae62720967941d9d3b82ba3b080d52a3eb7f7e93abfab3ce",
+    "new_pic0_sha256": "84d530e2def6332bddc817bbc5256192173b11928c21382bbeddcfa89bfae83a",
+    "old_size": 271584,
+    "new_size": 271776,
+    "rgba_pixels_identical": true
+  },
+  "toolkit_commit": "516e612b7470496a878cebb130da80361326bc44",
+  "packer_commit": "e8bc8f70ee5d3036f1562486cbc6065b52a8d173",
+  "packer": "unmodified VitaSDK vita-pack-vpk.c linked against host libzip 1.7.3",
+  "toolkit_validation": [
+    [
+      "bg0.png",
+      true,
+      "OK (117.5 KB, 8-bit indexado)"
+    ],
+    [
+      "pic0.png",
+      true,
+      "OK (265.4 KB, 8-bit indexado)"
+    ],
+    [
+      "icon0.png",
+      true,
+      "OK (13.3 KB, 8-bit indexado)"
+    ],
+    [
+      "startup.png",
+      true,
+      "OK (9.9 KB, 8-bit indexado)"
+    ],
+    [
+      "template.xml",
+      true,
+      "OK"
+    ]
+  ],
+  "tests": {
+    "palette_and_crc_regressions": 3,
+    "new_vpk": "PASS",
+    "old_vpk": "REJECTED: pic0 has 192 palette entries",
+    "crc": "PASS",
+    "paths": "PASS",
+    "decoded_pixels": "identical",
+    "base_identity": "PASS: eboot, SFO and every non-presentation file unchanged"
+  },
+  "hardware_status": "PENDING for this corrected repack. Runtime comes byte-for-byte from the documented hardware-tested 00.23 package. The failed Final used a proven non-playable CI probe; the 192-entry splash was a separate documented format mismatch.",
+  "all_base_entries_byte_identical": true,
+  "added_entries": [
+    "sce_sys/icon0.png",
+    "sce_sys/livearea/contents/bg0.png",
+    "sce_sys/livearea/contents/startup.png",
+    "sce_sys/livearea/contents/template.xml",
+    "sce_sys/pic0.png"
+  ],
+  "failed_final": {
+    "artifact": "DBTapBattle-Vita-00.23-LiveArea-Final.vpk",
+    "sha256": "085aefb2d60ba82fba6d0061bd71573a9f1ecc66132d063e3893e391eaebef27",
+    "eboot_sha256": "450313712e506ae637501f57a5d521316304d0df74b611bdd416e0b19c360a22",
+    "eboot_matches_native_link_probe": true,
+    "probe_workflow_run_id": 37387861902,
+    "probe_artifact_id": 11379188703,
+    "probe_artifact_name": "dbtb-vita-engine-native-smoke",
+    "user_report": "Both installation and images failed; exact installer code unavailable"
+  },
+  "source_fix_commit": "d085f803c4016c9d1ba7403a58e967ffad580a15"
+}
