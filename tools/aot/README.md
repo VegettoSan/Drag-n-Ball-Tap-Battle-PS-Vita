@@ -90,3 +90,13 @@ and complete event scheduling still need validation.
 
 Future distribution containing TeaVM runtime must include its notices/license
 and documented reproducible build. Only handwritten probes/adapters are committed.
+
+
+## Follow-up: complete core generation
+
+The unadapted EngineProbe result above remains a baseline. The new handwritten
+platform layer in [engine/README.md](engine/README.md) now generates the complete
+reachable original Init/Run path (456 classes/3989 methods). Native service imports
+have contracts; linking and engine execution remain separate pending milestones.
+The original byte-array decoder and gameplay classes are preserved. Do not use
+the input-only runtime patch unchanged for this full engine.

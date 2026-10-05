@@ -392,3 +392,24 @@ decision. No generated commercial sources/binaries or APKs are committed.
 and obsolete network startup, then verify original Init→Run→menu→selection→battle.
 Both resource profiles must remain supported; altered Java mods need separate
 behavior recovery. See tools/aot/README.md for full reproduction and limits.
+
+
+## 2026-10-04 — Attempt 019 — Generate the complete original Init/Run core
+
+**Baseline:** e54cf31. **Changes:** handwritten Android/GLES service interfaces,
+NativePlatform/VitaGles imports and original engine entry point. A hash-pinned ASM
+adapter redirects only GameData.Init(GlobalWork,String,int,int) resource I/O to
+VFS, then invokes the original byte-array Init with conversion/filter preserved.
+**Procedure:** ECJ 3.37.0 + TeaVM 0.12.3, original dex2jar 2.4 JAR, no Android
+framework JAR. Compare JAR payloads; repeat using generate.py in a fresh directory.
+**Observed:** first adapter pass leaves three file/resource reflection diagnostics;
+resource overload adaptation resolves all three. Both final runs generate 456
+classes/3989 methods without diagnostics. Only GameData.class changes among 106
+JAR entries; all 105 other payloads are identical. No original/decompiled/generated
+commercial sources are committed. **Result:** COMPILER SUCCESS, not execution.
+**Limits:** 55 native service imports need implementations/linking; no native
+Init/Run execution yet. Shift_JIS and real Date support must be provided. Offline
+network/catalog/Bluetooth boundaries report unavailable/disconnected, never fake
+a purchase/download/connection. Production CMake remains the diagnostic bootstrap.
+**Next:** connect bounded dual-profile VFS/image data, native client buffers, actual
+fonts/audio/saves/input, link the core and execute menu→selection→one complete battle.

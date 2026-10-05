@@ -137,3 +137,13 @@ An isolated runtime adaptation links to a real Vita ARM ELF and valid SELF.
 UTF-16 host tests pass. This demonstrates a reusable Java-core experiment, not
 full-engine porting or device execution; the full Init/Run remains blocked by
 unadapted Android dependencies. Generated game code stays outside Git.
+
+
+## 2026-10-04 — Complete original core generation
+
+Attempt 019 generates the reachable original Init/Run engine with TeaVM 0.12.3:
+456 classes and 3989 methods, no compiler diagnostics; a fresh reproduction passes.
+TCBManajer/Game1..17, TCB/ObjReq, input/controller, graphics batching and the
+byte-array GameData/SpriteData decoder remain supplied original bytecode. One
+hash-pinned Android resource overload is adapted. Native linking/execution, full
+menu/combat and playable release remain pending. See tools/aot/engine/README.md.

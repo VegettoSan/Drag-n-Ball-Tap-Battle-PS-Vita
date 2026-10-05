@@ -117,3 +117,13 @@ explicit runtime adaptation. GCC 15 rejects a fallback non-void return and
 Newlib lacks GNU timegm. The isolated input patch addresses only tested needs,
 omitting unused Date rather than inventing it. Device/full-engine scheduler and
 filesystem behavior remain unverified. No placeholder game release is published.
+
+
+## 2026-10-04 — Adapter pass still reached Android streaming I/O
+
+Attempt 019's first pass still needed Context.openFileInput/getResources and
+ResourceMiner reflection, because GameData has a separate String loading overload.
+Adding raw-ID stubs would not supply a working resource stream. The revised pass
+redirects that one verified overload to the VFS and reuses the original byte-array
+decoder; full generation then passes. The input-only Date omission is unsuitable
+for this full core. Native service implementations are still required before linking.
