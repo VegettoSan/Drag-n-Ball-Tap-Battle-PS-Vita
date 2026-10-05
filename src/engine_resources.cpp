@@ -86,13 +86,14 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
             if (!normalise(payload, "", nested, error, depth + 1)) return false;
             if (nested != payload) changed = true;
             payload.swap(nested);
-        } else if (encoded && type == "bin") {
-            // Community14 protects the converted GameData directory inside BIN
-            // payloads as well as the outer PAC directory. The original Java
-            // GameData.Init(..., conversion=2, ...) expects the ordinary table
-            // header, so restore only that verified metadata and preserve all
-            // record payload bytes unchanged. Character selection relies on
-            // these tables for ChrGameData[*].piGameData/Pos/XSize/YSize.
+        } else if (encoded && depth == 0 && type == "bin") {
+            // Community14 protects the converted GameData directory inside
+            // top-level BIN payloads as well as the outer PAC directory. Nested
+            // SPR BIN entries use different schemas and must remain untouched.
+            // The original Java GameData.Init(..., conversion=2, ...) expects
+            // the ordinary table header, so restore only that verified metadata
+            // and preserve all record payload bytes unchanged. Character
+            // selection relies on these tables for ChrGameData[*] fields.
             if (!normaliseConvertedTable(payload, error)) return false;
         } else if (encoded && type == "dac" && (name == "gamedata.pac" || name == "text00.pac")) {
             if (!normaliseConvertedTable(payload, error)) return false;
