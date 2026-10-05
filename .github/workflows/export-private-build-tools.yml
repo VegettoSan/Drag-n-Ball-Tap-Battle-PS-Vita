@@ -50,6 +50,10 @@ jobs:
           done
           test -x export/dex2jar/d2j-dex2jar.sh
 
+          # Preserve the exact Java 17 runtime used by the validated AOT recipe.
+          # This is public Temurin tooling only; no user/game content is included.
+          tar -C "$(dirname "$JAVA_HOME")" -czf export/temurin-jdk17.tar.gz "$(basename "$JAVA_HOME")"
+
           # Public repository snapshot only. User APK/JAR/generated C never enter CI.
           git archive --format=tar --output=export/dbtb-port-source.tar HEAD
           find export -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > export/SHA256SUMS.txt
