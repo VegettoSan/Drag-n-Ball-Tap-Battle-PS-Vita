@@ -47,9 +47,11 @@ jobs:
           cmake --build build-engine-smoke -j2
           test -s build-engine-smoke/dbtb_original_engine
           test -s build-engine-smoke/eboot.bin
-          test -s build-engine-smoke/DBTapBattle-Vita-00.03.vpk
+          VPK="$(find build-engine-smoke -maxdepth 1 -type f -name 'DBTapBattle-Vita-*.vpk' -print -quit)"
+          test -n "$VPK"
+          test -s "$VPK"
           file build-engine-smoke/dbtb_original_engine
-          sha256sum build-engine-smoke/DBTapBattle-Vita-00.03.vpk
+          sha256sum "$VPK"
 
       - name: Upload smoke build
         uses: actions/upload-artifact@v4
@@ -59,4 +61,4 @@ jobs:
           path: |
             build-engine-smoke/dbtb_original_engine
             build-engine-smoke/eboot.bin
-            build-engine-smoke/DBTapBattle-Vita-00.03.vpk
+            build-engine-smoke/DBTapBattle-Vita-*.vpk
