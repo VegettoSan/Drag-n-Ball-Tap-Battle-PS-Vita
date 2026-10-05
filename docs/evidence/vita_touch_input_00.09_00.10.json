@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-05",
+  "scope": "real PS Vita touch input after first successful game boot",
+  "hardware_observed": true,
+  "build_00_09_result": {
+    "game_booted": true,
+    "front_touch_buttons_visible": true,
+    "front_touch_responsive": false,
+    "crash": false,
+    "panel_info": {
+      "active_area": "0,0 -> 1919,1087",
+      "meaning": "front touch panel initialized and reports the expected high-resolution active grid"
+    }
+  },
+  "root_cause_hypothesis_for_00_10": {
+    "details": "The original TCBManajer input path only queries logical pointer IDs 0..4, while the Vita adapter previously forwarded SceTouchReport.id directly. Vita hardware IDs are not guaranteed to be those Android-style logical slots, so KeyData can contain a touch the game never queries.",
+    "fix": "Keep Vita raw IDs only for tracking continuity and map active contacts to stable logical game slots 0..4. Log the first Begin/End events as raw->logical mappings."
+  },
+  "commits": [
+    "6126ccdfdd721922e2e508cd0fa009c1d59c51ca",
+    "191ef876dee48580bdf67e61d0c120f8a3b5d8f8",
+    "776b27586868fb8308ea23fd90dae39870dbb75f"
+  ],
+  "next_private_test_artifact": {
+    "name": "DBTapBattle-Vita-00.10-touchidfix.vpk",
+    "sha256": "733967e5c8e3bd078ade520af80000a8bb773f543cfb388180873dd9ab5271bc",
+    "size": 2210050,
+    "eboot_sha256": "89c58e93984f0c4cf901e4a841da5425d9242d5e84a74f4e3971b81bc22bf99c",
+    "contains_icon0": false,
+    "zip_test": "pass",
+    "expected_log": "Touch begin raw=<vita id> logical=<0..4> x=<screen x> y=<screen y>"
+  }
+}
