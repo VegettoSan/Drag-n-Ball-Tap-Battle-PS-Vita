@@ -88,6 +88,15 @@ triplets**. It is not a complete battle installation. Supplied Android14 has
 assets including those triplets and an optional bundled save. Original in the
 selector means the base folder, not proof of which APK supplied its contents.
 
+For Windows 10/11, use the [portable drag-and-drop tool](tools/windows/LEEME.txt):
+extract its ZIP, keep the BAT and PS1 together, and drag one or several APKs onto
+`Extraer_APK_para_Vita.bat`. It creates a new `Listo_para_Vita/Paquete_*/data/`
+ready to copy to the `ux0:` root. It keeps Original, Android14 and Gen separate,
+normalizes confirmed Community14 names without changing bytes, and records
+source/file hashes. No Python or 7-Zip is required. Preserve your existing
+profile-local `save.bin` when copying an update. See [Windows tool details and
+verification](docs/WINDOWS_DATA_TOOL.md).
+
 ```sh
 # Run from this repository, using private output outside tracked source.
 python3 tools/extract_apk_data.py /private/gen.apk /private/install/game

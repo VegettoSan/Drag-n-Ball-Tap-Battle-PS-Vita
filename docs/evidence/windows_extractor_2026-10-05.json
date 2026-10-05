@@ -1,0 +1,82 @@
+{
+  "date": "2026-10-05",
+  "tool_version": "1.0",
+  "runtime_changes": false,
+  "real_apk_verification": {
+    "platform": "Linux",
+    "powershell_version": "7.4.6",
+    "independent_oracle": "Python zipfile + existing community14 canonical_name/table; every output filename, payload byte, source hash and file hash verified",
+    "datasets": [
+      {
+        "apk": "01-DBTapBattle.apk",
+        "profile": "game",
+        "files": 57,
+        "renamed": 0,
+        "bytes": 22519715,
+        "sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+        "byte_identity_verified": true
+      },
+      {
+        "apk": "02-tap-battle-android-14.apk",
+        "profile": "mods/Android14",
+        "files": 144,
+        "renamed": 106,
+        "bytes": 72085444,
+        "sha256": "a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4",
+        "byte_identity_verified": true
+      },
+      {
+        "apk": "03-gen.apk",
+        "profile": "mods/Gen",
+        "files": 147,
+        "renamed": 0,
+        "bytes": 82747907,
+        "sha256": "d52cbd7ef248d995ad17ba6ec8ec6fa08590a344ac2a9786e5ac839bf7715f28",
+        "byte_identity_verified": true
+      }
+    ]
+  },
+  "linux_regressions": {
+    "run": 13,
+    "passed": 12,
+    "skipped": 1,
+    "reason": "cmd.exe transport requires Windows"
+  },
+  "windows_regressions": {
+    "platform": "Windows Server 2025 / Windows PowerShell 5.1.26100.33438 / .NET Framework",
+    "run": 13,
+    "passed": 13,
+    "skipped": 0,
+    "run_id": 37390881454,
+    "job_id": 112035400330,
+    "source_commit": "5ef4549212839dfff8a84c7d6e474d69e64eca3a",
+    "run_url": "https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37390881454",
+    "conclusion": "success",
+    "actual_bat_paths_include": [
+      "space",
+      "&",
+      "!",
+      "%",
+      "[1]"
+    ]
+  },
+  "historical_test_harness_failure": {
+    "run_id": 37390731907,
+    "tests_passed": 12,
+    "failed_test": "actual BAT invocation",
+    "cause": "subprocess list2cmdline CRT escaping does not match cmd.exe nested /c quotes; BAT did not start",
+    "fix": "Pass raw cmd.exe CreateProcess command line and expand quoted environment paths once; 5ef4549"
+  },
+  "deliverable": {
+    "filename": "DBTapBattle-Extractor-Windows.zip",
+    "size_bytes": 10314,
+    "sha256": "cf1ea2f3659811fb2b4d2ab2e506bfed8ee6457d95d57e3cddb3b1aa2c66fbc7",
+    "files": [
+      "Extraer_APK_para_Vita.bat",
+      "Extraer_APK_para_Vita.ps1",
+      "LEEME.txt"
+    ],
+    "contains_game_data": false
+  },
+  "verification_limit": "No new Vita device run claimed; GUI picker and interactive Explorer launch not automated. Windows 10/11 use the same required built-in PowerShell 5.1/.NET interfaces; CI OS is Server 2025."
+}

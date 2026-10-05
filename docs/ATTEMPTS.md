@@ -893,3 +893,18 @@ pass. Repack input is now hash-pinned, and base executable/SFO identity is check
 CI artifacts are renamed `dbtb-native-link-probe-NOT-PLAYABLE`.
 Hardware confirmation of the new LiveArea is pending; no installer code was supplied.
 See [evidence](evidence/vita_livearea_fixed_00.23.json).
+
+## 2026-10-05 — Portable Windows APK extraction
+
+Created BAT + Windows PowerShell 5.1 data tool with indexed environment argument
+transport, automatic raw/assets/Community14 selection, separate profiles, exact
+byte preservation, explicit ZIP CRC checks, manifest/file hashes and whole-batch
+staging. The actual script extracted all three private supplied APKs under
+PowerShell 7.4.6/Linux; independent Python checks verify 57/144/147 files and 106
+Community14 alias renames with identical payloads. Windows CI first passed the
+12 extraction tests but failed before starting BAT because Python's CRT quoting
+was inappropriate for cmd.exe. The corrected harness in `5ef4549` passed all 13
+tests on PowerShell 5.1/Windows Server 2025, including special-path BAT transport.
+No runtime/VPK changes or new Vita gameplay evidence. See
+[evidence](evidence/windows_extractor_2026-10-05.json) and
+[usage/contract](WINDOWS_DATA_TOOL.md).

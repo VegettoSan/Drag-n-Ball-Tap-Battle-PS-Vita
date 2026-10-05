@@ -179,3 +179,14 @@ contract is not a Gen importer; use the ordinary assets/auto extractor for Gen.
 > documents remain historical evidence; this note does not claim exhaustive coverage
 > of every character, mode, mod or long-duration session.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## Windows drag-and-drop import
+
+The BAT/PS1 tool in `tools/windows/` emits a fresh package whose `data/` folder
+can be copied directly to the `ux0:` root. Raw original APKs use `game/`;
+Community14 uses `mods/Android14/`; the known Gen content hash uses `mods/Gen/`.
+Unknown canonical assets APKs use a sanitized filename as a separate mod profile.
+An APK-provided save stays in its profile. Skip it when copying over existing
+Vita progress. No runtime paths or save fallback rules change.
+See [Windows tool](WINDOWS_DATA_TOOL.md) for profile naming, byte preservation,
+source recognition, incomplete-original warnings and verification scope.

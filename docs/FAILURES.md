@@ -398,3 +398,16 @@ palette defect's causal role remain unconfirmed. Repair: use the hash-pinned rea
 00.23 base, losslessly pad pic0 to 256 entries, compare all original entries after
 repacking, and label CI probe downloads NOT-PLAYABLE. Never promote a smoke VPK to
 a gameplay artifact. See [evidence](evidence/vita_livearea_fixed_00.23.json).
+
+## 2026-10-05 — CMD test launch escaped with CRT rules
+
+Windows extractor CI run 37390731907 passed all 12 script extraction tests but
+failed the BAT transport test before the BAT started. `subprocess.run` received
+a list whose embedded `/c` command was escaped by Python's `list2cmdline` for
+CRT argument parsing. CMD uses different nested quote rules, causing a network
+path error and interpreting `!` fragments as commands. Do not reuse CRT escaping
+for a manually nested CMD command. Commit `5ef4549` sends a raw CreateProcess
+command line, with quoted environment paths expanded once. Run 37390881454
+passes all 13 tests, including the actual BAT. The extraction implementation was
+unchanged by this harness correction.
+See [evidence](evidence/windows_extractor_2026-10-05.json).

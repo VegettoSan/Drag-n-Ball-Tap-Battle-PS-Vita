@@ -382,3 +382,14 @@ regressions pass: short-palette rejection/repair, PNG CRC rejection and preventi
 of executable substitution. These are host/package successes; the new LiveArea
 installation and rendering still need physical Vita confirmation.
 See [evidence](evidence/vita_livearea_fixed_00.23.json).
+
+## 2026-10-05 — Windows extractor verified
+
+BAT/PS1 extraction passes 13 Windows PowerShell 5.1 CI tests, including actual
+CMD argument transport, atomic failure cleanup and byte/hash/save preservation.
+Private real-APK checks under PowerShell 7.4.6 verify every output byte for the
+57-resource original, 144-resource Android14 and 147-resource Gen APKs.
+Android14 needs 106 aliases but no payload conversion. Windows tool needs no
+Python, Java, 7-Zip or administrator access on the user's PC. This is extraction
+evidence, not new Vita gameplay coverage.
+See [evidence](evidence/windows_extractor_2026-10-05.json).
