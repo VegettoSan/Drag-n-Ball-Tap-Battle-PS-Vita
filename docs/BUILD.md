@@ -1,6 +1,6 @@
-# Build and install — full engine 00.21
+# Build and install — full engine 00.22
 
-Current build evidence: [00.21](evidence/vita_audio_startup_build_00.21.json).
+Current build evidence: [00.22](evidence/vita_selection_filter_build_00.22.json).
 Read [CURRENT_STATUS](CURRENT_STATUS.md) before interpreting build success as
 hardware success. Commands below run from the repository root; keep private
 inputs/outputs outside it.
@@ -9,13 +9,13 @@ inputs/outputs outside it.
 
 | Target | Inputs / output | Purpose |
 |---|---|---|
-| `tools/aot/engine/vita` | APK-derived JAR → current adapters → generated all.c → `DBTapBattle-Vita-00.21.vpk` | Full original game engine |
+| `tools/aot/engine/vita` | APK-derived JAR → current adapters → generated all.c → `DBTapBattle-Vita-00.22.vpk` | Full original game engine |
 | Root `CMakeLists.txt` | Native atlas preview → `dbtb_vita.vpk` | Historical bootstrap; not the game |
 | `.github/workflows/vita-engine-native-smoke.yml` | Tiny non-commercial all.c + real native services | Compile/link/package smoke; no game execution |
 | `tools/aot` input probe | Original KeyData/Controller only | JVM/C feasibility comparison; not the full runtime |
 
-The delivered VPK is renamed `DBTapBattle-Vita-00.21-audio-startup-fix.vpk` after
-verification. Its embedded source is `07222bb`; a fresh build at a later main
+The delivered VPK is renamed `DBTapBattle-Vita-00.22-selection-filter-fix.vpk` after
+verification. Its embedded source is `c40ce0a`; a fresh build at a later main
 commit embeds that later commit. Check the VITA_VERSION in the full target.
 
 ## Dependencies and ABI
@@ -58,6 +58,9 @@ Generation checks the expected loader/string/static-field shapes and fails on
 unexpected inputs. It preserves original GameData byte-array parsing and core
 methods. 00.21 generated 465 classes / 4059 methods; this is evidence for the
 pinned recipe, not a required count for an intentionally changed engine.
+00.22 reuses that unchanged private generation and recompiles the complete
+all.c plus native services; no Java/native import signature changed. CMake
+4.4.4 was used for this full ARM build.
 
 Use a fresh generation directory. The runtime patch is deliberately single-use;
 it rejects already-patched or incompatible shapes. Do not apply the input-only
@@ -117,7 +120,7 @@ and is not installed. Front touch is the tested in-game control.
 ## Verify and test
 
 Follow [VALIDATION](VALIDATION.md) for host probes and artifact checks, then
-[TEST_VITA_00_21](TEST_VITA_00_21.md) on the device. Keep exact VPK SHA, SFO,
+[TEST_VITA_00_22](TEST_VITA_00_22.md) on the device. Keep exact VPK SHA, SFO,
 build source, profile provenance, runtime.log and any psp2core together.
 Current VPK has eboot, param.sfo and three notice entries, no asset dataset.
 The generated original code is still commercial engine code; absence of data

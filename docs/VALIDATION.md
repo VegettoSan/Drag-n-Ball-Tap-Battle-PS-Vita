@@ -1,4 +1,4 @@
-# Validation and diagnostic reference — 00.21
+# Validation and diagnostic reference — 00.22
 
 Commands run from the repository root. Use private game data and temporary output
 outside tracked source. This page describes reproducible probes; it does not claim
@@ -73,7 +73,7 @@ is added to Git. Basic core/image/community/game-table/UTF16 probes remain in
 | Stream/resource | Exact selected PAC bytes/order/filter/cache/invalidation | Host file timing, not Vita I/O latency |
 | Native texture | Real PNG decoder and cache/reference/eviction behavior | GL upload/delete mocked; not GPU throughput |
 
-Current evidence: 12 Python checks; 26 character PACs with filters 1/33/64/127;
+Current evidence: 12 Python checks; 26 character PACs with filters 1/33/64/127/187/251 plus high/sign-bit edges;
 Original+Community14 corpus 125 files / 137 containers / 470 textures / 68 BIN
 converted tables / 198 WAVs. Gen's distinct corpus has 108 PACs / 405 PNG entries /
 69 top-level BIN tables / 198 RIFF voices. Do not combine corpus counts as if
@@ -122,7 +122,8 @@ unsupported diagnostics must not be treated as reliable numbers.
 
 ## Physical test protocol
 
-Use [00.21 instructions](TEST_VITA_00_21.md). First confirm worker and menu, then
+Use [00.22 instructions](TEST_VITA_00_22.md). First confirm worker/menu and first-character selection (00.21 failed at
+mask 187/md=1018), then
 same-profile first/repeated/evicted selection loads, recorded phrases, visible
 text, cards, sustained battle and repeated launches. Report exact profile data,
 clocks, version/hash and whether a clean exception exit or native crash occurs.

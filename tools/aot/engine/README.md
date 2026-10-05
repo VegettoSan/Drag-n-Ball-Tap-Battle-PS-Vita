@@ -1,4 +1,4 @@
-# Original core integration — full engine 00.21
+# Original core integration — full engine 00.22
 
 This directory contains the handwritten platform layer for the original APK's
 Java core. The full private engine can now be generated with TeaVM and built for
@@ -8,8 +8,9 @@ outside Git; a successful build is not by itself hardware-playability evidence.
 
 ## Current checkpoint
 
-Latest full-engine artifact is 00.21 at `07222bb`; device startup recovery is
-pending after 00.20 audio setup failures. Earlier menu/touch/selection/combat
+Latest full-engine artifact is 00.22 at `c40ce0a`. 00.21 starts audio and reaches
+the menu on Vita, then rejects char00 mask 187 and exits selection. 00.22 removes
+that native range guard; physical selection recovery is pending. Earlier menu/touch/selection/combat
 and 00.19 text recovery are hardware confirmed at their own builds. Read
 [CURRENT_STATUS](../../../docs/CURRENT_STATUS.md),
 [BUILD](../../../docs/BUILD.md) and [VALIDATION](../../../docs/VALIDATION.md).
@@ -32,7 +33,7 @@ boundaries are also counted and adapted explicitly. Unexpected shapes fail the
 private generation step.
 
 A complete private build has been demonstrated with VitaSDK GCC 15.2.0
-hard-float: TeaVM C + native services -> ARM ELF -> VELF -> Sony SELF -> VPK 00.21. The
+hard-float: TeaVM C + native services -> ARM ELF -> VELF -> Sony SELF -> VPK 00.22. The
 TeaVM amalgamation is compiled at `-O1` because optimizing its ~24 MiB single C
 translation unit at `-O2` exceeded a modest builder's memory budget. Native
 render/audio/platform code remains at `-O2`.
@@ -73,7 +74,7 @@ render/audio/platform code remains at `-O2`.
 The current native bridge retains bounded PAC/texture/voice caches, PVF glyph
 rectangles and bandlimited character-voice output. Audio worker priority is the
 restored 0x10000100, with explicit failure cleanup/diagnostics. Implementations
-and host probes do not substitute for the pending 00.21 physical test.
+and host probes do not substitute for the pending 00.22 physical selection test.
 See [PLATFORM_SERVICES](../../../docs/PLATFORM_SERVICES.md) for exact contracts.
 
 ## Reproduce privately
@@ -97,7 +98,7 @@ cmake -S tools/aot/engine/vita -B /private/build-vita \
 cmake --build /private/build-vita -j2
 ```
 
-The private output is `DBTapBattle-Vita-00.21.vpk`. The work directories must be
+The private output is `DBTapBattle-Vita-00.22.vpk`. The work directories must be
 outside the repository. Generated C, original/adapted JARs, classes, APKs and
 commercial payloads must not be committed. The source repository contains only
 the adapters, reproducible generation/build tooling and non-commercial evidence.

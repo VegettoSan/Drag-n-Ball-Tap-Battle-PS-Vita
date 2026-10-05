@@ -31,5 +31,6 @@ These rules are part of the technical contract of the port.
 
 The port should eventually accept ordinary community asset/data mods without requiring a Vita-specific repack whenever those mods only replace formats already understood by the original game.
 
-Current checkpoint: full engine 00.21 compiled; hardware startup recovery pending.
+Current checkpoint: full engine 00.22 compiled; original mask 187/251 preserved.
+00.21 worker/menu recovery is confirmed; 00.22 selection recovery is pending.
 See [CURRENT_STATUS](CURRENT_STATUS.md) and [PORTING_GUIDE](PORTING_GUIDE.md).

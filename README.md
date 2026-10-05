@@ -7,10 +7,11 @@ APK-derived JAR/classes/C and original game assets are not committed to Git.
 
 ## Current state — 2026-10-05
 
-Latest delivered full-engine test: **00.21**, compiled from `07222bb`.
-Implementation: `2e71d51`. It restores the audio thread priority used by working
-00.19 and adds exact setup-error diagnostics and cleanup. **00.21 hardware
-startup/menu recovery is still pending.** Later documentation commits do not
+Latest full-engine test: **00.22**, compiled from `c40ce0a`. It removes the
+incorrect 0..127 range check on the original GameData exclusion mask: character
+selection actually uses 187; other paths use 251. The 00.21 device test confirms
+worker/menu recovery but exits at selection after rejecting char00. **00.22
+physical selection recovery is pending.** Later documentation commits do not
 change the delivered binary's source identity.
 
 | Tested version | Confirmed result | Remaining limitation |
@@ -20,7 +21,8 @@ change the delivered binary's source identity.
 | 00.18 | User and log confirm steady battle 60 FPS / 59.9 logged at 960×544 | Text disappeared; voices and selection pauses remained |
 | 00.19 | User confirms text visible again | Voices still bad; character switching still stalls |
 | 00.20 | Host PAC/cache/DSP tests pass | Hardware audio worker fails setup; Original exits before menu |
-| 00.21 | Full-engine VPK and setup/DSP/resource tests pass | Physical recovery, voice quality and selection latency need testing |
+| 00.21 | Worker starts and user reaches menu on Vita | Character selection rejects char00 mask 187 and catches NullPointerException |
+| 00.22 | Original masks 187/251 accepted; before/after host regression and full VPK pass | Physical first-character/switching/voice/text/battle test pending |
 
 Use [current status and evidence](docs/CURRENT_STATUS.md) for the authoritative
 feature matrix, artifact hash and open issues. Older test reports describe their
@@ -28,9 +30,9 @@ own builds; a host or CI result does not establish physical Vita behavior.
 
 ## Install and data
 
-Install the delivered `DBTapBattle-Vita-00.21-audio-startup-fix.vpk` over the
+Install the delivered `DBTapBattle-Vita-00.22-selection-filter-fix.vpk` over the
 existing application with VitaShell, preserving `ux0:data/DBTapBattle/` and saves.
-Follow [00.21 test instructions](docs/TEST_VITA_00_21.md). The full engine requires
+Follow [00.22 test instructions](docs/TEST_VITA_00_22.md). The full engine requires
 the vitaGL shader compiler setup; see [build/setup](docs/BUILD.md).
 
 | Runtime path | Purpose |
@@ -76,7 +78,7 @@ full gameplay engine. [BUILD.md](docs/BUILD.md) gives the current recipe.
 | Architecture and future ports | [ENGINE_MAP](docs/ENGINE_MAP.md), [PLATFORM_SERVICES](docs/PLATFORM_SERVICES.md), [RENDER_MAPPING](docs/RENDER_MAPPING.md), [PORTING_GUIDE](docs/PORTING_GUIDE.md), [DECISIONS](docs/DECISIONS.md) |
 | Data, formats and provenance | [APK_AUDIT](docs/APK_AUDIT.md), [ANDROID14_APK](docs/ANDROID14_APK.md), [Original+Characters](docs/ORIGINAL_PLUS_CHARACTERS_APK.md), [PAC_FORMAT](docs/PAC_FORMAT.md), [RESOURCE_FORMATS](docs/RESOURCE_FORMATS.md), [DATA_LAYOUT](docs/DATA_LAYOUT.md), [MODS](docs/MODS.md) |
 | Engineering history | [ATTEMPTS](docs/ATTEMPTS.md), [SUCCESSES](docs/SUCCESSES.md), [FAILURES](docs/FAILURES.md), [input AOT experiment](tools/aot/README.md) |
-| Test versions | [00.03](docs/TEST_FULL_ENGINE_00_03.md), [00.13](docs/TEST_VITA_00_13.md), [00.18](docs/TEST_VITA_00_18.md), [00.19](docs/TEST_VITA_00_19.md), [00.20](docs/TEST_VITA_00_20.md), [00.21](docs/TEST_VITA_00_21.md) |
+| Test versions | [00.03](docs/TEST_FULL_ENGINE_00_03.md), [00.13](docs/TEST_VITA_00_13.md), [00.18](docs/TEST_VITA_00_18.md), [00.19](docs/TEST_VITA_00_19.md), [00.20](docs/TEST_VITA_00_20.md), [00.21](docs/TEST_VITA_00_21.md), [00.22](docs/TEST_VITA_00_22.md) |
 | Attribution | [THIRD_PARTY](docs/THIRD_PARTY.md) and upstream license files in `licenses/` |
 
 `src/` contains native data/input/UI utilities; `tools/aot/engine/java/` contains
