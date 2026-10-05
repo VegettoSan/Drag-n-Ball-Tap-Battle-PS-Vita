@@ -55,6 +55,16 @@ The 00.23 physical-Vita retest preserves the audio/selection fixes and now enter
 [00.23 hardware evidence](evidence/vita_hardware_full_game_00.23.json) records the tested artifact and scope.
 The package used for this hardware checkpoint was an interactive test build; see [BUILD](BUILD.md) for the split-compilation caveat before treating it as a release-quality performance artifact.
 
+A LiveArea-only derivative, `DBTapBattle-Vita-00.23-LiveArea.vpk`, SHA-256
+`382927c8032fda1db5ec21078a006026daa78ef93f3bdfce7c8484f880fd4e50`,
+retains every entry of that hardware-tested package byte-for-byte and adds only
+`icon0.png`, `pic0.png`, `bg0.png`, `startup.png` and `template.xml`.
+The exact assets and VPK layout pass the VitaSDK smoke workflow. Physical Vita
+installation and shell appearance are still pending, so this does not replace or
+expand the existing 00.23 gameplay hardware claim. See
+[LiveArea evidence](evidence/vita_livearea_00.23.json) and
+[the focused device test](TEST_VITA_00_23_LIVEAREA.md).
+
 ## Implementation versus observation
 
 | Area | Current implementation | Verified scope / open limit |
@@ -85,11 +95,11 @@ established here.
 
 ## Latest observations and next work
 
-1. **Broaden 00.23 regression coverage.** Repeat battles, switch across more characters and revisit evicted resources to confirm the streaming fix under churn rather than only one successful progression.
-2. **Retest both supported dataset paths/mod overlays.** Keep original fallback rules and record exact dataset hashes when comparing behavior.
-3. **Measure release-quality performance.** The 00.23 hardware test package used split TeaVM compilation with `TCBManajer.c` at `-O0` because of the interactive build runner; create a normal reproducible full-engine package before making final FPS/performance claims for 00.23.
-4. **Extend lifecycle/control coverage.** Return-to-menu, repeated launches, suspend/resume, save round-trips and physical Vita control adaptation remain separate work.
-5. **Keep unsupported scope explicit.** Multiplayer/Bluetooth synchronization, billing/remote services and arbitrary code mods are not validated by the successful local single-player test.
+1. **Confirm the LiveArea repack on hardware.** Install the exact 00.23 LiveArea-only VPK and verify VitaShell promotion, bubble icon, Shenlong background, launch gate/logo and a short launch/battle regression pass.
+2. **Broaden 00.23 regression coverage.** Repeat battles, switch across more characters and revisit evicted resources to confirm the streaming fix under churn rather than only one successful progression.
+3. **Retest both supported dataset paths/mod overlays.** Keep original fallback rules and record exact dataset hashes when comparing behavior.
+4. **Measure release-quality performance.** The 00.23 hardware test package used split TeaVM compilation with `TCBManajer.c` at `-O0` because of the interactive build runner; create a normal reproducible full-engine package before making final FPS/performance claims for 00.23.
+5. **Extend lifecycle/control coverage.** Return-to-menu, repeated launches, suspend/resume, save round-trips and physical Vita control adaptation remain separate work. Multiplayer/Bluetooth synchronization, billing/remote services and arbitrary code mods remain unsupported/unvalidated.
 
 No currently reproduced crash is open in the 00.23 tested path. New failures should be recorded with exact VPK hash, dataset/profile, `runtime.log` and `psp2core` when produced.
 
@@ -106,6 +116,7 @@ No currently reproduced crash is open in the 00.23 tested path. New failures sho
 | [00.21 selection failure](evidence/vita_hardware_selection_00.21.json) | Physical worker/menu recovery, then rejected character mask and caught exception |
 | [00.22 build](evidence/vita_selection_filter_build_00.22.json) | Before/after mask regression, full corpus and complete ARM artifact checks |
 | [00.23 hardware](evidence/vita_hardware_full_game_00.23.json) | Physical Vita: clean audio, responsive selection, battle startup/gameplay pass; no error observed in reported session |
+| [00.23 LiveArea package](evidence/vita_livearea_00.23.json) | Exact presentation-only repack: original tested VPK entries unchanged; LiveArea hashes/layout pass CI; physical shell test pending |
 
 [Validation](VALIDATION.md) defines test scope and log interpretation.
 [Porting guide](PORTING_GUIDE.md) explains reusable techniques and failures.
