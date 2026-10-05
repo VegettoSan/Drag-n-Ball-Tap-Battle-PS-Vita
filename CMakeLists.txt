@@ -11,6 +11,8 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 endif()
 project(dbtb_vita LANGUAGES C CXX)
 include("${VITASDK}/share/vita.cmake" REQUIRED)
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/LiveArea.cmake")
+dbtb_prepare_livearea("${CMAKE_CURRENT_SOURCE_DIR}" DBTB_LIVEAREA_DIR)
 
 set(VITA_APP_NAME "Dragon Ball Tap Battle Vita")
 set(VITA_TITLEID "DBTB00001")
@@ -40,6 +42,11 @@ target_link_libraries(${PROJECT_NAME}
 vita_create_self(${PROJECT_NAME}.self ${PROJECT_NAME} UNSAFE)
 vita_create_vpk(${PROJECT_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self
   VERSION ${VITA_VERSION} NAME ${VITA_APP_NAME}
+  FILE "${DBTB_LIVEAREA_DIR}/icon0.png" sce_sys/icon0.png
+  FILE "${DBTB_LIVEAREA_DIR}/pic0.png" sce_sys/pic0.png
+  FILE "${DBTB_LIVEAREA_DIR}/bg0.png" sce_sys/livearea/contents/bg0.png
+  FILE "${DBTB_LIVEAREA_DIR}/startup.png" sce_sys/livearea/contents/startup.png
+  FILE assets/livearea/template.xml sce_sys/livearea/contents/template.xml
   FILE docs/THIRD_PARTY.md notices/THIRD_PARTY.md
   FILE licenses/vitaGL-GPL-3.0.txt notices/vitaGL-GPL-3.0.txt
   FILE licenses/vitaGL-LGPL-3.0.txt notices/vitaGL-LGPL-3.0.txt)
