@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-04",
+  "scope": "real PS Vita hardware, build 00.05, both Original and Android14 profiles",
+  "result": "boot selector works on hardware; both profiles enter the original engine, create save.bin, then abort in the native audio worker",
+  "hardware_observed": true,
+  "confirmed_checkpoints": [
+    "vitaGL splash completes",
+    "boot selector is visible and accepts both choices",
+    "Original profile resource VFS initializes",
+    "TCBManajer.Init completes for Original (ORIGINAL ENGINE INIT PASS)",
+    "Original Run reaches at least 498 frames",
+    "save.bin is created in the selected profile save directory"
+  ],
+  "runtime_log": {
+    "sha256": "de057e88bc9088f956f0014fd68c21023574322e78a2cdd513643d1a7826b3b6",
+    "excerpt": [
+      "Selected profile: Original",
+      "Resource VFS initialized; entering original engine",
+      "ORIGINAL ENGINE INIT PASS",
+      "Run: md=[61]:ERROR=java.lang.NullPointerException",
+      "ORIGINAL ENGINE RUN FRAMES=498"
+    ],
+    "note": "The md=[61] NullPointerException is caught by the original engine and Run continues; it is not the native process-ending crash in these dumps."
+  },
+  "save_bin": {
+    "size": 12906,
+    "sha256": "a5e1a5d56d712b2a14cb36f0e7dc30003672ed0115eb8c426f7def31b4ccf67a",
+    "interpretation": "initial save data was produced before the native abort; exact gameplay semantics remain to be validated"
+  },
+  "dumps": [
+    {
+      "profile": "Original",
+      "file": "psp2core-1791173785-0x000021323d-eboot.bin.psp2dmp",
+      "gzip_sha256": "ef1112531f2c46a6376dd997ab54fbcdbd46554adef1729c37b099ae1599dee0",
+      "uncompressed_size": 5204256,
+      "thread": "DBTB audio",
+      "stop_reason": "0x00030002 undefined instruction exception",
+      "module_runtime_start": "0x81035000",
+      "runtime_pc": "0x81278646",
+      "module_offset": "0x00243646",
+      "elf_address": "0x81243646",
+      "symbol": "_kill_r + 0x42 (UDF #255)",
+      "signal_argument": 6
+    },
+    {
+      "profile": "Android14",
+      "file": "psp2core-1791173874-0x00001f3f13-eboot.bin.psp2dmp",
+      "gzip_sha256": "2af3b3420b79d11d3dc44a9bfa08dd002e096d2c943cab94c795f5265e87fb3d",
+      "uncompressed_size": 5204256,
+      "profile_evidence": "dump memory contains ux0:/data/DBTapBattle/mods/Android14/mk.bin",
+      "thread": "DBTB audio",
+      "stop_reason": "0x00030002 undefined instruction exception",
+      "module_runtime_start": "0x81005000",
+      "runtime_pc": "0x81248646",
+      "module_offset": "0x00243646",
+      "elf_address": "0x81243646",
+      "symbol": "_kill_r + 0x42 (UDF #255)",
+      "signal_argument": 6
+    }
+  ],
+  "stack_evidence": [
+    "std::__throw_system_error(int)",
+    "__cxa_throw",
+    "__cxxabiv1::__terminate",
+    "__gnu_cxx::__verbose_terminate_handler",
+    "abort",
+    "_kill_r",
+    "(anonymous namespace)::audioThread(unsigned int, void*)"
+  ],
+  "root_cause": {
+    "confirmed_scope": "native audio synchronization path",
+    "details": "The SceKernel-created DBTB audio worker enters dbtb_mixAudio, which used std::mutex/std::lock_guard backed by pthread/libstdc++. The lock path raises std::system_error on hardware; with the native adapter compiled -fno-exceptions this reaches terminate/abort and kill(SIGABRT), whose unsupported VitaSDK _kill_r path intentionally executes UDF #255.",
+    "same_for_both_profiles": true
+  },
+  "fix": {
+    "strategy": "remove std::mutex from the Vita audio worker and use a no-throw std::atomic_flag guard shared by the main and SceKernel audio threads; retain pthread linkage only for other runtime facilities",
+    "commits": [
+      "54ec37ca2c8d86f3ceed5c294b28047db512d6c5",
+      "2199ab275e9bc172d48bd7032286bc2fbb0180f4"
+    ]
+  },
+  "next_private_test_artifact": {
+    "name": "DBTapBattle-Vita-00.06-audiofix.vpk",
+    "sha256": "b66c6471738d364aef35019cdd69eb40eb6e252598cc06ecfc711e586b243247",
+    "size": 2205415,
+    "contains_icon0": false,
+    "expected_next_checkpoint": "both profiles should pass the previous DBTB audio abort; observe whether the original title/menu becomes visible and whether audio plays"
+  }
+}
