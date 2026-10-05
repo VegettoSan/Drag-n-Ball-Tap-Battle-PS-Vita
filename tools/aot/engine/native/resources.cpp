@@ -27,6 +27,9 @@ std::vector<uint8_t> pending;
 int pending_encoding=0;
 int text_encodings[2]={0,0};
 std::string save_path;
+std::vector<uint8_t> save_cache;
+bool save_cache_known = false;
+bool save_cache_exists = false;
 struct Size { int w, h; };
 std::unordered_map<unsigned, Size> textures;
 
@@ -80,7 +83,11 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
     // not, the original engine starts without a save and creates save.bin in
     // this same directory on its first successful save operation.
     save_path = mod.empty() ? base + "/game/save.bin" : base + "/mods/" + mod + "/save.bin";
-    std::printf("Profile save: %s\n", save_path.c_str());
+    save_cache.clear();
+    save_cache_exists = readFile(save_path, save_cache);
+    save_cache_known = true;
+    std::printf("Profile save: %s (%s, %zu bytes)\n", save_path.c_str(),
+                save_cache_exists ? "cached" : "not present", save_cache.size());
     return true;
 }
 const GameVfs& dbtb_vfs() { if (!vfs) std::abort(); return *vfs; }
@@ -128,25 +135,43 @@ void dbtb_copyResource(void* data, int32_t size) {
 }
 int32_t dbtb_readSave(void* name) {
     pending.clear();
-    if (!name || std::strcmp(static_cast<const char*>(name), "save.bin") || !readFile(save_path, pending)) return -1;
+    if (!name || std::strcmp(static_cast<const char*>(name), "save.bin")) return -1;
+    if (!save_cache_known) {
+        save_cache_exists = readFile(save_path, save_cache);
+        save_cache_known = true;
+    }
+    if (!save_cache_exists) return -1;
+    pending = save_cache;
     return int32_t(pending.size());
 }
 int32_t dbtb_writeSave(void* name, void* data, int32_t size, int32_t position, int32_t truncate) {
     if (!name || std::strcmp(static_cast<const char*>(name), "save.bin") || size < 0 || position < 0 ||
         uint64_t(position) + size > kSaveSize || (size && !data)) return 0;
-    std::vector<uint8_t> out;
-    if (!truncate && !readFile(save_path, out)) {
-        struct stat info{};
-        if (lstat(save_path.c_str(), &info) == 0 || errno != ENOENT) return 0;
+    if (!save_cache_known) {
+        save_cache_exists = readFile(save_path, save_cache);
+        save_cache_known = true;
     }
+    std::vector<uint8_t> out;
+    if (!truncate && save_cache_exists) out = save_cache;
     if (truncate || size_t(position) + size > out.size()) out.resize(size_t(position) + size);
     if (size) std::memcpy(out.data() + position, data, size);
     const bool ok = publishSave(out);
-    if (!ok) std::fprintf(stderr, "Save publication failed: %s\n", save_path.c_str());
-    return ok;
+    if (!ok) {
+        std::fprintf(stderr, "Save publication failed: %s\n", save_path.c_str());
+        return 0;
+    }
+    save_cache.swap(out);
+    save_cache_exists = true;
+    save_cache_known = true;
+    return 1;
 }
 int32_t dbtb_deleteSave(void* name) {
-    return name && !std::strcmp(static_cast<const char*>(name), "save.bin") && unlink(save_path.c_str()) == 0;
+    if (!name || std::strcmp(static_cast<const char*>(name), "save.bin")) return 0;
+    if (unlink(save_path.c_str()) != 0) return 0;
+    save_cache.clear();
+    save_cache_exists = false;
+    save_cache_known = true;
+    return 1;
 }
 int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
     if (!data || size < 0 || size > 16 * 1024 * 1024) return -1;
