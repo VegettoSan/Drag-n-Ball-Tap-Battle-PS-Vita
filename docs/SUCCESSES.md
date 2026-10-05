@@ -167,3 +167,13 @@ The original complete core reaches its animated title and main menu with the
 supplied Android14 assets, responding to injected original touch events. The
 original profile also renders its startup and Japanese text. These are ASan
 host OpenGL runs; Vita hardware, selection and complete battle remain pending.
+
+## 2026-10-04 — vitaGL startup and data-profile scan on real PS Vita
+
+**Scope: HARDWARE CONFIRMED for renderer bootstrap and VFS scan only.**
+The 00.04-installfix VPK displayed the vitaGL splash on a physical PS Vita. The
+runtime log then confirmed native 960x544 initialization without framebuffer
+fallback and completed the data/mod profile scan, finding the installed Android14
+profile. The following crash was isolated to the port's own immediate-mode selector,
+not to vitaGL initialization or the original game engine. See
+`docs/evidence/vita_hardware_selector_crash_00.04.json`.
