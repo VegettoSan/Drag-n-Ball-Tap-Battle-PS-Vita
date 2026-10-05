@@ -54,14 +54,19 @@ class WindowsExtractorTests(unittest.TestCase):
             env[f'DBTB_APK_{index}'] = str(path)
         if bat:
             # Test cmd.exe argument transport, including spaces, &, ! and %.
-            command = '"' + ' '.join('"' + str(p) + '"' for p in (BAT, *paths)) + '"'
-            args = ['cmd.exe', '/d', '/c', command]
             # BAT writes beside itself. Use an isolated copy to protect source.
             local = self.root / 'tool & ! % con espacios'
             local.mkdir()
             shutil.copy2(BAT, local / BAT.name)
             shutil.copy2(TOOL, local / TOOL.name)
-            args[-1] = '"' + ' '.join('"' + str(p) + '"' for p in (local / BAT.name, *paths)) + '"'
+            # Pass a raw CreateProcess command line: list2cmdline follows CRT
+            # escaping rules, which do not match cmd.exe's nested /c quoting.
+            # Expand the quoted env paths once, preserving literal % and !.
+            env['DBTB_TEST_LAUNCHER'] = str(local / BAT.name)
+            for index, path in enumerate(paths):
+                env[f'DBTB_TEST_APK_{index}'] = str(path)
+            args = ('cmd.exe /d /s /v:off /c ""%DBTB_TEST_LAUNCHER%" '
+                    + ' '.join(f'"%DBTB_TEST_APK_{i}%"' for i in range(len(paths))) + '"')
             self.output = local / 'Listo_para_Vita'
         else:
             args = [PS, '-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass',
