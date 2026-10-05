@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-05",
+  "device": "physical PS Vita",
+  "tested_build": "00.10",
+  "runtime_log": {
+    "sha256": "0f3bc1f8ce8e1c4a5b2d1f92307cb4ee49f9a479b154a982a0f69fcfc361e4b7",
+    "size": 7865
+  },
+  "hardware_confirmed": {
+    "front_touch": true,
+    "touch_active_area": "0,0 -> 1919,1087",
+    "logical_touch_slots": "0..4",
+    "audio_audible": true,
+    "original_profile_frames": 1054,
+    "android14_profile_frames": 1502,
+    "android14_reached_character_selection": true,
+    "android14_character_rendered_before_exit": true
+  },
+  "observed_nonfatal_issue": {
+    "screen_transition_black_interval_seconds": "approximately 1-2",
+    "classification": "loading/transition performance observation; no crash associated"
+  },
+  "android14_clean_exit": {
+    "native_crash_dump": false,
+    "exception": "java.lang.NullPointerException",
+    "stack_top": "com.namcobandaigames.dragonballtap.apk.TCBManajer.Game3",
+    "reported_md": 1018,
+    "flow": "Game3 1012 loads ChrGameData[3] charXX with conversion=2/filter=187; 1013 sets md=1018 before later table reads",
+    "confirmed_cause": "Community14 BIN converted-table metadata remained XOR-encoded, causing original binCnv/GameData.Init to fail and leave piGameData* null"
+  },
+  "host_reproduction": {
+    "character_bins_checked": 13,
+    "character_bins_valid_after_normalization": 13,
+    "records_per_character_bin": 43,
+    "community_bin_tables_regression_count": 68,
+    "decoder": "existing Community14 GameDataTable metadata codec",
+    "scope": "metadata normalization only; record payload bytes preserved"
+  },
+  "fix_commits": [
+    "3977953a2209f5c52e81eb5ca84f3068ae46cd80",
+    "e3a79b1e73baab5d648112697fcb2d0f4ac32770"
+  ],
+  "next_build": "00.11",
+  "pending": [
+    "hardware verify Android14 selection beyond first rendered character",
+    "complete battle",
+    "profile 1-2 second black transition stalls separately"
+  ]
+}
