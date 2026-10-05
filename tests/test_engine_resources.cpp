@@ -33,14 +33,29 @@ void validate(const std::vector<uint8_t>& b) {
         ++textures;
     }
 }
+std::vector<uint8_t> entry(const std::vector<uint8_t>& b,size_t wanted){
+    const size_t count=u16(b,0),base=2+count*16;assert(wanted<count);const size_t p=2+wanted*16;
+    const size_t start=base+u32(b,p),size=u32(b,p+4);assert(start<=b.size()&&size<=b.size()-start);
+    return {b.begin()+start,b.begin()+start+size};
+}
 std::vector<uint8_t> dac(const std::vector<uint8_t>& b){size_t count=u16(b,0),base=2+count*16;
     for(size_t i=0;i<count;++i){size_t p=2+i*16;if(!std::memcmp(b.data()+p+8,"dac",3)){size_t start=base+u32(b,p),size=u32(b,p+4);return {b.begin()+start,b.begin()+start+size};}}
     assert(false);return {};
 }
+void sameTable(const GameDataTable& a,const GameDataTable& b){
+    assert(a.records().size()==b.records().size());
+    for(size_t r=0;r<a.records().size();++r){
+        assert(a.records()[r].position==b.records()[r].position);
+        assert(a.records()[r].width==b.records()[r].width&&a.records()[r].height==b.records()[r].height);
+        for(size_t y=0;y<a.records()[r].height;++y)for(size_t x=0;x<a.records()[r].width;++x){
+            uint8_t v,w;assert(a.value(r,x,y,v)&&b.value(r,x,y,w)&&v==w);
+        }
+    }
+}
 }
 
 int main(int argc,char** argv){
-    assert(argc==2);GameVfs vfs(argv[1]);std::string path,error;std::vector<uint8_t> output;size_t files=0;
+    assert(argc==2);GameVfs vfs(argv[1]);std::string path,error;std::vector<uint8_t> output;size_t files=0,converted_bins=0;
     for(const std::string& folder:{std::string("game"),std::string("mods/Android14")}){
         if(folder=="game")vfs.selectOriginal();else assert(vfs.selectMod("Android14"));
         DIR* dir=opendir((std::string(argv[1])+"/"+folder).c_str());assert(dir);
@@ -48,17 +63,21 @@ int main(int argc,char** argv){
             assert(readEngineResource(vfs,name,output,path,error));validate(output);++files;
             const auto original=fileBytes(path);if(folder=="game")assert(output==original);
             PacFile source;assert(source.open(path));assert(source.entries().size()==u16(output,0));
-            for(size_t i=0;i<source.entries().size();++i)assert(source.entries()[i].reserved==u32(output,14+i*16));
+            for(size_t i=0;i<source.entries().size();++i){
+                assert(source.entries()[i].reserved==u32(output,14+i*16));
+                if(folder=="mods/Android14"&&source.typeString(i)=="bin"){
+                    std::vector<uint8_t> raw;assert(source.readEntry(i,raw));
+                    GameDataTable a,b;assert(a.decode(raw,PacEncoding::Community14));
+                    assert(b.decode(entry(output,i),PacEncoding::Original));sameTable(a,b);++converted_bins;
+                }
+            }
             if(name=="gamedata.pac"||name=="text00.pac"){
                 std::vector<uint8_t> raw;for(size_t i=0;i<source.entries().size();++i)if(source.typeString(i)=="dac")assert(source.readEntry(i,raw));
-                GameDataTable a,b;assert(a.decode(raw,source.encoding()));assert(b.decode(dac(output),PacEncoding::Original));
-                assert(a.records().size()==b.records().size());
-                for(size_t r=0;r<a.records().size();++r){assert(a.records()[r].width==b.records()[r].width&&a.records()[r].height==b.records()[r].height);
-                    for(size_t y=0;y<a.records()[r].height;++y)for(size_t x=0;x<a.records()[r].width;++x){uint8_t v,w;assert(a.value(r,x,y,v)&&b.value(r,x,y,w)&&v==w);}}
+                GameDataTable a,b;assert(a.decode(raw,source.encoding()));assert(b.decode(dac(output),PacEncoding::Original));sameTable(a,b);
             }
         }closedir(dir);
     }
-    assert(files==125&&containers==137&&textures==470);
+    assert(files==125&&containers==137&&textures==470&&converted_bins==68);
     for(size_t n=0;n<18;++n){std::vector<uint8_t> b(n,0xFF);assert(!normaliseEnginePac(b,"common.pac",output,error));assert(output.empty());}
     std::vector<uint8_t> bad(18,0);bad[0]=1;bad[2]=0xFF;bad[3]=0xFF;bad[4]=0xFF;bad[5]=0xFF;
     assert(!normaliseEnginePac(bad,"common.pac",output,error));assert(output.empty());
@@ -66,5 +85,5 @@ int main(int argc,char** argv){
     assert(readEngineResource(vfs,"loading",output,path,error));assert(output==fileBytes(path));
     assert(readEngineResource(vfs,"mk",output,path,error));assert(output==fileBytes(path));
     assert(readEngineResource(vfs,"se_00",output,path,error));assert(output==fileBytes(path));
-    std::printf("ENGINE RESOURCE PASS: %zu files, %zu containers, %zu textures\n",files,containers,textures);
+    std::printf("ENGINE RESOURCE PASS: %zu files, %zu containers, %zu textures, %zu converted BIN tables\n",files,containers,textures,converted_bins);
 }
