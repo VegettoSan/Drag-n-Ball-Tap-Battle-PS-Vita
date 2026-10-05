@@ -51,6 +51,16 @@ def main():
     run(['java', '-cp', f'{libs}/*:{adapters}:{patched}', 'org.teavm.cli.TeaVMRunner',
          '-t', 'c', '-d', work / 'c', '--min-heap', '8', '--max-heap', '48', '--strict',
          '--', 'com.namcobandaigames.dragonballtap.apk.VitaEngine'], work / 'generation.log')
+    # The patch tool verified the pinned original field is a static byte with no
+    # ConstantValue. JVM default is zero. Repair this C generator defect only;
+    # all gameplay methods and the original TCBManajer.class stay unchanged.
+    generated = work / 'c/classes/com/namcobandaigames/dragonballtap/apk/TCBManajer.c'
+    source = generated.read_text()
+    declaration = 'int8_t sfld_cnda_TCBManajer_bEventFlagBuf;'
+    broken = 'sfld_cnda_TCBManajer_bEventFlagBuf = ;'
+    if source.count(declaration) != 1 or source.count(broken) != 1:
+        raise ValueError('Unexpected pinned TeaVM byte-default shape')
+    generated.write_text(source.replace(broken, 'sfld_cnda_TCBManajer_bEventFlagBuf = 0;'))
     print(f'Generated privately: {work / "c"}; native bridge linking/execution is a separate step')
 
 

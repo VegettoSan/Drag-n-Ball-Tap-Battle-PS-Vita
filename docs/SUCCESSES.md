@@ -147,3 +147,10 @@ TCBManajer/Game1..17, TCB/ObjReq, input/controller, graphics batching and the
 byte-array GameData/SpriteData decoder remain supplied original bytecode. One
 hash-pinned Android resource overload is adapted. Native linking/execution, full
 menu/combat and playable release remain pending. See tools/aot/engine/README.md.
+# 2026-10-05 — Full-core native compilation and resource adaptation
+
+The original engine's generated C compiles on the host after a guarded TeaVM
+static-byte default repair. ASan/UBSan checks pass for 125 PAC files, 137 nested
+containers and 470 images across both profiles. Original bytes, community image
+indices, table cells and unknown metadata are preserved by the memory adapter.
+GL/resource services also compile for Vita. This does not confirm device play.

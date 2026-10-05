@@ -413,3 +413,21 @@ network/catalog/Bluetooth boundaries report unavailable/disconnected, never fake
 a purchase/download/connection. Production CMake remains the diagnostic bootstrap.
 **Next:** connect bounded dual-profile VFS/image data, native client buffers, actual
 fonts/audio/saves/input, link the core and execute menu→selection→one complete battle.
+
+## 2026-10-05 — Attempt 020 — Native resource bridge and full C compilation
+
+**Changes:** bounded in-memory PAC normalization for the original GameData
+decoder; native GL client-buffer ownership, image upload and per-profile save
+services. Ordinary containers remain byte-identical. Community images retain
+their entry index and premultiplied payload; nested SPR containers and converted
+table directories are adapted without modifying user files.
+**Procedure:** ASan/UBSan resource fixture traversal and comparison against the
+existing native decoders; compile generated full core on the host; compile GL
+and resource services for both host and Vita.
+**Observed:** 125 PAC files, 137 containers and 470 images pass, including every
+table cell, raw loading/mk/audio resources, malformed directories and unsafe
+names. TeaVM emits an empty initializer for the pinned original static byte
+bEventFlagBuf. Hash/field-guarded generation substitutes its JVM default zero;
+the original TCBManajer.class is unchanged. The resulting full C core compiles.
+**Result:** RESOURCE/COMPILER SUCCESS. Linking and actual rendered gameplay are
+separate checks; production CMake still builds the diagnostic application.

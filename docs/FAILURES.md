@@ -127,3 +127,10 @@ Adding raw-ID stubs would not supply a working resource stream. The revised pass
 redirects that one verified overload to the VFS and reuses the original byte-array
 decoder; full generation then passes. The input-only Date omission is unsuitable
 for this full core. Native service implementations are still required before linking.
+# 2026-10-05 — TeaVM empty static-byte initializer
+
+Full C compilation first failed on `bEventFlagBuf = ;`. The pinned original
+field is a static byte without ConstantValue, so its JVM initial value is zero.
+Generation now verifies both the class hash and field shape before replacing
+the one defective C initializer with zero; gameplay bytecode remains unchanged.
+The corrected output compiles. Do not reuse the uncorrected generated output.

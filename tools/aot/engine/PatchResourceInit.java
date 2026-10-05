@@ -15,6 +15,22 @@ public final class PatchResourceInit implements Opcodes {
     private static final String DESC = "(" + GW + "Ljava/lang/String;II)Z";
     private static final String HASH = "6088ebbe8e714ce3d056c9bf029f8ce27307cb3276c6b39550425b94b4d50ad6";
 
+    // TeaVM 0.12.3 emits an empty C literal for this uninitialized static byte.
+    // Verify the JVM-defined zero default; do not change the game's class/body.
+    static void verifyByteDefault(byte[] bytes) throws Exception {
+        if (bytes == null || !digest(bytes).equals("bbdbd5179e17be4da9099289dd9679c08e7f95f9c4e2e6bda855077d0934e0ec"))
+            throw new IOException("Unsupported TCBManajer.class");
+        final boolean[] valid = {false};
+        new ClassReader(bytes).accept(new ClassVisitor(ASM9) {
+            @Override public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+                if (name.equals("bEventFlagBuf"))
+                    valid[0] = (access & ACC_STATIC) != 0 && descriptor.equals("B") && value == null;
+                return null;
+            }
+        }, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        if (!valid[0]) throw new IOException("Expected static byte bEventFlagBuf with no ConstantValue");
+    }
+
     private static String digest(byte[] b) throws Exception {
         StringBuilder s = new StringBuilder();
         for (byte v : MessageDigest.getInstance("SHA-256").digest(b)) s.append(String.format("%02x", v & 255));
@@ -69,6 +85,7 @@ public final class PatchResourceInit implements Opcodes {
         }
         byte[] original = entries.get(CLASS + ".class");
         if (original == null) throw new IOException("Original GameData absent");
+        verifyByteDefault(entries.get(PKG + "TCBManajer.class"));
         entries.put(CLASS + ".class", adapt(original));
         try (JarOutputStream jar = new JarOutputStream(Files.newOutputStream(out, StandardOpenOption.CREATE_NEW))) {
             for (Map.Entry<String, byte[]> e : entries.entrySet()) {
