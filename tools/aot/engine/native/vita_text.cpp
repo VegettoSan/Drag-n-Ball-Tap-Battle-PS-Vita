@@ -35,8 +35,6 @@ struct Glyph {
     int bearing_y = 0;
     int bearing_x64 = 0;
     int bearing_y64 = 0;
-    int bitmap_width = 0;
-    int bitmap_height = 0;
     int width = 0;
     int height = 0;
     int margin = 2;
@@ -172,8 +170,6 @@ Glyph* glyphFor(int size, uint16_t c, bool need_pixels, bool& raster_miss) {
             glyph.bearing_y64 = info.glyphMetrics.horizontalBearingY64;
             glyph.bearing_x = glyph.bearing_x64 >> 6;
             glyph.bearing_y = glyph.bearing_y64 >> 6;
-            glyph.bitmap_width = static_cast<int>(info.bitmapWidth);
-            glyph.bitmap_height = static_cast<int>(info.bitmapHeight);
         }
         // Keep metrics for every character so RectF width remains identical to
         // Android, but defer bitmap generation until a glyph can actually touch
@@ -190,13 +186,15 @@ Glyph* glyphFor(int size, uint16_t c, bool need_pixels, bool& raster_miss) {
     glyph.rasterized = true;
     if (!setSize(size)) return &glyph;
 
-    // scePvfGetCharInfo above already returns the bitmap dimensions and exact
-    // 26.6 bearings. Re-querying CharInfo and CharImageRect for every new CJK
-    // glyph was the dominant character-selection hitch on real hardware. Keep
-    // that metadata in the cache and make rasterization a single PVF call.
-    if (glyph.bitmap_width > 0 && glyph.bitmap_height > 0) {
-        glyph.width = glyph.bitmap_width + glyph.margin * 2;
-        glyph.height = glyph.bitmap_height + glyph.margin * 2;
+    // CharInfo supplies advances/bearings, but its bitmap dimensions cannot
+    // replace CharImageRect (00.18 made text disappear on the user's Vita).
+    // Query the image rectangle only once per visible glyph/size; keep cached
+    // metrics, memory-backed fonts and deferred off-screen rasterization.
+    ScePvfIrect rect{};
+    const int rect_error = scePvfGetCharImageRect(font_id, c, &rect);
+    if (rect_error == 0 && rect.width > 0 && rect.height > 0) {
+        glyph.width = rect.width + glyph.margin * 2;
+        glyph.height = rect.height + glyph.margin * 2;
         if (glyph.width <= 1024 && glyph.height <= 1024) {
             glyph.mask.assign(size_t(glyph.width) * glyph.height, 0);
             ScePvfUserImageBufferRec image{};
@@ -207,9 +205,24 @@ Glyph* glyphFor(int size, uint16_t c, bool need_pixels, bool& raster_miss) {
             image.rect.height = static_cast<uint16_t>(glyph.height);
             image.bytesPerLine = static_cast<uint16_t>(glyph.width);
             image.buffer = glyph.mask.data();
-            glyph.drawable = scePvfGetCharGlyphImage(font_id, c, &image) == 0;
+            const int image_error = scePvfGetCharGlyphImage(font_id, c, &image);
+            glyph.drawable = image_error == 0;
             if (!glyph.drawable) glyph.mask.clear();
+            // A few startup records make an empty mask distinguishable from
+            // an upload/lifecycle failure without per-frame log traffic.
+            static unsigned diagnostics = 0;
+            if (diagnostics++ < 8 || image_error != 0) {
+                const auto coverage = std::count_if(glyph.mask.begin(), glyph.mask.end(),
+                    [](uint8_t value) { return value != 0; });
+                runtimeLog("PVF glyph: char=" + std::to_string(c) + " size=" +
+                    std::to_string(size) + " rect=" + std::to_string(rect.width) +
+                    "x" + std::to_string(rect.height) + " pixels=" +
+                    std::to_string(coverage) + " result=" + std::to_string(image_error));
+            }
         }
+    } else if (rect_error != 0) {
+        runtimeLog("PVF image rectangle failed: char=" + std::to_string(c) +
+                   " result=" + std::to_string(rect_error));
     }
     return &glyph;
 }
