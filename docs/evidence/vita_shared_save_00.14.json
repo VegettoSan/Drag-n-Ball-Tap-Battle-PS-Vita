@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-05",
+  "feature": "shared save across Original, Android14 and Original+Characters profiles",
+  "compatibility_basis": {
+    "runtime_engine": "all Vita profiles execute the same original TCBManajer engine",
+    "logical_filename": "save.bin",
+    "config_data_size": 12906,
+    "original_apk": "TCBManajer allocates ConfigData[12906] and _FILELoad/_FILESave read/write save.bin",
+    "original_plus_characters_apk": "TCBManajer also allocates ConfigData[12906] and uses the same _FILELoad/_FILESave contract",
+    "android14_profile": "Vita uses Android14 only as a resource/data profile; save serialization still comes from the original TeaVM engine"
+  },
+  "new_layout": {
+    "save": "ux0:data/DBTapBattle/saves/shared/save.bin",
+    "migration_marker": "ux0:data/DBTapBattle/saves/shared/.migration-v1"
+  },
+  "migration": {
+    "runs": "once when the shared save does not yet exist and migration marker is absent",
+    "legacy_scan": "saves/<profile>/save.bin",
+    "selection": "newest valid legacy save by mtime; ties prefer selected profile, then original",
+    "legacy_files": "retained unchanged as backups",
+    "reset_safety": "migration marker prevents deleted shared saves from being resurrected from legacy backups"
+  },
+  "source_commits": {
+    "shared_save": "ff0423d16132c475395a0c035890dc7824ed426b",
+    "layout_docs": "1dadafa95e27031a374ac322218ebb0d018a9d95",
+    "version": "9ef15c502869cec42702585be9bc08b5dad80892"
+  },
+  "build": {
+    "version": "00.14",
+    "artifact": "DBTapBattle-Vita-00.14-shared-save.vpk",
+    "size": 2222691,
+    "sha256": "1563dd7fb1b10ea54a07faa560256cb96914a184bc823486c609391f244994de",
+    "eboot_sha256": "8b6ab6db3b37427e5d420c51e7ec397d96f287a6ab1f1070877e6fbe687047a9",
+    "elf_sha256": "6ebd5fc4a29c47f36e740651b5fa8c54617d5291995472fe94c142d4b71ac8c9",
+    "title_id": "DBTB00001",
+    "app_ver": "00.14",
+    "zip_test": "pass",
+    "contains_icon0": false,
+    "pipeline": "TeaVM private C -> VitaSDK ARM ELF -> VELF -> SELF -> VPK",
+    "result": "BUILD CONFIRMED"
+  },
+  "hardware_status": "PENDING. Shared-save migration and cross-profile persistence require physical Vita verification."
+}
