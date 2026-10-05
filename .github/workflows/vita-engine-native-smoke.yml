@@ -1,0 +1,62 @@
+name: Vita engine native smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/aot/engine/native/**'
+      - 'tools/aot/engine/vita/**'
+      - 'tools/aot/vita/utf16.c'
+      - 'tools/aot/vita/uchar.h'
+      - 'src/**'
+      - '.github/workflows/vita-engine-native-smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: vitasdk/vitasdk:2026.08
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create non-commercial TeaVM link probe
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/dbtb-teavm-smoke
+          cat >/tmp/dbtb-teavm-smoke/all.c <<'EOF'
+          #include <stdio.h>
+          int main(void) {
+              puts("DB Tap Battle Vita native engine smoke");
+              return 0;
+          }
+          EOF
+
+      - name: Configure full native engine target
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake -S tools/aot/engine/vita -B build-engine-smoke \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DTEAVM_C_DIR=/tmp/dbtb-teavm-smoke
+
+      - name: Build ELF SELF and VPK
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake --build build-engine-smoke -j2
+          test -s build-engine-smoke/dbtb_original_engine
+          test -s build-engine-smoke/eboot.bin
+          test -s build-engine-smoke/DBTapBattle-Vita-00.03.vpk
+          file build-engine-smoke/dbtb_original_engine
+          sha256sum build-engine-smoke/DBTapBattle-Vita-00.03.vpk
+
+      - name: Upload smoke build
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbtb-vita-engine-native-smoke
+          if-no-files-found: error
+          path: |
+            build-engine-smoke/dbtb_original_engine
+            build-engine-smoke/eboot.bin
+            build-engine-smoke/DBTapBattle-Vita-00.03.vpk
