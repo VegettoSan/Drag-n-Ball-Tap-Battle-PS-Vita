@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstring>
+#include <cstdint>
 #include <dirent.h>
 
 namespace {
@@ -55,7 +56,8 @@ void sameTable(const GameDataTable& a,const GameDataTable& b){
 }
 
 int main(int argc,char** argv){
-    assert(argc==2);GameVfs vfs(argv[1]);std::string path,error;std::vector<uint8_t> output;size_t files=0,converted_bins=0;
+    assert(argc==2);GameVfs vfs(argv[1]);std::string path,error;std::vector<uint8_t> output;
+    size_t files=0,converted_bins=0,decoded_wavs=0; long long wav_energy=0;
     for(const std::string& folder:{std::string("game"),std::string("mods/Android14")}){
         if(folder=="game")vfs.selectOriginal();else assert(vfs.selectMod("Android14"));
         DIR* dir=opendir((std::string(argv[1])+"/"+folder).c_str());assert(dir);
@@ -70,6 +72,18 @@ int main(int argc,char** argv){
                     GameDataTable a,b;assert(a.decode(raw,PacEncoding::Community14));
                     assert(b.decode(entry(output,i),PacEncoding::Original));sameTable(a,b);++converted_bins;
                 }
+                if(folder=="mods/Android14"&&source.typeString(i)=="wav"){
+                    std::vector<uint8_t> raw;assert(source.readEntry(i,raw));assert(raw.size()>=5);
+                    const uint32_t decoded_size=u32(raw,0)^42802u^uint32_t(i);
+                    const std::vector<uint8_t> pcm=entry(output,i);
+                    assert(decoded_size>0&&!(decoded_size&1u)&&pcm.size()==decoded_size);
+                    if(raw[4])assert(raw.size()>5&&((raw.size()-5)&15u)==0);
+                    for(size_t q=0;q+1<pcm.size();q+=64){
+                        const int16_t sample=static_cast<int16_t>(uint16_t(pcm[q])|(uint16_t(pcm[q+1])<<8));
+                        wav_energy+=sample<0?-int(sample):int(sample);
+                    }
+                    ++decoded_wavs;
+                }
             }
             if(name=="gamedata.pac"||name=="text00.pac"){
                 std::vector<uint8_t> raw;for(size_t i=0;i<source.entries().size();++i)if(source.typeString(i)=="dac")assert(source.readEntry(i,raw));
@@ -77,7 +91,7 @@ int main(int argc,char** argv){
             }
         }closedir(dir);
     }
-    assert(files==125&&containers==137&&textures==470&&converted_bins==68);
+    assert(files==125&&containers==137&&textures==470&&converted_bins==68&&decoded_wavs==198&&wav_energy>0);
     for(size_t n=0;n<18;++n){std::vector<uint8_t> b(n,0xFF);assert(!normaliseEnginePac(b,"common.pac",output,error));assert(output.empty());}
     std::vector<uint8_t> bad(18,0);bad[0]=1;bad[2]=0xFF;bad[3]=0xFF;bad[4]=0xFF;bad[5]=0xFF;
     assert(!normaliseEnginePac(bad,"common.pac",output,error));assert(output.empty());
@@ -85,5 +99,5 @@ int main(int argc,char** argv){
     assert(readEngineResource(vfs,"loading",output,path,error));assert(output==fileBytes(path));
     assert(readEngineResource(vfs,"mk",output,path,error));assert(output==fileBytes(path));
     assert(readEngineResource(vfs,"se_00",output,path,error));assert(output==fileBytes(path));
-    std::printf("ENGINE RESOURCE PASS: %zu files, %zu containers, %zu textures, %zu converted BIN tables\n",files,containers,textures,converted_bins);
+    std::printf("ENGINE RESOURCE PASS: %zu files, %zu containers, %zu textures, %zu converted BIN tables, %zu decoded WAV streams\n",files,containers,textures,converted_bins,decoded_wavs);
 }
