@@ -32,7 +32,17 @@
   },
   "next_diagnostic": {
     "version": "00.07",
-    "commit": "562729234da00960a2cc15acd519b5d97595ca81",
-    "strategy": "print TeaVM shadow-stack immediately before constructing a NullPointerException while preserving original exception propagation"
+    "commits": [
+      "562729234da00960a2cc15acd519b5d97595ca81",
+      "e5d50eaa4c7815a4bde2650473950925943d2ad4"
+    ],
+    "strategy": "print TeaVM shadow-stack immediately before constructing a NullPointerException while preserving original exception propagation",
+    "artifact": {
+      "name": "DBTapBattle-Vita-00.07-npetrace.vpk",
+      "sha256": "cc4c8a64f592c625df72cb6a4c4a3cb197eb7e366aad0ed4327c2777a53adf84",
+      "size": 2205053,
+      "contains_icon0": false,
+      "build_confirmed": true
+    }
   }
 }
