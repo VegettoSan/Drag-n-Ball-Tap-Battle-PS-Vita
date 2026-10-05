@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-05",
+  "scope": "real PS Vita hardware run of private full-engine build 00.08",
+  "hardware_observed": true,
+  "result": "the original game became visibly playable enough to reach its real UI without crashing; two runs completed 1314 and 624 engine frames before user-triggered clean exits",
+  "runtime_log_sha256": "7d0586e43cfe660fdb190e8f811f14f3e620d85318106c1ddb53d10e7490e1f9",
+  "runtime_log_size": 1201,
+  "confirmed_checkpoints": [
+    "vitaGL startup",
+    "dual-profile boot selector",
+    "Original profile VFS",
+    "native audio worker startup",
+    "TCBManajer.Init",
+    "original render/run loop beyond the prior 498-frame md=61 failure",
+    "game UI visible on physical PS Vita"
+  ],
+  "runs": [
+    {"profile": "Original", "frames": 1314, "crash": false},
+    {"profile": "Original", "frames": 624, "crash": false}
+  ],
+  "remaining_input_issue": {
+    "touch": "visible touch targets did not respond reliably",
+    "physical_buttons": "Circle/Triangle were still translated to Android Back and could end the original loop cleanly",
+    "root_cause_touch": "SceTouchReport coordinates use SceTouchPanelInfo active-area bounds (minAa/maxAa), while the Vita input adapter incorrectly scaled them using display bounds (minDisp/maxDisp)",
+    "fix_commits": [
+      "9e086a959e53de0a82da42d24dc1794be75f0ec2",
+      "8d52e82b73591e267a5a312cc5e5686e150b7b1e",
+      "365588846f0ca6d6e1ef0e8e2b78850fccf3b901"
+    ]
+  },
+  "next_private_test_artifact": {
+    "name": "DBTapBattle-Vita-00.09-touchfix.vpk",
+    "sha256": "907d694016c341dac3bfb7f97461ad7df9fe6b7cd6c2cb7afb2ef369e6772f77",
+    "size": 2207149,
+    "contains_icon0": false,
+    "expected_checkpoint": "front touch should map through the Vita active-area grid into the original Android 960x544 input transform; physical back/pause buttons should no longer close gameplay"
+  }
+}
