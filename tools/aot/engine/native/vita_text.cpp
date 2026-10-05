@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <malloc.h>
 #include <memory>
 #include <unordered_map>
 #include <vector>
@@ -28,9 +29,7 @@ std::unordered_map<int, std::unique_ptr<TextSurface>> surfaces;
 int next_surface = 1;
 
 void* pvfAlloc(void*, unsigned int size) {
-    void* out = nullptr;
-    if (posix_memalign(&out, 8, (size + 7u) & ~7u) != 0) return nullptr;
-    return out;
+    return memalign(8, (size + 7u) & ~7u);
 }
 void* pvfRealloc(void*, void* old_ptr, unsigned int size) {
     return std::realloc(old_ptr, size);
@@ -205,7 +204,6 @@ int32_t dbtb_drawText(int32_t id, void* raw_text, int32_t length, int32_t size,
     auto* bounds = static_cast<int32_t*>(raw_bounds);
     int ascent = std::max(1, size);
     int descent = std::max(1, size / 4);
-    int width = 0;
 
     // Android Paint uses font-wide top/bottom. Approximate those from all glyph
     // metrics in this run, then draw every glyph on the same baseline.
@@ -215,7 +213,6 @@ int32_t dbtb_drawText(int32_t id, void* raw_text, int32_t length, int32_t size,
         if (!metrics(text[i], info, rect)) continue;
         ascent = std::max(ascent, info.glyphMetrics.horizontalBearingY64 >> 6);
         descent = std::max(descent, int(info.bitmapHeight) - (info.glyphMetrics.horizontalBearingY64 >> 6));
-        width += glyphAdvance(info);
     }
     const int line_height = std::max(1, ascent + std::max(0, descent));
     if (s->ypos + line_height > s->height) return 0;
@@ -224,10 +221,7 @@ int32_t dbtb_drawText(int32_t id, void* raw_text, int32_t length, int32_t size,
     int pen = 0;
     for (int i = 0; i < length; ++i) {
         int advance = std::max(1, size / 2);
-        if (!drawGlyph(*s, text[i], pen, baseline, r, g, b, a, advance)) {
-            // Missing glyph remains visible as spacing rather than corrupting the
-            // batched surface or inventing a replacement character.
-        }
+        drawGlyph(*s, text[i], pen, baseline, r, g, b, a, advance);
         pen += advance;
     }
 
