@@ -2,6 +2,7 @@
 #include "game_data.hpp"
 #include <cstdio>
 #include <cstring>
+#include <cmath>
 
 namespace {
 constexpr size_t kBudget = 32u * 1024u * 1024u;
@@ -39,6 +40,69 @@ bool normaliseConvertedTable(std::vector<uint8_t>& payload, std::string& error) 
         put16(payload, 6 + j * 8, record.width);
         put16(payload, 8 + j * 8, record.height);
     }
+    return true;
+}
+
+bool normaliseCommunityWav(std::vector<uint8_t>& payload, uint32_t entry_index, std::string& error) {
+    if (payload.size() < 5) { error = "Community14 WAV wrapper is truncated"; return false; }
+    const uint32_t decoded_size = le32(payload.data()) ^ 42802u ^ entry_index;
+    if (!decoded_size || decoded_size > kBudget || (decoded_size & 1u)) {
+        error = "Community14 WAV decoded size is invalid"; return false;
+    }
+    const uint8_t compression = payload[4];
+    if (!compression) {
+        if (payload.size() - 5 < decoded_size) { error = "Community14 PCM WAV payload is truncated"; return false; }
+        std::vector<uint8_t> pcm(payload.begin() + 5, payload.begin() + 5 + decoded_size);
+        payload.swap(pcm);
+        return true;
+    }
+
+    // The supplied Android14 loader's native ext.a.w routine is the standard
+    // PlayStation ADPCM predictor: one 16-byte frame carries 28 mono 16-bit
+    // samples, with predictor/shift in byte 0 and the terminator flag in byte 1.
+    // Reconstruct the PCM contract expected by the original AudioTrack path;
+    // do not expose compressed community bytes to SoundEffect.
+    const size_t compressed_size = payload.size() - 5;
+    if (!compressed_size || (compressed_size & 15u)) { error = "Community14 ADPCM is not frame aligned"; return false; }
+    static const double kCoef[5][2] = {
+        {0.0, 0.0},
+        {60.0 / 64.0, 0.0},
+        {115.0 / 64.0, -52.0 / 64.0},
+        {98.0 / 64.0, -55.0 / 64.0},
+        {122.0 / 64.0, -60.0 / 64.0}
+    };
+    std::vector<uint8_t> pcm;
+    pcm.reserve(decoded_size);
+    double previous1 = 0.0, previous2 = 0.0;
+    const uint8_t* src = payload.data() + 5;
+    for (size_t frame = 0; frame < compressed_size; frame += 16) {
+        const uint8_t header = src[frame];
+        const uint8_t flags = src[frame + 1];
+        if (flags == 7) break;
+        const unsigned predictor = header >> 4;
+        const unsigned shift = header & 15u;
+        if (predictor >= 5 || shift > 12) { error = "Community14 ADPCM frame header is invalid"; return false; }
+        for (size_t j = 2; j < 16 && pcm.size() < decoded_size; ++j) {
+            const uint8_t packed = src[frame + j];
+            for (unsigned half = 0; half < 2 && pcm.size() < decoded_size; ++half) {
+                int nibble = half ? (packed >> 4) : (packed & 15);
+                if (nibble & 8) nibble -= 16;
+                const int base = nibble * (1 << (12 - shift));
+                const double sample = double(base) + previous1 * kCoef[predictor][0] + previous2 * kCoef[predictor][1];
+                long rounded = std::lrint(sample);
+                if (rounded < -32768) rounded = -32768;
+                if (rounded > 32767) rounded = 32767;
+                previous2 = previous1;
+                previous1 = sample;
+                const int16_t value = static_cast<int16_t>(rounded);
+                pcm.push_back(static_cast<uint8_t>(value & 0xff));
+                pcm.push_back(static_cast<uint8_t>((uint16_t(value) >> 8) & 0xff));
+            }
+        }
+        if (pcm.size() >= decoded_size || flags == 1) break;
+    }
+    if (pcm.size() != decoded_size) { error = "Community14 ADPCM decoded length mismatch"; return false; }
+    payload.swap(pcm);
     return true;
 }
 
@@ -86,6 +150,8 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
             if (!normalise(payload, "", nested, error, depth + 1)) return false;
             if (nested != payload) changed = true;
             payload.swap(nested);
+        } else if (encoded && depth == 0 && type == "wav") {
+            if (!normaliseCommunityWav(payload, static_cast<uint32_t>(i), error)) return false;
         } else if (encoded && depth == 0 && type == "bin") {
             // Community14 protects the converted GameData directory inside
             // top-level BIN payloads as well as the outer PAC directory. Nested
