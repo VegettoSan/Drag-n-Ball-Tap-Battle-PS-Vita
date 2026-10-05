@@ -25,6 +25,7 @@ constexpr size_t kSaveSize = 12906;
 std::unique_ptr<GameVfs> vfs;
 std::vector<uint8_t> pending;
 int pending_encoding=0;
+int text_encodings[2]={0,0};
 std::string save_path;
 struct Size { int w, h; };
 std::unordered_map<unsigned, Size> textures;
@@ -94,10 +95,31 @@ int32_t dbtb_resource(void* name) {
     }
     PacFile source;
     if (source.open(path) && source.encoding()==PacEncoding::Community14) pending_encoding=1;
+    const std::string logical=path.substr(path.find_last_of('/')+1);
+    if(logical=="gamedata.pac")text_encodings[0]=pending_encoding;
+    if(logical=="text00.pac")text_encodings[1]=pending_encoding;
+    if(logical=="gamedata.pac"||logical=="text00.pac")std::printf("Text codec %s: %d (%s)\n",logical.c_str(),pending_encoding,source.error().c_str());
     std::printf("Resource: %s (%zu bridge bytes)\n", path.c_str(), pending.size());
     return int32_t(pending.size());
 }
 int32_t dbtb_resourceEncoding() { return pending_encoding; }
+int32_t dbtb_installedData() {
+    // These are the 13 complete character triplets confirmed in the supplied
+    // community APK, plus the shared assets needed for selection/combat.
+    for (int i=0;i<13;++i) {
+        for (const char* format : {"char%02d.pac", "chardemo%02d.pac", "charf00%02d.pac"}) {
+            char name[48]; std::snprintf(name,sizeof(name),format,i);
+            std::string path; PacFile pac;
+            if (!dbtb_vfs().resolve(name,path) || !pac.open(path)) return 0;
+        }
+    }
+    for (const char* name : {"select0.pac", "effect.pac", "back00.pac", "bobj00.pac"}) {
+        std::string path; PacFile pac;
+        if (!dbtb_vfs().resolve(name,path) || !pac.open(path)) return 0;
+    }
+    return 1;
+}
+int32_t dbtb_textEncoding(int32_t source) { return source>=0 && source<2?text_encodings[source]:-1; }
 void dbtb_copyResource(void* data, int32_t size) {
     if (size < 0 || size_t(size) != pending.size() || (size && !data)) std::abort();
     if (size) std::memcpy(data, pending.data(), size);

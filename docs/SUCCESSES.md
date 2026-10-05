@@ -160,3 +160,10 @@ GL/resource services also compile for Vita. This does not confirm device play.
 Attempt 021: all 65,792 single/two-byte Shift_JIS decode cases match Java.
 The resource-specific charset boundary keeps community UTF-8 strings intact and
 respects original fallback. Generation passes; native execution is a separate check.
+
+# 2026-10-05 — Original title and main menu executed on the host
+
+The original complete core reaches its animated title and main menu with the
+supplied Android14 assets, responding to injected original touch events. The
+original profile also renders its startup and Japanese text. These are ASan
+host OpenGL runs; Vita hardware, selection and complete battle remain pending.

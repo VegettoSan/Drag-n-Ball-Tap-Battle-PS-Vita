@@ -445,3 +445,20 @@ the GetString platform boundary per resolved table; retain payload, string
 lengths and characters. Both tables independently fall back to original.
 Fresh generation: 460 classes/4,002 methods without diagnostics. Native menu
 progression and combat remain under test, not playable-release evidence.
+
+## 2026-10-05 — Attempt 022 — Execute the original offline title/menu
+
+**Baseline:** 9a4285c plus recovered service adapters and charset fixes.
+**Procedure:** generate and link the original complete engine with native EGL/GL,
+FreeType and Vorbis services; ASan enabled, leaks disabled for the driver.
+**Observed:** Android14 resource preflight succeeds; original logs, animated
+title and main menu render; injected touch events enter the menu. The original
+profile independently runs 900 frames and renders readable Japanese text.
+**Corrections:** InitGameData bypasses the string resource overload, so encoding
+must be recorded by the actual native read; SetString has four additional charset
+boundaries. Font surfaces follow the original batched flash lifecycle. Locally
+verified initial character triplets set the original installed-data flag; local
+update checking returns no pending remote items only when required PACs exist.
+Remote HTTP requests still fail honestly. No gameplay handler is replaced.
+**Result:** HOST MENU CONFIRMED; character selection/combat under test. Vita ARM
+build and hardware execution are separate checks, not established by host GL.

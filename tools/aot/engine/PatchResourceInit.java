@@ -37,23 +37,27 @@ public final class PatchResourceInit implements Opcodes {
         verifyByteDefault(bytes);
         ClassReader cr=new ClassReader(bytes);
         ClassWriter cw=new ClassWriter(cr,ClassWriter.COMPUTE_MAXS);
-        final int[] found={0};
+        final int[] found={0}, formatted={0};
         cr.accept(new ClassVisitor(ASM9,cw) {
             @Override public MethodVisitor visitMethod(int access,String name,String desc,String signature,String[] exceptions) {
                 MethodVisitor mv=super.visitMethod(access,name,desc,signature,exceptions);
-                if(!name.equals("GetString") || !desc.equals("("+GW+"III)Ljava/lang/String;"))return mv;
+                boolean get=name.equals("GetString") && desc.equals("("+GW+"III)Ljava/lang/String;");
+                boolean format=name.equals("SetString") && desc.equals("("+GW+"IIIIIIIIIIII)V");
+                if(!get && !format)return mv;
                 return new MethodVisitor(ASM9,mv) {
                     @Override public void visitLdcInsn(Object value) {
                         if("Shift_JIS".equals(value)) {
-                            found[0]++;
-                            super.visitVarInsn(ILOAD,2);
-                            super.visitMethodInsn(INVOKESTATIC,PKG+"ResourceAdapter","textCharset","(I)Ljava/lang/String;",false);
+                            if(get){found[0]++;super.visitVarInsn(ILOAD,2);
+                                super.visitMethodInsn(INVOKESTATIC,PKG+"ResourceAdapter","textCharset","(I)Ljava/lang/String;",false);
+                            }else{formatted[0]++;super.visitVarInsn(ALOAD,0);super.visitVarInsn(ILOAD,5);super.visitVarInsn(ILOAD,2);
+                                super.visitMethodInsn(INVOKESTATIC,PKG+"ResourceAdapter","stringCharset","(L"+PKG+"TCBManajer;II)Ljava/lang/String;",false);
+                            }
                         } else super.visitLdcInsn(value);
                     }
                 };
             }
         },0);
-        if(found[0]!=1)throw new IOException("Expected one GetString charset boundary");
+        if(found[0]!=1||formatted[0]!=4)throw new IOException("Expected one GetString and four SetString charset boundaries: "+found[0]+"/"+formatted[0]+"");
         return cw.toByteArray();
     }
 
