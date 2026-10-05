@@ -66,6 +66,42 @@ With `Original` selected, only the `game/` path is considered.
 
 Nested relative paths use the same rule.
 
+## Shared save data
+
+All selectable data profiles now use one save:
+
+```text
+ux0:data/DBTapBattle/saves/shared/save.bin
+```
+
+This is safe for the current port because every profile executes the same original
+`TCBManajer` save implementation. The original engine always reads/writes the
+same `ConfigData[12906]` byte array under the logical name `save.bin`; mods only
+change resource resolution, not the save serializer.
+
+Pre-00.14 builds used separate saves such as:
+
+```text
+ux0:data/DBTapBattle/saves/original/save.bin
+ux0:data/DBTapBattle/saves/Android14/save.bin
+ux0:data/DBTapBattle/saves/<other-mod>/save.bin
+```
+
+On first launch with the shared-save build, the port scans those legacy profile
+folders and copies the most recently modified valid `save.bin` into `shared/`.
+If timestamps tie, the currently selected profile is preferred, then Original.
+Legacy files are never moved or deleted and therefore remain as manual backups.
+
+Migration is one-shot. `saves/shared/.migration-v1` records that the old saves
+were considered. This is important because if the original game later deletes
+`shared/save.bin` as part of a reset/new-game flow, the port must not resurrect
+an old per-profile backup on the next boot.
+
+To manually choose a different old save, close the game, back up the current
+shared save, then copy the desired legacy `save.bin` over
+`saves/shared/save.bin`. Do not delete `.migration-v1` unless intentionally
+re-running automatic migration.
+
 ## Optional mod metadata
 
 `mod.json` is port-owned metadata and does not modify original Tap Battle formats.
@@ -88,8 +124,9 @@ The diagnostic font is ASCII-only; paths retain UTF-8 bytes.
 
 - Never write mod files into `game/`.
 - Never patch original PAC files in place during normal play.
-- Save/configuration data should live outside both `game/` and individual mod resource folders.
+- Save/configuration data lives outside both `game/` and individual mod resource folders.
 - Path traversal such as `../` must not be accepted by the virtual filesystem.
+- Legacy per-profile saves are retained as backups after migration.
 
 ## Writable paths and completeness
 
@@ -97,7 +134,8 @@ Current bootstrap creates config/, logs/, saves/ alongside game/ and mods/.
 Log: ux0:data/DBTapBattle/logs/runtime.log. Original data presence currently
 means game/common.pac is a regular file, independent of an active mod; it is
 not a complete installation test. Original charNN/chardemoNN/charf00NN triplets
-are absent in the supplied APK. Runtime save files remain PENDING.
+are absent in the first supplied APK but are present in the Original+Characters
+profile documented separately.
 
 ## Community assets as a separate dataset
 
