@@ -28,7 +28,7 @@ def main():
     parser.add_argument('generated_directory', type=Path)
     args = parser.parse_args()
     root = args.generated_directory.resolve()
-    required = ['all.c', 'definitions.h', 'exceptions.h', 'memory.c', 'time.c', 'fiber.c', 'date.c']
+    required = ['all.c', 'definitions.h', 'exceptions.h', 'memory.c', 'time.c', 'fiber.c', 'date.c', 'classes/org/teavm/runtime/ExceptionHandling.c']
     missing = [name for name in required if not (root / name).is_file()]
     if missing:
         parser.error('Not a TeaVM 0.12.3 C output directory; missing: ' + ', '.join(missing))
@@ -39,6 +39,22 @@ def main():
                  '#if !defined(__vita__)\n    #define TEAVM_UNIX 1\n    #endif')
     replace_once(root / 'exceptions.h', '#define TEAVM_UNREACHABLE return;',
                  '#define TEAVM_UNREACHABLE __builtin_unreachable();')
+
+    # The original engine catches Runtime exceptions inside TCBManajer.Run and
+    # only logs Exception.toString(), which hides the TeaVM call site that caused
+    # a device-only NPE. Print the TeaVM shadow-stack immediately before creating
+    # the NullPointerException on Vita; normal exception propagation is unchanged.
+    replace_once(root / 'classes/org/teavm/runtime/ExceptionHandling.c', '''void teavm_throwNullPointerException() {
+    void* teavm_tmp_ptr_0;
+    meth_otr_ExceptionHandling_throwException((teavm_tmp_ptr_0 = meth_otr_Allocator_allocate(&jl_NullPointerException_Cls), meth_jl_NullPointerException__init_(teavm_tmp_ptr_0), teavm_tmp_ptr_0));
+}''', '''void teavm_throwNullPointerException() {
+#if defined(__vita__)
+    teavm_printString(u"[DBTB] NullPointerException TeaVM stack:\n");
+    meth_otr_ExceptionHandling_printStack();
+#endif
+    void* teavm_tmp_ptr_0;
+    meth_otr_ExceptionHandling_throwException((teavm_tmp_ptr_0 = meth_otr_Allocator_allocate(&jl_NullPointerException_Cls), meth_jl_NullPointerException__init_(teavm_tmp_ptr_0), teavm_tmp_ptr_0));
+}''')
 
     replace_once(root / 'memory.c', 'static int64_t teavm_pageCount', '''
 #if defined(__vita__)
