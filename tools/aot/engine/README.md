@@ -55,7 +55,9 @@ render/audio/platform code remains at `-O2`.
 - Texture upload, FBO, save, system-PVF text, Vorbis BGM/SE and PCM/RIFF voice
   services have real Vita implementations. They are not successful no-ops.
 - Android14 text uses its confirmed UTF-8 table codec; original text uses the
-  generated Shift_JIS mapping. 65,792 single/two-byte Shift_JIS cases were
+  generated Shift_JIS mapping. Gen uses content-detected UTF-8 for text00
+  while retaining Shift_JIS game/character tables; PAC headers alone do not
+  determine charset. 65,792 single/two-byte Shift_JIS cases were
   previously compared against Java.
 - Bluetooth remains disconnected and Android marketplace/browser services are
   unsupported. Remote HTTP/downloads fail honestly. The obsolete catalog reports

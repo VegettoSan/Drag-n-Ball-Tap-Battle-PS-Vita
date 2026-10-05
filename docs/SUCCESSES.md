@@ -1,5 +1,12 @@
 # Confirmed Successes
 
+**Reading checkpoint — 2026-10-05 / 00.21.** Entries retain the source/build and
+evidence available when recorded. Historical pending items can be superseded;
+do not treat them as current blockers or retroactively promote their success.
+The current full-core AOT status, delivered artifact and open physical checks
+are in [CURRENT_STATUS](CURRENT_STATUS.md). Commands/mock scope are in
+[VALIDATION](VALIDATION.md); reusable lessons in [PORTING_GUIDE](PORTING_GUIDE.md).
+
 Only add items here when they are demonstrated by evidence. Distinguish PC-side format validation from behavior confirmed on real Vita hardware.
 
 ## 2026-10-04 — Original APK is suitable for source-level reconstruction
@@ -147,7 +154,7 @@ TCBManajer/Game1..17, TCB/ObjReq, input/controller, graphics batching and the
 byte-array GameData/SpriteData decoder remain supplied original bytecode. One
 hash-pinned Android resource overload is adapted. Native linking/execution, full
 menu/combat and playable release remain pending. See tools/aot/engine/README.md.
-# 2026-10-05 — Full-core native compilation and resource adaptation
+## 2026-10-05 — Full-core native compilation and resource adaptation
 
 The original engine's generated C compiles on the host after a guarded TeaVM
 static-byte default repair. ASan/UBSan checks pass for 125 PAC files, 137 nested
@@ -161,7 +168,7 @@ Attempt 021: all 65,792 single/two-byte Shift_JIS decode cases match Java.
 The resource-specific charset boundary keeps community UTF-8 strings intact and
 respects original fallback. Generation passes; native execution is a separate check.
 
-# 2026-10-05 — Original title and main menu executed on the host
+## 2026-10-05 — Original title and main menu executed on the host
 
 The original complete core reaches its animated title and main menu with the
 supplied Android14 assets, responding to injected original touch events. The
@@ -305,3 +312,18 @@ The complete privately regenerated original engine also builds and packages as
 00.21 at 07222bb. Native PAC/PNG/texture ownership checks pass ASan/UBSan; VPK
 CRC/SFO/title/eboot and original-engine/source markers pass. See
 `evidence/vita_audio_startup_build_00.21.json`. This is build/host evidence only.
+
+
+## 2026-10-05 — Documentation checkpoint and future-port handoff reconciled
+
+**Scope: DOCUMENTATION VALIDATION only.** All 29 pre-existing Markdown files
+were reviewed/updated and three guides added: CURRENT_STATUS, VALIDATION and
+PORTING_GUIDE. Local Markdown targets resolve; the current status/test sheet
+matches the recorded 00.21 VPK source and SHA-256. Changes are Markdown only.
+
+Build recipes identify full engine versus bootstrap/CI, preserve private AOT
+inputs and specify adapter/mocked-test scope. Current PAC filters/cache ownership,
+profile save paths and supplied APK differences are reconciled with source.
+Historical test sheets retain their protocol and identify subsequent outcomes;
+00.20 is marked with the startup regression, 00.21 physical recovery is pending.
+This success does not add a gameplay/device/audio confirmation or a new VPK.

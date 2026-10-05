@@ -1,5 +1,12 @@
 # Attempts Log
 
+**Reading checkpoint — 2026-10-05 / 00.21.** Entries retain the source/build and
+evidence available when recorded. Historical pending items can be superseded;
+do not treat them as current blockers or retroactively promote their success.
+The current full-core AOT status, delivered artifact and open physical checks
+are in [CURRENT_STATUS](CURRENT_STATUS.md). Commands/mock scope are in
+[VALIDATION](VALIDATION.md); reusable lessons in [PORTING_GUIDE](PORTING_GUIDE.md).
+
 Chronological record of meaningful experiments. Add an entry before/after each test that can teach us something.
 
 ## Entry template
@@ -746,3 +753,28 @@ the VFS. A real game/ directory then passes all bridge/cache/texture checks.
 The complete 00.21 build succeeds through ELF/VELF/SELF/VPK. CRC, APP_VER 00.21,
 TITLE_ID DBTB00001, eboot equality and original-engine/source markers pass;
 see `evidence/vita_audio_startup_build_00.21.json`.
+
+
+## 2026-10-05 — Documentation reconciliation for the 00.21 checkpoint
+
+**Goal:** make every repository Markdown consistent with actual implementation
+and preserve reusable evidence for another port.
+
+**Baseline:** latest delivered full-engine source 07222bb / VPK 00.21; user
+hardware results through 00.20, no new 00.21 physical result.
+
+**Changes:** reconcile build targets, private AOT generation, VFS/PAC filters,
+cache ownership, audio setup/DSP, PVF/lifecycle, profile saves and APK identities.
+Archive versioned test sheets with subsequent results; retain the journals.
+Add CURRENT_STATUS, VALIDATION and PORTING_GUIDE for current navigation,
+reproducibility, evidence levels and cross-project lessons. Correct unsupported
+save-exclusion and complete-symbol-relink claims against actual tools/archives.
+
+**Validation scope:** Markdown coverage, local links, recorded artifact metadata
+and source-path/contract consistency. This task changes documentation only;
+prior host/device results keep their original scope. No new gameplay, latency,
+quality, save round-trip or latest hardware success is asserted.
+
+**Next action:** test 00.21 on Vita with identified profile/manifest, preserve
+runtime.log, then assess voice samples and cold/warm selection latency. Update
+the checkpoint and evidence before claiming those issues fixed.

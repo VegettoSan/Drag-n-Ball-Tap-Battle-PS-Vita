@@ -1,5 +1,12 @@
 # PS Vita hardware test — 00.13
 
+**Archived test sheet.** These expectations describe 00.13 at publication and
+are not current unresolved-engine milestones. Later tests restore visible text
+(00.19), while rough voices and character pauses remain unresolved. Latest
+00.21 startup recovery is pending. See [CURRENT_STATUS](CURRENT_STATUS.md) and
+[TEST_VITA_00_21](TEST_VITA_00_21.md). Do not infer this exact Gen APK hash or every
+00.13 fix is hardware-confirmed from a later generic Original-profile test.
+
 Build 00.13 is a focused follow-up to the hardware-tested 00.12. It retains the 00.12 text glyph cache/partial texture upload and Community14 voice decoding, while correcting two hardware regressions and adding the hybrid charset handling needed by the user-supplied Original+Characters APK.
 
 ## What is already hardware confirmed from 00.12
@@ -33,7 +40,11 @@ Build 00.13 is a focused follow-up to the hardware-tested 00.12. It retains the 
 
 ### Original+Characters (`gen.apk`) dataset
 
-- Install/extract its real `assets/` data as `ux0:data/DBTapBattle/game/` (do not copy its bundled `save.bin`).
+- Extract its real `assets/` data as `ux0:data/DBTapBattle/game/`. The earlier
+  sheet advised omitting the bundled save for that test. Current extraction
+  preserves it and the game uses the selected profile's save.bin; back up
+  existing progress and decide intentionally whether to install that supplied save.
+  See [ORIGINAL_PLUS_CHARACTERS_APK](ORIGINAL_PLUS_CHARACTERS_APK.md).
 - Start the Original slot in the selector.
 - Verify common menus/text, character selection and battle.
 - Pay particular attention to `text00` strings: this dataset uses ordinary PAC headers with UTF-8 `text00`, while its character/game tables remain Shift_JIS.

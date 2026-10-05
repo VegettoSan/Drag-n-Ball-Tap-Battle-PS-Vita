@@ -1,5 +1,12 @@
 # Failures and Dead Ends
 
+**Reading checkpoint — 2026-10-05 / 00.21.** Entries retain the source/build and
+evidence available when recorded. Historical pending items can be superseded;
+do not treat them as current blockers or retroactively promote their success.
+The current full-core AOT status, delivered artifact and open physical checks
+are in [CURRENT_STATUS](CURRENT_STATUS.md). Commands/mock scope are in
+[VALIDATION](VALIDATION.md); reusable lessons in [PORTING_GUIDE](PORTING_GUIDE.md).
+
 This file exists to prevent repeated work. A failed approach is valuable when its conditions and evidence are recorded precisely.
 
 ## Entry template
@@ -127,7 +134,7 @@ Adding raw-ID stubs would not supply a working resource stream. The revised pass
 redirects that one verified overload to the VFS and reuses the original byte-array
 decoder; full generation then passes. The input-only Date omission is unsuitable
 for this full core. Native service implementations are still required before linking.
-# 2026-10-05 — TeaVM empty static-byte initializer
+## 2026-10-05 — TeaVM empty static-byte initializer
 
 Full C compilation first failed on `bEventFlagBuf = ;`. The pinned original
 field is a static byte without ConstantValue, so its JVM initial value is zero.
@@ -319,3 +326,23 @@ Do not retry the encoded priority change merely because a lower number suggests
 higher priority. 00.21 restores the tested value and adds separate API error
 diagnostics, ownership cleanup and failed-setup latching. The real adapter's
 new injected-error tests cover those paths. Device startup must be retested.
+
+
+## Current lessons to carry into another port
+
+| Historical failure | Reusable prevention | Current boundary |
+|---|---|---|
+| Stub-only AOT cannot provide Android services | Preserve core and implement genuine platform contracts | Full AOT target exists; dummy-import CI remains only a link smoke check |
+| Renderer false return interpreted as failure | Read upstream return semantics before gating initialization | Earlier Vita renderer/gameplay works; exhaustive fidelity pending |
+| Direct buffers outlive GC-safe access | Own native copies and respect buffer types/limits | Host buffers covered; device matrix incomplete |
+| Missing resume/event progress | Preserve lifecycle edge and cooperative scheduler | Earlier text/card paths restored |
+| CharInfo replaces glyph image rectangle | Cache metrics separately from raster coverage | 00.19 visible text confirmed |
+| Whole PAC reads discard exclusion-mask benefit | Filter before read, retain original indices and selected bytes | Host I/O reduction; physical selection latency still pending |
+| Limiter/linear interpolation mistaken for voice cure | Separate source PCM, reconstruction, clipping and output timing | Voice quality still unresolved |
+| Successful mock thread hides 00.20 setup failure | Inject real adapter errors and record each native syscall code | 00.21 host checks pass; device menu recovery pending |
+| Old paths or symbols described as current | Check active source and archive inventory | Profile-local saves; current symbols are not a full relink kit |
+
+This is a synthesis of recorded failures, not a new failure or a hardware fix.
+00.20's higher-priority retry above is historical and was reverted in 00.21.
+Restart after changing installed data; no general hot-reload or asynchronous
+resource/voice prefetch is implemented. See [CURRENT_STATUS](CURRENT_STATUS.md).

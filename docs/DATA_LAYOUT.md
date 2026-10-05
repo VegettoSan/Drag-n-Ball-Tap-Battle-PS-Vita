@@ -9,7 +9,8 @@ Current contract, checked against `src/vfs.cpp` and native `resources.cpp` on
 ux0:data/DBTapBattle/
 ```
 
-The VPK contains only the native executable and port-owned resources. Original game content is installed separately.
+The full VPK contains the native executable (including privately compiled original
+core) and port notices; original asset data is installed separately.
 
 ## Original game
 
@@ -155,7 +156,7 @@ existing override reports its own parse/decode error. The GameData exclusion
 filter is honored before reading payloads; normalization is in memory and never
 rewrites the installed PAC. The result LRU is keyed by resolved physical path,
 filter and file metadata (size/mtime/ctime) and cleared on resource reinitialization.
-Caches do not hold save state or imply cross-profile progress sharing.
+The PAC-result cache does not hold save state or imply cross-profile progress sharing.
 
 Resource-existence results and save reads are also cached for the session. Do not
 promise live detection of every edited file or external save while the game is

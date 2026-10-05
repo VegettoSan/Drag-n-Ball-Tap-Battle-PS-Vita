@@ -1,5 +1,12 @@
 # Full original-engine Vita test — 00.03
 
+**Archived test sheet.** 00.03 is the first full-core build, not the current
+installation recommendation. Its device startup rejected vitaGL's normal false
+return; that interpretation was corrected in subsequent builds. The original
+publication's pending checks below are retained as history. Current active test:
+[TEST_VITA_00_21](TEST_VITA_00_21.md), status: [CURRENT_STATUS](CURRENT_STATUS.md).
+Evidence: [00.03 startup finding](evidence/vita_hardware_vgl_init_00.03.json).
+
 This is the first PS Vita package built from the complete reachable original
 `TCBManajer` Init/Run core instead of the diagnostic bootstrap. Build success is
 confirmed; Vita3K and real-hardware behavior are still pending.

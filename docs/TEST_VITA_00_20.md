@@ -1,5 +1,13 @@
 # Prueba Vita 00.20 — carga PAC y voces
 
+**Prueba archivada con regresión de arranque. No usar como instalación actual.**
+En Vita el worker de audio falla 20 veces y el motor sale antes del menú con
+`BGM load failed: bgm_16` (frame 570, estado 693). El log no permite distinguir
+creación de arranque del hilo; no prueba corrupción PAC/OGG ni crash nativo.
+Evidencia: [cierre 00.20](evidence/vita_hardware_audio_startup_00.20.json).
+00.21 revierte la prioridad y añade errores precisos/limpieza; su prueba física
+está pendiente en [TEST_VITA_00_21](TEST_VITA_00_21.md).
+
 Tu prueba confirma que los textos regresaron en 00.19, pero las voces siguen
 sonando mal y cambiar de personaje todavía causa pausas. 00.20 conserva el
 renderizado de texto y las mejoras gráficas que llegaron a 60 FPS en 00.18.
@@ -12,15 +20,16 @@ se conserva el fallback al perfil original y los guardados independientes.
 
 Las voces mantienen los PCM16 originales y su frecuencia de 22050 Hz. La
 conversión a 48000 Hz usa interpolación con filtro de reconstrucción en lugar
-de la interpolación lineal anterior. El worker tiene mayor prioridad y registra
-intervalos entre entregas al controlador. No se añade buffering de audio.
+de la interpolación lineal anterior. Esta versión cambió la prioridad codificada del worker y añadió registros de
+intervalos entre entregas al controlador. Ese cambio es el principal sospechoso
+de la regresión y se revierte en 00.21; no se da por probado el syscall exacto. No se añade buffering de audio.
 
 La primera visita todavía necesita leer, decodificar y subir recursos.
 Las cachés son limitadas; una entrada expulsada necesita cargarse otra vez.
-La latencia real y la calidad audible de esta versión están pendientes de tu
-prueba en Vita. El cambio no permite prometer que toda pausa desaparezca.
+La prueba posterior no alcanza el menú, por lo que no evalúa la latencia de
+selección ni la calidad audible de este filtro en Vita. El cambio no permite prometer que toda pausa desaparezca.
 
-## Instalar y comprobar
+## Protocolo histórico de 00.20 (sustituido por 00.21)
 
 Instala `DBTapBattle-Vita-00.20-pac-voices-test.vpk` encima de la aplicación actual
 con VitaShell. Conserva `ux0:data/DBTapBattle/` y los `save.bin` de cada perfil.
@@ -56,7 +65,8 @@ solicitados al archivo de 91.081.701 a 11.707.264 (87%), con payloads selecciona
 idénticos. Esto mide I/O solicitado en host, no FPS ni tiempos en Vita.
 El ensayo de una señal de 8 kHz redujo una imagen espectral de remuestreo
 32,3 dB, conservando duración y el tono de prueba. Es evidencia del DSP;
-la calidad audible y el costo del filtro en la consola siguen pendientes.
+la calidad audible y el costo del filtro en consola siguen pendientes porque
+la prueba física falla antes del menú.
 
 Regresión completa: 125 PACs, 137 contenedores, 470 texturas, 68 tablas BIN,
 198 WAVs decodificados; además 12 pruebas Python y probe JVM de buffers.

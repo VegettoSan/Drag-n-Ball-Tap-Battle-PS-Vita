@@ -30,19 +30,30 @@ mkdir -p /private/probes
 python3 -m unittest discover -s tests -p 'test_*.py' -v
 python3 tools/aot/engine/tests/run_gles_buffer_probe.py --ecj /tools/ecj-3.37.0.jar
 
-g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/audio_stubs   -Itools/aot/engine/native -Isrc tests/test_vita_audio.cpp src/vfs.cpp   -lvorbisfile -lvorbis -logg -o /private/probes/audio
+g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/audio_stubs \
+  -Itools/aot/engine/native -Isrc tests/test_vita_audio.cpp src/vfs.cpp \
+  -lvorbisfile -lvorbis -logg -o /private/probes/audio
 ASAN_OPTIONS=detect_leaks=0 /private/probes/audio
 
-g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/text_stubs   -Itools/aot/engine/native -Isrc tests/test_vita_text.cpp -o /private/probes/text
+g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/text_stubs \
+  -Itools/aot/engine/native -Isrc tests/test_vita_text.cpp -o /private/probes/text
 ASAN_OPTIONS=detect_leaks=0 /private/probes/text
 
-g++ -std=c++14 -O2 -fsanitize=address,undefined -Isrc   tests/test_resource_stream.cpp src/engine_resources.cpp src/pac.cpp   src/game_data.cpp src/vfs.cpp -o /private/probes/resource-stream
+g++ -std=c++14 -O2 -fsanitize=address,undefined -Isrc \
+  tests/test_resource_stream.cpp src/engine_resources.cpp src/pac.cpp \
+  src/game_data.cpp src/vfs.cpp -o /private/probes/resource-stream
 ASAN_OPTIONS=detect_leaks=0 /private/probes/resource-stream /private/install /private/gen-root
 
-g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/resource_stubs   -Itools/aot/engine/native -Isrc tests/test_vita_resources.cpp src/vfs.cpp   src/pac.cpp src/image.cpp src/engine_resources.cpp src/game_data.cpp   -lpng -lz -o /private/probes/native-resources
+g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/resource_stubs \
+  -Itools/aot/engine/native -Isrc tests/test_vita_resources.cpp src/vfs.cpp \
+  src/pac.cpp src/image.cpp src/engine_resources.cpp src/game_data.cpp \
+  -lpng -lz -o /private/probes/native-resources
 ASAN_OPTIONS=detect_leaks=0 /private/probes/native-resources /private/gen-root
 
-g++ -std=c++14 -O2 -fsanitize=address,undefined -Isrc   tests/test_engine_resources.cpp src/engine_resources.cpp src/pac.cpp   src/game_data.cpp src/vfs.cpp src/image.cpp -lpng -lz -o /private/probes/engine-resources
+g++ -std=c++14 -O2 -fsanitize=address,undefined -Isrc \
+  tests/test_engine_resources.cpp src/engine_resources.cpp src/pac.cpp \
+  src/game_data.cpp src/vfs.cpp src/image.cpp -lpng -lz \
+  -o /private/probes/engine-resources
 ASAN_OPTIONS=detect_leaks=0 /private/probes/engine-resources /private/install
 ```
 

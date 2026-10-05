@@ -45,8 +45,12 @@ not substitute game bytecode for this recipe. See [APK_AUDIT](APK_AUDIT.md).
 ```sh
 # /private denotes your own directory outside tracked source.
 bash /tools/dex-tools-v2.4/d2j-dex2jar.sh -f /private/DBTapBattle.apk -o /private/original.jar
-mvn -f tools/aot/pom.xml org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy-dependencies -DincludeScope=runtime -DoutputDirectory=/private/lib
-python3 tools/aot/engine/generate.py   --original-jar /private/original.jar   --ecj /tools/ecj-3.37.0.jar   --lib-directory /private/lib   --work-directory /private/engine-fresh
+mvn -f tools/aot/pom.xml \
+  org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy-dependencies \
+  -DincludeScope=runtime -DoutputDirectory=/private/lib
+python3 tools/aot/engine/generate.py \
+  --original-jar /private/original.jar --ecj /tools/ecj-3.37.0.jar \
+  --lib-directory /private/lib --work-directory /private/engine-fresh
 python3 tools/aot/engine/vita/patch_runtime.py /private/engine-fresh/c
 ```
 
@@ -67,7 +71,8 @@ require Java regeneration when import contracts are unchanged.
 ```sh
 export VITASDK=/your/vitasdk
 export PATH="$VITASDK/bin:$PATH"
-cmake -S tools/aot/engine/vita -B /private/build-vita   -DCMAKE_BUILD_TYPE=Release -DTEAVM_C_DIR=/private/engine-fresh/c
+cmake -S tools/aot/engine/vita -B /private/build-vita \
+  -DCMAKE_BUILD_TYPE=Release -DTEAVM_C_DIR=/private/engine-fresh/c
 cmake --build /private/build-vita -j2
 ```
 
@@ -88,19 +93,19 @@ total GPU-memory cap. Its return describes resolution fallback, not success.
 ```sh
 # First original APK alone: 57 base resources, no character triplets.
 python3 tools/extract_apk_data.py /private/DBTapBattle.apk /private/install/game
-# Or use the ordinary complete supplied Gen dataset as your base.
+# Or use the ordinary populated supplied Gen dataset as your base.
 python3 tools/extract_apk_data.py /private/gen.apk /private/install-gen/game
 # Audited Community14, isolated from base data.
 python3 tools/extract_apk_data.py /private/community.apk /private/install --mod Android14
 # Optional private two-source ZIP; preserves dataset payloads, excludes Android binaries.
-python3 tools/prepare_vita_data.py /private/DBTapBattle.apk   /private/community.apk /private/DBTapBattle-data.zip
+python3 tools/prepare_vita_data.py /private/DBTapBattle.apk \
+  /private/community.apk /private/DBTapBattle-data.zip
 ```
 
 Both routes preserve a save when the selected APK dataset supplies one. The
 validated original/Community14 ZIP has no bundled save because those two source
 datasets supply none; this is not a save-exclusion policy. Choose the intended
-initial save and back up existing profile progress
-before copying. Do not use --overwrite over your only working copy. Extraction
+initial save and back up existing profile progress before copying. Do not use --overwrite over your only working copy. Extraction
 preflights/stages/CRC-checks but publication into an existing directory is not
 an all-or-nothing transaction. See [DATA_LAYOUT](DATA_LAYOUT.md).
 

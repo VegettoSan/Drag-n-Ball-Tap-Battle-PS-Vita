@@ -1,5 +1,12 @@
 # Prueba Vita 00.19 — texto y saturación de audio
 
+**Prueba archivada; resultado recibido.** El usuario confirma que los textos se
+vuelven a ver, pero las voces siguen mal y cambiar de personaje aún se traba.
+El log de esta sesión no registra recorte de salida, sobrecarga previa al
+limitador ni mezcla fuera de plazo. Esto no demuestra salida de audio limpia.
+Evidencia: [prueba física 00.19](evidence/vita_hardware_text_audio_00.19.json).
+Prueba actual: [TEST_VITA_00_21](TEST_VITA_00_21.md); [CURRENT_STATUS](CURRENT_STATUS.md).
+
 00.18 queda confirmado a 60 FPS en pelea por tu prueba y el runtime.log.
 Esta actualización conserva los cambios gráficos y corrige dos puntos:
 
@@ -10,11 +17,11 @@ Esta actualización conserva los cambios gráficos y corrige dos puntos:
 
 Algunas voces del gen.apk suministrado ya tienen muestras al límite de PCM16.
 El limitador controla la saturación añadida por la mezcla; no reconstruye audio
-que venga distorsionado en el archivo. El resultado audible en Vita sigue
-pendiente de prueba. Las pausas por cargar recursos al cambiar personaje siguen
+que venga distorsionado en el archivo. El resultado posterior en Vita conserva las voces roncas; el limitador no
+resuelve ese síntoma. Las pausas por cargar recursos al cambiar personaje siguen
 siendo un problema distinto y no se declaran resueltas en esta versión.
 
-## Instalar y comprobar
+## Protocolo histórico de 00.19
 
 Instala `DBTapBattle-Vita-00.19-text-audio-test.vpk` encima de la aplicación actual
 con VitaShell. Conserva `ux0:data/DBTapBattle/` y los save.bin de cada perfil.
@@ -40,7 +47,8 @@ Motor original completo compilado a ELF/VELF/SELF/VPK 00.19 (no el smoke vacío)
 Pruebas de texto y audio con ASan/UBSan, 198 RIFFs reales con muestras conservadas,
 12 regresiones Python, prueba JVM de buffers y CI nativo correctos. Metadatos y
 hashes del artefacto están en `evidence/vita_text_audio_build_00.19.json`.
-Texto y calidad audible todavía necesitan confirmación en hardware.
+La prueba posterior confirma el texto; la calidad audible queda sin resolver.
+El resto de este apartado registra la validación realizada al publicar 00.19.
 
 Probe de texto, usando stubs exclusivamente para PVF/GL:
 

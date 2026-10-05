@@ -1,5 +1,11 @@
 # Prueba Vita 00.21 — cierre antes del menú
 
+**Prueba activa; resultado físico pendiente al 2026-10-05.** Último VPK entregado:
+`DBTapBattle-Vita-00.21-audio-startup-fix.vpk`, fuente
+`07222bb42f20ab2bac953531e42b8cf3796940ca`. Esta actualización documental no
+recompila el juego. Estado y próximas comprobaciones: [CURRENT_STATUS](CURRENT_STATUS.md).
+Método/limitaciones de pruebas: [VALIDATION](VALIDATION.md); receta: [BUILD](BUILD.md).
+
 00.20 no logra arrancar el worker de audio en tu prueba. Después de repetir el
 intento 20 veces, el motor termina porque no puede cargar la música bgm_16.
 El log confirma ese cierre controlado; no contiene un crash de PAC ni un código
@@ -27,3 +33,24 @@ Vita simuladas. La recuperación del menú y la calidad audible quedan pendiente
 Evidencia del cierre: `evidence/vita_hardware_audio_startup_00.20.json`.
 El motor completo se compiló a ELF/VELF/SELF/VPK; se verificaron CRC, versión,
 título, eboot y fuente. Hashes: `evidence/vita_audio_startup_build_00.21.json`.
+
+
+## Identificar la prueba y conservar evidencia
+
+- VPK: 2.235.382 bytes, SHA-256
+  `ec551654abc68dfc5494c4f6b22ca620727c8fb898ff76b1682bbf141554bc47`.
+- Versión SFO: 00.21; TITLE_ID: DBTB00001; CRC, eboot y fuente comprobados.
+- Anota perfil y SHA del APK desde su dbtb_manifest.json: Original es el nombre
+  de una carpeta, no prueba de que sea el primer APK ni Gen.
+- Guarda el runtime.log de cada sesión antes de iniciar otra. Si hay cierre,
+  registra la última pantalla y la operación/código de audio; si existe un
+  psp2core, consérvalo junto al log.
+- Para comparar personajes usa un perfil con tripletas completas. Anota primera
+  visita, visita repetida, personaje/frase y resultado audible; una grabación
+  ayuda a correlacionar el ruido con las mediciones.
+
+Los probes host ejecutan el adaptador real y prueban fallos inyectados de abrir
+puerto/crear hilo/arrancar hilo, limpieza y recuperación tras Dispose. Las APIs
+Vita están simuladas: no prueban aceptación de prioridad por el kernel, salida
+física, calidad de voz ni FPS. El probe de recursos usa PNG real y GL simulado.
+Solo la prueba en consola puede cerrar esos pendientes.

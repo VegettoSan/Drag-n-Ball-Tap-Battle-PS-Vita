@@ -1,5 +1,13 @@
 # Prueba Vita 00.18 — personajes, voces y FPS
 
+**Prueba archivada; resultado recibido.** El usuario confirma pelea estabilizada
+a 60 FPS; el log registra 15 ventanas estables a 59,9 FPS. Los textos desaparecen,
+las voces siguen roncas y persisten pausas de selección. El texto se recupera en
+00.19. Las instrucciones siguientes conservan el protocolo de 00.18; para la
+versión actual usa [TEST_VITA_00_21](TEST_VITA_00_21.md).
+Evidencia: [prueba física 00.18](evidence/vita_hardware_performance_00.18.json).
+Estado general: [CURRENT_STATUS](CURRENT_STATUS.md).
+
 El chat anterior guardó 00.17 en main (interpolación de voces, reducción de llamadas
 GL, reutilización de métricas PVF), pero no dejó un VPK de esa versión entregado.
 Se recuperó además 1351457, con mezcla en porciones y cálculo Q16.
@@ -15,7 +23,7 @@ Se recuperó además 1351457, con mezcla en porciones y cálculo Q16.
   dibujo/Java, espera de presentación y saturación/coste de audio.
 - Empaquetado ELF corregido y script privado compatible con el número de versión.
 
-## Instalar
+## Instalación histórica de 00.18
 
 Instala DBTapBattle-Vita-00.18-performance-test.vpk encima del port actual con
 VitaShell. Conserva las carpetas de datos y save.bin que ya usas; no hace falta
@@ -40,8 +48,9 @@ Pruebas de buffers, mezclador ASan/UBSan, 12 regresiones Python, recursos Origin
 Android14 y gen.apk superadas. Hash y commit del binario se registran en
 `evidence/vita_performance_build_00.18.json`.
 
-Las mejoras de pausa, calidad de voz y estabilidad a 60 FPS aún necesitan prueba
-física de esta versión. `audio_clip_samples` cuenta saturación al sumar fuentes;
+Al publicar esta hoja estaban pendientes la pausa, la voz y los FPS. El resultado
+posterior confirma los FPS, conserva voz/pausas pendientes y detecta regresión
+de texto. La evidencia de 00.18 no prueba esos resultados en 00.21. `audio_clip_samples` cuenta saturación al sumar fuentes;
 `audio_late_mix` mide cálculo de mezcla fuera de plazo, no todos los posibles
 underruns del driver. `swap_ms` incluye pacing y no prueba por sí solo saturación
 GPU. No se han reemplazado reglas de combate ni reordenado sprites.
