@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
     paths:
+      - 'assets/livearea/**'
+      - 'cmake/LiveArea.cmake'
+      - 'tools/decode_livearea_assets.py'
+      - 'tools/validate_livearea_vpk.py'
       - 'tools/aot/engine/native/**'
       - 'tools/aot/engine/vita/**'
       - 'tools/aot/vita/utf16.c'
@@ -19,6 +23,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Validate approved LiveArea source payloads
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/decode_livearea_assets.py tools/validate_livearea_vpk.py
+          rm -rf /tmp/dbtb-livearea-check
+          python3 tools/decode_livearea_assets.py \
+            --source assets/livearea \
+            --output /tmp/dbtb-livearea-check
+          test -s /tmp/dbtb-livearea-check/icon0.png
+          test -s /tmp/dbtb-livearea-check/bg0.png
+          test -s /tmp/dbtb-livearea-check/startup.png
+          test -s /tmp/dbtb-livearea-check/pic0.png
+
       - name: Pack current Vita source snapshot
         shell: bash
         run: |
@@ -27,6 +45,10 @@ jobs:
             src \
             tools/aot/engine \
             tools/aot/vita \
+            tools/decode_livearea_assets.py \
+            tools/validate_livearea_vpk.py \
+            assets/livearea \
+            cmake \
             docs/THIRD_PARTY.md \
             licenses
 
@@ -58,7 +80,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DTEAVM_C_DIR=/tmp/dbtb-teavm-smoke
 
-      - name: Build ELF SELF and VPK
+      - name: Build and validate ELF SELF VPK LiveArea
         shell: bash
         run: |
           set -euo pipefail
@@ -69,6 +91,7 @@ jobs:
           test -n "$VPK"
           test -s "$VPK"
           file build-engine-smoke/dbtb_original_engine
+          python3 tools/validate_livearea_vpk.py "$VPK"
           sha256sum "$VPK"
 
       - name: Upload smoke build
