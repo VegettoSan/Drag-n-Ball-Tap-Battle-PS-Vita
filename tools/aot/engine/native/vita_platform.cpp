@@ -99,10 +99,17 @@ int32_t dbtb_frame(void* raw_events) {
         events[p + 2] = static_cast<int32_t>(event.y);
         events[p + 3] = static_cast<int32_t>(event.phase);
     }
-    // Android's Back key is the only physical-key field consumed by the
-    // original loop today. Gameplay itself receives the front-touch pointers.
-    events[40] = frame.back ? 1 : 0;
-    events[41] = frame.pause ? 1 : 0; // reserved for the later lifecycle adapter
+
+    // The selector deliberately uses Vita face buttons, but once the original
+    // touch game is running we must not translate Circle/Triangle into Android
+    // Back. The original engine treats Back as an application/menu exit request
+    // in several states, which made ordinary Vita button presses close the game.
+    // Keep physical gameplay controls neutral until their gesture mappings are
+    // implemented intentionally; front-touch remains the authoritative input.
+    events[40] = 0;
+    events[41] = 0;
+    if (frame.back || frame.pause)
+        runtimeLog("Gameplay physical back/pause button ignored; use front touch");
     return static_cast<int32_t>(count);
 }
 
