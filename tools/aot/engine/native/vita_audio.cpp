@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <list>
+#include <array>
 #include <string>
 #include <vector>
 
@@ -26,6 +28,7 @@ struct Clip {
     int channels = 0;
     int rate = 0;
     size_t frame_count = 0;
+    bool bandlimited = false;
     size_t frames() const { return frame_count; }
 };
 struct Voice {
@@ -56,8 +59,54 @@ int audio_port = -1;
 SceUID audio_thread = -1;
 std::atomic<bool> audio_running{false};
 std::atomic<uint32_t> clipped_samples{0}, overload_samples{0}, late_mix_blocks{0}, max_mix_us{0};
+std::atomic<uint32_t> submission_gaps{0}, max_submission_gap_us{0};
 // Audio-worker-only envelope; callers join the worker before disposing it.
 float output_gain = 1.0f;
+
+// Only character PCM needs this upsampler. BGM/effects keep their existing path.
+// A 16-tap, 256-phase windowed sinc suppresses interpolation images above the
+// source Nyquist frequency. Q14 keeps the real-time sum in bounded int32 math.
+constexpr int kVoiceTaps = 16, kVoicePhases = 256, kVoiceScale = 16384;
+using VoiceFilter = std::array<std::array<int16_t, kVoiceTaps>, kVoicePhases>;
+const VoiceFilter& voiceFilter() {
+    static const VoiceFilter filter = [] {
+        VoiceFilter result{};
+        constexpr double pi = 3.14159265358979323846;
+        for (int phase = 0; phase < kVoicePhases; ++phase) {
+            double coefficients[kVoiceTaps], total = 0;
+            const double fraction = double(phase) / kVoicePhases;
+            for (int tap = 0; tap < kVoiceTaps; ++tap) {
+                const double x = tap - 7 - fraction;
+                const double sinc = std::abs(x) < 1e-10 ? 1 : std::sin(pi * x) / (pi * x);
+                coefficients[tap] = sinc * (0.5 + 0.5 * std::cos(pi * x / 8));
+                total += coefficients[tap];
+            }
+            int sum = 0;
+            for (int tap = 0; tap < kVoiceTaps; ++tap) {
+                result[phase][tap] = static_cast<int16_t>(std::lround(coefficients[tap] * kVoiceScale / total));
+                sum += result[phase][tap];
+            }
+            result[phase][7] += kVoiceScale - sum; // exact DC unity gain
+        }
+        return result;
+    }();
+    return filter;
+}
+
+uint32_t voiceHash(const uint8_t* data, size_t size) {
+    uint32_t hash = 2166136261u;
+    for (size_t i = 0; i < size; ++i) hash = (hash ^ data[i]) * 16777619u;
+    return hash;
+}
+struct CachedVoice {
+    uint32_t hash;
+    std::vector<uint8_t> bytes;
+    std::shared_ptr<Clip> clip;
+    size_t cost;
+};
+std::list<CachedVoice> voice_cache;
+size_t voice_cache_bytes = 0;
+constexpr size_t kVoiceCacheBudget = 2u * 1024u * 1024u;
 
 Voice makeVoice(std::shared_ptr<Clip> clip, float gain, bool loop) {
     Voice voice;
@@ -154,10 +203,14 @@ std::shared_ptr<Clip> decodeVoiceBytes(const void* raw, int32_t size) {
         source_peak = std::max(source_peak, std::abs(int(sample)));
         source_rails += sample == -32768 || sample == 32767;
     }
-    runtimeLog("Voice PCM: rate=" + std::to_string(clip->rate) + " channels=" +
-        std::to_string(clip->channels) + " frames=" + std::to_string(clip->frames()) +
-        " peak=" + std::to_string(source_peak) + " source_rail_samples=" +
-        std::to_string(source_rails));
+    // Do not open/write/close runtime.log for every voice on every character
+    // switch (00.19 measured ~140-285 ms just in voice load/diagnostics).
+    static unsigned diagnostics = 0;
+    if (diagnostics++ < 3) runtimeLog("Voice PCM: rate=" + std::to_string(clip->rate) +
+        " frames=" + std::to_string(clip->frames()) + " peak=" + std::to_string(source_peak) +
+        " source_rail_samples=" + std::to_string(source_rails) + " resampler=sinc16");
+    clip->bandlimited = clip->rate < kOutputRate;
+    if (clip->bandlimited) (void)voiceFilter(); // initialize on the loading thread
     return clip->frames() ? clip : nullptr;
 }
 
@@ -184,8 +237,27 @@ void mixVoice(Voice& v, int32_t& left, int32_t& right) {
     const auto interpolate = [frac, inv](int32_t x, int32_t y) -> int32_t {
         return (x * static_cast<int32_t>(inv) + y * static_cast<int32_t>(frac)) >> 16;
     };
-    const int32_t sample_l = interpolate(a[0], b[0]);
-    const int32_t sample_r = v.clip->channels == 2 ? interpolate(a[1], b[1]) : sample_l;
+    int32_t sample_l, sample_r;
+    if (v.clip->bandlimited) {
+        const auto& coefficients = voiceFilter()[unsigned(v.phase >> 24) & 255u];
+        int32_t sum_l = 0, sum_r = 0;
+        const bool interior = frame0 >= 7 && frame0 + 8 < v.clip->frames();
+        for (int tap = 0; tap < kVoiceTaps; ++tap) {
+            int64_t position = int64_t(frame0) + tap - 7;
+            if (!interior && v.loop) {
+                position %= int64_t(v.clip->frames());
+                if (position < 0) position += v.clip->frames();
+            } else if (!interior) position = std::max<int64_t>(0, std::min<int64_t>(v.clip->frames() - 1, position));
+            const int16_t* sample = &v.clip->pcm[size_t(position) * channels];
+            sum_l += int32_t(sample[0]) * coefficients[tap];
+            if (channels == 2) sum_r += int32_t(sample[1]) * coefficients[tap];
+        }
+        sample_l = sum_l / kVoiceScale;
+        sample_r = channels == 2 ? sum_r / kVoiceScale : sample_l;
+    } else {
+        sample_l = interpolate(a[0], b[0]);
+        sample_r = v.clip->channels == 2 ? interpolate(a[1], b[1]) : sample_l;
+    }
     left += static_cast<int32_t>(sample_l * v.gain);
     right += static_cast<int32_t>(sample_r * v.gain);
 
@@ -198,6 +270,7 @@ void mixVoice(Voice& v, int32_t& left, int32_t& right) {
 
 int audioThread(SceSize, void*) {
     alignas(64) int16_t buffer[kFrames * 2];
+    uint64_t previous_submission = 0;
     while (audio_running.load()) {
         const uint64_t start = dbtb_timeUs();
         dbtb_mixAudio(buffer, kFrames);
@@ -207,6 +280,16 @@ int audioThread(SceSize, void*) {
         uint32_t previous = max_mix_us.load(std::memory_order_relaxed);
         while (previous < elapsed && !max_mix_us.compare_exchange_weak(
                    previous, elapsed, std::memory_order_relaxed)) {}
+        const uint64_t submission = dbtb_timeUs();
+        if (previous_submission) {
+            const uint32_t gap = static_cast<uint32_t>(submission - previous_submission);
+            if (gap > uint32_t(2 * kFrames * 1000000 / kOutputRate))
+                submission_gaps.fetch_add(1, std::memory_order_relaxed);
+            uint32_t old_gap = max_submission_gap_us.load(std::memory_order_relaxed);
+            while (old_gap < gap && !max_submission_gap_us.compare_exchange_weak(
+                       old_gap, gap, std::memory_order_relaxed)) {}
+        }
+        previous_submission = submission;
         if (sceAudioOutOutput(audio_port, buffer) < 0) break;
     }
     return 0;
@@ -218,7 +301,8 @@ bool ensureAudio() {
     if (audio_port < 0) { runtimeLog("Audio: sceAudioOutOpenPort failed: " + std::to_string(audio_port)); return false; }
     runtimeLog("Audio: output port opened");
     audio_running.store(true);
-    audio_thread = sceKernelCreateThread("DBTB audio", audioThread, 0x10000100, 0x10000, 0, 0, nullptr);
+    // Audio deadlines must take precedence over main-thread PAC/PNG work.
+    audio_thread = sceKernelCreateThread("DBTB audio", audioThread, 0x10000080, 0x10000, 0, 0, nullptr);
     if (audio_thread < 0 || sceKernelStartThread(audio_thread, 0, nullptr) < 0) {
         audio_running.store(false);
         if (audio_thread >= 0) sceKernelDeleteThread(audio_thread);
@@ -289,6 +373,8 @@ DbtbAudioStats dbtb_takeAudioStats() {
     stats.overload_samples = overload_samples.exchange(0, std::memory_order_relaxed);
     stats.late_mix_blocks = late_mix_blocks.exchange(0, std::memory_order_relaxed);
     stats.max_mix_us = max_mix_us.exchange(0, std::memory_order_relaxed);
+    stats.submission_gaps = submission_gaps.exchange(0, std::memory_order_relaxed);
+    stats.max_submission_gap_us = max_submission_gap_us.exchange(0, std::memory_order_relaxed);
     return stats;
 }
 
@@ -322,7 +408,31 @@ void dbtb_effectStop(void) {
 
 int32_t dbtb_voiceLoad(void* data, int32_t size) {
     if (!ensureAudio()) return -1;
-    auto clip = decodeVoiceBytes(data, size);
+    if (!data || size <= 1) return -1;
+    const auto* bytes = static_cast<const uint8_t*>(data);
+    const uint32_t hash = voiceHash(bytes, size_t(size));
+    std::shared_ptr<Clip> clip;
+    for (auto it = voice_cache.begin(); it != voice_cache.end(); ++it) {
+        if (it->hash != hash || it->bytes.size() != size_t(size) ||
+            std::memcmp(it->bytes.data(), bytes, size_t(size)) != 0) continue;
+        clip = it->clip;
+        voice_cache.splice(voice_cache.begin(), voice_cache, it);
+        ++dbtb_performance().voice_cache_hits;
+        break;
+    }
+    if (!clip) {
+        clip = decodeVoiceBytes(data, size);
+        if (clip) {
+            const size_t cost = size_t(size) + clip->pcm.capacity() * sizeof(int16_t);
+            if (cost <= kVoiceCacheBudget) {
+                while (voice_cache_bytes + cost > kVoiceCacheBudget) {
+                    voice_cache_bytes -= voice_cache.back().cost; voice_cache.pop_back();
+                }
+                voice_cache.push_front({hash, std::vector<uint8_t>(bytes, bytes + size), clip, cost});
+                voice_cache_bytes += cost;
+            }
+        }
+    }
     if (!clip) return -1;
     AudioLockGuard lock;
     streamed_voice_clips.push_back(std::move(clip));
@@ -387,5 +497,7 @@ void dbtb_audioDispose(void) {
     effects.clear();
     streamed_voice_clips.clear();
     output_gain = 1.0f;
+    voice_cache.clear();
+    voice_cache_bytes = 0;
 }
 }

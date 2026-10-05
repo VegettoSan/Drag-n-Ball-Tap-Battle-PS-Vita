@@ -43,5 +43,34 @@ int main(){
  std::vector<uint8_t> riff={'R','I','F','F',0,0,0,0,'W','A','V','E','J','U','N','K',1,0,0,0,42,0,'f','m','t',' ',16,0,0,0,1,0,1,0,0x22,0x56,0,0,0x44,0xac,0,0,2,0,16,0,'d','a','t','a',4,0,0,0,0,0x80,0xff,0x7f};
  auto decoded=decodeVoiceBytes(riff.data(),riff.size());assert(decoded&&decoded->rate==22050&&decoded->channels==1&&decoded->pcm==std::vector<int16_t>({-32768,32767}));
  riff.pop_back();assert(!decodeVoiceBytes(riff.data(),riff.size()));
+ // Every polyphase kernel has exact DC gain and a proven int32 accumulation
+ // bound even for worst-case signed PCM16 inputs.
+ for(const auto& phase:voiceFilter()){int sum=0,absolute=0;for(int weight:phase){sum+=weight;absolute+=std::abs(weight);}assert(sum==kVoiceScale&&absolute<65536);}
+ for(int channels:{1,2}){
+  auto dc=clip({1234,1234},22050,channels);dc->bandlimited=true;v=makeVoice(dc,1,true);
+  for(int i=0;i<10000;++i){l=r=0;mixVoice(v,l,r);assert(l==1234&&r==1234);}
+ }
+ auto edge=clip({-32768,32767,-32768,32767},22050);edge->bandlimited=true;
+ for(int phase=0;phase<256;++phase){v=makeVoice(edge,1,false);v.phase=uint64_t(phase)<<24;l=r=0;mixVoice(v,l,r);assert(l==r&&std::abs(l)<65536);}
+ // Measure the resampling image at 14050 Hz of an 8000 Hz / 22050 Hz source.
+ // Ignore edge padding; both paths use the same sample clock and duration.
+ auto sine=std::make_shared<Clip>();sine->rate=22050;sine->channels=1;sine->frame_count=22050;sine->pcm.resize(22050);
+ const double pi=3.14159265358979323846;
+ for(size_t i=0;i<sine->frames();++i)sine->pcm[i]=int16_t(10000*std::sin(2*pi*8000*i/22050));
+ auto amplitude=[&](bool sinc,int frequency){sine->bandlimited=sinc;auto voice=makeVoice(sine,1,false);double real=0,imaginary=0;
+  for(int i=0;i<48000;++i){int32_t left=0,right=0;mixVoice(voice,left,right);if(i<480||i>=47520)continue;double angle=2*pi*frequency*i/48000;real+=left*std::cos(angle);imaginary+=left*std::sin(angle);}
+  return 2*std::sqrt(real*real+imaginary*imaginary)/47040;
+ };
+ double linear_image=amplitude(false,14050),sinc_image=amplitude(true,14050),sinc_tone=amplitude(true,8000);
+ assert(sinc_image<linear_image/10&&sinc_tone>9500&&sinc_tone<10500);
+ printf("RESAMPLER SPECTRUM: linear image %.2f, sinc image %.2f, sinc tone %.2f (image reduction %.1f dB)\n",linear_image,sinc_image,sinc_tone,20*std::log10(linear_image/sinc_image));
+ // Reloads after releasing a bank reuse decoded clips, while hash collisions
+ // still require byte equality and cannot substitute another voice.
+ dbtb_audioDispose();std::vector<int16_t> voice_data(2205,1234);
+ assert(dbtb_voiceLoad(voice_data.data(),voice_data.size()*2)==1);auto saved=streamed_voice_clips.front();dbtb_voiceRelease();
+ assert(dbtb_voiceLoad(voice_data.data(),voice_data.size()*2)==1&&streamed_voice_clips.front()==saved);
+ dbtb_voiceRelease();voice_data[0]=4321;voice_cache.front().hash=voiceHash(reinterpret_cast<uint8_t*>(voice_data.data()),voice_data.size()*2);
+ assert(dbtb_voiceLoad(voice_data.data(),voice_data.size()*2)==1&&streamed_voice_clips.front()!=saved&&streamed_voice_clips.front()->pcm[0]==4321);
+ assert(voice_cache_bytes<=kVoiceCacheBudget);
  dbtb_audioDispose();puts("AUDIO PASS: interpolation, duration, stereo, loops, 3 voices, peak limiter/no clipping, waveform shape, release, multi-block output, RIFF parsing");
 }
