@@ -6,6 +6,10 @@ on:
     paths:
       - '.github/workflows/export-private-build-tools.yml'
       - 'tools/aot/pom.xml'
+      - 'tools/aot/engine/**'
+      - 'tools/aot/vita/**'
+      - 'src/**'
+      - 'CMakeLists.txt'
   workflow_dispatch:
 
 jobs:
