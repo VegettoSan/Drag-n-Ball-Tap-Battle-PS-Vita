@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-04",
+  "scope": "real PS Vita hardware startup of private full-engine build 00.04-installfix",
+  "result": "vitaGL initialized successfully, then selector crashed in legacy immediate-mode vertex submission",
+  "hardware_observed": true,
+  "screen_observed": "vitaGL splash/logo appeared, then crash before the data-profile selector became visible",
+  "runtime_log_sha256": "aa6e0ce3f9d8797500c8f313131b65f303492e1c539d4220fc7225990bb44e01",
+  "psp2dmp_gzip_sha256": "d02ae5fcb13312b89713110403206a6c2c88fe6247feaee5e4e5a8a1cb5b54ba",
+  "psp2dmp_uncompressed_sha256": "1e41634e4ba7cf8e37500972716e2de3a6ec5fb7685726fe1a2e1dcd3a4de4d5",
+  "psp2dmp_uncompressed_size": 5218048,
+  "runtime_log_excerpt": [
+    "--- full original engine Vita 00.04 boot ---",
+    "Initializing vitaGL: 960x544, RAM threshold 16 MiB",
+    "vitaGL initialized: 960x544 (no resolution fallback)",
+    "Detected data/mod profiles: 1"
+  ],
+  "crash": {
+    "thread": "DBTB00001",
+    "stop_reason": "0x00030004 data abort",
+    "runtime_pc": "0x811f0e3c",
+    "module_runtime_start": "0x81043000",
+    "module_offset": "0x001ade3c",
+    "translated_elf_address": "0x811ade3c",
+    "symbol": "glVertex3f",
+    "runtime_lr": "0x811b9b3f",
+    "caller": "(anonymous namespace)::rect(...) in src/ui.cpp",
+    "dfar": "0x00000000"
+  },
+  "root_cause": {
+    "confirmed": true,
+    "details": "The Vita runtime initializes vitaGL with legacy_pool_size=0 because the original Android renderer is GLES/client-array based. The custom boot selector still used glBegin/glVertex3f immediate mode. glVertex3f therefore dereferenced vitaGL's null legacy vertex pointer and generated a data abort at address zero.",
+    "do_not_repeat": "Do not use vitaGL GL1 immediate-mode glBegin/glVertex calls while the legacy pool is disabled."
+  },
+  "fix": {
+    "strategy": "Keep the legacy pool at zero and convert selector/preview quads to GLES-style client vertex/texcoord arrays with glDrawArrays(GL_TRIANGLE_FAN).",
+    "commits": [
+      "d8f1a659cbf37e78350cf69f6424de68d86bbad1",
+      "a4f1e451f4bdcf36bfc5fbb3526dc1a06aa17df1"
+    ]
+  },
+  "next_private_test_artifact": {
+    "name": "DBTapBattle-Vita-00.05.vpk",
+    "sha256": "0619d4495de888c730f37d11a485deb9789d11e8ae92f7dd1843385be26c9424",
+    "size": 2204980,
+    "contains_icon0": false,
+    "expected_next_checkpoint": "vitaGL splash, then Boot selector entered: 2 choices and a visible Original/Android14 selector; original-engine Init remains hardware-pending"
+  }
+}
