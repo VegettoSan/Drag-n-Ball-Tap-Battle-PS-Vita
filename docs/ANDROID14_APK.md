@@ -96,8 +96,9 @@ and ext.u table reads in this exact DEX; they are not universal mod constants.
 - Nested SPR uses the same profile, restarting the record index at zero.
 - Converted tables: count XOR 34594, offset XOR unsigned(-1887452470) XOR i,
   X/Y sizes XOR 23261/47592 XOR i. Native normalization is implemented for
-  verified `bin` GameData entries and the converted DAC tables in gamedata/text00;
-  raw CNV and other DAC schemas are deliberately not passed through this decoder.
+  verified top-level `bin` GameData entries and the converted DAC tables in gamedata/text00;
+  nested SPR `bin` payloads are a separate schema and remain untouched; raw CNV and
+  other DAC schemas are deliberately not passed through this decoder.
 - WAV wrapper length: LE u32 XOR 42802 XOR i, followed by a encoding flag;
   native sound decoding is pending. Do not call it an ordinary Ogg stream.
 
@@ -196,8 +197,10 @@ audible audio and Android14 navigation into character selection. That test also
 exposed a previously unnormalized layer: encoded `bin` payloads used by character
 GameData. The native bridge now restores only their verified converted-table
 metadata before handing them to the unchanged original `GameData.binCnv()` path;
-host regression compares all 68 Community14 BIN tables record-by-record before
-and after normalization. Converted CNV/raw DAC formats remain separate schemas.
+host regression compares all 68 top-level Community14 BIN GameData tables
+record-by-record before and after normalization. A deliberately over-broad recursive
+BIN conversion was rejected by the `back02.pac` nested-SPR regression, so nested BIN
+payloads remain untouched. Converted CNV/raw DAC formats remain separate schemas.
 
 Character-selection continuation and complete combat are still pending hardware
 verification. Code-dependent mod mechanics are not assumed compatible merely
