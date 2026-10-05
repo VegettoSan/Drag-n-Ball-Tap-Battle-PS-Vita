@@ -12,6 +12,10 @@
 #include <vector>
 #include <vitaGL.h>
 
+#ifndef DBTB_VERSION
+#define DBTB_VERSION "dev"
+#endif
+
 namespace {
 std::unique_ptr<VitaInput> input;
 bool renderer_ready = false;
@@ -41,7 +45,7 @@ int32_t dbtb_start(void) {
         return 0;
     }
     attachRuntimeStreams();
-    runtimeLog("--- full original engine Vita 00.03 boot ---");
+    runtimeLog(std::string("--- full original engine Vita ") + DBTB_VERSION + " boot ---");
 
     runtimeLog("Initializing vitaGL: 960x544, RAM threshold 16 MiB");
     // vitaGL's return value is NOT a success flag. GL_TRUE means the requested
