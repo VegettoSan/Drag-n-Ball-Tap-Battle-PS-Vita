@@ -21,8 +21,19 @@ int main(int argc,char** argv){
   EngineResourceCache cache(8*1024*1024);
   for(int i=0;i<13;++i){char name[32];snprintf(name,sizeof name,"char%02d",i);std::string path,error;std::vector<uint8_t> full,sparse;int codec=-1;size_t bytes;
    assert(readEngineResource(vfs,name,full,path,error,&codec,0,&bytes));assert(codec==(!dataset));full_bytes+=bytes;
-   for(int filter:{1,33,64,127}){int sparse_codec=-1;assert(readEngineResource(vfs,name,sparse,path,error,&sparse_codec,filter,&bytes));assert(codec==sparse_codec);sameSelection(full,sparse,filter);
+   // Game3 actually requests 187 (BIN + WAV), and other original paths use
+   // 251 (BIN only). Bit 128 is not a type exclusion, but remains legal.
+   for(int filter:{1,33,64,127,187,251,128,255,256,-1,INT32_MIN,INT32_MIN|187}){int sparse_codec=-1;
+    bool loaded=readEngineResource(vfs,name,sparse,path,error,&sparse_codec,filter,&bytes);
+    if(!loaded)std::fprintf(stderr,"Resource %s filter=%d: %s\n",name,filter,error.c_str());
+    assert(loaded);assert(codec==sparse_codec);sameSelection(full,sparse,filter);
     if(filter==33){sparse_bytes+=bytes;assert(bytes<full.size()/2);}
+    if(filter==187||filter==251){size_t bins=0,waves=0;for(size_t j=0;j<u16(sparse,0);++j){size_t p=2+j*16,n=u32(sparse,p+4);
+      if(!memcmp(sparse.data()+p+8,"bin",3)){assert(n>0);++bins;}
+      else if(!memcmp(sparse.data()+p+8,"wav",3)){assert((n>0)==(filter==187));if(n)++waves;}
+      else if(bit(sparse.data()+p+8))assert(n==0);
+     }assert(bins>0);if(filter==187)assert(waves>0);
+    }
    }
    std::shared_ptr<CachedEngineResource> a,b;bool hit;
    assert(cache.read(vfs,name,33,a,hit,error)&&!hit);assert(cache.read(vfs,std::string(name)+".pac",33,b,hit,error)&&hit&&a==b);
@@ -39,5 +50,5 @@ int main(int argc,char** argv){
  {std::ofstream out(f);out<<"abcdef";}
  assert(cache.read(vfs,"mk",0,b,hit,error)&&!hit&&b!=a&&b->bytes.size()==6&&cache.used()==0);
  cache.clear();assert(cache.used()==0);unlink(f.c_str());
- printf("RESOURCE STREAM PASS: %zu original/community character PACs; source I/O %zu -> %zu bytes (filter 33), exact selected payloads/slots, cache reuse/bounds/invalidation\n",packs,full_bytes,sparse_bytes);
+ printf("RESOURCE STREAM PASS: %zu ordinary/community character PACs; source I/O %zu -> %zu bytes (filter 33), exact selected payloads/slots including original 187/251 and signed/high-bit masks, cache reuse/bounds/invalidation\n",packs,full_bytes,sparse_bytes);
 }

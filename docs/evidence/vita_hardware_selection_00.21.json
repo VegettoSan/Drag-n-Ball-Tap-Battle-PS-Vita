@@ -1,0 +1,42 @@
+{
+  "version": "00.21",
+  "source_commit": "07222bb42f20ab2bac953531e42b8cf3796940ca",
+  "runtime_log_sha256": "b690cf22f6a7d15763236094496e75f2e93570bc9cfd5ca77e9af04a4a0d7d53",
+  "session_boot": "2026-10-05 15:23:35 (device log clock)",
+  "selected_profile": "Original",
+  "device_dataset_sha256": "not supplied; folder label does not prove APK identity",
+  "user_report": "Intro and menu now work; game exits when first character is displayed",
+  "audio_worker": "output port opened and worker thread started",
+  "audio_observation": "Zero measured late_mix/submit_gaps in this session; not audible-quality proof",
+  "failure": [
+    "Resource char00: invalid GameData filter",
+    "Resource char00.pac: invalid GameData filter",
+    "Run: md=[1018]:ERROR=java.lang.NullPointerException",
+    "ORIGINAL ENGINE RUN FRAMES=1273"
+  ],
+  "classification": "Original caught Java exception then loop exit, not an established native crash",
+  "original_core_contract": {
+    "input_apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+    "Game3_selection_filter": 187,
+    "other_LoadFilter_requests": 251,
+    "type_exclusion_bits": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      64
+    ],
+    "unknown_high_bits": "not used by observed original type tests"
+  },
+  "regression": "00.20 readEngineResource added [0,127] rejection; preserved original mask 187 fails before resource file loading",
+  "baseline_reproduction": "Extended real-corpus ASan/UBSan stream probe against b2434c8 code fails at char00 filter=187: invalid GameData filter",
+  "repair": "Remove enum-style range rejection; retain Java int bitmask and original type tests/parser/cache key; version 00.22",
+  "host_checks": {
+    "stream": "26 Gen/Community14 character PACs; masks 1,33,64,127,187,251,128,255,256,-1,INT32_MIN,INT32_MIN|187; exact selected payloads/slots, nonempty BIN and expected WAV banks, cache tests PASS",
+    "native_resources": "Real resourceFiltered/copy/cache for 187/251 and existing real PNG/ownership tests PASS; GL mocked",
+    "full_resource": "125 PAC files / 137 containers / 470 textures / 68 BIN tables / 198 WAV streams PASS"
+  },
+  "hardware_00_22": "PENDING; first character, switching, voices, text, battle FPS require actual new VPK"
+}

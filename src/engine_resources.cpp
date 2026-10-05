@@ -305,7 +305,10 @@ bool readEngineResource(const GameVfs& vfs, const std::string& name,
     output.clear(); path.clear(); error.clear();
     if (container_encoding) *container_encoding = 0;
     if (bytes_read) *bytes_read = 0;
-    if (game_data_filter < 0 || game_data_filter > 127) { error = "invalid GameData filter"; return false; }
+    // Java supplies an int bitmask, not an enum in [0, 127]. Original Game3
+    // uses 187 (0xbb) and other loading paths use 251 (0xfb). Only the known
+    // type bits below exclude payloads; unused high/sign bits do not invalidate
+    // a request. Keep the exact mask for the unchanged original byte-array Init.
     if (!GameVfs::safeRelativePath(name)) { error = "unsafe engine resource name"; return false; }
     std::string logical = name;
     if (name.find('.') == std::string::npos) {

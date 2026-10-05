@@ -18,6 +18,19 @@ int main(int argc,char** argv){
  assert(dbtb_resourceFiltered(name,33)==size&&pending_resource==first);
  dbtb_copyResource(bytes.data(),size);assert(dbtb_performance().resource_cache_hits==1);
  assert(dbtb_resource(name)>size);std::vector<uint8_t> full(pending_resource->bytes.size());dbtb_copyResource(full.data(),full.size());
+ // Exercise the exact native import used by original Game3, not only direct
+ // stream reads with seven-bit synthetic masks. Metadata/voice banks must load.
+ for(int filter:{187,251}){
+  int selected=dbtb_resourceFiltered(name,filter);assert(selected>0&&pending_resource);
+  auto cached=pending_resource;std::vector<uint8_t> selected_bytes(selected);dbtb_copyResource(selected_bytes.data(),selected);
+  assert(selected_bytes==cached->bytes&&!pending_resource);
+  size_t bins=0,waves=0;for(size_t i=0;i<u16(selected_bytes,0);++i){size_t p=2+i*16,n=u32(selected_bytes,p+4);
+   if(!memcmp(selected_bytes.data()+p+8,"bin",3)){assert(n>0);++bins;}
+   if(!memcmp(selected_bytes.data()+p+8,"wav",3)){assert((n>0)==(filter==187));if(n)++waves;}
+  }assert(bins>0);if(filter==187)assert(waves>0);
+  assert(dbtb_resourceFiltered(name,filter)==selected&&pending_resource==cached);
+  dbtb_copyResource(selected_bytes.data(),selected);
+ }
  auto image=png(argv[1],0);int a=dbtb_loadTexture(image.data(),image.size(),1);assert(a>0&&mock_uploads==1&&dbtb_textureWidth(a)==512);
  auto pixels=mock_pixels.at(a);release(a);assert(mock_pixels.count(a)&&texture_cache.front().users==0);
  int b=dbtb_loadTexture(image.data(),image.size(),1);assert(b==a&&mock_uploads==1&&mock_pixels.at(b)==pixels);
@@ -34,5 +47,5 @@ int main(int argc,char** argv){
  int empty=dbtb_emptyTexture(16,16);assert(empty>0);release(empty);assert(!mock_pixels.count(empty));
  // Profile reinitialization discards resource hits, not pending/save aliases.
  assert(dbtb_initResources(argv[1],"")&&resource_cache.used()==0&&!pending_resource);
- puts("NATIVE RESOURCE PASS: filtered bridge/cache, exact PNG reuse, filter modes, reference ownership, collision isolation, idle eviction, uncached render target, profile reset");
+ puts("NATIVE RESOURCE PASS: original 187/251 bridge/copy/cache and metadata/voices, exact PNG reuse, filter modes, reference ownership, collision isolation, idle eviction, uncached render target, profile reset");
 }

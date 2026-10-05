@@ -7,6 +7,8 @@
 // In-memory bridge to the original Java byte-array GameData decoder. The
 // installation stays unchanged; community headers become ordinary PAC headers.
 // Community image entries carry C14R + LE entry index before their exact payload.
+// game_data_filter is the original signed Java int exclusion mask. Known type
+// bits are 1..64; additional/sign bits are legal and are not an enum range.
 bool normaliseEnginePac(const std::vector<uint8_t>& input, const std::string& logical_name,
                         std::vector<uint8_t>& output, std::string& error,
                         int* container_encoding = nullptr, int game_data_filter = 0);

@@ -778,3 +778,35 @@ quality, save round-trip or latest hardware success is asserted.
 **Next action:** test 00.21 on Vita with identified profile/manifest, preserve
 runtime.log, then assess voice samples and cold/warm selection latency. Update
 the checkpoint and evidence before claiming those issues fixed.
+
+
+## 2026-10-05 — 00.22 preserve original character-selection filter masks
+
+**Hardware result:** 00.21 starts its audio worker and reaches the menu. Selecting
+Original then a character rejects char00 twice with invalid GameData filter;
+Game3 catches NullPointerException at md=1018 and leaves at frame 1273. The log
+contains an older 00.20 session; analyze only the new 00.21 marker onward.
+No exact device dataset hash was supplied. See
+[evidence](evidence/vita_hardware_selection_00.21.json).
+
+**Cause:** source bytecode confirms Game3 uses mask 187 (0xbb: BIN/WAV allowed)
+and other original LoadFilter paths use 251 (0xfb: BIN allowed). The native
+00.20 selective-read adapter rejects anything outside 0..127 before opening the
+file. Original GameData tests individual exclusion bits, not an enum range.
+Do not reject the unused high/sign bits or change original task/parser behavior.
+
+**Correction:** remove that range rejection, retaining the exact Java int mask,
+known type tests, stable directories and cache keys. Extend real-corpus stream
+and actual native resource/copy/cache probes for 187/251; include high/sign-bit
+edge masks. The unchanged audio startup, text and DSP paths remain in place.
+
+**Validation:** the pre-fix code fails the new regression at char00/filter187;
+corrected ASan/UBSan stream, native resource and complete corpus probes pass.
+26 Gen/Community14 character PACs preserve exact allowed payloads/slots; 187
+retains BIN/WAV and 251 BIN only. Full corpus: 125 files, 137 containers,
+470 textures, 68 tables, 198 WAVs. GL is mocked; no hardware fix is inferred.
+Initial stale/flat fixtures were rejected; correct game/ plus mods/Android14
+install roots are used for the recorded before/after checks.
+
+**Next:** compile/verify full VPK 00.22, then retest first character, repeated
+switches, voices, visible text and sustained battle FPS on Vita.
