@@ -4,7 +4,7 @@ Source: supplied APK 1.4 (hash in APK_AUDIT.md); original GameData,
 GameData.SpriteData, TCBManajer._SetAct/_ActReqMain/DrawImage/DrawSprite,
 checked against DEX and local jadx 1.5.6 output. The table below describes the
 ordinary source contracts; the pinned community normalization is documented
-separately. Full engine 00.21 preserves original payload interpreters privately;
+separately. Full engine 00.22 preserves original payload interpreters privately;
 see [CURRENT_STATUS](CURRENT_STATUS.md) for device/host scope.
 
 | Format | Original role / layout established | Status and remaining work |
@@ -18,7 +18,7 @@ see [CURRENT_STATUS](CURRENT_STATUS.md) for device/host scope.
 | BIN | Original loader data[2] or selected binCnv table; SPR BIN drives composed quads in DrawSprite | Multiple BIN schemas. SPR draws positions/UVs and blend flags from metadata, not guessed rectangles. Original consumers retained; verified top-level community BIN normalization, nested SPR BIN untouched |
 | GDT | Present in scenarios/card/gamedata/text resources | Not explicitly dispatched by observed GameData branches. Do not confuse tag 'gdt' with gameplay DAC converted to piGameData. Meaning/consumers UNCONFIRMED |
 | BMP/DAT/PLT/DB | Found in common/select/card-preview/background-object PACs | Container/hash/type confirmed. No matching branch in the audited original GameData loader; possible authoring/legacy metadata remains UNCONFIRMED. Preserve bytes; do not claim needed runtime decoders |
-| OGG | Vorbis, 17 stereo BGM + 19 mono effects; all 44.1 kHz | Native Vorbis/PCM services; earlier Vita BGM/SE audible, newest setup recovery pending |
+| OGG | Vorbis, 17 stereo BGM + 19 mono effects; all 44.1 kHz | Native Vorbis/PCM services; earlier Vita BGM/SE audible; 00.21 worker/menu recovery confirmed |
 | WAV | Original GameData loader has WAV slot support (max 20 original, not 30) | 198 Gen RIFF mono PCM16/22050 streams and 198 community wrapped streams host-checked; audible quality pending |
 | mk.bin | 392-byte raw resource read by Game9 | Present; complete command/schema meaning PENDING |
 | loading.png | 4233-byte standalone raw resource | Present and loader reference confirmed |
@@ -99,7 +99,7 @@ plausible count alone is not FORMAT CONFIRMED. Zero-count interpretations of
 raw CNV do not establish an empty sprite set. Raw animation DAC index validation
 checks only table and record starts, not full variable record bounds.
 
-## Current adapter boundary and corpus — 00.21
+## Current adapter boundary and corpus — 00.22
 
 `normaliseEnginePac` adapts confirmed Community14 directories, image wrappers,
 WAV wrappers and converted **top-level BIN** GameData entries; gamedata/text00
@@ -122,5 +122,5 @@ indices even when excluded payloads are not read; see [PAC_FORMAT](PAC_FORMAT.md
 
 Private game bytes never enter tests committed to Git. Host probes use supplied
 external APK extractions; [VALIDATION](VALIDATION.md) gives commands, fixtures and
-which APIs are mocked. Current audible voice quality and 00.21 startup need Vita
+which APIs are mocked. Current audible voice quality and 00.22 selection recovery need Vita
 confirmation even though decoding/normalization pass on host.

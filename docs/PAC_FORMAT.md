@@ -2,7 +2,8 @@
 
 Status: ordinary outer format validated against original and Gen APKs; the
 pinned Community14 encoded variant is supported per file. Current runtime is
-full engine 00.21; physical startup recovery is pending. See
+full engine 00.22; physical selection recovery is pending after 00.21 rejects
+original filter 187. Audio/menu recovery is confirmed in 00.21. See
 [CURRENT_STATUS](CURRENT_STATUS.md).
 
 This document describes the outer `.pac` container. Internal formats such as `spr`, `act`, `cnv`, `dac`, `gdt`, etc. require their own reverse-engineering notes.
@@ -171,9 +172,26 @@ Community14 metadata/WAV/table adapters still run when required. The 8 MiB
 retained-result LRU keys resolved path + filter and file size/mtime/ctime; live
 shared/Java copies and temporary normalization memory lie outside that budget.
 
-Host tests on 26 character PACs and filters 1/33/64/127 compare exact selected
+Host tests on 26 character PACs and filters 1/33/64/127/187/251 plus high/sign-bit edges compare exact selected
 bytes and stable directories. Filter 33 requested 11,707,264 rather than
 91,081,701 source bytes (87.146% reduction). This is not a Vita latency benchmark.
 Commands and fixture layout: [VALIDATION](VALIDATION.md). Implementation:
 `src/pac.cpp`, `src/engine_resources.cpp`, `src/resource_cache.hpp` and native
 `resources.cpp`. Renderer texture and voice caches are separate layers.
+
+
+## Mask range regression and original call sites — 00.22
+
+The exclusion argument is a signed Java int bitmask, not an enum restricted to
+0..127. Original Game3 selection supplies 187 (0xbb): exclude PNG/ACT/CNV/DAC/SPR,
+retain BIN/WAV. Other original loading paths supply 251 (0xfb): retain BIN only.
+Bit128 is unused by the observed original type tests and must not reject a load.
+The adapter retains the exact mask, matching original bit tests, rather than
+rewriting the core request or swallowing a null table later.
+
+The 00.20/00.21 native range guard rejected char00 before opening its PAC.
+00.21's caught Game3 NullPointerException follows that rejection; see
+[evidence](evidence/vita_hardware_selection_00.21.json). The extended regression
+fails at char00/filter 187 on the previous source and passes after removing the
+guard. It checks exact selected bytes/slots, nonempty metadata, allowed voices,
+and actual native resource-copy/cache behavior; physical 00.22 remains pending.

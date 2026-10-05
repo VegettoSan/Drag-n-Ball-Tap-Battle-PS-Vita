@@ -52,3 +52,14 @@ TeaVM runtime notices are already separately bundled when the current archive
 inventory shows only the entries above. This records unfinished packaging work;
 no new public full-engine release or license-compliance certification is made.
 The private build recipe is [BUILD](BUILD.md); source is this repository.
+
+
+## 00.22 delivery checkpoint
+
+00.22 retains the same five-entry VPK notice layout and native/generated-runtime
+scope, built at c40ce0a. Its packaged THIRD_PARTY is the documentation snapshot
+from that source, describing the earlier 00.21 inventory; this later note does
+not alter the delivered bytes. The 00.22 symbols ZIP has ELF/VELF, README and
+artifact evidence only and is not a complete relink kit. The notice/distribution
+review above remains open; this is another private full-engine test delivery.
+[Artifact evidence](evidence/vita_selection_filter_build_00.22.json).

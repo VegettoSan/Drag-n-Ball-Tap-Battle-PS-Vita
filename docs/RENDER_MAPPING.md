@@ -5,7 +5,9 @@ jadx 1.5.6. API availability checked against vitaGL commit
 `cdbba4232cb93a741ba190be9a32143dfed12d8d`. Availability is source-level evidence,
 **not a GPU fidelity or hardware test**. The adapter is now implemented in the
 full AOT engine: earlier Vita menu/selection/battle are confirmed, and 00.19
-restores text. Exhaustive pixel/state parity and 00.21 startup are still pending.
+restores text. 00.21 starts/reaches the menu but fails character loading; 00.22 repairs its
+mask contract. Physical selection recovery and exhaustive pixel/state parity
+remain pending.
 Current checkpoint: [CURRENT_STATUS](CURRENT_STATUS.md).
 
 | Original API | Vita equivalent | Classification / adaptation |

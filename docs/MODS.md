@@ -84,13 +84,14 @@ The initial selector intentionally works without JSON and uses the folder name. 
 
 The port must never require a mod installer to rewrite `game/`. Mod activation is a runtime decision only.
 
-## Current compatibility checkpoint — 00.21
+## Current compatibility checkpoint — 00.22
 
 Earlier build 00.11 runs the supplied Android14 profile through character
 selection and a real Vita battle. Ordinary Gen assets are host-validated and
 used as an alternate base profile. This does not certify arbitrary asset mods,
 code-modified mechanics, every added index or a complete mode matrix. Latest
-00.21 startup recovery after 00.20 is still pending; see
+00.21 worker/menu recovery is confirmed; its original selection-mask rejection
+is repaired in 00.22 with physical recovery pending; see
 [CURRENT_STATUS](CURRENT_STATUS.md).
 
 - Missing file → original fallback. Existing malformed/non-regular override →

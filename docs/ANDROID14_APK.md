@@ -213,7 +213,10 @@ services; later user tests confirm stable battle performance (00.18) and restore
 texts (00.19), while voices still sound rough and character changes pause.
 00.20 selective PAC/caches and voice reconstruction pass host checks but its
 audio worker setup fails on Vita before the menu. 00.21 restores prior worker
-priority and precise failure reporting; its physical result is pending.
+priority and precise failure reporting; worker/menu now recover on Vita.
+Its later selection failure rejects original mask 187; 00.22 preserves 187/251
+with exact payload/slot host checks. Physical selection/audio-quality coverage
+on 00.22 remains pending.
 
 Current extractor suite has 12 tests (the nine-test counts above are historical
 checkpoints). See [VALIDATION](VALIDATION.md) for fixtures/commands and scope.

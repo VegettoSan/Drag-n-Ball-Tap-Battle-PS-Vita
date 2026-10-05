@@ -1,6 +1,6 @@
 # Reusable porting guide — lessons from Tap Battle on Vita
 
-Checkpoint: 2026-10-05 / full-engine 00.21. This guide distinguishes reusable
+Checkpoint: 2026-10-05 / full-engine 00.22. This guide distinguishes reusable
 methods from game-specific facts. [CURRENT_STATUS](CURRENT_STATUS.md) identifies
 what actually worked on hardware. It is not a claim that every Java/Android game
 can use this exact pipeline or that Tap Battle is finished.
@@ -82,6 +82,13 @@ PAC then filtering in memory preserved results but lost that I/O benefit.
 00.20 restores exclusion before payload reads. Retain all directory slots/types/
 reserved fields and ordering even when a payload is omitted: original index-based
 lookups must not shift. Nested SPR and converted BIN/DAC are distinct schemas.
+
+00.21 exposes another contract error: a 0..127 native range guard rejects the
+original Game3 mask 187 (BIN/WAV allowed) and other paths 251 (BIN only). Type flags
+are bit tests; their OR does not define the legal range of an int mask. Test actual
+core call sites and higher/sign bits instead of only invented seven-bit samples.
+The new regression fails on previous code and passes after removing that guard;
+physical 00.22 selection recovery remains pending.
 
 Separate disk bytes, bridge copies, decoding and GPU uploads. A 26-character-PAC
 host probe measured 91,081,701 → 11,707,264 source bytes with filter 33; this

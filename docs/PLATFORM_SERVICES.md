@@ -1,6 +1,6 @@
 # Platform services — original contracts and current Vita adapters
 
-Checkpoint 00.21 / 2026-10-05. Original-code facts refer to the pinned original
+Checkpoint 00.22 / 2026-10-05. Original-code facts refer to the pinned original
 APK, not the community archive. The full original core executes through private
 AOT; this is no longer an atlas-only bootstrap. [CURRENT_STATUS](CURRENT_STATUS.md)
 and [VALIDATION](VALIDATION.md) qualify the hardware/host evidence.
@@ -34,8 +34,9 @@ this as an implemented asynchronous streaming/prefetch decoder.
 
 00.19 voices still sound bad despite zero measured overload/clipping in its
 latest session. 00.20's synthetic reconstruction check reduces an image 32.3 dB,
-but its hardware worker fails setup before the menu. 00.21 startup and audible
-quality are pending. Source rail samples, clipping and output gaps are separate
+but its hardware worker fails setup before the menu. 00.21 worker/menu recovery is now confirmed on Vita. Its
+selection then rejects legal mask 187 and exits; 00.22 removes that native range
+guard. Physical selection recovery and audible voice quality remain pending. Source rail samples, clipping and output gaps are separate
 facts; see [VALIDATION](VALIDATION.md) for counter meanings.
 
 ## Touch and physical controls

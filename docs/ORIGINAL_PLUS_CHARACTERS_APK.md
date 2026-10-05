@@ -74,7 +74,7 @@ strict-UTF-8 signal. This preserves:
 Evidence: `docs/evidence/original_plus_characters_apk_2026-10-05.json`.
 
 Status: **FORMAT CONFIRMED + HOST COMPATIBILITY CONFIRMED**. The full engine now
-builds as 00.21, but startup/voices and every mode with this exact source hash
+builds as 00.22, but selection/voices and every mode with this exact source hash
 still need a physical run identified by its manifest. An Original selector label
 alone does not establish which dataset was tested. Do not promote this exact
 profile to complete HARDWARE CONFIRMED from generic earlier game observations.
@@ -82,7 +82,7 @@ profile to complete HARDWARE CONFIRMED from generic earlier game observations.
 The mixed charset is handled at normalized payload boundaries; ordinary PAC
 headers do not imply Shift_JIS text00. 00.20 introduces selective character reads,
 texture/PCM reuse and voice sinc reconstruction; its startup regression prevents
-a device quality/latency conclusion. Current test: [TEST_VITA_00_21](TEST_VITA_00_21.md).
+a device quality/latency conclusion. Current test: [TEST_VITA_00_22](TEST_VITA_00_22.md).
 Current saves have bounded/atomic host coverage, but bundled-save Android
 round-trip, all progress fields and a complete profile-isolation matrix remain
 pending. See [CURRENT_STATUS](CURRENT_STATUS.md) and [VALIDATION](VALIDATION.md).

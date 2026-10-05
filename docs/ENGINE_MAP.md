@@ -16,16 +16,17 @@ reference, not a drop-in engine. Its licensing/completeness is not established.
 | offscreen / StringTexture | FBO rendering and Android Canvas-generated text | Real FBOs and PVF text; boot diagnostic font remains a separate service |
 | KeyData / Controller | Stable touch IDs, begin/move/end; virtual pad ranges, state/history and gesture timing | Stable touch slots and screen transform feed preserved original Controller |
 | ResourceMiner / Utility | Android raw ID reflection, files, HTTP, save operations | VFS filename aliases/extensions, native file reads, profile-local save service |
-| SoundEffect | MediaPlayer BGM, SoundPool SE and AudioTrack for supplied PCM | Whole-clip Vorbis decode and native PCM worker; setup/DSP hardware quality pending in 00.21 |
+| SoundEffect | MediaPlayer BGM, SoundPool SE and AudioTrack for supplied PCM | Whole-clip Vorbis decode and native PCM worker; 00.21 worker/menu recovered; audible quality pending |
 | GameTimer | Millisecond intervals, suspended duration adjustment | Original timer preserved; Vita wall-millis/monotonic-nanos backend |
 | Downloader / Smap | HTTP, catalog/device/news data and marketplace downloads/billing | Local installed-data path; HTTP rejected, offline catalog boundary |
 | BluetoothManajer / BluetoothSearch | RFCOMM discovery/transport; game receives/sends battle data | Transport adapter, not a generic input remap; multiplayer PENDING |
 
-## Current checkpoint — 00.21
+## Current checkpoint — 00.22
 
 The original core is now privately AOT-compiled with TeaVM, not manually
 reconstructed. Earlier Vita builds run menus/front touch/selection/battle.
-00.21 startup recovery after the 00.20 audio failure is still pending. See
+00.21 starts audio/reaches menu but rejects original selection mask 187.
+00.22 preserves that mask; physical selection recovery is pending. See
 [CURRENT_STATUS](CURRENT_STATUS.md) and [PORTING_GUIDE](PORTING_GUIDE.md).
 
 ## Main-loop ordering recovered
