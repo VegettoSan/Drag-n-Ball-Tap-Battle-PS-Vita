@@ -18,6 +18,7 @@ namespace {
 constexpr int kOutputRate = 48000;
 constexpr int kFrames = 1024;
 constexpr size_t kVoiceChannels = 3;
+constexpr size_t kEffectChannels = 20;
 
 struct Clip {
     std::vector<int16_t> pcm;
@@ -199,16 +200,21 @@ int32_t dbtb_effectLoad(void* raw_name) {
     auto clip = decodeOgg(audioName(static_cast<const char*>(raw_name)));
     if (!clip) return -1;
     AudioLockGuard lock;
+    if (effects.size() >= kEffectChannels) return -1;
+    const int32_t id = static_cast<int32_t>(effects.size());
     effects.push_back(std::move(clip));
-    return static_cast<int32_t>(effects.size());
+    // Original SoundEffect.load() returns sound_count before incrementing it.
+    return id;
 }
 
 void dbtb_effectPlay(int32_t id, float gain) {
     if (!ensureAudio()) return;
     AudioLockGuard lock;
-    if (id <= 0 || size_t(id) > effects.size() || !effects[size_t(id - 1)]) return;
-    if (active_effects.size() >= 32) active_effects.erase(active_effects.begin());
-    active_effects.push_back({effects[size_t(id - 1)], 0.0, gain, false});
+    // SoundPool's platform sample handle is opaque, but TCBManajer addresses the
+    // SoundEffect.soundPoolMap by zero-based logical IDs (se_00 -> 0, se_01 -> 1).
+    if (id < 0 || size_t(id) >= effects.size() || !effects[size_t(id)]) return;
+    if (active_effects.size() >= kEffectChannels) active_effects.erase(active_effects.begin());
+    active_effects.push_back({effects[size_t(id)], 0.0, gain, false});
 }
 
 void dbtb_effectStop(void) {
@@ -232,7 +238,7 @@ void dbtb_voicePlay(int32_t id, float gain) {
     if (!ensureAudio()) return;
     AudioLockGuard lock;
     // Original SoundEffect.playAudio(int) indexes wave[id] directly. Do not
-    // translate this like SoundPool IDs, which are one-based.
+    // translate this like the platform SoundPool sample handle.
     if (id < 0 || size_t(id) >= streamed_voice_clips.size() || !streamed_voice_clips[size_t(id)]) return;
     // Android owns exactly three AudioTrack playback channels. If all three are
     // busy getAudioIndex() rejects the new request instead of creating overlap.
