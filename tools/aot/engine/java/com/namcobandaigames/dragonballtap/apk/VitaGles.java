@@ -41,18 +41,47 @@ public final class VitaGles implements GL10,GL11ExtensionPack {
     public void glGenRenderbuffersOES(int n,int[] values,int offset){arrayCall(5,n,values,offset);}
     @Import(name="dbtb_glPointer") private static native void pointer(int kind,int size,int type,int stride,Address data,int bytes);
     @Import(name="dbtb_glDraw") private static native void draw(int mode,int count,int type,Address data,int bytes);
-    private byte[] bytes(Buffer data){
-        if(data instanceof ByteBuffer){ByteBuffer b=((ByteBuffer)data).duplicate();byte[] out=new byte[b.remaining()];b.get(out);return out;}
-        ByteBuffer b;
-        if(data instanceof ShortBuffer){ShortBuffer s=((ShortBuffer)data).duplicate();b=ByteBuffer.allocate(s.remaining()*2).order(ByteOrder.nativeOrder());while(s.hasRemaining())b.putShort(s.get());}
-        else if(data instanceof FloatBuffer){FloatBuffer f=((FloatBuffer)data).duplicate();b=ByteBuffer.allocate(f.remaining()*4).order(ByteOrder.nativeOrder());while(f.hasRemaining())b.putFloat(f.get());}
-        else throw new IllegalArgumentException("Unsupported GL client buffer");
-        return b.array();
+    // Native pointer() copies client attributes before returning, so reusable
+    // primitive arrays cannot be moved by GC while vitaGL still uses them.
+    // Keep each active position/limit and use absolute reads: the original
+    // Byte/Short/FloatBuffer is never advanced, duplicated or serialized.
+    private final byte[][] byteScratch=new byte[4][];
+    private final short[][] shortScratch=new short[4][];
+    private final float[][] floatScratch=new float[4][];
+    private Address clientAddress(int slot,Buffer data){
+        int n=data.remaining();
+        if(data instanceof ByteBuffer){
+            ByteBuffer src=(ByteBuffer)data;
+            if(src.hasArray())return Address.ofData(src.array()).add(src.arrayOffset()+src.position());
+            if(byteScratch[slot]==null||byteScratch[slot].length<n)byteScratch[slot]=new byte[n];
+            byte[] out=byteScratch[slot];for(int i=0;i<n;i++)out[i]=src.get(src.position()+i);
+            return Address.ofData(out);
+        }
+        if(data instanceof ShortBuffer){
+            ShortBuffer src=(ShortBuffer)data;
+            if(src.hasArray())return Address.ofData(src.array()).add((src.arrayOffset()+src.position())*2);
+            if(shortScratch[slot]==null||shortScratch[slot].length<n)shortScratch[slot]=new short[n];
+            short[] out=shortScratch[slot];for(int i=0;i<n;i++)out[i]=src.get(src.position()+i);
+            return Address.ofData(out);
+        }
+        if(data instanceof FloatBuffer){
+            FloatBuffer src=(FloatBuffer)data;
+            if(src.hasArray())return Address.ofData(src.array()).add((src.arrayOffset()+src.position())*4);
+            if(floatScratch[slot]==null||floatScratch[slot].length<n)floatScratch[slot]=new float[n];
+            float[] out=floatScratch[slot];for(int i=0;i<n;i++)out[i]=src.get(src.position()+i);
+            return Address.ofData(out);
+        }
+        throw new IllegalArgumentException("Unsupported GL client buffer");
     }
-    public void glColorPointer(int size,int type,int stride,java.nio.Buffer data){byte[] b=bytes(data);pointer(0,size,type,stride,Address.ofData(b),b.length);}
-    public void glTexCoordPointer(int size,int type,int stride,java.nio.Buffer data){byte[] b=bytes(data);pointer(1,size,type,stride,Address.ofData(b),b.length);}
-    public void glVertexPointer(int size,int type,int stride,java.nio.Buffer data){byte[] b=bytes(data);pointer(2,size,type,stride,Address.ofData(b),b.length);}
-    public void glDrawElements(int mode,int count,int type,Buffer data){byte[] b=bytes(data);draw(mode,count,type,Address.ofData(b),b.length);}
+    private int clientBytes(Buffer data){
+        int width=data instanceof ByteBuffer?1:data instanceof ShortBuffer?2:data instanceof FloatBuffer?4:0;
+        if(width==0||data.remaining()>16384/width)throw new IllegalArgumentException("Invalid GL client range");
+        return data.remaining()*width;
+    }
+    public void glColorPointer(int size,int type,int stride,Buffer data){int n=clientBytes(data);pointer(0,size,type,stride,clientAddress(0,data),n);}
+    public void glTexCoordPointer(int size,int type,int stride,Buffer data){int n=clientBytes(data);pointer(1,size,type,stride,clientAddress(1,data),n);}
+    public void glVertexPointer(int size,int type,int stride,Buffer data){int n=clientBytes(data);pointer(2,size,type,stride,clientAddress(2,data),n);}
+    public void glDrawElements(int mode,int count,int type,Buffer data){int n=clientBytes(data);draw(mode,count,type,clientAddress(3,data),n);}
     public String glGetString(int name){if(name==7939)return "GL_OES_framebuffer_object";return "DBTB Vita GLES bridge";}
 }
 

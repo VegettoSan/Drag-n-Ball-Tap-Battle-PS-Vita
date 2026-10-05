@@ -568,3 +568,15 @@ This avoids font seeks on each new glyph without changing text, layout or sizes.
 
 **Check:** current VitaSDK 2026.08 GCC 15.2.0 compiled vita_text.cpp successfully;
 `git diff --check` passes. A real-device timing improvement is still PENDING.
+
+### Follow-up — GLES client arrays
+
+The Java GLES adapter duplicated each NIO buffer, allocated fresh byte arrays,
+and serialized float/short values for every pointer/index call. Reuse typed
+scratch arrays for direct buffers and borrow an active backing array for heap
+buffers. Preserve position, limit and arrayOffset; native attributes remain
+copied into their own storage before returning to Java. This removes per-draw
+conversion allocations without batching/reordering the original draws.
+
+ECJ 3.37.0 compiled the adapter successfully. Full TeaVM regeneration, buffer
+range checks and Vita compilation are the next checks; hardware FPS is PENDING.
