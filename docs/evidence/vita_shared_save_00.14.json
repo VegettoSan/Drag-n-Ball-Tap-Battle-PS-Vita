@@ -28,7 +28,7 @@
   "build": {
     "version": "00.14",
     "artifact": "DBTapBattle-Vita-00.14-shared-save.vpk",
-    "size": 2222691,
+    "size": 2219854,
     "sha256": "1563dd7fb1b10ea54a07faa560256cb96914a184bc823486c609391f244994de",
     "eboot_sha256": "8b6ab6db3b37427e5d420c51e7ec397d96f287a6ab1f1070877e6fbe687047a9",
     "elf_sha256": "6ebd5fc4a29c47f36e740651b5fa8c54617d5291995472fe94c142d4b71ac8c9",
