@@ -154,9 +154,12 @@ int32_t dbtb_resourceFiltered(void* name, int32_t filter) {
     if(logical=="gamedata.pac")text_encodings[0]=pending_encoding;
     if(logical=="text00.pac")text_encodings[1]=pending_encoding;
     if(logical=="gamedata.pac"||logical=="text00.pac")std::fprintf(stderr,"Text codec %s: %d\n",logical.c_str(),pending_encoding);
-    std::fprintf(stderr, "Resource: %s filter=%d cache=%s io_bytes=%zu bridge_bytes=%zu us=%llu\n",
-        logical.c_str(), filter, hit ? "hit" : "miss", hit ? 0 : pending_resource->io_bytes,
-        pending_resource->bytes.size(), static_cast<unsigned long long>(dbtb_timeUs() - start));
+    // Vita's nano printf does not implement the z length modifier.
+    std::fprintf(stderr, "Resource: %s filter=%d cache=%s io_bytes=%llu bridge_bytes=%llu us=%llu\n",
+        logical.c_str(), filter, hit ? "hit" : "miss",
+        static_cast<unsigned long long>(hit ? 0 : pending_resource->io_bytes),
+        static_cast<unsigned long long>(pending_resource->bytes.size()),
+        static_cast<unsigned long long>(dbtb_timeUs() - start));
     return int32_t(pending_resource->bytes.size());
 }
 int32_t dbtb_resource(void* name) { return dbtb_resourceFiltered(name, 0); }

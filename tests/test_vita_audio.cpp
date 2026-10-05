@@ -2,12 +2,38 @@
 #include "../tools/aot/engine/native/vita_audio.cpp"
 #include <cassert>
 #include <cstdio>
-void runtimeLog(const std::string&) {}
+std::vector<std::string> audio_test_logs;
+void runtimeLog(const std::string& message) {audio_test_logs.push_back(message);}
 const GameVfs& dbtb_vfs(){static GameVfs vfs("/tmp/dbtb-probe");return vfs;}
 std::shared_ptr<Clip> clip(std::initializer_list<int16_t> pcm,int rate=22050,int channels=1){
  auto c=std::make_shared<Clip>();c->pcm=pcm;c->rate=rate;c->channels=channels;c->frame_count=c->pcm.size()/channels;return c;
 }
 int main(){
+ // Exercise worker setup and cleanup independently of DSP. These stubs inject
+ // API errors, not Vita scheduling; the requested priority matches the working
+ // hardware build and SDK example, without inventing a kernel priority range.
+ auto reset_setup=[](){dbtb_audioDispose();audio_test_kernel::reset();audio_test_output::reset();audio_test_logs.clear();};
+ reset_setup();assert(ensureAudio());assert(audio_test_kernel::priority==0x10000100);
+ assert(audio_test_output::opens==1&&audio_test_kernel::creates==1&&audio_test_kernel::starts==1);
+ assert(ensureAudio()&&audio_test_output::opens==1&&audio_test_kernel::starts==1);
+ dbtb_audioDispose();assert(audio_test_output::releases==1&&audio_test_kernel::waits==1&&audio_test_kernel::deletes==1);
+ reset_setup();audio_test_output::open_result=-17;assert(!ensureAudio());
+ assert(audio_thread==-1&&audio_port==-1&&!audio_running.load());
+ assert(audio_test_kernel::creates==0&&audio_test_output::releases==0);
+ assert(audio_test_logs.back().find("sceAudioOutOpenPort failed: 0xffffffef (-17)")!=std::string::npos);
+ assert(!ensureAudio()&&audio_test_output::opens==1);
+ reset_setup();audio_test_kernel::create_result=-18;assert(!ensureAudio());
+ assert(audio_thread==-1&&audio_port==-1&&!audio_running.load());
+ assert(audio_test_kernel::starts==0&&audio_test_kernel::deletes==0&&audio_test_output::releases==1);
+ assert(audio_test_logs.back().find("sceKernelCreateThread failed: 0xffffffee (-18)")!=std::string::npos);
+ assert(!ensureAudio()&&audio_test_output::opens==1&&audio_test_kernel::creates==1);
+ reset_setup();audio_test_kernel::start_result=-19;assert(!ensureAudio());
+ assert(audio_thread==-1&&audio_port==-1&&!audio_running.load());
+ assert(audio_test_kernel::starts==1&&audio_test_kernel::deletes==1&&audio_test_kernel::waits==0&&audio_test_output::releases==1);
+ assert(audio_test_logs.back().find("sceKernelStartThread failed: 0xffffffed (-19)")!=std::string::npos);
+ assert(!ensureAudio()&&audio_test_kernel::starts==1&&audio_test_output::opens==1);
+ reset_setup();assert(ensureAudio());dbtb_audioDispose();
+ puts("AUDIO SETUP PASS: ready reuse, port/create/start errors, exact diagnostics, cleanup, failure latch and disposal retry");
  auto c=clip({-32768,32767});auto v=makeVoice(c,1,false);v.phase=uint64_t(1)<<31;
  int32_t l=0,r=0;mixVoice(v,l,r);assert(l==-1&&r==-1);
  auto stereo=clip({1000,-1000,3000,-3000},48000,2);v=makeVoice(stereo,1,false);

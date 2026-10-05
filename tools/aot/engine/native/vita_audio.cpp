@@ -10,6 +10,7 @@
 #include <atomic>
 #include <cmath>
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
 #include <memory>
 #include <list>
@@ -58,6 +59,7 @@ Voice bgm;
 int audio_port = -1;
 SceUID audio_thread = -1;
 std::atomic<bool> audio_running{false};
+bool audio_init_failed = false;
 std::atomic<uint32_t> clipped_samples{0}, overload_samples{0}, late_mix_blocks{0}, max_mix_us{0};
 std::atomic<uint32_t> submission_gaps{0}, max_submission_gap_us{0};
 // Audio-worker-only envelope; callers join the worker before disposing it.
@@ -297,21 +299,34 @@ int audioThread(SceSize, void*) {
 
 bool ensureAudio() {
     if (audio_port >= 0) return true;
-    audio_port = sceAudioOutOpenPort(SCE_AUDIO_OUT_PORT_TYPE_MAIN, kFrames, kOutputRate, SCE_AUDIO_OUT_MODE_STEREO);
-    if (audio_port < 0) { runtimeLog("Audio: sceAudioOutOpenPort failed: " + std::to_string(audio_port)); return false; }
-    runtimeLog("Audio: output port opened");
-    audio_running.store(true);
-    // Audio deadlines must take precedence over main-thread PAC/PNG work.
-    audio_thread = sceKernelCreateThread("DBTB audio", audioThread, 0x10000080, 0x10000, 0, 0, nullptr);
-    if (audio_thread < 0 || sceKernelStartThread(audio_thread, 0, nullptr) < 0) {
+    // A persistent setup error must not reopen a port for every effect/voice.
+    // Disposal resets this latch for a new engine session.
+    if (audio_init_failed) return false;
+    auto fail = [](const char* operation, int result) {
+        char message[160];
+        std::snprintf(message, sizeof(message), "Audio: %s failed: 0x%08x (%d)",
+                      operation, static_cast<unsigned int>(result), result);
+        runtimeLog(message);
+        audio_init_failed = true;
         audio_running.store(false);
         if (audio_thread >= 0) sceKernelDeleteThread(audio_thread);
         audio_thread = -1;
-        sceAudioOutReleasePort(audio_port);
+        if (audio_port >= 0) sceAudioOutReleasePort(audio_port);
         audio_port = -1;
-        runtimeLog("Audio: worker thread start failed");
         return false;
-    }
+    };
+    audio_port = sceAudioOutOpenPort(SCE_AUDIO_OUT_PORT_TYPE_MAIN, kFrames, kOutputRate, SCE_AUDIO_OUT_MODE_STEREO);
+    if (audio_port < 0) return fail("sceAudioOutOpenPort", audio_port);
+    runtimeLog("Audio: output port opened");
+    // Restore the priority used by the working 00.19 build and the VitaSDK
+    // creation example. The 00.20 change to 0x10000080 coincided with
+    // worker-setup failures on hardware; do not infer a valid range from
+    // the ordering of these encoded priority values.
+    audio_thread = sceKernelCreateThread("DBTB audio", audioThread, 0x10000100, 0x10000, 0, 0, nullptr);
+    if (audio_thread < 0) return fail("sceKernelCreateThread", audio_thread);
+    audio_running.store(true);
+    const int started = sceKernelStartThread(audio_thread, 0, nullptr);
+    if (started < 0) return fail("sceKernelStartThread", started);
     runtimeLog("Audio: worker thread started");
     return true;
 }
@@ -499,5 +514,6 @@ void dbtb_audioDispose(void) {
     output_gain = 1.0f;
     voice_cache.clear();
     voice_cache_bytes = 0;
+    audio_init_failed = false;
 }
 }
