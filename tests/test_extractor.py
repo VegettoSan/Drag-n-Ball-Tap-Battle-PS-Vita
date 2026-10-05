@@ -119,6 +119,17 @@ class ExtractorTest(unittest.TestCase):
         self.assertEqual((self.output / 'common.pac').read_bytes(), b'asset')
         self.assertEqual(m['renamed_files'], [])
 
+    def test_empty_raw_stubs_auto_select_real_assets(self):
+        self.archive([('res/raw/common.pac', b''), ('res/raw/text00.pac', b''),
+                      ('assets/common.pac', b'asset common'), ('assets/text00.pac', b'asset text')])
+        m = e.extract(self.apk, self.output)
+        self.assertEqual(m['source_layout'], 'assets')
+        self.assertEqual(m['file_count'], 2)
+        self.assertEqual((self.output / 'common.pac').read_bytes(), b'asset common')
+        self.assertEqual((self.output / 'text00.pac').read_bytes(), b'asset text')
+        self.assertIn('res/raw/common.pac', m['not_extracted'])
+        self.assertIn('res/raw/text00.pac', m['not_extracted'])
+
     def test_cli_mod_never_replaces_original(self):
         self.output.mkdir()
         original = self.output / 'game'
