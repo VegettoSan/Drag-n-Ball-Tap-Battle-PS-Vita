@@ -28,7 +28,7 @@ def main():
         parser.error('Use a fresh private work directory; refusing to overwrite')
     libs = args.lib_directory.resolve()
     for name in ['teavm-cli-0.12.3.jar', 'teavm-classlib-0.12.3.jar',
-                 'teavm-interop-0.12.3.jar', 'asm-9.7.1.jar']:
+                 'teavm-interop-0.12.3.jar', 'teavm-core-0.12.3.jar', 'asm-9.7.1.jar']:
         if not (libs / name).is_file():
             parser.error(f'Missing pinned dependency {name}')
     original, ecj = args.original_jar.resolve(), args.ecj.resolve()
@@ -43,7 +43,7 @@ def main():
     charset_registry = work / 'charset-registry.jar'
     run(['java', '-cp', f'{generators}:{libs / "asm-9.7.1.jar"}', 'PatchCharsets',
          libs / 'teavm-classlib-0.12.3.jar', charset_registry], work / 'charset-registry.log')
-    cp = f'{original}:{libs / "teavm-interop-0.12.3.jar"}'
+    cp = f'{original}:{libs / "teavm-interop-0.12.3.jar"}:{libs / "teavm-core-0.12.3.jar"}'
     classes = work / 'classes'
     run(['java', '-jar', ecj, '-8', '-d', classes, '-cp', cp,
          *sorted((root / 'java').rglob('*.java')), mapping], work / 'java-build.log')
