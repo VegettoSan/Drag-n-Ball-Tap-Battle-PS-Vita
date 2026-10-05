@@ -14,6 +14,7 @@ struct DbtbPerformance {
     uint64_t resource_bytes = 0;
     uint32_t resource_cache_hits = 0;
     uint32_t voice_cache_hits = 0;
+    uint32_t texture_cache_hits = 0;
     uint32_t resources = 0, textures = 0;
 };
 inline DbtbPerformance& dbtb_performance() {

@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <unordered_map>
+#include <list>
 
 namespace {
 constexpr size_t kSaveSize = 12906;
@@ -37,6 +38,33 @@ bool save_cache_exists = false;
 struct Size { int w, h; };
 std::unordered_map<unsigned, Size> textures;
 std::unordered_map<std::string, bool> resource_exists_cache;
+struct CachedTexture {
+    uint32_t hash;
+    bool linear;
+    std::vector<uint8_t> source;
+    GLuint id;
+    size_t cost;
+    unsigned users;
+};
+std::list<CachedTexture> texture_cache;
+size_t texture_cache_bytes = 0;
+constexpr size_t kTextureCacheBudget = 4u * 1024u * 1024u;
+uint32_t textureHash(const uint8_t* bytes, size_t size) {
+    uint32_t hash = 2166136261u;
+    for (size_t i = 0; i < size; ++i) hash = (hash ^ bytes[i]) * 16777619u;
+    return hash;
+}
+bool trimTextures(size_t incoming) {
+    for (auto it = texture_cache.end(); texture_cache_bytes + incoming > kTextureCacheBudget && it != texture_cache.begin();) {
+        --it;
+        if (it->users) continue;
+        glDeleteTextures(1, &it->id);
+        textures.erase(it->id);
+        texture_cache_bytes -= it->cost;
+        it = texture_cache.erase(it);
+    }
+    return texture_cache_bytes + incoming <= kTextureCacheBudget;
+}
 
 bool readFile(const std::string& path, std::vector<uint8_t>& out) {
     out.clear(); struct stat info{};
@@ -99,7 +127,14 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
     return true;
 }
 const GameVfs& dbtb_vfs() { if (!vfs) std::abort(); return *vfs; }
-void dbtb_forgetTexture(unsigned id) { textures.erase(id); }
+bool dbtb_releaseTexture(unsigned id) {
+    for (auto& cached : texture_cache) if (cached.id == id) {
+        if (cached.users) --cached.users;
+        return false; // immutable imported texture retained until idle eviction
+    }
+    textures.erase(id);
+    return true;
+}
 
 extern "C" {
 int32_t dbtb_resourceFiltered(void* name, int32_t filter) {
@@ -213,6 +248,16 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
     ++dbtb_performance().textures;
     if (!data || size < 0 || size > 16 * 1024 * 1024) return -1;
     const auto* b = static_cast<const uint8_t*>(data);
+    const uint32_t hash = textureHash(b, size_t(size));
+    for (auto it = texture_cache.begin(); it != texture_cache.end(); ++it) {
+        if (it->hash != hash || it->linear != (linear != 0) || it->source.size() != size_t(size) ||
+            std::memcmp(it->source.data(), b, size_t(size)) != 0) continue;
+        ++it->users;
+        const int id = int(it->id);
+        texture_cache.splice(texture_cache.begin(), texture_cache, it);
+        ++dbtb_performance().texture_cache_hits;
+        return id;
+    }
     RgbaImage image; std::string error; bool ok;
     if (size >= 8 && !std::memcmp(b, "C14R", 4)) {
         const uint32_t index = b[4] | (uint32_t(b[5]) << 8) | (uint32_t(b[6]) << 16) | (uint32_t(b[7]) << 24);
@@ -229,7 +274,15 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
         }
     }
     if (!ok) { std::fprintf(stderr, "Engine texture: %s\n", error.c_str()); return -1; }
-    return upload(image, linear != 0);
+    const size_t cost = size_t(size) + image.pixels.size();
+    // Discard idle selection atlases before allocating a large combat texture.
+    const bool retain = trimTextures(cost);
+    const int id = upload(image, linear != 0);
+    if (id > 0 && retain) {
+        texture_cache.push_front({hash, linear != 0, std::vector<uint8_t>(b, b + size), GLuint(id), cost, 1});
+        texture_cache_bytes += cost;
+    }
+    return id;
 }
 int32_t dbtb_textureWidth(int32_t id) { auto i = textures.find(id); return i == textures.end() ? 0 : i->second.w; }
 int32_t dbtb_textureHeight(int32_t id) { auto i = textures.find(id); return i == textures.end() ? 0 : i->second.h; }

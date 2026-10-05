@@ -80,7 +80,12 @@ void dbtb_glArray(int32_t operation, int32_t n, void* data) {
     static_assert(sizeof(GLuint) == sizeof(int32_t), "GL name width must match Java int");
     auto* ids = static_cast<GLuint*>(data);
     switch (operation) {
-        case 0: for (int i = 0; i < n; ++i) dbtb_forgetTexture(ids[i]); glDeleteTextures(n, ids); break;
+        case 0:
+            for (int i = 0; i < n; ++i) {
+                if (!dbtb_releaseTexture(ids[i])) continue;
+                const GLuint id = GLuint(ids[i]); glDeleteTextures(1, &id);
+            }
+            break;
         case 1: glGenTextures(n, ids); break;
         case 2: glDeleteFramebuffers(n, ids); break;
         case 3: glDeleteRenderbuffers(n, ids); break;

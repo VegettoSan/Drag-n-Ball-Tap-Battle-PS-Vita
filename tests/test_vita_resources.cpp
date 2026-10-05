@@ -1,0 +1,38 @@
+// Real resource/PNG/native ownership paths; only GL upload/delete is mocked.
+#include "../tools/aot/engine/native/resources.cpp"
+#include <cassert>
+#include <cstdio>
+uint16_t u16(const std::vector<uint8_t>& b,size_t p){return b[p]|uint16_t(b[p+1])<<8;}
+uint32_t u32(const std::vector<uint8_t>& b,size_t p){return b[p]|uint32_t(b[p+1])<<8|uint32_t(b[p+2])<<16|uint32_t(b[p+3])<<24;}
+std::vector<uint8_t> png(const std::string& base,int character){
+ GameVfs vfs(base);std::string path,error;std::vector<uint8_t> pac;char name[32];snprintf(name,sizeof name,"chardemo%02d",character);
+ assert(readEngineResource(vfs,name,pac,path,error));size_t n=u16(pac,0),begin=2+n*16;
+ for(size_t i=0;i<n;++i)if(!memcmp(pac.data()+10+i*16,"png",3)){size_t p=2+i*16,start=begin+u32(pac,p);return {pac.begin()+start,pac.begin()+start+u32(pac,p+4)};}
+ assert(false);return {};
+}
+void release(int id){if(dbtb_releaseTexture(id)){GLuint texture=id;glDeleteTextures(1,&texture);}}
+int main(int argc,char** argv){
+ assert(argc==2);assert(dbtb_initResources(argv[1],""));
+ char name[]="char00";int size=dbtb_resourceFiltered(name,33);assert(size>0&&pending_resource);auto first=pending_resource;
+ std::vector<uint8_t> bytes(size);dbtb_copyResource(bytes.data(),size);assert(bytes==first->bytes&&!pending_resource);
+ assert(dbtb_resourceFiltered(name,33)==size&&pending_resource==first);
+ dbtb_copyResource(bytes.data(),size);assert(dbtb_performance().resource_cache_hits==1);
+ assert(dbtb_resource(name)>size);std::vector<uint8_t> full(pending_resource->bytes.size());dbtb_copyResource(full.data(),full.size());
+ auto image=png(argv[1],0);int a=dbtb_loadTexture(image.data(),image.size(),1);assert(a>0&&mock_uploads==1&&dbtb_textureWidth(a)==512);
+ auto pixels=mock_pixels.at(a);release(a);assert(mock_pixels.count(a)&&texture_cache.front().users==0);
+ int b=dbtb_loadTexture(image.data(),image.size(),1);assert(b==a&&mock_uploads==1&&mock_pixels.at(b)==pixels);
+ int shared=dbtb_loadTexture(image.data(),image.size(),1);assert(shared==a&&texture_cache.front().users==2);release(shared);assert(texture_cache.front().users==1);
+ int nearest=dbtb_loadTexture(image.data(),image.size(),0);assert(nearest!=a&&mock_uploads==2);
+ // Different bytes must never alias just because a hash matches.
+ auto changed=image;changed[40]^=1;texture_cache.back().hash=textureHash(changed.data(),changed.size());
+ int different=dbtb_loadTexture(changed.data(),changed.size(),1);assert(different!=a);if(different>0)release(different);
+ release(nearest);
+ // Hold a live texture while idle entries are evicted by later character loads.
+ for(int i=1;i<8;++i){auto other=png(argv[1],i);int id=dbtb_loadTexture(other.data(),other.size(),1);assert(id>0);release(id);assert(mock_pixels.count(a)&&texture_cache_bytes<=kTextureCacheBudget);}
+ assert(mock_deletes>0&&mock_pixels.at(a)==pixels);
+ release(a);assert(trimTextures(kTextureCacheBudget)&&texture_cache.empty());
+ int empty=dbtb_emptyTexture(16,16);assert(empty>0);release(empty);assert(!mock_pixels.count(empty));
+ // Profile reinitialization discards resource hits, not pending/save aliases.
+ assert(dbtb_initResources(argv[1],"")&&resource_cache.used()==0&&!pending_resource);
+ puts("NATIVE RESOURCE PASS: filtered bridge/cache, exact PNG reuse, filter modes, reference ownership, collision isolation, idle eviction, uncached render target, profile reset");
+}
