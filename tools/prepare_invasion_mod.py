@@ -116,7 +116,7 @@ def update_manifest(root: Path, audio: list[dict]) -> None:
         "classes_dex_sha256": INVASION_DEX_SHA256,
         "character_indices": "00..21",
         "character_count": INVASION_CHARACTER_COUNT,
-        "requires_base_fallback": ["bobj00.pac", "font00.pac"],
+        "valid_omissions": ["bobj00.pac", "font00.pac"],
     }
     manifest["audio_runtime"] = {
         "policy": "preserve-source-bytes-and-detect-by-content",
@@ -159,7 +159,7 @@ def main() -> int:
     print(f"Prepared Invasion Vita mod: {args.output}")
     print("Roster: 22 characters (00..21), protected PAC profile validated.")
     print("Audio: source bytes preserved (5 MP3, 2 AAC/M4A, 10 Vorbis); Vita decodes by content.")
-    print("Keep the base game folder: Invasion needs bobj00.pac/font00.pac fallback.")
+    print("Invasion is valid without bobj00.pac/font00.pac; keep game/ only for the normal optional VFS fallback contract.")
     return 0
 
 
