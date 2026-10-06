@@ -126,6 +126,37 @@ Por tanto, cualquier guard `<=512` sería incorrecto para Invasion.
 
 La continuidad `00..21` y el mismo shape de 43 registros son evidencia fuerte de que los personajes adicionales siguen el mismo contrato de datos base. No prueban que toda la lógica del DEX de Invasion exista en el motor original.
 
+## Outliers estructurales que un parser debe aceptar
+
+Los 22 `charXX.pac` conservan un BIN convertido de 43 registros, pero **no**
+comparten todos el mismo layout exterior. Los personajes 00..14 y varios nuevos
+usan el patrón compacto habitual (RGBA iniciales, BIN/CNV/DAC, WAV finales), pero
+hay excepciones importantes:
+
+| PAC | Entries | WAV | Layout exterior resumido | Máxima RGBA |
+|---|---:|---:|---|---|
+| `char15.pac` | 101 | 19 | RGBA×19, BIN, luego RGBA intercaladas entre CNV/DAC/WAV y RGBA×39 finales | **736×500 @ entry 94** |
+| `char20.pac` | 98 | 15 | RGBA×27, BIN, luego RGBA intercaladas entre CNV/DAC/WAV y RGBA×36 finales | 512×512 |
+| `char21.pac` | 85 | 15 | RGBA×67, BIN, CNV, DAC, WAV×15 | 512×512 |
+
+También:
+
+- `char16.pac` tiene 41 entries y 19 WAV;
+- `char13.pac` tiene 40 entries y 18 WAV;
+- el resto de los personajes usan 15 o 18 WAV según el personaje;
+- el BIN de todos sigue siendo de **43 registros**.
+
+Por tanto, un parser/normalizador **no puede** asumir que todas las imágenes
+están contiguas al inicio ni que todos los WAV están necesariamente al final.
+Debe obedecer el directorio PAC y el tipo de cada entry por índice.
+
+### Card034
+
+`card034.pac` contiene un BIN convertido válido de un registro, pero ese
+registro tiene dimensión 0×0 (0 celdas; payload de tabla 10 bytes). El mismo
+caso existe en el APK Español y se conserva en Invasion. No debe rechazarse
+simplemente porque `width * height == 0`; es un caso observado del corpus.
+
 ## DEX: mod de código real
 
 Mismas dimensiones globales que Android14: 39 clases / 914 method IDs / 596 métodos con código. Sin embargo:
