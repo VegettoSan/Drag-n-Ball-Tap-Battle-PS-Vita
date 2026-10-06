@@ -1,4 +1,4 @@
-# Current status — 2026-10-05 (America/Bogota), 00.24 hardware / 00.25 candidate
+# Current status — 2026-10-06 (America/Bogota), 00.24 hardware / 00.25 candidate
 
 ## 00.25 candidate — audited community mod profiles
 
@@ -52,6 +52,35 @@ Spanish passes the offline gate with 13 characters and normalizes 106 PAC /
 361 protected images / 198 WAV / 68 BIN; Invasion passes with 22 characters and
 normalizes 139 PAC / 731 protected images / 344 WAV / 80 BIN. Both use the base
 `game/bobj00.pac` fallback because their APKs omit `bobj00`.
+
+## Deep APK audit — 2026-10-06
+
+The five supplied APKs were re-audited directly from their ZIP/DEX/PAC/audio
+bytes so future work does not need the binaries for already-known structure.
+
+New source-of-truth documentation:
+
+- [APK technical reference](APK_TECHNICAL_REFERENCE.md): manifest/DEX/signing,
+  layout, PAC formats, codec constants, aliases, native libraries and semantic
+  comparisons.
+- [Canonical APK differences](APK_CANONICAL_DIFFERENCES.md): pairwise logical
+  file presence/identity after resolving `res/raw`, `assets` and protected
+  aliases.
+- [Spanish Android14](SPANISH_ANDROID14_APK.md) and
+  [Invasion Beta 3](INVASION_BETA3_APK.md): profile-specific details/outliers.
+- [Exact exterior audio matrix](evidence/APK_AUDIO_MATRIX_2026-10-06.md).
+- [Machine-readable evidence](evidence/apk_deep_structure_2026-10-06.json),
+  including all 372 Android14→Invasion changed DEX signatures, canonical
+  comparison counts and observed PAC outliers.
+
+Important new findings: Invasion's seven changed BGM are five MP3 + two AAC/M4A
+despite `.ogg` names; `char15`/ `char20` use non-uniform interleaved RGBA
+layouts (101/98 entries), `char21` has 85 entries, and Spanish/Invasion
+`card034` contains a valid one-record 0×0 converted table. Parsers must follow
+the directory/type contract rather than fixed per-file layout assumptions.
+
+This audit changed **documentation/evidence only**. It does not alter the runtime
+or the hardware-confirmed 00.24 path.
 
 ## Current hardware report — 00.24
 
