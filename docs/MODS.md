@@ -112,6 +112,13 @@ still need a physical-Vita test before being called hardware-confirmed. See
   gate keeps the 13-character baseline but now accepts contiguous complete
   character triplets up to the original core's 31 loaded GameData slots;
   Invasion supplies 22. This is resource compatibility, not a universal mod API.
+- Invasion is also a Tier-C code mod: compared with Android14, 372 of 595 common
+  code-method signatures have different DEX instructions. Do not port those
+  changes wholesale; investigate only a concrete missing mechanic with evidence.
+- Audio compatibility is independent of PAC compatibility. Invasion disguises
+  five MP3 and two AAC/M4A BGM as `.ogg`; the current libvorbisfile adapter
+  cannot decode those seven. Codec handling belongs in the Vita/import adapter,
+  not in the original game logic.
 - Arbitrary protected containers and synchronized multiplayer are unsupported.
 
 ## Import routes
@@ -134,8 +141,11 @@ The extractor preserves data bytes, records hashes/aliases and refuses ambiguous
 or conflicting imports. Android .so/DEX are omitted. Unknown extensions can be
 preserved without claiming a runtime decoder. Do not install an encoded
 Community14 dataset over the only base copy just to fix a missing resource;
-its absent bobj00/font00 need base fallback. See [ANDROID14_APK](ANDROID14_APK.md),
-[DATA_LAYOUT](DATA_LAYOUT.md) and [Original+Characters](ORIGINAL_PLUS_CHARACTERS_APK.md).
+its absent bobj00/font00 need base fallback. See
+[APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md),
+[ANDROID14_APK](ANDROID14_APK.md), [SPANISH_ANDROID14_APK](SPANISH_ANDROID14_APK.md),
+[INVASION_BETA3_APK](INVASION_BETA3_APK.md), [DATA_LAYOUT](DATA_LAYOUT.md) and
+[Original+Characters](ORIGINAL_PLUS_CHARACTERS_APK.md).
 
 ## Performance and cache limits
 
