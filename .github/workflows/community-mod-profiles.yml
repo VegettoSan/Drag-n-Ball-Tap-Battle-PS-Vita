@@ -11,10 +11,13 @@ on:
       - 'src/image.hpp'
       - 'src/game_data.cpp'
       - 'src/game_data.hpp'
+      - 'src/engine_resources.cpp'
+      - 'src/engine_resources.hpp'
       - 'tools/community14.py'
       - 'tools/extract_apk_data.py'
       - 'tests/test_community.cpp'
       - 'tests/test_game_data.cpp'
+      - 'tests/test_engine_resources.cpp'
       - 'tests/test_extractor.py'
       - '.github/workflows/community-mod-profiles.yml'
   workflow_dispatch:
@@ -44,3 +47,12 @@ jobs:
           set -euo pipefail
           g++ -std=c++14 -O2 -Wall -Wextra -Isrc             tests/test_game_data.cpp src/game_data.cpp src/pac.cpp src/vfs.cpp             -o /tmp/dbtb-game-data-profiles
           /tmp/dbtb-game-data-profiles
+
+      - name: Validate full engine resource normalisation for every protected profile
+        run: |
+          set -euo pipefail
+          g++ -std=c++14 -O2 -Wall -Wextra -Isrc \
+            tests/test_engine_resources.cpp src/engine_resources.cpp src/game_data.cpp \
+            src/pac.cpp src/vfs.cpp src/image.cpp -lpng -lz \
+            -o /tmp/dbtb-engine-resource-profiles
+          /tmp/dbtb-engine-resource-profiles
