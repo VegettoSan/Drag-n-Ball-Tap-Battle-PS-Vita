@@ -81,8 +81,7 @@ int main() {
 
     const std::string detail = "COMMON.PAC ENTRIES: " + std::to_string(pac.entries().size()) +
                                "  SOURCE: " + (choice.original ? std::string("ORIGINAL") : choice.mod_directory);
-    runtimeLog(std::string("PAC codec: ") +
-               (pac.encoding() == PacEncoding::Community14 ? "community14-a210795b" : "original"));
+    runtimeLog(std::string("PAC codec: ") + communityEncodingName(pac.encoding()));
     runtimeLog("PAC parse OK. Entries: " + std::to_string(pac.entries().size()));
     RgbaImage image;
     bool found_image = false;

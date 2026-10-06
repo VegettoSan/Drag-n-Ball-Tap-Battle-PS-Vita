@@ -10,9 +10,6 @@ uint16_t le16(const uint8_t* p) { return uint16_t(p[0]) | (uint16_t(p[1]) << 8);
 uint32_t le32(const uint8_t* p) {
     return uint32_t(p[0]) | (uint32_t(p[1]) << 8) | (uint32_t(p[2]) << 16) | (uint32_t(p[3]) << 24);
 }
-uint32_t be32(const uint8_t* p) {
-    return (uint32_t(p[0]) << 24) | (uint32_t(p[1]) << 16) | (uint32_t(p[2]) << 8) | p[3];
-}
 void put16(std::vector<uint8_t>& out, size_t p, uint32_t n) { out[p] = n; out[p + 1] = n >> 8; }
 void put32(std::vector<uint8_t>& out, size_t p, uint32_t n) {
     for (size_t i = 0; i < 4; ++i) out[p + i] = n >> (8 * i);
@@ -32,15 +29,11 @@ int filterBit(const std::string& type) {
     if (type == "wav") return 64;
     return 0;
 }
-const char* tag(uint32_t type) {
-    switch (type) {
-        case 0x5d93757fu: return "act";
-        case 0x8f230d0du: return "bin";
-        case 0x86ffa7f3u: return "cnv";
-        case 0x84dff882u: return "dac";
-        case 0x8728c48au: return "rgba";
-        case 0x83f2e69au: return "spr";
-        case 0x425206e2u: return "wav";
+const char* imageMarker(PacEncoding encoding) {
+    switch (encoding) {
+        case PacEncoding::Community14Spanish: return "C14S";
+        case PacEncoding::Community14Invasion: return "C14I";
+        case PacEncoding::Community14: return "C14R";
         default: return nullptr;
     }
 }
@@ -92,9 +85,9 @@ int utf8TextScore(const uint8_t* data, size_t size) {
     return score;
 }
 
-bool normaliseConvertedTable(std::vector<uint8_t>& payload, std::string& error) {
+bool normaliseConvertedTable(std::vector<uint8_t>& payload, PacEncoding encoding, std::string& error) {
     GameDataTable table;
-    if (!table.decode(payload, PacEncoding::Community14)) { error = table.error(); return false; }
+    if (!table.decode(payload, encoding)) { error = table.error(); return false; }
     put16(payload, 0, table.records().size());
     for (size_t j = 0; j < table.records().size(); ++j) {
         const auto& record = table.records()[j];
@@ -105,9 +98,10 @@ bool normaliseConvertedTable(std::vector<uint8_t>& payload, std::string& error) 
     return true;
 }
 
-bool normaliseCommunityWav(std::vector<uint8_t>& payload, uint32_t entry_index, std::string& error) {
+bool normaliseCommunityWav(std::vector<uint8_t>& payload, uint32_t entry_index,
+                           const CommunityPacProfile& profile, std::string& error) {
     if (payload.size() < 5) { error = "Community14 WAV wrapper is truncated"; return false; }
-    const uint32_t decoded_size = le32(payload.data()) ^ 42802u ^ entry_index;
+    const uint32_t decoded_size = le32(payload.data()) ^ profile.wav_size_xor ^ entry_index;
     if (!decoded_size || decoded_size > kBudget || (decoded_size & 1u)) {
         error = "Community14 WAV decoded size is invalid"; return false;
     }
@@ -174,15 +168,11 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
     if (input.size() < 2 || input.size() > kBudget || depth > 8) {
         error = "invalid PAC size or nesting depth"; return false;
     }
+    const PacEncoding encoding = detectCommunityEncoding(input.data(), input.size());
+    const CommunityPacProfile* profile = communityProfile(encoding);
+    const bool encoded = profile != nullptr;
     const uint16_t plain_count = le16(input.data());
-    const uint16_t private_count = plain_count ^ 42802u;
-    bool encoded = false;
-    if ((plain_count & 0x8000u) && private_count && 2ull + private_count * 16ull <= input.size()) {
-        for (size_t i = 0; i < private_count; ++i) {
-            if (tag(be32(input.data() + 10 + i * 16) ^ 0xc569e1efu ^ uint32_t(i))) { encoded = true; break; }
-        }
-    }
-    const size_t count = encoded ? private_count : plain_count;
+    const size_t count = encoded ? (plain_count ^ profile->count_xor) : plain_count;
     if (container_encoding) *container_encoding = encoded ? 1 : 0;
     const size_t base = 2 + count * 16;
     if (base > input.size()) { error = "PAC directory exceeds input"; return false; }
@@ -210,12 +200,12 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
     bool changed = encoded;
     for (size_t i = 0; i < count; ++i) {
         const uint8_t* row = input.data() + 2 + i * 16;
-        const uint32_t offset = le32(row) ^ (encoded ? (996678763u ^ uint32_t(i)) : 0u);
-        const uint32_t size = le32(row + 4) ^ (encoded ? (47633006u ^ uint32_t(i)) : 0u);
+        const uint32_t offset = le32(row) ^ (profile ? (profile->offset_xor ^ uint32_t(i)) : 0u);
+        const uint32_t size = le32(row + 4) ^ (profile ? (profile->size_xor ^ uint32_t(i)) : 0u);
         if (uint64_t(base) + offset + size > input.size()) { error = "PAC entry outside input"; return false; }
         std::string type;
-        if (encoded) {
-            const char* decoded = tag(be32(row + 8) ^ 0xc569e1efu ^ uint32_t(i));
+        if (profile) {
+            const char* decoded = communityType(*profile, communityReadBe32(row + 8) ^ uint32_t(i));
             type = decoded ? decoded : "unk";
         } else {
             size_t length = 0; while (length < 4 && row[8 + length]) ++length;
@@ -224,17 +214,17 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
         if (depth == 0 && (filter & filterBit(type))) {
             changed = true;
             put32(out, 2 + i * 16, out.size() - base);
-            if (encoded && type == "rgba") type = "png";
-            if (encoded) std::memcpy(out.data() + 10 + i * 16, type.data(), type.size());
+            if (profile && type == "rgba") type = "png";
+            if (profile) std::memcpy(out.data() + 10 + i * 16, type.data(), type.size());
             else std::memcpy(out.data() + 10 + i * 16, row + 8, 4);
             put32(out, 14 + i * 16, le32(row + 12));
             continue;
         }
         std::vector<uint8_t> payload(input.begin() + base + offset, input.begin() + base + offset + size);
-        if (encoded && type == "rgba") {
+        if (profile && type == "rgba") {
             if (payload.size() > kBudget - 8) { error = "image bridge exceeds budget"; return false; }
             std::vector<uint8_t> marked(8 + payload.size());
-            std::memcpy(marked.data(), "C14R", 4); put32(marked, 4, i);
+            std::memcpy(marked.data(), imageMarker(encoding), 4); put32(marked, 4, i);
             std::memcpy(marked.data() + 8, payload.data(), payload.size());
             payload.swap(marked); type = "png";
         } else if (type == "spr") {
@@ -242,9 +232,9 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
             if (!normalise(payload, "", nested, error, depth + 1)) return false;
             if (nested != payload) changed = true;
             payload.swap(nested);
-        } else if (encoded && depth == 0 && type == "wav") {
-            if (!normaliseCommunityWav(payload, static_cast<uint32_t>(i), error)) return false;
-        } else if (encoded && depth == 0 && type == "bin") {
+        } else if (profile && depth == 0 && type == "wav") {
+            if (!normaliseCommunityWav(payload, static_cast<uint32_t>(i), *profile, error)) return false;
+        } else if (profile && depth == 0 && type == "bin") {
             // Community14 protects the converted GameData directory inside
             // top-level BIN payloads as well as the outer PAC directory. Nested
             // SPR BIN entries use different schemas and must remain untouched.
@@ -252,14 +242,14 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
             // the ordinary table header, so restore only that verified metadata
             // and preserve all record payload bytes unchanged. Character
             // selection relies on these tables for ChrGameData[*] fields.
-            if (!normaliseConvertedTable(payload, error)) return false;
-        } else if (encoded && type == "dac" && (name == "gamedata.pac" || name == "text00.pac")) {
-            if (!normaliseConvertedTable(payload, error)) return false;
+            if (!normaliseConvertedTable(payload, encoding, error)) return false;
+        } else if (profile && type == "dac" && (name == "gamedata.pac" || name == "text00.pac")) {
+            if (!normaliseConvertedTable(payload, encoding, error)) return false;
         }
         if (payload.size() > kBudget - out.size()) { error = "normalised PAC exceeds budget"; return false; }
         put32(out, 2 + i * 16, out.size() - base);
         put32(out, 6 + i * 16, payload.size());
-        if (encoded) std::memcpy(out.data() + 10 + i * 16, type.data(), type.size());
+        if (profile) std::memcpy(out.data() + 10 + i * 16, type.data(), type.size());
         else std::memcpy(out.data() + 10 + i * 16, row + 8, 4);
         put32(out, 14 + i * 16, le32(row + 12));
         out.insert(out.end(), payload.begin(), payload.end());
@@ -323,10 +313,10 @@ bool readEngineResource(const GameVfs& vfs, const std::string& name,
         PacFile source;
         if (!source.open(path)) { error = source.error(); return false; }
         const auto& entries = source.entries();
-        const bool encoded = source.encoding() == PacEncoding::Community14;
+        const CommunityPacProfile* profile = communityProfile(source.encoding());
         const size_t base = 2 + entries.size() * 16;
         std::vector<uint8_t> packed(base, 0);
-        put16(packed, 0, entries.size() ^ (encoded ? 42802u : 0u));
+        put16(packed, 0, entries.size() ^ (profile ? profile->count_xor : 0u));
         FILE* file = std::fopen(path.c_str(), "rb");
         if (!file) { error = "cannot open filtered resource"; return false; }
         bool ok = true;
@@ -337,9 +327,9 @@ bool readEngineResource(const GameVfs& vfs, const std::string& name,
             const size_t n = skip ? 0 : entry.size;
             if (n > kBudget - packed.size()) { error = "filtered PAC exceeds budget"; ok = false; break; }
             const size_t begin = packed.size();
-            put32(packed, 2 + i * 16, (begin - base) ^ (encoded ? (996678763u ^ uint32_t(i)) : 0u));
-            put32(packed, 6 + i * 16, n ^ (encoded ? (47633006u ^ uint32_t(i)) : 0u));
-            if (encoded) putBe32(packed, 10 + i * 16, entry.encoded_type ^ 0xc569e1efu ^ uint32_t(i));
+            put32(packed, 2 + i * 16, (begin - base) ^ (profile ? (profile->offset_xor ^ uint32_t(i)) : 0u));
+            put32(packed, 6 + i * 16, n ^ (profile ? (profile->size_xor ^ uint32_t(i)) : 0u));
+            if (profile) putBe32(packed, 10 + i * 16, entry.encoded_type ^ uint32_t(i));
             else std::memcpy(packed.data() + 10 + i * 16, entry.type, 4);
             put32(packed, 14 + i * 16, entry.reserved);
             if (!n) continue;

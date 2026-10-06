@@ -307,9 +307,13 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
         return id;
     }
     RgbaImage image; std::string error; bool ok;
-    if (size >= 8 && !std::memcmp(b, "C14R", 4)) {
+    PacEncoding image_encoding = PacEncoding::Auto;
+    if (size >= 8 && !std::memcmp(b, "C14R", 4)) image_encoding = PacEncoding::Community14;
+    else if (size >= 8 && !std::memcmp(b, "C14S", 4)) image_encoding = PacEncoding::Community14Spanish;
+    else if (size >= 8 && !std::memcmp(b, "C14I", 4)) image_encoding = PacEncoding::Community14Invasion;
+    if (image_encoding != PacEncoding::Auto) {
         const uint32_t index = b[4] | (uint32_t(b[5]) << 8) | (uint32_t(b[6]) << 16) | (uint32_t(b[7]) << 24);
-        ok = decodeCommunityImage(std::vector<uint8_t>(b + 8, b + size), index, image, error);
+        ok = decodeCommunityImageProfile(std::vector<uint8_t>(b + 8, b + size), index, image_encoding, image, error);
     } else {
         ok = decodePng(std::vector<uint8_t>(b, b + size), image, error);
         if (ok) {
