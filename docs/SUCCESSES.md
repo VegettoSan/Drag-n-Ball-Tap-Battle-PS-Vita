@@ -444,3 +444,27 @@ runtime codec.
 Synthetic CI run `37540898687` passes. This success does not yet claim that
 all 92 characters or all normalized tracks have been exercised on a physical
 Vita; use `TEST_VITA_00_26.md`.
+
+
+## 2026-10-06 — 00.27 preserves Samu audio bytes and links direct Vita MP3/AAC decoding
+
+**Scope: HOST/BUILD CONFIRMED; hardware pending.**
+
+The conversion requirement from 00.26 has been removed. The audited Samu APK now
+extracts all 384 assets unchanged, including its 12 MP3, 3 AAC/M4A and 2 Vorbis
+BGM files behind the original `bgm_XX.ogg` names.
+
+The Vita audio adapter detects codec from content. Vorbis retains the
+hardware-established libvorbisfile path; MP3 uses `SceAudiodec` MP3, and M4A is
+demultiplexed in memory so its original raw AAC access units can be decoded by
+`SceAudiodec` AAC. No original selection/combat Java method is replaced.
+
+Real-source parsing verifies 44.1 kHz stereo for all compressed Samu BGM and
+valid M4A access-unit tables for `bgm_09/10/11`. Public CI passes Community mod
+profiles run `37544623252` and Vita native smoke run `37544588962`.
+
+A complete 00.27 full-engine VPK was built and validated:
+`aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`.
+It contains the expected original TeaVM symbols, direct compressed-audio symbol,
+approved LiveArea and no APK/game-data files. Physical audible validation is the
+remaining gate. See [evidence](evidence/vita_samu_direct_audio_00.27.json).
