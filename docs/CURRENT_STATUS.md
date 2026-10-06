@@ -1,6 +1,62 @@
-# Current status — 2026-10-06 (America/Bogota), 00.24 hardware / 00.26 candidate
+# Current status — 2026-10-06 (America/Bogota), 00.24 hardware / 00.27 candidate
 
-## 00.26 candidate — Samu 92-character roster + two-digit namespace
+## 00.27 candidate — Samu source audio unchanged + direct MP3/AAC decoding
+
+00.27 supersedes the 00.26 Samu import-time audio conversion approach. The user
+explicitly requires the mod to work with the files **exactly as they are stored
+in the APK**. The hardware-confirmed 00.24 path remains the regression baseline;
+00.27 is a new physical-test candidate, not yet hardware-confirmed.
+
+The audited Samu dataset is still 92 characters (00..91), with the Vita-side
+offline gate covering the complete two-digit namespace 00..99. No original
+selection/combat logic is rewritten. The important change in 00.27 is entirely at
+the Vita audio boundary:
+
+- the 17 files keep their original `bgm_XX.ogg` names and bytes;
+- actual Vorbis (`bgm_12/13`) continues through the proven libvorbisfile path;
+- the 12 MP3-backed `.ogg` files are detected from content and decoded with
+  Vita `SceAudiodec` MP3;
+- the 3 AAC/M4A-backed `.ogg` files are parsed as ISO-BMFF, their original AAC
+  access units are fed to Vita `SceAudiodec` AAC, and no source file is rewritten;
+- decoded PCM enters the same 48 kHz mixer used by the existing Vita backend.
+
+`tools/prepare_samu_mod.py` is now a validation/extraction helper only. It is
+pinned to the audited APK/DEX hashes, verifies all 92 triplets and the known
+12 MP3 + 3 AAC/M4A + 2 Vorbis matrix, but leaves all 384 extracted assets
+byte-for-byte unchanged. Its manifest explicitly records
+`payloads_unchanged: true`.
+
+Public validation passes:
+
+- Community mod profiles run `37544623252` — PASS at `926eb6b0`;
+- Vita engine native smoke run `37544588962` — PASS with
+  `SceAudiodec_stub` linked.
+
+A complete private TeaVM test VPK was generated for physical validation:
+
+- `DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`
+- 2,634,456 bytes
+- VPK SHA-256:
+  `aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`
+- eboot SHA-256:
+  `0abcd48953c61692c19522c4cd68f897cd41e2e74d9ee39bb5d2303bf1f32b2f`
+- ELF SHA-256:
+  `079bdda19f5deb4f579fac8677e428c3f691bd89376eb3f3b7a13bc7d5a0f1e8`
+- runtime marker: `926eb6`
+- APP_VER `00.27`, TITLE_ID `DBTB00001`
+- TeaVM: 467 classes / 4086 methods
+- LiveArea validation: PASS.
+
+Because the interactive runner could not finish the huge generated C units at
+the normal optimization within the command window, this functional candidate
+uses generated TeaVM C at `-O0`; native Vita adapters, including direct audio,
+remain `-O2`. That is a packaging/performance caveat only: use this artifact to
+validate roster/audio behavior, not final FPS performance.
+
+Evidence: [00.27 direct-audio build](evidence/vita_samu_direct_audio_00.27.json).
+Physical test protocol: [TEST_VITA_00_27](TEST_VITA_00_27.md).
+
+## Historical 00.26 candidate — Samu roster + rejected conversion import path
 
 00.26 keeps the hardware-confirmed 00.24 gameplay/audio path and the 00.25
 protected-profile work. **00.24 remains the latest physical-Vita-confirmed
