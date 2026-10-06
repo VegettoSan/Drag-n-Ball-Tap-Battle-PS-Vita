@@ -80,8 +80,8 @@ def choose_layout(archive, layout):
         if raw:
             return 'raw'
         if assets:
-            files = [i.filename for i in asset_infos]
-            return 'community14' if any(community14.canonical_name(n[7:]) != n[7:] for n in files) else 'assets'
+            files = [i.filename[7:] for i in asset_infos]
+            return 'community14' if community14.profile_from_names(files) else 'assets'
         raise ValueError('APK contains no res/raw or assets files')
     return layout
 
@@ -92,6 +92,22 @@ def extract(apk, output, overwrite=False, layout='auto'):
     with zipfile.ZipFile(apk) as archive:
         layout = choose_layout(archive, layout)
         prefix = RAW_PREFIX if layout == 'raw' else 'assets/'
+        profile = None
+        if layout == 'community14':
+            profile = community14.profile_from_names(
+                [i.filename[len(prefix):] for i in archive.infolist()
+                 if i.filename.startswith(prefix) and not i.is_dir()])
+            if profile is None:
+                # Explicit --layout community14 can still identify a canonical-name
+                # protected APK from its first PAC instead of guessing constants.
+                for info in archive.infolist():
+                    if info.filename.startswith(prefix) and info.filename.endswith('.pac') and not info.is_dir():
+                        with archive.open(info) as source:
+                            profile = community14.detect_profile(source.read())
+                        if profile:
+                            break
+            if profile is None:
+                raise ValueError('unsupported or ambiguous Community14 profile')
         entries = []
         names = set()
         total = 0
@@ -106,7 +122,7 @@ def extract(apk, output, overwrite=False, layout='auto'):
             if not safe_name(name):
                 raise ValueError(f'unsafe raw path: {info.filename!r}')
             if layout == 'community14':
-                name = community14.canonical_name(name)
+                name = community14.canonical_name(name, profile)
             key = name.casefold()
             if key.split('/')[0] == MANIFEST or key in names:
                 raise ValueError(f'duplicate or reserved raw path: {name}')
@@ -145,14 +161,14 @@ def extract(apk, output, overwrite=False, layout='auto'):
                 if layout == 'community14' and name.endswith('.pac'):
                     # Refuse a different codec before publishing any output.
                     data = target.read_bytes()
-                    if not community14.looks_encoded(data):
-                        raise ValueError(f'unsupported community PAC codec: {info.filename}')
-                    community14.table(data)
+                    if community14.detect_profile(data) is not profile:
+                        raise ValueError(f'unsupported/mixed community PAC codec: {info.filename}')
+                    community14.table(data, profile)
                 files.append({'name': name, 'size': info.file_size, 'sha256': file_hash(target),
                               'apk_path': info.filename})
             unknown = [f['name'] for f in files if Path(f['name']).suffix.lower() not in KNOWN]
             manifest = {'format': 3, 'source_layout': layout,
-                        'pac_codec': community14.PROFILE if layout == 'community14' else 'original-or-unknown',
+                        'pac_codec': profile.name if profile else 'original-or-unknown',
                         'payloads_unchanged': True,
                         'renamed_files': [{'apk_path': f['apk_path'], 'name': f['name']} for f in files
                                           if f['apk_path'][len(prefix):] != f['name']], 'source_apk': apk.name, 'source_apk_sha256': file_hash(apk),

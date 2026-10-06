@@ -83,6 +83,34 @@ class ExtractorTest(unittest.TestCase):
         return (struct.pack('<HII', 1 ^ c.COUNT_XOR, c.OFFSET_XOR, 3 ^ c.SIZE_XOR)
                 + struct.pack('>I', (0x8f230d0d ^ c.TYPE_XOR)) + bytes(4) + b'abc')
 
+    def encoded_pac_profile(self, profile):
+        raw_bin = next(key for key, kind in profile.type_keys.items() if kind == 'bin')
+        return (struct.pack('<HII', 1 ^ profile.count_xor,
+                            profile.offset_xor, 3 ^ profile.size_xor)
+                + struct.pack('>I', raw_bin) + bytes(4) + b'abc')
+
+    def test_spanish_and_invasion_profiles_auto_detect_and_canonicalize(self):
+        cases = [
+            (community14.SPANISH, '4D7F.pac', 'common.pac',
+             'F29821.pac', 'char21.pac'),
+            (community14.INVASION, '9036.pac', 'common.pac',
+             '095321.pac', 'char21.pac'),
+        ]
+        for profile, common_alias, common_name, char_alias, char_name in cases:
+            with self.subTest(profile=profile.name):
+                apk = self.root / (profile.name + '.apk')
+                output = self.root / ('out-' + profile.name)
+                data = self.encoded_pac_profile(profile)
+                with zipfile.ZipFile(apk, 'w') as archive:
+                    archive.writestr('assets/' + common_alias, data)
+                    archive.writestr('assets/' + char_alias, data)
+                manifest = e.extract(apk, output)
+                self.assertEqual(manifest['source_layout'], 'community14')
+                self.assertEqual(manifest['pac_codec'], profile.name)
+                self.assertEqual((output / common_name).read_bytes(), data)
+                self.assertEqual((output / char_name).read_bytes(), data)
+                self.assertEqual(community14.detect_profile(data), profile)
+
     def test_encoded_import_preserves_payload_and_maps_all_name_families(self):
         names = {'2752.pac': 'common.pac', '1BC2.pac': 'select0.pac',
                  '0B4903.pac': 'back03.pac', 'BDC701.pac': 'bobj01.pac',

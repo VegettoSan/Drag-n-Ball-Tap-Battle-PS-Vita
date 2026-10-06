@@ -102,20 +102,58 @@ public static class DbtbZipChecks {
 }
 '@
 
-function Get-CanonicalName([string]$Name) {
+function Get-CommunityProfiles {
+    $legacy = [pscustomobject]@{
+        Name='community14-a210795b'; Count=[uint32]42802; Offset=[uint32]996678763; Size=[uint32]47633006;
+        Types=@([uint32]2566558864,[uint32]1246424290,[uint32]1133921820,[uint32]1102453101,[uint32]1111565669,[uint32]1184565109,[uint32]2268849933);
+        Fixed=@{ '2752'='common'; '1BC2'='select0'; '9B28'='effect'; '59F2'='demo_00'; '3C90'='demo_08'; 'D0BD'='font00'; '5D73'='card_preview'; 'D67E'='gamedata'; '82B7'='text00' };
+        Numbered=@{ '0B49'=@('back',2); 'BDC7'=@('bobj',2); 'E03B'=@('char',2); '8AC1'=@('chardemo',2); 'FAFD'=@('charf',4); '47DD'=@('card',3) }
+    }
+    $spanish = [pscustomobject]@{
+        Name='community14-es-d594affc'; Count=[uint32]59050; Offset=[uint32]830950436; Size=[uint32]2030988207;
+        Types=@([uint32]16535934,[uint32]3988003272,[uint32]3567234535,[uint32]1591802006,[uint32]63084285,[uint32]1538081446);
+        Fixed=@{ '4D7F'='common'; 'B4EB'='select0'; 'B248'='effect'; 'AC3B'='demo_00'; '8827'='demo_08'; '4919'='card_preview'; 'EC5A'='gamedata'; 'A602'='text00' };
+        Numbered=@{ '0294'=@('back',2); 'D794'=@('bobj',2); 'F298'=@('char',2); 'AE52'=@('chardemo',2); 'EB21'=@('charf',4); '6FA6'=@('card',3) }
+    }
+    $invasion = [pscustomobject]@{
+        Name='community14-invasion-05aa0c5e'; Count=[uint32]33839; Offset=[uint32]1901542107; Size=[uint32]866934865;
+        Types=@([uint32]2931803040,[uint32]2273195935,[uint32]2166741075,[uint32]3888254667,[uint32]1077762279,[uint32]356305721);
+        Fixed=@{ '9036'='common'; '7E8F'='select0'; '1E1C'='effect'; '97E6'='demo_00'; '6E24'='demo_08'; '0708'='card_preview'; '90EA'='gamedata'; 'D37C'='text00' };
+        Numbered=@{ 'F813'=@('back',2); '17A5'=@('bobj',2); '0953'=@('char',2); '364E'=@('chardemo',2); '91F9'=@('charf',4); '1A4B'=@('card',3) }
+    }
+    return @($legacy,$spanish,$invasion)
+}
+
+function Get-CanonicalName([string]$Name, [string]$Codec = '') {
     if ($Name.Contains('/') -or -not $Name.EndsWith('.pac', [StringComparison]::Ordinal)) { return $Name }
+    $profiles = @(Get-CommunityProfiles)
+    if ($Codec) { $profiles = @($profiles | Where-Object { $_.Name -ceq $Codec }) }
     $stem = $Name.Substring(0, $Name.Length - 4)
-    $fixed = @{ '2752'='common'; '1BC2'='select0'; '9B28'='effect'; '59F2'='demo_00'; '3C90'='demo_08';
-                'D0BD'='font00'; '5D73'='card_preview'; 'D67E'='gamedata'; '82B7'='text00' }
-    if ($fixed.ContainsKey($stem)) { return $fixed[$stem] + '.pac' }
-    $numbered = @{ '0B49'=@('back',2); 'BDC7'=@('bobj',2); 'E03B'=@('char',2);
-                  '8AC1'=@('chardemo',2); 'FAFD'=@('charf',4); '47DD'=@('card',3) }
-    foreach ($prefix in $numbered.Keys) {
-        if ($stem -cmatch ('^' + $prefix + '([0-9]{' + $numbered[$prefix][1] + '})$')) {
-            return $numbered[$prefix][0] + $Matches[1] + '.pac'
+    $matches = @()
+    foreach ($profile in $profiles) {
+        if ($profile.Fixed.ContainsKey($stem)) { $matches += $profile.Fixed[$stem] + '.pac'; continue }
+        foreach ($prefix in $profile.Numbered.Keys) {
+            if ($stem -cmatch ('^' + $prefix + '([0-9]{' + $profile.Numbered[$prefix][1] + '})$')) {
+                $matches += $profile.Numbered[$prefix][0] + $Matches[1] + '.pac'
+                break
+            }
         }
     }
+    $unique = @($matches | Select-Object -Unique)
+    if ($unique.Count -eq 1) { return $unique[0] }
     return $Name
+}
+
+function Get-CommunityProfileFromNames($Names) {
+    $best = $null; $bestScore = 0; $tie = $false
+    foreach ($profile in @(Get-CommunityProfiles)) {
+        $score = 0
+        foreach ($name in $Names) { if ((Get-CanonicalName $name $profile.Name) -cne $name) { $score++ } }
+        if ($score -gt $bestScore) { $best=$profile; $bestScore=$score; $tie=$false }
+        elseif ($score -gt 0 -and $score -eq $bestScore) { $tie=$true }
+    }
+    if ($tie -or -not $best) { return $null }
+    return $best.Name
 }
 
 function Assert-SafeName([string]$Name) {
@@ -130,23 +168,23 @@ function Assert-SafeName([string]$Name) {
     }
 }
 
-function Assert-CommunityPac([string]$Path) {
+function Assert-CommunityPac([string]$Path, [string]$Codec) {
+    $profile = @(Get-CommunityProfiles) | Where-Object { $_.Name -ceq $Codec } | Select-Object -First 1
+    if (-not $profile) { throw "Perfil Android14 desconocido: $Codec" }
     $bytes = [IO.File]::ReadAllBytes($Path)
     if ($bytes.Length -lt 18) { throw "PAC Android14 truncado: $Path" }
-    $count = [BitConverter]::ToUInt16($bytes, 0) -bxor 42802
+    $count = [BitConverter]::ToUInt16($bytes, 0) -bxor $profile.Count
     $base = 2L + $count * 16L
     if ($count -eq 0 -or $base -gt $bytes.Length) { throw "Codec Android14 no soportado: $Path" }
-    $known = @([uint32]1569944959, [uint32]2401438989, [uint32]2264901619,
-               [uint32]2229270658, [uint32]2267595914, [uint32]2213734042, [uint32]1112671970)
     $found = $false
     for ($i = 0; $i -lt $count; $i++) {
         $pos = 2 + $i * 16
-        $offset = [BitConverter]::ToUInt32($bytes, $pos) -bxor [uint32]996678763 -bxor [uint32]$i
-        $size = [BitConverter]::ToUInt32($bytes, $pos + 4) -bxor [uint32]47633006 -bxor [uint32]$i
-        [uint32]$tag = ([uint32]$bytes[$pos+8] * 16777216L + [uint32]$bytes[$pos+9] * 65536L +
-                         [uint32]$bytes[$pos+10] * 256L + [uint32]$bytes[$pos+11])
-        $tag = $tag -bxor [uint32]3312050671 -bxor [uint32]$i
-        if ($known -contains $tag) { $found = $true }
+        $offset = [BitConverter]::ToUInt32($bytes, $pos) -bxor $profile.Offset -bxor [uint32]$i
+        $size = [BitConverter]::ToUInt32($bytes, $pos + 4) -bxor $profile.Size -bxor [uint32]$i
+        [uint32]$key = ([uint32]$bytes[$pos+8] * 16777216L + [uint32]$bytes[$pos+9] * 65536L +
+                        [uint32]$bytes[$pos+10] * 256L + [uint32]$bytes[$pos+11])
+        $key = $key -bxor [uint32]$i
+        if ($profile.Types -contains $key) { $found = $true }
         if ($base + [long]$offset -gt $bytes.Length -or [long]$size -gt $bytes.Length - $base - [long]$offset) {
             throw "Entrada PAC Android14 fuera de limites: $Path"
         }
@@ -198,12 +236,11 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         if ($rawBytes -gt 0 -and $assetBytes -gt 0) { throw 'APK ambiguo: contiene datos tanto en res/raw como en assets.' }
         if ($rawBytes -gt 0) { $layout = 'raw'; $prefix = 'res/raw/'; $profile = 'game' }
         elseif ($assetBytes -gt 0) {
-            $layout = 'assets'; $prefix = 'assets/'
-            foreach ($entry in $assets) {
-                $name = $entry.FullName.Substring(7)
-                if ((Get-CanonicalName $name) -cne $name) { $layout = 'community14'; break }
-            }
-            if ($layout -eq 'community14') { $profile = 'mods/Android14' }
+            $layout = 'assets'; $prefix = 'assets/'; $communityCodec = $null
+            $communityCodec = Get-CommunityProfileFromNames @($assets | ForEach-Object { $_.FullName.Substring(7) })
+            if ($communityCodec) { $layout = 'community14' }
+            if ($layout -eq 'community14' -and $communityCodec -eq 'community14-a210795b') { $profile = 'mods/Android14' }
+            elseif ($layout -eq 'community14') { $profile = 'mods/' + (Get-ProfileName ([IO.Path]::GetFileNameWithoutExtension($Apk))) }
             elseif ($apkHash -eq 'd52cbd7ef248d995ad17ba6ec8ec6fa08590a344ac2a9786e5ac839bf7715f28') { $profile = 'mods/Gen' }
             else { $profile = 'mods/' + (Get-ProfileName ([IO.Path]::GetFileNameWithoutExtension($Apk))) }
         }
@@ -224,7 +261,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             $name = $entry.FullName.Substring($prefix.Length)
             if ($entry.Name -eq '') { if ($name) { Assert-SafeName $name.TrimEnd('/') }; continue }
             Assert-SafeName $name
-            if ($layout -eq 'community14') { $name = Get-CanonicalName $name }
+            if ($layout -eq 'community14') { $name = Get-CanonicalName $name $communityCodec }
             $key = $name.ToLowerInvariant()
             if ($names.ContainsKey($key)) { throw "Nombre duplicado tras normalizar: $name" }
             $names.Add($key,$true)
@@ -256,7 +293,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             $source = $item.Entry.Open()
             try { [DbtbZipChecks]::CopyChecked($source, $file, $item.Entry.Length, $item.Record.Crc) }
             finally { $source.Dispose() }
-            if ($layout -eq 'community14' -and $item.Name.EndsWith('.pac',[StringComparison]::Ordinal)) { Assert-CommunityPac $file }
+            if ($layout -eq 'community14' -and $item.Name.EndsWith('.pac',[StringComparison]::Ordinal)) { Assert-CommunityPac $file $communityCodec }
             $files += [pscustomobject]@{ name=$item.Name; size=$item.Entry.Length; sha256=(Get-Sha $file); apk_path=$item.Entry.FullName }
             if ($item.Name -cne $item.Entry.FullName.Substring($prefix.Length)) {
                 $renamed += [pscustomobject]@{ apk_path=$item.Entry.FullName; name=$item.Name }
@@ -265,7 +302,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         }
         Write-Progress -Activity ([IO.Path]::GetFileName($Apk)) -Completed
         $codec = 'original-or-unknown'
-        if ($layout -eq 'community14') { $codec = 'community14-a210795b' }
+        if ($layout -eq 'community14') { $codec = $communityCodec }
         $missing = @()
         for ($i=0; $i -lt 13; $i++) {
             foreach ($pattern in @('char{0:D2}.pac','chardemo{0:D2}.pac','charf00{0:D2}.pac')) {
@@ -352,7 +389,7 @@ try {
         'haz backup, reemplaza los recursos y restaura tu save.bin en la MISMA carpeta.',
         'No compartas partidas entre Original, Gen y Android14.',
         'Cada uso de la herramienta crea un paquete nuevo; no borra ni mezcla salidas anteriores.', '',
-        'Los PAC y OGG se conservan byte por byte. Android14 solo cambia nombres confirmados.',
+        'Los PAC y OGG se conservan byte por byte. Los perfiles Android14 solo cambian nombres confirmados.',
         'Se verifican tamanos, CRC ZIP y hashes SHA-256. dbtb_manifest.json registra el origen.',
         'No se incluyen APK, DEX ni bibliotecas Android. Los mods que cambian codigo Android',
         'pueden requerir cambios del port; extraer datos no incorpora esos cambios de codigo.',

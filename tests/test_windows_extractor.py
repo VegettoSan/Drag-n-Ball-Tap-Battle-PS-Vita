@@ -10,11 +10,14 @@ from pathlib import Path
 import shutil
 import struct
 import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'tools'))
+import community14
 TOOL = ROOT / 'tools/windows/Extraer_APK_para_Vita.ps1'
 BAT = ROOT / 'tools/windows/Extraer_APK_para_Vita.bat'
 PS = os.environ.get('DBTB_POWERSHELL') or shutil.which('powershell') or shutil.which('pwsh')
@@ -25,6 +28,14 @@ def encoded_pac():
     tag = ((-1893528307) & 0xffffffff) ^ ((-982916625) & 0xffffffff)
     return (struct.pack('<HII', 1 ^ 42802, 996678763, len(payload) ^ 47633006)
             + struct.pack('>I', tag) + b'\x00' * 4 + payload)
+
+
+def encoded_pac_profile(profile):
+    payload = b'synthetic-payload'
+    raw_bin = next(key for key, kind in profile.type_keys.items() if kind == 'bin')
+    return (struct.pack('<HII', 1 ^ profile.count_xor, profile.offset_xor,
+                        len(payload) ^ profile.size_xor)
+            + struct.pack('>I', raw_bin) + b'\x00' * 4 + payload)
 
 
 def make_apk(path, files):
@@ -108,6 +119,24 @@ class WindowsExtractorTests(unittest.TestCase):
         self.assertEqual(m['pac_codec'], 'community14-a210795b')
         self.assertEqual(len(m['renamed_files']), 3)
         self.assertEqual((package / 'data/DBTapBattle/mods/Android14/char00.pac').read_bytes(), data)
+
+    def test_spanish_and_invasion_alias_profiles(self):
+        cases = [
+            (community14.SPANISH, 'spanish', '4D7F.pac', 'F29821.pac'),
+            (community14.INVASION, 'invasion', '9036.pac', '095321.pac'),
+        ]
+        for profile, stem, common_alias, char_alias in cases:
+            with self.subTest(profile=profile.name):
+                data = encoded_pac_profile(profile)
+                source = self.apk(stem, [('assets/' + common_alias, data),
+                                         ('assets/' + char_alias, data)])
+                packages = self.run_tool(source)
+                package = packages[-1]
+                m = self.manifest(package, 'mods/' + stem)
+                self.assertEqual(m['source_layout'], 'community14')
+                self.assertEqual(m['pac_codec'], profile.name)
+                self.assertEqual((package / 'data/DBTapBattle/mods' / stem / 'common.pac').read_bytes(), data)
+                self.assertEqual((package / 'data/DBTapBattle/mods' / stem / 'char21.pac').read_bytes(), data)
 
     def test_assets_with_empty_raw_stubs(self):
         source = self.apk('assets', [('res/raw/common.pac', b''), ('assets/common.pac', b'original')])
