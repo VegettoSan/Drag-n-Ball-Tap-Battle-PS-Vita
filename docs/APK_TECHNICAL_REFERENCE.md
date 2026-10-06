@@ -608,6 +608,76 @@ Esto es **evidencia técnica fuerte de que Invasion parte de una base de conteni
 
 ---
 
+## 13.1. Diferencia semántica por PAC protegido
+
+Comparar el SHA-256 exterior de dos PAC protegidos no sirve para decidir si su
+contenido cambió: cada perfil usa aliases/XOR distintos. Para esta auditoría se
+calculó además un digest semántico por PAC usando **solo contratos confirmados**:
+RGBA decodificado/premultiplicado, PCM de WAV interno decodificado y tablas
+GameData con su cabecera normalizada. CNV/DAC crudo, metadata desconocida y
+mecánicas DEX no se reinterpretan.
+
+### Android14 → Español
+
+106 PAC canónicos compartidos:
+
+- 7 conservan el mismo digest semántico: `back00..03`, `card000`,
+  `card_preview`, `demo_08`.
+- 99 cambian al menos un componente normalizado.
+
+Esto confirma que Español no es una simple sustitución de `text00`.
+
+### Español → Invasion Beta 3
+
+106 PAC canónicos compartidos:
+
+- **81 conservan el mismo digest semántico**.
+- **25 cambian**:
+
+```text
+card048.pac
+card049.pac
+card050.pac
+char00.pac
+char01.pac
+char02.pac
+char03.pac
+char04.pac
+char05.pac
+char06.pac
+char07.pac
+char08.pac
+char09.pac
+char10.pac
+char11.pac
+char12.pac
+chardemo08.pac
+charf0008.pac
+charf0011.pac
+demo_00.pac
+demo_08.pac
+effect.pac
+gamedata.pac
+select0.pac
+text00.pac
+```
+
+Los otros 81 incluyen `back00..03`, `bobj01..04`, `card000..047`,
+la mayoría de `chardemo`/ `charf` del rango original y `common.pac`.
+A esto se suman los 33 PAC nuevos exclusivos de Invasion
+(`char13..21`, `chardemo13..21`, `charf0013..0021`,
+`back04..06`, `bobj05..07`).
+
+Este conjunto de 25 es una guía de investigación, no una lista automática de
+código que deba portarse: un PAC puede cambiar por arte/voz/datos sin requerir
+cambio de motor, y una mecánica puede cambiar en DEX aunque su PAC sea idéntico.
+
+### Android14 → Invasion
+
+De los 106 PAC compartidos, solo 6 conservan el digest semántico completo
+(`back00..03`, `card000`, `card_preview`). La comparación mucho más cercana
+Español→Invasion refuerza la relación técnica entre esos dos datasets.
+
 ## 14. Librerías nativas de la familia protegida
 
 Android14, Español e Invasion contienen `libabc.so` en siete ABIs y **cada par correspondiente es byte-idéntico entre los tres APK**:
