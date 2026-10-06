@@ -161,6 +161,15 @@ Máxima imagen decodificada: 512×512.
 
 `text00` contiene cadenas UTF-8 españolas. El texto no debe seleccionarse por codec del contenedor; el runtime debe detectar charset a nivel del contenido que consume.
 
+## Outlier de tabla: card034
+
+`card034.pac` es un caso válido que no debe confundirse con corrupción: su BIN
+convertido contiene **1 registro con dimensión 0×0**, por tanto 0 celdas. El
+payload de tabla normalizado ocupa 10 bytes. Invasion conserva exactamente este
+mismo caso. Un validador genérico no debe imponer `width > 0 && height > 0`
+para todas las tablas convertidas; debe validar bounds y contrato real del
+consumidor.
+
 ## Audio exterior
 
 Los 36 archivos son byte-idénticos al Original/Gen/Android14:
