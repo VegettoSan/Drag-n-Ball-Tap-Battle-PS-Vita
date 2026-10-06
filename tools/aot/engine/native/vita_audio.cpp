@@ -2,6 +2,7 @@
 #include "services.hpp"
 #include "performance.hpp"
 #include "log.hpp"
+#include "compressed_bgm.hpp"
 
 #include <psp2/audioout.h>
 #include <psp2/kernel/threadmgr.h>
@@ -17,6 +18,14 @@
 #include <array>
 #include <string>
 #include <vector>
+
+#ifndef __vita__
+// Host DSP/setup probes do not link the Vita hardware codec implementation.
+DbtbCompressedBgm* dbtb_openCompressedBgm(const std::string&, float, bool, std::string&) { return nullptr; }
+void dbtb_closeCompressedBgm(DbtbCompressedBgm*) {}
+void dbtb_mixCompressedBgm(DbtbCompressedBgm*, int32_t&, int32_t&) {}
+const char* dbtb_compressedBgmCodec(const DbtbCompressedBgm*) { return "host-disabled"; }
+#endif
 
 namespace {
 constexpr int kOutputRate = 48000;
@@ -88,6 +97,7 @@ std::vector<Voice> active_effects;
 std::vector<Voice> active_voices;
 Voice bgm;
 std::shared_ptr<BgmStream> bgm_stream;
+DbtbCompressedBgm* bgm_compressed = nullptr;
 int audio_port = -1;
 SceUID audio_thread = -1;
 std::atomic<bool> audio_running{false};
@@ -504,6 +514,7 @@ void dbtb_mixAudio(short* interleaved, int frames) {
               int32_t left = 0, right = 0;
               mixVoice(bgm, left, right);
               if (bgm_stream) mixBgmStream(*bgm_stream, left, right);
+              if (bgm_compressed) dbtb_mixCompressedBgm(bgm_compressed, left, right);
               for (auto& v : active_effects) mixVoice(v, left, right);
               for (auto& v : active_voices) mixVoice(v, left, right);
               overloaded += left < -32768 || left > 32767;
@@ -638,10 +649,18 @@ int32_t dbtb_bgmPlay(void* raw_name, float gain, int32_t loop) {
     auto clip = decodeOgg(name, &stream_required);
     std::shared_ptr<BgmStream> stream;
     if (!clip && stream_required) stream = openBgmStream(name, gain, loop != 0);
-    if (!clip && !stream) return -1;
+    DbtbCompressedBgm* compressed = nullptr;
+    std::string compressed_error;
+    if (!clip && !stream) compressed = dbtb_openCompressedBgm(name, gain, loop != 0, compressed_error);
+    if (!clip && !stream && !compressed) {
+        if (!compressed_error.empty()) runtimeLog("Compressed BGM rejected: " + name + ": " + compressed_error);
+        return -1;
+    }
     AudioLockGuard lock;
     bgm = clip ? makeVoice(std::move(clip), gain, loop != 0) : Voice{};
     bgm_stream = std::move(stream);
+    dbtb_closeCompressedBgm(bgm_compressed);
+    bgm_compressed = compressed;
     return 0;
 }
 
@@ -649,6 +668,8 @@ void dbtb_bgmStop(void) {
     AudioLockGuard lock;
     bgm = Voice{};
     bgm_stream.reset();
+    dbtb_closeCompressedBgm(bgm_compressed);
+    bgm_compressed = nullptr;
 }
 
 void dbtb_audioDispose(void) {
@@ -665,6 +686,8 @@ void dbtb_audioDispose(void) {
     AudioLockGuard lock;
     bgm = Voice{};
     bgm_stream.reset();
+    dbtb_closeCompressedBgm(bgm_compressed);
+    bgm_compressed = nullptr;
     active_effects.clear();
     active_voices.clear();
     effects.clear();
