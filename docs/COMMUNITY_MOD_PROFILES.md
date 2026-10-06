@@ -93,14 +93,23 @@ behavioral port.
 
 ## Audio compatibility
 
-The hardware-confirmed 00.24 whole-clip Vorbis path is unchanged for BGM whose
-decoded PCM is at most 32 MiB. Invasion `bgm_05.ogg` decodes to about 34.47 MiB,
-so oversized BGM use a bounded sequential Vorbis stream instead of raising the
-00.24 allocation ceiling. Invasion also contains 48 kHz BGM; the existing mixer
-already uses each clip's source rate against the Vita 48 kHz output rate.
+Original, Gen, Android14 and Spanish carry the same 36 real Vorbis files
+byte-for-byte: 17 stereo BGM + 19 mono SE at 44.1 kHz.
 
-The streaming branch is build/host work until exercised on physical hardware.
-Do not use its existence to claim stutter-free Invasion playback before testing.
+Invasion preserves 29/36 of those files, but changes exactly
+`bgm_03/04/05/06/07/14/15`. Despite retaining the `.ogg` filenames, a
+content/magic and media-stream audit shows that `03/06/07/14/15` are MP3 and
+`04/05` are AAC in M4A/ISO-BMFF containers. The current Vita adapter uses
+libvorbisfile, so `ov_fopen()` cannot decode those seven files. In particular,
+the previous observation that `bgm_05` would exceed the whole-PCM limit after
+decoding remains useful for memory planning, but **streaming Vorbis is not a
+solution because the source is AAC, not Vorbis**.
+
+Do not modify the original game engine or rename the BGM it requests. The
+compatible solution belongs at the Vita/import boundary: detect the actual codec
+from content, then decode/stream it with a supported Vita-side codec or convert
+it during import while preserving source provenance. Invasion BGM compatibility
+remains pending until that boundary is implemented and physically tested.
 
 ## Validation rules for future profiles
 
@@ -109,3 +118,10 @@ Record the APK and DEX hashes, alias table, PAC constants, semantic type keys,
 image/table/WAV constants, complete character triplets and audio properties.
 Validate every PAC before adding the profile. Keep private APK bytes outside Git
 and add only synthetic regression fixtures.
+
+## Detailed offline references
+
+- [Full five-APK technical reference](APK_TECHNICAL_REFERENCE.md)
+- [Spanish Android14 audit](SPANISH_ANDROID14_APK.md)
+- [Invasion Beta 3 audit](INVASION_BETA3_APK.md)
+- [Machine-readable audit evidence](evidence/apk_deep_structure_2026-10-06.json)
