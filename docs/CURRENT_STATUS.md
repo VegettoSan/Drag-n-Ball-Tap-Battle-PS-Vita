@@ -28,7 +28,21 @@ uniquely match their intended profile with no decoded directory extent outside a
 file. This establishes format/host compatibility, **not** complete reproduction
 of arbitrary changes made only in a mod's `classes.dex`.
 
-See [community mod profiles](COMMUNITY_MOD_PROFILES.md) and [mod compatibility](MODS.md).
+See [community mod profiles](COMMUNITY_MOD_PROFILES.md), [mod compatibility](MODS.md)
+and the [00.25 physical test protocol](TEST_VITA_00_25.md).
+
+A full private local 00.25 build using the original TeaVM core also completed:
+467 classes / 4086 methods, VPK SHA-256
+`45964bd29c2159fe85c3f69934fbd75108f4ed9c41499e6203d57b96c0443ff4`.
+The VPK carries APP_VER `00.25`, TITLE_ID `DBTB00001`, source marker
+`add915b`, the approved LiveArea and no game-data/APK payloads. This artifact
+is build/host validated and still awaits a physical-Vita run.
+
+Real extracted overlays were exercised through the native C++ paths as well:
+Spanish passes the offline gate with 13 characters and normalizes 106 PAC /
+361 protected images / 198 WAV / 68 BIN; Invasion passes with 22 characters and
+normalizes 139 PAC / 731 protected images / 344 WAV / 80 BIN. Both use the base
+`game/bobj00.pac` fallback because their APKs omit `bobj00`.
 
 ## Current hardware report — 00.24
 
