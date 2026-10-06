@@ -89,9 +89,14 @@ Una regresion aqui tiene prioridad sobre cualquier problema especifico de mod.
   indices equivalentes a `13..21`.
 - Inicia peleas usando al menos un personaje agregado.
 - Abre cartas y vuelve.
-- Comprueba voces/efectos/BGM.
-- Mantente el tiempo suficiente para ejercer BGM largos. `bgm_05.ogg` supera
-  el limite PCM completo de 00.24 y en 00.25 usa streaming Vorbis acotado.
+- Comprueba voces y efectos.
+- **BGM de Invasion tiene una limitacion conocida antes de la prueba:** los
+  archivos `bgm_03/06/07/14/15.ogg` contienen MP3 real y
+  `bgm_04/05.ogg` contienen AAC/M4A, no Vorbis. El adapter 00.25 usa
+  libvorbisfile; por tanto no esperes que esos siete tracks funcionen por el
+  camino actual. Si alguno se selecciona, registra el comportamiento y el log,
+  pero no lo clasifiques como regresion del PAC/personaje.
+- Los otros 10 BGM y los 19 SE permanecen byte-identicos al baseline Vorbis.
 - Vuelve al menu y empieza otra pelea.
 
 ## Que enviar si algo falla
@@ -115,8 +120,16 @@ No reemplazar el estado hardware-confirmado de 00.24 hasta que:
 - Espanol llegue a pelea y vuelva a menu sin crash;
 - Invasion pueda usar personajes agregados y llegar a pelea;
 - no aparezca corrupcion de texto/imagenes/audio;
-- no reaparezca el `bad_alloc` de BGM;
-- el streaming de BGM largo no produzca cierres ni audio claramente roto.
+- no reaparezca el `bad_alloc` en las rutas Vorbis ya soportadas;
+- exista una solucion Vita/import validada para los siete BGM MP3/AAC de
+  Invasion, sin modificar la logica del motor, y su audio pase una prueba fisica.
 
 Cambios propios del `classes.dex` de un mod que no existan en recursos pueden
 requerir una adaptacion de gameplay adicional aunque todos los PAC carguen bien.
+
+## Correccion de auditoria 2026-10-06
+
+La inspeccion profunda de los bytes de los APK reemplaza la suposicion anterior
+sobre `bgm_05.ogg`. Consulta [INVASION_BETA3_APK](INVASION_BETA3_APK.md) y
+[APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md). Esta correccion es de
+documentacion/evidencia; no cambia la identidad del VPK 00.25 descrito arriba.
