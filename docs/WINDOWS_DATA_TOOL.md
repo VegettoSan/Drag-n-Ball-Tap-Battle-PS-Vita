@@ -31,6 +31,13 @@ VPK separately (00.23 or later); this tool does not build or bundle a VPK.
 Gen is recognized by source content hash, not filename. Modified Gen-derived
 APKs receive their own sanitized stem. Multiple colliding profile names receive
 suffixes rather than being merged; further raw APKs use `mods/Original_2`, etc.
+
+`DragonBallZuperSamuGamerYT.apk` is an audited example of this generic
+Gen-derived route: its DEX/manifest are identical to Gen but its APK hash differs
+and it contains 384 canonical assets with 92 character triplets. It should remain
+a separate mod folder rather than being mislabeled as the pinned 13-character Gen
+dataset. The extractor must not truncate the 00..91 files merely because Gen has
+13 characters.
 Dragging the same input path twice imports it once. Non-empty resources on both
 raw and assets sides are rejected as ambiguous. Gen's empty raw stubs are ignored.
 
@@ -80,7 +87,9 @@ appropriate engine support; data extraction does not incorporate Android code.
 ### Media caveat: names are not codecs
 
 The extractor intentionally preserves media bytes. Deep audit found that Invasion
-keeps `.ogg` filenames for seven BGM that are actually MP3 or AAC/M4A. The
+keeps `.ogg` filenames for seven BGM that are actually MP3 or AAC/M4A.
+Zuper/SamuGamerYT broadens this case to **15/17 BGM** under `.ogg` names that
+are MP3/AAC; only bgm_12/13 remain baseline Vorbis. The
 extractor therefore must not validate or rename a media file merely from its
 extension. Runtime/import codec adaptation is a separate concern; see
 [INVASION_BETA3_APK](INVASION_BETA3_APK.md). Preserving source bytes and hashes
@@ -111,3 +120,5 @@ See [machine-readable evidence](evidence/windows_extractor_2026-10-05.json).
 For the complete five-APK structure, profile constants and cross-APK differences,
 see [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md) and
 [evidence/apk_deep_structure_2026-10-06.json](evidence/apk_deep_structure_2026-10-06.json).
+
+Audited large canonical-mod reference: [DRAGONBALL_ZUPER_SAMUGAMERYT_APK](DRAGONBALL_ZUPER_SAMUGAMERYT_APK.md).
