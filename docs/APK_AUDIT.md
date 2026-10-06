@@ -83,3 +83,7 @@ an Original selector label identifies a folder, not a particular APK hash.
 > not exhaustive character/profile/mode or long-session certification. Historical
 > records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## Deep offline reference — 2026-10-06
+
+A newer forensic pass compares all five supplied APKs at ZIP/manifest/DEX/data/PAC/audio/native-library level so future work does not require the binaries. See [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md) and [machine-readable evidence](evidence/apk_deep_structure_2026-10-06.json). Profile-specific details are in [SPANISH_ANDROID14_APK](SPANISH_ANDROID14_APK.md) and [INVASION_BETA3_APK](INVASION_BETA3_APK.md). The deep audit also establishes that seven Invasion BGM files retain `.ogg` names while containing MP3/AAC media; do not generalize the baseline Vorbis contract to that mod.
