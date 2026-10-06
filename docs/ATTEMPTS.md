@@ -1001,3 +1001,39 @@ ELF SHA-256 `db580cd100ac330d88908a9db2cd71f53a50b70c2295700ea0a17fbba68e7e9e`.
 SFO is 00.26/DBTB00001, embedded runtime marker is `d7a4aa2`, and exact
 LiveArea validation passes. This establishes a real full-engine test VPK, not
 the CI native-link probe. Hardware result remains pending.
+
+
+## 2026-10-06 — Attempt 031 — Samu audio directo sin conversión
+
+**Reason for retry:** Attempt 030 proved the format matrix but its import-time
+FFmpeg conversion does not satisfy the compatibility goal: the user requires the
+mod to run from the APK assets exactly as supplied.
+
+**Change:** the Samu helper no longer transcodes anything. It validates/extracts
+384 assets byte-for-byte. The Vita BGM boundary now keeps the existing
+libvorbisfile path for real Vorbis and adds content-detected MP3/AAC handling
+through the system `SceAudiodec` API. AAC files remain inside their original M4A
+container on disk; the adapter demuxes ISO-BMFF sample tables in memory and passes
+the original AAC access units to the Vita decoder. No original TeaVM gameplay
+method is changed.
+
+**Real-APK format validation:** all 12 MP3 sources parse as 44.1 kHz stereo.
+`bgm_09/10/11` contain 228/1578/228 AAC access units; maximum unit sizes are
+1114/1143/1114 bytes. Representative source hashes/sizes remain identical before
+and after extraction.
+
+**Public validation:** Community mod profiles run `37544623252` PASS; Vita
+engine native smoke run `37544588962` PASS after linking
+`SceAudiodec_stub`. The earlier intermediate smoke failure at `de3b11e7` was
+a missing linker dependency, corrected by `5e1808f6`.
+
+**Full candidate:** 467 TeaVM classes / 4086 methods; APP_VER 00.27;
+`DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`, SHA-256
+`aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`.
+LiveArea and full-engine symbols pass. Interactive generated TeaVM C is `-O0`
+and native adapters remain `-O2`, so this is a functional codec/roster test,
+not final performance evidence.
+
+**Result:** BUILD/HOST DIRECT-AUDIO SUPPORT CONFIRMED. Audible MP3/AAC playback,
+looping, transitions and high-roster gameplay remain pending on a physical Vita.
+See `TEST_VITA_00_27.md`.
