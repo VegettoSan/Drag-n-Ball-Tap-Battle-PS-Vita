@@ -55,7 +55,7 @@ normalizes 139 PAC / 731 protected images / 344 WAV / 80 BIN. Both use the base
 
 ## Deep APK audit — 2026-10-06
 
-The five supplied APKs were re-audited directly from their ZIP/DEX/PAC/audio
+The six supplied APKs were re-audited directly from their ZIP/DEX/PAC/audio
 bytes so future work does not need the binaries for already-known structure.
 
 New source-of-truth documentation:
@@ -81,6 +81,23 @@ the directory/type contract rather than fixed per-file layout assumptions.
 
 This audit changed **documentation/evidence only**. It does not alter the runtime
 or the hardware-confirmed 00.24 path.
+
+A sixth mod, `DragonBallZuperSamuGamerYT.apk`, was then audited separately. It is
+a Gen-derived ordinary-PAC build with **92 character triplets (00..91)** while
+keeping Gen's `classes.dex` and `AndroidManifest.xml` byte-identical. Its 384
+assets contain 345 PACs; 345/345 outer PACs are structurally valid, all 92
+`charXX` contain a 43-record BIN, and 237 files are new versus Gen. This is
+strong evidence of a data-driven large roster, but Vita's current installation
+audit only inspects indices 0..30 and no 92-character hardware claim is made.
+
+The same mod also broadens the media issue: **15/17 BGM named `.ogg` are
+actually MP3 or AAC/M4A**, while all 19 SE remain baseline Vorbis. It contains
+two empty-but-valid `charf` PACs (20/21), 18 type-`u` URL metadata entries and
+one malformed type `.pn` whose payload is a valid PNG. These are source
+outliers to document, not a reason to globally weaken the runtime parser.
+
+See [Zuper/SamuGamerYT APK audit](DRAGONBALL_ZUPER_SAMUGAMERYT_APK.md) and
+[machine-readable evidence](evidence/dragonball_zuper_samugameryt_2026-10-06.json).
 
 ## Current hardware report — 00.24
 
