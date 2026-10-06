@@ -1,0 +1,23 @@
+name: Publicar VPK - Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: Notas adicionales (opcional; la version se toma de CMake)
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  release:
+    uses: ./.github/workflows/vita-publish.yml
+    with:
+      prerelease: false
+      notes: ${{ inputs.notes }}
+    secrets:
+      original_apk_url: ${{ secrets.DBTB_ORIGINAL_APK_URL }}

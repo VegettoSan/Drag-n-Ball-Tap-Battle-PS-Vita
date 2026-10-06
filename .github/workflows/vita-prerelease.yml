@@ -1,0 +1,23 @@
+name: Publicar VPK - Prerelease
+
+on:
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: Notas de esta prueba (opcional)
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  prerelease:
+    uses: ./.github/workflows/vita-publish.yml
+    with:
+      prerelease: true
+      notes: ${{ inputs.notes }}
+    secrets:
+      original_apk_url: ${{ secrets.DBTB_ORIGINAL_APK_URL }}

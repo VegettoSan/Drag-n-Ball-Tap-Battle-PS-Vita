@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-05",
+  "timezone": "America/Bogota",
+  "manual_entry_points": [
+    ".github/workflows/vita-release.yml",
+    ".github/workflows/vita-prerelease.yml"
+  ],
+  "shared_builder": ".github/workflows/vita-publish.yml",
+  "automatic_validation": ".github/workflows/validate-vita-publication.yml",
+  "source_input": {
+    "secret": "DBTB_ORIGINAL_APK_URL",
+    "sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+    "private_ephemeral": true,
+    "apk_jar_classes_c_and_private_logs_in_release": false
+  },
+  "checks": {
+    "actionlint": "1.7.7 PASS",
+    "publication_regressions": 10,
+    "livearea_regressions": 3,
+    "music_tracks": 17,
+    "real_staging": {
+      "vpk_sha256": "0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345",
+      "runtime_source_commit": "f5672d4d3fbf6b43cd699d7a5a2b80475e4db9f6",
+      "classes": 467,
+      "methods": 4086,
+      "result": "PASS",
+      "scope": "staging/validation of existing full hardware-confirmed 00.24 ELF/SELF/VPK; no fresh Docker build or GitHub publication implied"
+    },
+    "github_publication_calls": "mocked in unit tests; no live writes"
+  },
+  "publication_policy": {
+    "stable_tag": "v<APP_VER>",
+    "prerelease_tag": "v<APP_VER>-pre.<GITHUB_RUN_ID>",
+    "stable_latest": true,
+    "prerelease_latest": false,
+    "existing_tags_or_releases": "reject without overwriting",
+    "draft_incomplete": "remain unpublished",
+    "selected_source": "exact workflow SHA on main"
+  },
+  "hosted_full_build_and_publication": "not executed; requires private download secret configuration"
+}

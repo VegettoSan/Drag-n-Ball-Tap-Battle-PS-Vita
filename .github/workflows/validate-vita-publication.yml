@@ -1,0 +1,38 @@
+name: Validar workflows de publicacion Vita
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/vita-release.yml'
+      - '.github/workflows/vita-prerelease.yml'
+      - '.github/workflows/vita-publish.yml'
+      - '.github/workflows/validate-vita-publication.yml'
+      - 'tools/releases/**'
+      - 'tests/test_release_workflows.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validar sintaxis y llamadas entre workflows
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 3 \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz \
+            -o "$RUNNER_TEMP/actionlint.tar.gz"
+          tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP"
+          "$RUNNER_TEMP/actionlint" \
+            .github/workflows/vita-release.yml .github/workflows/vita-prerelease.yml \
+            .github/workflows/vita-publish.yml .github/workflows/validate-vita-publication.yml
+      - name: Pruebas de identidad canales y publicacion incompleta
+        run: |
+          python3 -m unittest discover -s tests -p test_release_workflows.py -v
+          python3 -m unittest discover -s tests -p test_livearea.py -v

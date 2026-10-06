@@ -1,0 +1,180 @@
+name: Compilar y publicar motor Vita completo
+
+on:
+  workflow_call:
+    inputs:
+      prerelease:
+        type: boolean
+        required: true
+      notes:
+        type: string
+        required: false
+        default: ''
+    secrets:
+      original_apk_url:
+        required: false
+
+concurrency:
+  group: dbtb-full-engine-publication
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Verificar fuente privada y destino
+        env:
+          ORIGINAL_APK_URL: ${{ secrets.original_apk_url }}
+          PRERELEASE: ${{ inputs.prerelease }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" != refs/heads/main ]]; then
+            echo '::error::Ejecuta este workflow desde main.'
+            exit 1
+          fi
+          if [[ -z "$ORIGINAL_APK_URL" ]]; then
+            echo '::error::Configura DBTB_ORIGINAL_APK_URL con la URL HTTPS privada del APK original. Consulta docs/RELEASE_WORKFLOWS.md.'
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/dbtb-private"
+          python3 tools/releases/publish_vita.py plan --output "$RUNNER_TEMP/dbtb-private/plan.json"
+          python3 tools/releases/publish_vita.py check-target --plan "$RUNNER_TEMP/dbtb-private/plan.json"
+          python3 tools/releases/download_original_apk.py --output "$RUNNER_TEMP/dbtb-private/original.apk"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Instalar herramientas y ejecutar regresiones de memoria/audio
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends maven libvorbis-dev libpng-dev zlib1g-dev
+          python3 -m unittest discover -s tests -p test_livearea.py -v
+          python3 -m unittest discover -s tests -p test_release_workflows.py -v
+          python3 tools/releases/extract_music_fixture.py "$RUNNER_TEMP/dbtb-private/original.apk" "$RUNNER_TEMP/dbtb-private/music"
+          g++ -std=c++14 -O2 -Itests/audio_stubs -Itools/aot/engine/native -Isrc \
+            tests/test_vita_ogg.cpp src/vfs.cpp -lvorbisfile -lvorbis -logg \
+            -o "$RUNNER_TEMP/dbtb-private/ogg-test"
+          "$RUNNER_TEMP/dbtb-private/ogg-test" "$RUNNER_TEMP/dbtb-private/music"
+          g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/audio_stubs \
+            -Itools/aot/engine/native -Isrc tests/test_vita_audio.cpp src/vfs.cpp \
+            -lvorbisfile -lvorbis -logg -o "$RUNNER_TEMP/dbtb-private/audio-test"
+          ASAN_OPTIONS=detect_leaks=0 "$RUNNER_TEMP/dbtb-private/audio-test"
+
+      - name: Obtener dependencias AOT publicas
+        run: |
+          set -euo pipefail
+          task_tools="$RUNNER_TEMP/dbtb-private/tools"
+          mkdir -p "$task_tools/lib"
+          curl --fail --silent --show-error --location --retry 3 \
+            https://github.com/pxb1988/dex2jar/releases/download/v2.4/dex-tools-v2.4.zip \
+            -o "$task_tools/dex2jar.zip"
+          unzip -q "$task_tools/dex2jar.zip" -d "$task_tools"
+          curl --fail --silent --show-error --location --retry 3 \
+            https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.37.0/ecj-3.37.0.jar \
+            -o "$task_tools/ecj-3.37.0.jar"
+          mvn -q -f tools/aot/pom.xml dependency:copy-dependencies \
+            -DincludeScope=runtime -DoutputDirectory="$task_tools/lib"
+
+      - name: Generar core original completo (archivos privados efimeros)
+        run: |
+          set -euo pipefail
+          task_private="$RUNNER_TEMP/dbtb-private"
+          if ! bash "$task_private/tools/dex-tools-v2.4/d2j-dex2jar.sh" \
+            -f "$task_private/original.apk" -o "$task_private/original.jar" \
+            > "$task_private/dex2jar.log" 2>&1; then
+            echo '::error::Fallo dex2jar. No se publica un ejecutable de prueba.'
+            exit 1
+          fi
+          if ! python3 tools/aot/engine/generate.py \
+            --original-jar "$task_private/original.jar" \
+            --ecj "$task_private/tools/ecj-3.37.0.jar" \
+            --lib-directory "$task_private/tools/lib" \
+            --work-directory "$task_private/generated" > "$task_private/generate.log" 2>&1; then
+            echo '::error::Fallo la generacion del motor original; salida privada excluida de los artefactos.'
+            exit 1
+          fi
+
+      - name: Compilar ELF SELF VPK con VitaSDK 2026.08
+        run: |
+          set -euo pipefail
+          docker pull vitasdk/vitasdk:2026.08
+          docker image inspect vitasdk/vitasdk:2026.08 --format '{{index .RepoDigests 0}}' \
+            > "$RUNNER_TEMP/dbtb-private/sdk-image.txt"
+          if ! docker run --rm --user "$(id -u):$(id -g)" \
+            -e VITASDK=/usr/local/vitasdk -e PYTHONDONTWRITEBYTECODE=1 \
+            -e GIT_CONFIG_GLOBAL=/dev/null -e GIT_CONFIG_SYSTEM=/dev/null \
+            -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory \
+            -e "GIT_CONFIG_VALUE_0=$GITHUB_WORKSPACE" \
+            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE:ro" \
+            -v "$RUNNER_TEMP/dbtb-private:$RUNNER_TEMP/dbtb-private" \
+            -w "$GITHUB_WORKSPACE" vitasdk/vitasdk:2026.08 \
+            python3 tools/aot/engine/vita/build.py \
+            --generated-c "$RUNNER_TEMP/dbtb-private/generated/c" \
+            --build-directory "$RUNNER_TEMP/dbtb-private/vita-build" --jobs 2 \
+            > "$RUNNER_TEMP/dbtb-private/build.log" 2>&1; then
+            echo '::error::Fallo la compilacion completa. No se crea ni publica un VPK dummy.'
+            exit 1
+          fi
+
+      - name: Validar identidad y preparar solo archivos publicables
+        env:
+          RELEASE_NOTES: ${{ inputs.notes }}
+        run: |
+          set -euo pipefail
+          python3 tools/releases/publish_vita.py package \
+            --plan "$RUNNER_TEMP/dbtb-private/plan.json" \
+            --private-root "$RUNNER_TEMP/dbtb-private" \
+            --output "$RUNNER_TEMP/dbtb-release"
+
+      - name: Transferir VPK validado y simbolos compilados
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbtb-full-engine-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            ${{ runner.temp }}/dbtb-release/*.vpk
+            ${{ runner.temp }}/dbtb-release/*.symbols.zip
+            ${{ runner.temp }}/dbtb-release/build.json
+            ${{ runner.temp }}/dbtb-release/SHA256SUMS.txt
+            ${{ runner.temp }}/dbtb-release/release-notes.md
+
+      - name: Limpiar APK JAR C y logs privados
+        if: always()
+        run: rm -rf -- "$RUNNER_TEMP/dbtb-private"
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: dbtb-full-engine-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/dbtb-release
+      - name: Crear borrador con archivos completos y publicar
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRERELEASE: ${{ inputs.prerelease }}
+        run: python3 tools/releases/publish_vita.py publish --directory "$RUNNER_TEMP/dbtb-release"

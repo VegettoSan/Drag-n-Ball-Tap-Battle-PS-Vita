@@ -21,6 +21,8 @@ These rules are part of the technical contract of the port.
 
 16. **Keep both battle-memory repairs.** Preserve native-backed streaming `GameData.Init`; never bridge a whole PAC into Java. Decode seekable Ogg using the exact bounded frame count, never incremental PCM vector doubling. Test PCM byte equality, transient allocation peaks and active-owner survival after cache reclamation.
 
+17. **Manual publication keeps private inputs ephemeral.** Explicitly dispatched full-engine release/prerelease workflows may consume the pinned original APK and generate JAR/classes/C in a temporary runner directory outside Git. Never commit/cache/upload those inputs, generated sources or private logs. Publish only validated compiled VPK/ELF/VELF and provenance/checksum manifests. Automatic validation/native-smoke jobs remain public-source-only. Publishing a new binary is not a hardware-test result.
+
 ## Target stack
 
 - PS Vita / VitaSDK

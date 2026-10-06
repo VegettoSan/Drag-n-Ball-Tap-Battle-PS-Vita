@@ -1,5 +1,14 @@
 # Confirmed Successes
 
+## 2026-10-05 — publication guardrails validated
+
+Manual Release/Prerelease definitions pass actionlint. Ten tests verify original
+input/provenance checks, rejection of native-only probes, corrupted/private
+release assets, preservation of existing tags, separate latest/prerelease flags
+and refusal to publish incomplete drafts. Real 00.24 ELF/SELF/VPK staging passes
+with 467 classes/4086 methods, approved LiveArea, original hash and compiled-only
+symbols. These are static/host results, not a completed remote publication.
+
 ## 2026-10-05 — 00.24 confirmed on physical Vita
 
 User report: “Ya funciono, queda super bien”. The exact 00.24 full-build VPK

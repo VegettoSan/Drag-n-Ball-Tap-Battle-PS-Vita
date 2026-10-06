@@ -1,5 +1,18 @@
 # Attempts Log
 
+## 2026-10-05 — manual full-engine release/prerelease automation
+
+User requested separate manual workflows after confirming 00.24 on Vita. Added
+two dispatch callers with a shared pinned original-APK → dex2jar/TeaVM → VitaSDK
+full build, exact version/source/core/LiveArea/CRC validation and draft-first
+publication of compiled binaries only. Stable and prerelease tags/latest flags
+are separate; existing tags/releases are never overwritten. Private inputs and
+generated source/logs remain ephemeral and excluded from uploads. Static
+actionlint, 10 publication regressions, three LiveArea regressions and staging
+against the real hardware-confirmed 00.24 VPK pass. Original-APK music fixtures
+also preserve all 17 PCM tracks under the allocation-ceiling regression. Full
+hosted publication is not claimed: the private download secret is required.
+
 ## 2026-10-05 — 00.24 physical retest confirmed
 
 The user tested the exact delivered 00.24 VPK and reports it works very well.

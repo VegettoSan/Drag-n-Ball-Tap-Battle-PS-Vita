@@ -1,5 +1,11 @@
 # Build and install — full engine 00.24
 
+For manual GitHub compilation/publication, use the separate
+[release/prerelease workflows](RELEASE_WORKFLOWS.md). They consume the pinned
+original APK privately in an ephemeral runner, generate the full core outside
+Git and publish only compiled binaries and manifests. Configure the private
+download secret before the first run. The native smoke remains non-playable.
+
 ## 00.24 hardware-confirmed full build
 
 The Android14 battle-start audio-memory candidate is built locally from a fresh

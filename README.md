@@ -4,6 +4,12 @@ Current hardware checkpoint: **DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk** fix
 native PCM allocation growth at Android14 battle start and preserves the now
 hardware-confirmed LiveArea. Full build, host tests and the user’s Vita retest pass. See [00.24 result](docs/TEST_VITA_00_24.md).
 
+Manual full-game publication: [Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml)
+or [Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml).
+Both compile the original engine and publish validated VPK/symbols/hashes to
+Releases. Configure the private `DBTB_ORIGINAL_APK_URL` secret once; see
+[setup and usage](docs/RELEASE_WORKFLOWS.md).
+
 Latest LiveArea test: **DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk**. It preserves
 the hardware-tested 00.23 engine and fixes the splash palette. The previous
 LiveArea-Final VPK contained a non-playable CI probe and must be discarded.
