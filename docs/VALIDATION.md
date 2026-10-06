@@ -252,7 +252,7 @@ Directly validated: 345/345 ordinary PAC directories, six nested SPR containers,
 all 36 exterior audio files. This is APK/host evidence only; it does not certify
 92-character Vita runtime behavior.
 
-## Samu 00.26 large-roster/import validation
+## Samu 00.27 large-roster/direct-audio validation
 
 Public synthetic checks:
 
@@ -278,10 +278,22 @@ python3 tools/prepare_samu_mod.py \
 ```
 
 The helper must reject a different APK/DEX hash. Success requires 384 extracted
-assets, 92 complete triplets, the documented 12 MP3 + 3 AAC/M4A + 2 Vorbis BGM
-source matrix, exactly 15 conversions, and decode-valid Ogg Vorbis output at
-44.1 kHz stereo. The produced manifest records before/after hashes and sizes;
-do not call the source payloads unchanged after normalization.
+assets, 92 complete triplets and the documented 12 MP3 + 3 AAC/M4A + 2 Vorbis
+matrix **without changing any payload hash or size**. The generated manifest must
+keep `payloads_unchanged: true`.
 
-GitHub synthetic evidence: run `37540898687` PASS. Physical coverage is a
-separate gate; see [TEST_VITA_00_26](TEST_VITA_00_26.md).
+Direct-audio validation additionally checks the real Samu containers:
+
+- all 12 MP3 sources parse as 44.1 kHz stereo Layer III;
+- `bgm_09/10/11` demux into 228 / 1578 / 228 AAC access units;
+- their largest access unit is 1114 / 1143 / 1114 bytes, respectively;
+- the Vita target compiles/links `SceAudiodec` together with the existing
+  libvorbisfile path;
+- the full candidate retains the original TeaVM symbols and approved LiveArea.
+
+GitHub evidence: Community mod profiles run `37544623252` PASS and Vita engine
+native smoke run `37544588962` PASS. Full candidate VPK SHA-256:
+`aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`.
+Audible playback/loop/transition behavior remains a physical gate; see
+[TEST_VITA_00_27](TEST_VITA_00_27.md) and
+[evidence](evidence/vita_samu_direct_audio_00.27.json).
