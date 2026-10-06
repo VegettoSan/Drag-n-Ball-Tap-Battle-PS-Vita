@@ -1,0 +1,78 @@
+#include "installed_data.hpp"
+#include "pac.hpp"
+#include <cstdio>
+
+namespace {
+bool openPac(const GameVfs& vfs, const char* logical, bool& present, std::string& error) {
+    std::string path;
+    if (!vfs.resolve(logical, path)) {
+        present = false;
+        // Missing data is handled by the caller as a gap. Other VFS failures
+        // (for example a non-regular override) are structural errors.
+        if (vfs.error().compare(0, 26, "missing original resource:") != 0) {
+            error = vfs.error();
+            return false;
+        }
+        return true;
+    }
+    present = true;
+    PacFile pac;
+    if (!pac.open(path)) {
+        error = std::string(logical) + ": " + pac.error();
+        return false;
+    }
+    return true;
+}
+}
+
+InstalledDataAudit auditInstalledData(const GameVfs& vfs, int min_characters,
+                                      int max_characters) {
+    InstalledDataAudit result;
+    if (min_characters < 1 || max_characters < min_characters || max_characters > 31) {
+        result.error = "invalid character audit bounds";
+        return result;
+    }
+
+    bool gap = false;
+    for (int i = 0; i < max_characters; ++i) {
+        bool any = false, all = true;
+        for (const char* format : {"char%02d.pac", "chardemo%02d.pac", "charf00%02d.pac"}) {
+            char logical[48];
+            std::snprintf(logical, sizeof(logical), format, i);
+            bool present = false;
+            if (!openPac(vfs, logical, present, result.error)) return result;
+            any |= present;
+            all &= present;
+        }
+        if (!any) {
+            gap = true;
+            continue;
+        }
+        if (gap) {
+            result.error = "character data is not contiguous";
+            return result;
+        }
+        if (!all) {
+            result.error = "character triplet is incomplete";
+            return result;
+        }
+        ++result.complete_characters;
+    }
+
+    if (result.complete_characters < min_characters) {
+        result.error = "not enough complete character triplets";
+        return result;
+    }
+
+    for (const char* logical : {"select0.pac", "effect.pac", "back00.pac", "bobj00.pac"}) {
+        bool present = false;
+        if (!openPac(vfs, logical, present, result.error)) return result;
+        if (!present) {
+            result.error = std::string("missing shared combat resource: ") + logical;
+            return result;
+        }
+    }
+
+    result.ready = true;
+    return result;
+}

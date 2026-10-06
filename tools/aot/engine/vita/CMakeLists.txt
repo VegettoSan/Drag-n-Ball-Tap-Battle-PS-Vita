@@ -42,6 +42,7 @@ add_executable(${PROJECT_NAME}
   "${REPO_ROOT}/tools/aot/engine/vita/heap.c"
   "${REPO_ROOT}/tools/aot/vita/utf16.c"
   "${REPO_ROOT}/src/vfs.cpp"
+  "${REPO_ROOT}/src/installed_data.cpp"
   "${REPO_ROOT}/src/pac.cpp"
   "${REPO_ROOT}/src/image.cpp"
   "${REPO_ROOT}/src/engine_resources.cpp"

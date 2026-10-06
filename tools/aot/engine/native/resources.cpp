@@ -3,6 +3,7 @@
 #include "performance.hpp"
 #include "engine_resources.hpp"
 #include "resource_cache.hpp"
+#include "installed_data.hpp"
 #include "pac.hpp"
 #include "image.hpp"
 #if defined(__vita__)
@@ -210,32 +211,12 @@ void dbtb_closeResourceStream(int32_t handle) {
     resource_streams.erase(stream);
 }
 int32_t dbtb_installedData() {
-    // The original core has room for 31 loaded character GameData slots. Keep
-    // the hardware-confirmed 13-character requirement, but accept audited mods
-    // that append complete contiguous triplets (for example Invasion's 22).
-    // A partial triplet or a later character after a gap is rejected instead of
-    // advertising an installation the original loader cannot consume cleanly.
-    int complete_characters = 0;
-    bool gap = false;
-    for (int i=0;i<31;++i) {
-        bool any = false, all = true;
-        for (const char* format : {"char%02d.pac", "chardemo%02d.pac", "charf00%02d.pac"}) {
-            char name[48]; std::snprintf(name,sizeof(name),format,i);
-            std::string path; PacFile pac;
-            const bool present = dbtb_vfs().resolve(name,path) && pac.open(path);
-            any |= present;
-            all &= present;
-        }
-        if (!any) { gap = true; continue; }
-        if (gap || !all) return 0;
-        ++complete_characters;
+    const InstalledDataAudit audit = auditInstalledData(dbtb_vfs());
+    if (!audit.ready) {
+        std::fprintf(stderr, "Offline data audit: %s\n", audit.error.c_str());
+        return 0;
     }
-    if (complete_characters < 13) return 0;
-    std::fprintf(stderr,"Offline character triplets: %d\n",complete_characters);
-    for (const char* name : {"select0.pac", "effect.pac", "back00.pac", "bobj00.pac"}) {
-        std::string path; PacFile pac;
-        if (!dbtb_vfs().resolve(name,path) || !pac.open(path)) return 0;
-    }
+    std::fprintf(stderr, "Offline character triplets: %d\n", audit.complete_characters);
     return 1;
 }
 int32_t dbtb_textEncoding(int32_t source) { return source>=0 && source<2?text_encodings[source]:-1; }
