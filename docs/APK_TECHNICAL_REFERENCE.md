@@ -2,7 +2,7 @@
 
 Fecha de auditoría profunda: **2026-10-06**.
 
-Este documento existe para que el port de PS Vita pueda seguir desarrollándose **sin necesitar los APK originales/modificados a mano**. No contiene payloads comerciales, clases decompiladas ni assets; registra estructura, hashes, tamaños, contratos binarios, inventarios y diferencias observadas directamente en los cinco APK suministrados al proyecto.
+Este documento existe para que el port de PS Vita pueda seguir desarrollándose **sin necesitar los APK originales/modificados a mano**. No contiene payloads comerciales, clases decompiladas ni assets; registra estructura, hashes, tamaños, contratos binarios, inventarios y diferencias observadas directamente en los seis APK suministrados al proyecto.
 
 La evidencia máquina-a-máquina correspondiente está en `docs/evidence/apk_deep_structure_2026-10-06.json`.
 
@@ -19,7 +19,7 @@ No se debe reconstruir ni modificar lógica original del motor a partir de estos
 
 ---
 
-## 1. Identidad de las cinco fuentes
+## 1. Identidad de las seis fuentes
 
 | ID documental | Archivo suministrado | SHA-256 APK | Bytes | Entradas ZIP |
 |---|---|---|---:|---:|
@@ -28,6 +28,7 @@ No se debe reconstruir ni modificar lógica original del motor a partir de estos
 | `android14` | `tap battle android 14.apk` | `a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4` | 72,391,449 | 171 |
 | `spanish14` | `DBTB en español para Android 14.apk` | `b38cc2c4ae3f20d1b1c6c1419a7b6b62ab57ea8954468874f6c5f8c40b39a098` | 71,953,336 | 171 |
 | `invasion_b3` | `TAP BATTLE INVASION BETA 3.apk` | `caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d` | 124,787,316 | 204 |
+| `zuper_samu` | `DragonBallZuperSamuGamerYT.apk` | `1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d` | 388,634,969 | 461 |
 
 ### DEX
 
@@ -38,8 +39,9 @@ No se debe reconstruir ni modificar lógica original del motor a partir de estos
 | Android14 | `f4e52c47fac7f1f6288c4bf7e4d31bc819ebb6ec2d2a6afac2c0275602995184` | 701,752 | 781 | 169 | 252 | 1,219 | 914 | 39 |
 | Español | `d594affc14328decc5a9d898ab8fed52f83c54e2795cf06973454d9f5385a81c` | 701,744 | 781 | 169 | 252 | 1,219 | 914 | 39 |
 | Invasion B3 | `05aa0c5ec839161e59b93eccd8657925380c56b46f1a4a452c662b1f115212d1` | 701,740 | 781 | 169 | 252 | 1,219 | 914 | 39 |
+| Zuper/SamuGamerYT | `cba71bc13b9d1281aa8180423be9d08db0deb0fc2f5ef6825cc11ba66a17b729` | 700,624 | 3,513 | 310 | 473 | 1,264 | 1,369 | 90 |
 
-Los tres APK protegidos tienen exactamente las mismas dimensiones de tablas DEX. Eso **no** implica mismo comportamiento: Invasion modifica una parte grande de los métodos con código.
+Los tres APK protegidos tienen exactamente las mismas dimensiones de tablas DEX. Eso **no** implica mismo comportamiento: Invasion modifica una parte grande de los métodos con código. Zuper/SamuGamerYT pertenece a otra línea: su DEX es **idéntico byte por byte a Gen** y la expansión se concentra en datos.
 
 ---
 
@@ -122,10 +124,11 @@ Esto es evidencia de la clave usada para firmar, **no** de autoría.
 | Android14 | `assets/` | 144 | 106 | 36 | `loading.png`, `mk.bin` |
 | Español | `assets/` | 144 | 106 | 36 | `loading.png`, `mk.bin` |
 | Invasion B3 | `assets/` | 177 | 139 | 36 | `loading.png`, `mk.bin` |
+| Zuper/SamuGamerYT | `assets/` | 384 | 345 | 36 | `loading.png`, `mk.bin`, `save.bin` |
 
 ### Archivos compartidos no-PAC
 
-`mk.bin` es idéntico en los cinco perfiles:
+`mk.bin` es idéntico en los seis perfiles:
 
 - 392 bytes
 - SHA-256 `2caef8c445b71896f34d560e90be6e04d1911d6bf8010d73c84dd9288b30251f`
@@ -136,7 +139,7 @@ Esto es evidencia de la clave usada para firmar, **no** de autoría.
 - original: 4,233 bytes, SHA-256 `79b374ee879104a5ae040c8f3308fcb225c89a8fd2e8696306ed2258cc1c95bd`.
 - Gen/Android14/Español/Invasion: 3,394 bytes, SHA-256 `92565342ed5d33ce05400d1f4cd9ada2159bd83f2f87e55a12f897c8a70c817b`.
 
-Solo Gen incluye `save.bin` dentro del dataset:
+Gen y Zuper/SamuGamerYT incluyen el mismo `save.bin` dentro del dataset:
 
 - 12,906 bytes
 - SHA-256 `8b65f591ca2ba4724af55bfab4adf9e8a4260c7cd517f6bd93aa4c69a1239714`.
@@ -753,3 +756,23 @@ Nunca declarar “compatible” un APK nuevo por nombre, tamaño o apariencia. R
 - resultados host/build/hardware por separado.
 
 La documentación debe poder permitir repetir el trabajo **sin el APK**, pero nunca sustituir evidencia de hardware cuando se cambia el runtime Vita.
+
+## 18. Zuper/SamuGamerYT — expansión Gen de 92 personajes
+
+El sexto APK auditado es [DragonBallZuperSamuGamerYT](DRAGONBALL_ZUPER_SAMUGAMERYT_APK.md). A diferencia de Invasion, no introduce un DEX nuevo respecto a Gen:
+
+- `classes.dex` idéntico a Gen;
+- `AndroidManifest.xml` idéntico a Gen;
+- mismo certificado;
+- 57 `res/raw/` de cero bytes + datos reales en `assets/`;
+- PAC ordinarios con nombres canónicos;
+- 92 tripletes nominales `char/chardemo/charf` (00..91);
+- 51 cartas y 4 backgrounds, igual cantidad que Gen;
+- 117/147 assets Gen byte-idénticos, 30 modificados y 237 PAC nuevos;
+- 345/345 PAC exteriores válidos y 92/92 `charXX` con BIN de 43 registros;
+- anomalías observadas: type `u` con URLs de metadata en char35/54, type `.pn` con payload PNG real en char42, y `charf20/21` PAC vacíos count=0;
+- 15/17 BGM no son Vorbis pese a terminar en `.ogg` (MP3/AAC).
+
+Este APK es evidencia fuerte de una expansión de roster **data-driven** sobre Gen, pero no certifica que Vita pueda usar 92 personajes sin cambios. El gate actual solo audita índices 0..30 y cualquier ampliación debe basarse en evidencia del core, pruebas de regresión y hardware. No modificar el motor por inferencia.
+
+Evidencia machine-readable: [dragonball_zuper_samugameryt_2026-10-06.json](evidence/dragonball_zuper_samugameryt_2026-10-06.json).
