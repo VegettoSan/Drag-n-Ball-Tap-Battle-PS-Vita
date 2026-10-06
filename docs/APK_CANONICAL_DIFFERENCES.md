@@ -2,7 +2,7 @@
 
 Fecha: 2026-10-06.
 
-Esta página compara los cinco APK auditados **después de resolver su ubicación y
+Esta página compara los seis APK auditados **después de resolver su ubicación y
 alias al nombre lógico que solicita el juego**. Es complementaria a
 [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md): aquí se responde
 exactamente qué archivos existen, faltan o cambian entre perfiles sin confundir
@@ -27,6 +27,8 @@ de su contenido decodificado sea idéntico.
 | Android14 → Español | 144 | 38 | 106 | 0 | 0 |
 | Android14 → Invasion | 144 | 31 | 113 | 0 | 33 |
 | Español → Invasion | 144 | 31 | 113 | 0 | 33 |
+| Original → Zuper/SamuGamerYT | 57 | 23 | 34 | 0 | 327 |
+| Gen → Zuper/SamuGamerYT | 147 | 117 | 30 | 0 | 237 |
 
 ## Original → Gen
 
@@ -264,3 +266,59 @@ solicita el motor para "arreglar" el mod.
 
 Los conteos de esta página se regeneraron directamente de los cinco APK
 suministrados el 2026-10-06; no provienen de nombres inferidos manualmente.
+
+## Gen → Zuper/SamuGamerYT
+
+Esta es la comparación más importante para el nuevo mod porque ambos comparten
+**exactamente el mismo `classes.dex` y AndroidManifest.xml**.
+
+- 147 nombres de assets Gen están presentes también en Zuper/SamuGamerYT.
+- **117 son byte-idénticos**.
+- **30 cambian**.
+- Gen no tiene archivos exclusivos frente al mod.
+- Zuper/SamuGamerYT añade **237 PAC**, exactamente 79 tripletes nuevos de personaje.
+
+Los 30 cambios comunes son 15 BGM y 15 PAC:
+
+```text
+bgm_00 bgm_01 bgm_02 bgm_03 bgm_04 bgm_05 bgm_06 bgm_07
+bgm_08 bgm_09 bgm_10 bgm_11 bgm_14 bgm_15 bgm_16
+
+bobj04
+char00 char10 char11
+chardemo00 chardemo10
+charf0000 charf0010
+common demo_00 demo_08 effect gamedata select0 text00
+```
+
+Los 237 exclusivos son:
+
+- `char13..91` = 79;
+- `chardemo13..91` = 79;
+- `charf0013..0091` = 79.
+
+No añade cartas, backgrounds ni bobj nuevos. Las 51 cartas, `back00..03` y la
+cantidad `bobj00..04` permanecen en el mismo rango lógico de Gen.
+
+Dos PAC comunes cambian además de layout exterior:
+
+- `char10`: 34 → 38 entries, añadiendo cuatro PNG;
+- `charf0010`: 5 entries `PNG×3,CNV,DAC` → 2 entries `CNV,DAC`.
+
+El resto de los PAC comunes modificados conserva la secuencia de tipos exterior.
+
+La expansión a 92 personajes con DEX Gen intacto es evidencia de que este mod
+pretende ser data-driven. No equivale a hardware confirmation del port Vita.
+Consulta [la auditoría específica](DRAGONBALL_ZUPER_SAMUGAMERYT_APK.md).
+
+## Original → Zuper/SamuGamerYT
+
+Los 57 nombres del APK original suministrado aparecen en el mod.
+
+- 23 son byte-idénticos: `bgm_12`, `bgm_13`, los 19 `se_00..18`,
+  `font00.pac` y `mk.bin`.
+- 34 cambian.
+- el mod añade 327 nombres lógicos sobre esos 57.
+
+Esto separa claramente el rol del mod: conserva partes del baseline, adopta la
+arquitectura offline de Gen y expande sobre ella.
