@@ -235,3 +235,19 @@ without possession of the APKs. It is **not** a substitute for the APK when
 discovering previously undocumented commercial behavior, nor for a physical Vita
 test when changing runtime behavior.
 
+
+## 92-character Gen-derived mod evidence — 2026-10-06
+
+The supplied `DragonBallZuperSamuGamerYT.apk` was audited directly after the
+five-APK forensic pass. Its `classes.dex` and `AndroidManifest.xml` are
+byte-identical to Gen, while its canonical assets expand the character triplets
+from 13 to 92. Evidence is stored without APK payload bytes in:
+
+- `docs/DRAGONBALL_ZUPER_SAMUGAMERYT_APK.md`
+- `docs/evidence/dragonball_zuper_samugameryt_2026-10-06.json`
+
+Directly validated: 345/345 ordinary PAC directories, six nested SPR containers,
+92/92 char BINs with 43 records, 51 cards, exact Gen asset comparison, nonstandard
+`u`/ `.pn` entry tags, charf placeholder patterns, and content-based probing of
+all 36 exterior audio files. This is APK/host evidence only; it does not certify
+92-character Vita runtime behavior.
