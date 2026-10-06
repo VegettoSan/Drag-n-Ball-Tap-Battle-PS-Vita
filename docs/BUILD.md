@@ -6,7 +6,39 @@ original APK privately in an ephemeral runner, generate the full core outside
 Git and publish only compiled binaries and manifests. Configure the private
 download secret before the first run. The native smoke remains non-playable.
 
-## 00.26 Samu interactive physical-test build
+## 00.27 Samu direct-audio physical-test build
+
+00.27 supersedes the 00.26 import-time conversion candidate. Samu data is now
+installed byte-for-byte from the audited APK; the Vita runtime selects Vorbis,
+MP3 or AAC/M4A by content. Vorbis keeps libvorbisfile, while MP3/AAC use the
+system `SceAudiodec` decoder. No BGM file is renamed, transcoded or repacked.
+
+Exact physical-test artifact:
+
+- `DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`
+- VPK SHA-256
+  `aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`
+- eboot SHA-256
+  `0abcd48953c61692c19522c4cd68f897cd41e2e74d9ee39bb5d2303bf1f32b2f`
+- ELF SHA-256
+  `079bdda19f5deb4f579fac8677e428c3f691bd89376eb3f3b7a13bc7d5a0f1e8`
+- runtime marker `926eb6`, APP_VER `00.27`, TITLE_ID `DBTB00001`
+- generation 467 classes / 4086 methods
+- exact LiveArea validation PASS
+- required full-engine symbols and `sceAudiodecDecode` present.
+
+This interactive functional package compiles the generated TeaVM C at `-O0`
+because the normal giant `-O1` translation units exceed the command window in
+the current runner. Native adapters remain `-O2`. This is not a gameplay-source
+change and is acceptable for validating direct codec behavior, but do not use
+00.27 for final performance/FPS claims. A release-quality build should return
+to the normal `all.c -O1` recipe after device validation.
+
+Public native smoke run `37544588962` and Community mod profile run
+`37544623252` both pass. See [TEST_VITA_00_27](TEST_VITA_00_27.md) and
+[evidence](evidence/vita_samu_direct_audio_00.27.json).
+
+## Historical 00.26 Samu conversion physical-test build
 
 The 00.26 Samu candidate has a complete full-engine physical-test package built
 from the same pinned original APK and exported private toolchain used by the
