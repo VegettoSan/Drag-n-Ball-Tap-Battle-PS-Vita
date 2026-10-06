@@ -35,23 +35,25 @@ Public validation passes:
 A complete private TeaVM test VPK was generated for physical validation:
 
 - `DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`
-- 2,634,456 bytes
+- 2,647,595 bytes
 - VPK SHA-256:
-  `aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`
+  `bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030`
 - eboot SHA-256:
-  `0abcd48953c61692c19522c4cd68f897cd41e2e74d9ee39bb5d2303bf1f32b2f`
+  `447324fcd3c0c6400f7a3c3cea92bc3a105f64c240831e376f289a535341a5a3`
 - ELF SHA-256:
-  `079bdda19f5deb4f579fac8677e428c3f691bd89376eb3f3b7a13bc7d5a0f1e8`
+  `ecb70e9686b70a330dad4b85e1d0448791ff67a2d1b238c24d1610d1c46704f3`
 - runtime marker: `926eb6`
 - APP_VER `00.27`, TITLE_ID `DBTB00001`
 - TeaVM: 467 classes / 4086 methods
 - LiveArea validation: PASS.
 
-Because the interactive runner could not finish the huge generated C units at
-the normal optimization within the command window, this functional candidate
-uses generated TeaVM C at `-O0`; native Vita adapters, including direct audio,
-remain `-O2`. That is a packaging/performance caveat only: use this artifact to
-validate roster/audio behavior, not final FPS performance.
+Because the interactive runner could not finish the monolithic generated C unit
+at normal optimization within the command window, the private test build splits
+the TeaVM remainder into ten compilation units at `-O1`, keeps the large
+`TCBManajer.c` at `-O0` (the already documented interactive-build technique),
+and leaves native Vita adapters including direct audio at `-O2`. Use this
+artifact for functional roster/audio validation; final release performance still
+requires the standard reproducible build recipe.
 
 Evidence: [00.27 direct-audio build](evidence/vita_samu_direct_audio_00.27.json).
 Physical test protocol: [TEST_VITA_00_27](TEST_VITA_00_27.md).
