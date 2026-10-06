@@ -50,6 +50,12 @@ int main() {
     auto audit = auditInstalledData(vfs);
     assert(audit.ready && audit.complete_characters == 13 && audit.error.empty());
 
+    // Android14/Spanish/Invasion are valid standalone datasets even though
+    // their bobj family starts at 01. The Vita gate must not require bobj00.
+    assert(unlink((game + "/bobj00.pac").c_str()) == 0);
+    audit = auditInstalledData(vfs);
+    assert(audit.ready && audit.complete_characters == 13 && audit.error.empty());
+
     // A mod may extend the canonical sequence while using the original dataset
     // as fallback for 00..12 and shared assets.
     for (int i = 13; i < 22; ++i) writeTriplet(mods, i);
@@ -98,6 +104,6 @@ int main() {
     audit = auditInstalledData(vfs, 13, 101);
     assert(!audit.ready && audit.error == "invalid character audit bounds");
 
-    std::puts("INSTALLED DATA PASS: 13 baseline, 22 Invasion, 92 Samu, 00..99 namespace, partial/gap/corrupt rejection");
+    std::puts("INSTALLED DATA PASS: protected bobj00 omission, 13 baseline, 22 Invasion, 92 Samu, 00..99 namespace, partial/gap/corrupt rejection");
     return 0;
 }
