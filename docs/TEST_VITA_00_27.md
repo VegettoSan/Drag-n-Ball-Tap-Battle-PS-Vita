@@ -91,9 +91,12 @@ Copiar a:
 ux0:data/DBTapBattle/mods/Invasion/
 ```
 
-**No borrar `ux0:data/DBTapBattle/game/`.** Invasion no incluye
-`bobj00.pac` ni `font00.pac`, por lo que esos recursos deben entrar por el
-fallback normal del VFS.
+Mantener `ux0:data/DBTapBattle/game/` durante esta matriz porque el port
+usa un modelo overlay + fallback para regresión segura. Sin embargo, Invasion
+**no está incompleto** por omitir `bobj00.pac` y `font00.pac`: los APK
+protegidos auditados son autónomos con ese inventario. El auditor Vita ya no
+exige `bobj00.pac`; si el core original lo solicita en alguna ruta concreta,
+el VFS puede resolver una copia base como compatibilidad adicional.
 
 ## Matriz de audio esperada
 
