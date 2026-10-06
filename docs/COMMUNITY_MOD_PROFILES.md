@@ -67,9 +67,13 @@ The runtime therefore continues to request canonical names.
 | charfXXXX | `FAFDXXXX` | `EB21XXXX` | `91F9XXXX` |
 | cardXXX | `47DDXXX` | `6FA6XXX` | `1A4BXXX` |
 
-The supplied Spanish and Invasion APKs do not bundle `font00.pac`; Invasion
-also starts its bobj family at `bobj01.pac`. The Vita VFS keeps the original
-base installation as fallback for missing shared files.
+The supplied Android14, Spanish and Invasion protected APKs do not bundle
+`font00.pac`, and their protected bobj families begin at index 01 rather than
+00. These APKs run independently on Android, so the omissions are valid profile
+behavior, not evidence of an incomplete package. The Vita VFS may still fall
+back to the original base when the unchanged original core asks for a resource
+the selected mod does not provide, but the installation audit must not require
+`bobj00.pac` merely because the original dataset contains it.
 
 ## Invasion extended-data audit
 
