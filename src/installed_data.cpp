@@ -28,7 +28,7 @@ bool openPac(const GameVfs& vfs, const char* logical, bool& present, std::string
 InstalledDataAudit auditInstalledData(const GameVfs& vfs, int min_characters,
                                       int max_characters) {
     InstalledDataAudit result;
-    if (min_characters < 1 || max_characters < min_characters || max_characters > 31) {
+    if (min_characters < 1 || max_characters < min_characters || max_characters > 100) {
         result.error = "invalid character audit bounds";
         return result;
     }

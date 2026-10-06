@@ -84,6 +84,20 @@ int main() {
     audit = auditInstalledData(vfs);
     assert(audit.ready && audit.complete_characters == 22);
 
-    std::puts("INSTALLED DATA PASS: 13 baseline, 22 overlay, partial/gap/corrupt rejection");
+    // Gen-derived community datasets can extend the same two-digit resource
+    // namespace far beyond Invasion. SamuGamerYT is observed through index 91.
+    for (int i = 22; i < 92; ++i) writeTriplet(mods, i);
+    audit = auditInstalledData(vfs);
+    assert(audit.ready && audit.complete_characters == 92 && audit.error.empty());
+
+    // The Vita-side gate accepts the complete two-digit namespace 00..99.
+    // This validates capacity only; it does not invent data beyond a supplied mod.
+    for (int i = 92; i < 100; ++i) writeTriplet(mods, i);
+    audit = auditInstalledData(vfs);
+    assert(audit.ready && audit.complete_characters == 100 && audit.error.empty());
+    audit = auditInstalledData(vfs, 13, 101);
+    assert(!audit.ready && audit.error == "invalid character audit bounds");
+
+    std::puts("INSTALLED DATA PASS: 13 baseline, 22 Invasion, 92 Samu, 00..99 namespace, partial/gap/corrupt rejection");
     return 0;
 }
