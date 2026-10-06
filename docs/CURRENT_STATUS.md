@@ -33,9 +33,11 @@ and the [00.25 physical test protocol](TEST_VITA_00_25.md).
 
 A full private local 00.25 build using the original TeaVM core also completed:
 467 classes / 4086 methods, VPK SHA-256
-`45964bd29c2159fe85c3f69934fbd75108f4ed9c41499e6203d57b96c0443ff4`.
-The VPK carries APP_VER `00.25`, TITLE_ID `DBTB00001`, source marker
-`add915b`, the approved LiveArea and no game-data/APK payloads. This artifact
+`39265deebeec6ff7954dc85cd2fd18300fa6de8cd546176e3413b9d2823c3173`.
+The final clean VPK carries APP_VER `00.25`, TITLE_ID `DBTB00001`, source marker
+`d186dc65`, the approved LiveArea and no game-data/APK payloads. Its eboot
+SHA-256 is `a1c35f53070a600edabb310c53f95dea269b637206461e5a7e8370839fc5f380`
+and full ELF SHA-256 is `c624a1f121a58da10d3d6bc481416d78a1799352c00b6c4d8c21a777ed93c591`. This artifact
 is build/host validated and still awaits a physical-Vita run.
 
 Real extracted overlays were exercised through the native C++ paths as well:
