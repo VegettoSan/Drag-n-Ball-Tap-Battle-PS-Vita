@@ -13,9 +13,12 @@ static void be32(std::vector<uint8_t>& v, uint32_t x) { for(int i=3;i>=0;--i) v.
 static void write(const std::string& path, const std::vector<uint8_t>& v) {
     std::ofstream f(path, std::ios::binary); f.write(reinterpret_cast<const char*>(v.data()), v.size());
 }
-static std::vector<uint8_t> imagePayload(const std::vector<uint8_t>& rgba, uint16_t width, uint16_t height, size_t index) {
+static std::vector<uint8_t> imagePayload(const std::vector<uint8_t>& rgba, uint16_t width, uint16_t height,
+                                         size_t index, PacEncoding encoding=PacEncoding::Community14) {
+    const CommunityPacProfile* profile=communityProfile(encoding);
+    if(!profile) return {};
     std::vector<uint8_t> v;
-    width ^= 62285u ^ index; height ^= 37881u ^ index;
+    width ^= profile->image_width_xor ^ index; height ^= profile->image_height_xor ^ index;
     v.push_back(width>>8); v.push_back(width); v.push_back(height>>8); v.push_back(height);
     std::vector<uint8_t> compressed(128);
     z_stream s{};
@@ -63,6 +66,33 @@ static bool negativeAndPixelTests(const std::string& path) {
     CHECK(!file.open(path) && !file.isOpen() && file.entries().empty());
     return true;
 }
+static bool profileTests(const std::string& path) {
+    const std::vector<uint8_t> expected{128,0,0,128,0,0,255,255};
+    for(PacEncoding encoding : {PacEncoding::Community14, PacEncoding::Community14Spanish,
+                                PacEncoding::Community14Invasion}) {
+        const CommunityPacProfile* profile=communityProfile(encoding);
+        CHECK(profile);
+        auto payload=imagePayload(expected,2,1,1,encoding);
+        CHECK(!payload.empty());
+        std::vector<uint8_t> pac;
+        le16(pac,uint16_t(1u^profile->count_xor));
+        le32(pac,profile->offset_xor);
+        le32(pac,uint32_t(payload.size())^profile->size_xor);
+        be32(pac,profile->type_rgba);
+        le32(pac,0);
+        pac.insert(pac.end(),payload.begin(),payload.end());
+        write(path,pac);
+        PacFile file;
+        CHECK(file.open(path) && file.encoding()==encoding);
+        CHECK(file.entries().size()==1 && file.typeString(0)=="rgba");
+        std::vector<uint8_t> out;
+        CHECK(file.readEntry(0,out) && out==payload);
+        RgbaImage img; std::string error;
+        CHECK(decodeCommunityImageProfile(out,0,encoding,img,error));
+        CHECK(img.width==2 && img.height==1 && img.premultiplied_alpha && img.pixels==expected);
+    }
+    return true;
+}
 static bool corpus(const std::string& path, const std::string& scratch, size_t& textures, size_t& packs, size_t depth=0) {
     CHECK(depth <= 2);
     PacFile file;
@@ -72,7 +102,7 @@ static bool corpus(const std::string& path, const std::string& scratch, size_t& 
         const std::string type=file.typeString(i);
         if (type=="rgba" || type=="png") {
             RgbaImage img; std::string error;
-            CHECK(type=="rgba" ? decodeCommunityImage(payload,i,img,error) : decodePng(payload,img,error));
+            CHECK(type=="rgba" ? decodeCommunityImageProfile(payload,i,file.encoding(),img,error) : decodePng(payload,img,error));
             CHECK(img.pixels.size()==static_cast<size_t>(img.width)*img.height*4);
             CHECK(img.premultiplied_alpha == (type=="rgba")); ++textures;
         }
@@ -90,7 +120,7 @@ int main(int argc,char** argv) {
     const int fd=mkstemp(temp); if(fd<0) return 2; close(fd);
     const std::string path(temp);
     // XOR constant independently read from the DEX: -982916625.
-    if(!negativeAndPixelTests(path)) { unlink(temp); return 1; }
+    if(!negativeAndPixelTests(path) || !profileTests(path)) { unlink(temp); return 1; }
     size_t textures=0,packs=0;
     for(int i=1;i<argc;++i) if(!corpus(argv[i],path+"-nested-",textures,packs)) { unlink(temp); return 1; }
     unlink(temp);
