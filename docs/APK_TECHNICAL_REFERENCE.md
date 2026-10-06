@@ -726,6 +726,12 @@ Conclusión válida: comparten el mismo helper nativo. Conclusión **no** válid
 - Español: `docs/SPANISH_ANDROID14_APK.md`
 - Invasion: `docs/INVASION_BETA3_APK.md`
 - evidencia exacta sin payloads: `docs/evidence/apk_deep_structure_2026-10-06.json`
+- matriz lógica exhaustiva archivo por archivo:
+  [parte 1](evidence/APK_LOGICAL_FILE_MATRIX_2026-10-06_PART1.md),
+  [parte 2](evidence/APK_LOGICAL_FILE_MATRIX_2026-10-06_PART2.md),
+  [parte 3](evidence/APK_LOGICAL_FILE_MATRIX_2026-10-06_PART3.md)
+- matriz exacta de los 36 audios exteriores:
+  [APK_AUDIO_MATRIX_2026-10-06](evidence/APK_AUDIO_MATRIX_2026-10-06.md)
 
 ## 17. Regla para futuros APK/mods
 
