@@ -89,6 +89,9 @@ probar ese nuevo binario en consola. Sigue [la prueba de Vita](TEST_VITA_00_24.m
 y guarda el VPK, `build.json`, el runtime.log y el ZIP de simbolos correspondiente.
 
 La sintaxis, pruebas unitarias y staging con el VPK real se verificaron localmente.
+La [validacion en GitHub](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37395626518)
+tambien paso: actionlint y las 13 pruebas de publicacion/LiveArea, sobre el commit
+`b17bb49ef1ab257ea74f68353a907b4f538c1c89`.
 La primera compilacion/publicacion completa en Actions necesita que el secreto
 de descarga este configurado; no se ha simulado una publicacion real.
 

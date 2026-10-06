@@ -7,7 +7,10 @@ input/provenance checks, rejection of native-only probes, corrupted/private
 release assets, preservation of existing tags, separate latest/prerelease flags
 and refusal to publish incomplete drafts. Real 00.24 ELF/SELF/VPK staging passes
 with 467 classes/4086 methods, approved LiveArea, original hash and compiled-only
-symbols. These are static/host results, not a completed remote publication.
+symbols. GitHub-hosted [validation run 37395626518](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37395626518)
+also passed actionlint and all 13 publication/LiveArea tests on commit
+`b17bb49ef1ab257ea74f68353a907b4f538c1c89`. These are static/host results,
+not a completed full remote build or publication.
 
 ## 2026-10-05 — 00.24 confirmed on physical Vita
 

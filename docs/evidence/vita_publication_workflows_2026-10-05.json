@@ -26,7 +26,15 @@
       "result": "PASS",
       "scope": "staging/validation of existing full hardware-confirmed 00.24 ELF/SELF/VPK; no fresh Docker build or GitHub publication implied"
     },
-    "github_publication_calls": "mocked in unit tests; no live writes"
+    "github_publication_calls": "mocked in unit tests; no live writes",
+    "github_hosted_validation": {
+      "run_id": 37395626518,
+      "url": "https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37395626518",
+      "source_commit": "b17bb49ef1ab257ea74f68353a907b4f538c1c89",
+      "status": "completed",
+      "conclusion": "success",
+      "scope": "Ubuntu hosted actionlint plus 10 publication and 3 LiveArea tests; no private APK, full build or release publication"
+    }
   },
   "publication_policy": {
     "stable_tag": "v<APP_VER>",

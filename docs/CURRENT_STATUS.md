@@ -5,16 +5,18 @@
 Two manual full-engine publication entries are now implemented: Release and
 Prerelease, with a shared builder, original-APK hash gate, audio regressions,
 VPK/ELF/LiveArea validation, compiled-only symbols and draft-first publication.
-Static/unit and real-VPK staging checks pass. A live hosted build/publication
+Static/unit and real-VPK staging checks pass. GitHub-hosted validation run
+[37395626518](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37395626518)
+passed actionlint and all 13 publication/LiveArea tests. A live full build/publication
 requires the private APK URL secret; see [setup](RELEASE_WORKFLOWS.md).
 
-The user confirms that **00.23 LiveArea-Fixed presentation works on hardware**,
-but reports another battle-start crash with Android14 selected, characters 12/03
+Before the 00.24 repair, the user confirmed that **00.23 LiveArea-Fixed presentation
+worked on hardware**, but reported another battle-start crash with Android14 selected, characters 12/03
 and `bobj03`. The earlier successful 00.23 test path remains historical evidence;
 this extends coverage to a failing native-audio allocation path. The PAC streaming
 repair remains active in the supplied log.
 
-The latest log ends in `std::bad_alloc`. The supplied core's game-thread stack
+That 00.23 log ends in `std::bad_alloc`. Its supplied core's game-thread stack
 returns to `decodeOgg` immediately after PCM vector growth, with a requested
 9,506,304-byte allocation. The old decoder reproduces that exact request for
 `bgm_03.ogg`: its C++ allocation peak is 14,260,324 bytes for a 5,454,332-byte
