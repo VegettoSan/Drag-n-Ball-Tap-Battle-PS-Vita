@@ -593,9 +593,9 @@ Una herramienta correcta debe:
 2. conservar los 384 archivos de assets;
 3. no truncar personajes a 13/22/31 durante extracción;
 4. preservar PAC bytes;
-5. el extractor genérico preserva los `.ogg`; para el perfil Samu preparado en
-   Vita, `prepare_samu_mod.py` normaliza explícitamente los 15 MP3/AAC a Vorbis
-   y registra hashes/codec de entrada y salida;
+5. preservar los `.ogg` **byte por byte** aunque su codec real sea MP3 o
+   AAC/M4A; desde 00.27 el runtime Vita detecta el contenido y lo decodifica
+   directamente, por lo que `prepare_samu_mod.py` no transcodifica;
 6. no sobrescribir un save existente con el `save.bin` empaquetado;
 7. registrar source APK SHA-256 y, de ser posible, el DEX SHA idéntico a Gen.
 
@@ -621,8 +621,9 @@ Propuesta documental:
 - **Tier A:** reemplazos de recursos sobre Gen.
 - **Tier B+:** expansión masiva de índices usando el mismo DEX Gen.
 - **No Tier C respecto a Gen:** el DEX es idéntico.
-- **Audio especial:** 15 BGM MP3/AAC con nombres `.ogg`; 00.26 dispone de
-  preparación explícita a Vorbis manteniendo los nombres lógicos.
+- **Audio especial:** 12 BGM MP3 + 3 AAC/M4A con nombres `.ogg`; 00.27 los
+  reproduce directamente desde sus bytes originales mediante `SceAudiodec`.
+  Los dos Vorbis mantienen el camino libvorbisfile existente.
 - **Vita hardware:** pendiente.
 
 La diferencia entre "data-driven en Android" y "confirmado en Vita" debe
@@ -697,9 +698,18 @@ Si alguna diferencia impide usar el mod en Vita:
 La meta sigue siendo que **Vita se adapte al contrato del motor**, no que el
 motor sea reemplazado por una interpretación nueva para soportar mods.
 
-## 18. Ruta reproducible Vita añadida en 00.26
+## 18. Ruta 00.26 histórica — conversión descartada
 
-La integración pública no almacena el APK ni sus assets. El helper:
+00.26 demostró que el roster 00..91 podía prepararse y que los 15 BGM
+no-Vorbis podían convertirse externamente. Esa solución queda **descartada como
+objetivo de compatibilidad** porque exige alterar los audios del mod. Se conserva
+solo como registro histórico del intento; no debe usarse para preparar Samu en
+la ruta actual.
+
+## 19. Ruta 00.27 — assets originales, audio directo en Vita
+
+La integración actual mantiene el APK como fuente de verdad y no transforma
+ningún payload:
 
 ```sh
 python3 tools/prepare_samu_mod.py \
@@ -707,27 +717,41 @@ python3 tools/prepare_samu_mod.py \
   ./install/mods/ZuperSamu
 ```
 
-hace lo siguiente:
+El helper:
 
-1. exige el APK SHA-256 `1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d`;
-2. exige el DEX SHA-256 `cba71bc13b9d1281aa8180423be9d08db0deb0fc2f5ef6825cc11ba66a17b729`;
-3. extrae los 384 assets por la ruta ordinaria `assets/`;
-4. verifica los 92 tripletes `00..91` y rechaza contenido inesperado `92..99`
-   para esta identidad concreta de APK;
-5. comprueba por magic la matriz conocida: 12 MP3, 3 AAC/M4A y 2 Vorbis;
-6. convierte únicamente los 15 no-Vorbis a Ogg Vorbis 44.1 kHz estéreo,
-   conservando `bgm_00..16.ogg` como nombres solicitados por el motor;
-7. decodifica cada salida con FFmpeg para comprobar que el Vorbis resultante es
-   legible antes de publicar el directorio;
-8. actualiza `dbtb_manifest.json` con hashes/tamaños de origen y salida,
-   versión de FFmpeg y la identidad del perfil.
+1. exige el APK SHA-256
+   `1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d`;
+2. exige el DEX SHA-256
+   `cba71bc13b9d1281aa8180423be9d08db0deb0fc2f5ef6825cc11ba66a17b729`;
+3. extrae los 384 assets de `assets/` sin cambiar sus bytes;
+4. verifica los 92 tripletes `00..91`;
+5. verifica por contenido la matriz exacta de 17 BGM:
+   **12 MP3 + 3 AAC/M4A + 2 Vorbis**;
+6. conserva `payloads_unchanged: true` y registra hashes/codecs observados.
 
-Prueba directa en el APK suministrado el 2026-10-06: las 15 conversiones
-terminaron correctamente y los 17 BGM finales fueron identificados como Vorbis,
-44.1 kHz, estéreo. Los dos Vorbis originales (`bgm_12`, `bgm_13`) se
-mantuvieron sin recodificación. Esta preparación conserva el backend
-libvorbisfile/mezclador de 00.24 y evita introducir un decoder MP3/AAC nuevo en
-Vita.
+El runtime 00.27 conserva la ruta Vorbis de 00.24 para `bgm_12/13`. Para los
+12 MP3 usa el decoder MP3 del sistema Vita mediante `SceAudiodec`. Para
+`bgm_09/10/11`, parsea el contenedor ISO-BMFF/M4A, conserva los access units
+AAC originales y los entrega al decoder AAC de `SceAudiodec`. El PCM resultante
+entra al mismo mezclador de 48 kHz del port.
 
-CI: `Community mod profiles` run `37540898687` PASS. La prueba física
-completa está definida en [TEST_VITA_00_26](TEST_VITA_00_26.md).
+La auditoría del APK real confirmó AAC-LC 44.1 kHz estéreo. El demux directo
+observó:
+
+- `bgm_09`: 228 access units, máximo 1,114 bytes;
+- `bgm_10`: 1,578 access units, máximo 1,143 bytes;
+- `bgm_11`: 228 access units, máximo 1,114 bytes.
+
+Todos quedan por debajo del límite ES AAC usado por Vita. El parser MP3 validó
+los 12 tracks como MPEG Layer III 44.1 kHz estéreo. Estas son pruebas de
+formato/build; la reproducción audible, loops y transiciones todavía requieren
+la prueba física 00.27.
+
+CI público: Community mod profiles `37544623252` PASS; Vita engine native
+smoke `37544588962` PASS con `SceAudiodec_stub`.
+
+Artefacto físico candidato:
+`DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`, SHA-256
+`aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`.
+Ver [evidencia 00.27](evidence/vita_samu_direct_audio_00.27.json) y
+[protocolo físico](TEST_VITA_00_27.md).
