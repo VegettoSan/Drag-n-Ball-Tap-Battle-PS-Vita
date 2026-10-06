@@ -215,16 +215,31 @@ Esto, junto al texto español y al mismo helper nativo, indica una base de conte
 
 Todos los 19 `se_XX` permanecen baseline Vorbis y byte-idénticos.
 
-### Implicación Vita
+### Implicación Vita — candidato 00.27
 
-El adapter actual de BGM abre por `ov_fopen()`. libvorbisfile no decodifica MP3 ni AAC/M4A. Por tanto:
+00.27 conserva el camino Vorbis existente y añade una frontera nativa genérica
+por contenido para MP3 y AAC/M4A. El motor continúa solicitando exactamente
+`bgm_XX.ogg`; no se cambia el nombre ni se transforma el archivo instalado.
 
-- `bgm_03/04/05/06/07/14/15` fallarán en el camino Vorbis actual.
-- el problema no es simplemente “BGM demasiado grande”.
-- `bgm_05` sí equivaldría a ~32.87 MiB PCM16 stereo si se decodifica completo, pero primero debe existir soporte AAC.
-- 00.25 no debe declararse audio-compatible con Invasion hasta adaptar esta frontera y probarla.
+Para este APK concreto se verificó además que:
 
-La solución correcta respeta el motor: el motor sigue solicitando `bgm_05`; el adapter Vita identifica el contenido real y lo reproduce/convierte. No cambiar reglas de juego ni nombres pedidos por el motor.
+- `bgm_03/06/07/14/15` entran por el decoder MP3 de `SceAudiodec`;
+- `bgm_04/05` son AAC-LC estéreo a 44.1 kHz dentro de M4A;
+- los tamaños máximos de sample AAC observados son 455 bytes (`bgm_04`) y
+  548 bytes (`bgm_05`), por debajo de `SCE_AUDIODEC_AAC_MAX_ES_SIZE=1536`;
+- `bgm_06/07` a 48 kHz son válidos para la ruta MP3 y el mixer los remuestrea
+  a la salida Vita de 48 kHz sin cambiar los assets;
+- los diez BGM restantes siguen por libvorbisfile;
+- los 19 SE permanecen Vorbis y byte-idénticos al baseline.
+
+Esto elimina el requisito técnico de convertir previamente los siete BGM. La
+compatibilidad queda **implementada como candidato**, no hardware-confirmada,
+hasta reproducir en una Vita física al menos un MP3 y un AAC/M4A de Invasion,
+además de una pelea con personajes agregados.
+
+`tools/prepare_invasion_mod.py` valida el hash exacto de este APK, extrae los
+177 assets, canonicaliza únicamente los aliases protegidos y exige
+`payloads_unchanged: true`. No usa FFmpeg ni recodifica audio.
 
 ## `demo_00` especial
 
