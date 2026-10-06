@@ -4,11 +4,11 @@
 
 - Version Vita: `00.25`
 - TITLE_ID: `DBTB00001`
-- Fuente equivalente de `main`: `add915b`
-- VPK: `DBTapBattle-Vita-00.25.vpk`
-- SHA-256 VPK: `45964bd29c2159fe85c3f69934fbd75108f4ed9c41499e6203d57b96c0443ff4`
-- SHA-256 eboot: `b505850b08bcb665a559eb82beaecbdd5bbb0920784301eed9dd61211fd450a3`
-- SHA-256 ELF: `693205a4f9dd684d2ff84a4ac32757882d4ad55769beed9f749ce63518872816`
+- Runtime fuente: `d186dc65` (los commits posteriores de esta tanda solo agregan pruebas/CI/documentacion)
+- VPK de prueba: `DBTapBattle-Vita-00.25-Mod-Profiles-Test.vpk`
+- SHA-256 VPK: `39265deebeec6ff7954dc85cd2fd18300fa6de8cd546176e3413b9d2823c3173`
+- SHA-256 eboot: `a1c35f53070a600edabb310c53f95dea269b637206461e5a7e8370839fc5f380`
+- SHA-256 ELF: `c624a1f121a58da10d3d6bc481416d78a1799352c00b6c4d8c21a777ed93c591`
 - TeaVM original: 467 clases / 4086 metodos.
 - LiveArea: validacion exacta PASS; conserva los assets aprobados.
 - El VPK contiene solo ejecutable, SFO, LiveArea y notices. No contiene APK ni
@@ -46,7 +46,7 @@ personajes. Esto es esperado por el modelo original de descarga de datos.
 ## Instalacion
 
 1. Conserva un backup de `ux0:data/DBTapBattle/`.
-2. Instala `DBTapBattle-Vita-00.25.vpk` encima de la app actual.
+2. Instala `DBTapBattle-Vita-00.25-Mod-Profiles-Test.vpk` encima de la app actual.
 3. No borres `ux0:data/DBTapBattle/game/`.
 4. Para Espanol, copia el contenido preparado a
    `ux0:data/DBTapBattle/mods/Espanol/`.
@@ -105,7 +105,7 @@ paso exacto. Adjunta:
 - personaje, pantalla o pelea exactos donde ocurre.
 
 No mezcles logs de pruebas anteriores: usa la sesion que empieza con el marker
-de motor completo 00.25 / `add915b`.
+de motor completo 00.25 / `d186dc65`.
 
 ## Criterio de promocion
 
