@@ -17,11 +17,13 @@ on:
       - 'src/installed_data.hpp'
       - 'tools/community14.py'
       - 'tools/extract_apk_data.py'
+      - 'tools/prepare_samu_mod.py'
       - 'tests/test_community.cpp'
       - 'tests/test_game_data.cpp'
       - 'tests/test_engine_resources.cpp'
       - 'tests/test_installed_data.cpp'
       - 'tests/test_extractor.py'
+      - 'tests/test_prepare_samu_mod.py'
       - '.github/workflows/community-mod-profiles.yml'
   workflow_dispatch:
 
@@ -38,6 +40,9 @@ jobs:
 
       - name: Validate extractor aliases and protected profile detection
         run: python3 -m unittest discover -s tests -p test_extractor.py -v
+
+      - name: Validate Samu profile preparation rules
+        run: python3 -m unittest discover -s tests -p test_prepare_samu_mod.py -v
 
       - name: Validate PAC and image codecs for every audited profile
         run: |
