@@ -38,16 +38,21 @@ bool decodePng(const std::vector<uint8_t>& data, RgbaImage& image, std::string& 
     return true;
 }
 
-bool decodeCommunityImage(const std::vector<uint8_t>& data, size_t entry_index,
-                          RgbaImage& image, std::string& error) {
+bool decodeCommunityImageProfile(const std::vector<uint8_t>& data, size_t entry_index,
+                                 PacEncoding encoding, RgbaImage& image, std::string& error) {
     image = RgbaImage{};
     error.clear();
+    const CommunityPacProfile* profile = communityProfile(encoding);
+    if (!profile) {
+        error = "unknown community image profile";
+        return false;
+    }
     if (data.size() < 5 || entry_index > 65535) {
         error = "truncated community image / invalid entry index";
         return false;
     }
-    const uint32_t width = ((data[0] << 8) | data[1]) ^ 62285u ^ entry_index;
-    const uint32_t height = ((data[2] << 8) | data[3]) ^ 37881u ^ entry_index;
+    const uint32_t width = ((data[0] << 8) | data[1]) ^ profile->image_width_xor ^ entry_index;
+    const uint32_t height = ((data[2] << 8) | data[3]) ^ profile->image_height_xor ^ entry_index;
     const uint64_t bytes = static_cast<uint64_t>(width) * height * 4;
     if (!width || !height || width > 4096 || height > 4096 || bytes > 16 * 1024 * 1024 ||
         data.size() - 4 > std::numeric_limits<uInt>::max()) {
@@ -76,4 +81,9 @@ bool decodeCommunityImage(const std::vector<uint8_t>& data, size_t entry_index,
     image.premultiplied_alpha = true;
     image.pixels.swap(pixels);
     return true;
+}
+
+bool decodeCommunityImage(const std::vector<uint8_t>& data, size_t entry_index,
+                          RgbaImage& image, std::string& error) {
+    return decodeCommunityImageProfile(data, entry_index, PacEncoding::Community14, image, error);
 }

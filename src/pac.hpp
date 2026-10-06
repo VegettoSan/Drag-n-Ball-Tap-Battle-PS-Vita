@@ -1,17 +1,16 @@
 #pragma once
+#include "community_profiles.hpp"
 
 #include <cstdint>
 #include <string>
 #include <vector>
-
-enum class PacEncoding { Auto, Original, Community14 };
 
 struct PacEntry {
     uint32_t offset = 0;
     uint32_t size = 0;
     char type[4] = {0, 0, 0, 0};
     uint32_t reserved = 0;
-    uint32_t encoded_type = 0; // Retained for unknown community metadata.
+    uint32_t encoded_type = 0; // Decoded profile-specific type key; preserved when unknown.
 };
 
 class PacFile {

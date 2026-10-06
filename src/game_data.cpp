@@ -18,14 +18,14 @@ void GameDataTable::clear() {
 
 bool GameDataTable::decode(const std::vector<uint8_t>& payload, PacEncoding encoding) {
     clear();
-    if (encoding != PacEncoding::Original && encoding != PacEncoding::Community14) {
+    const CommunityPacProfile* profile = communityProfile(encoding);
+    if (encoding != PacEncoding::Original && !profile) {
         error_ = "game table needs the resolved PAC codec"; return false;
     }
     if (payload.size() < 2 || payload.size() > 16u * 1024u * 1024u) {
         error_ = "invalid game table size"; return false;
     }
-    const bool encoded = encoding == PacEncoding::Community14;
-    const size_t count = le16(payload, 0) ^ (encoded ? 34594u : 0u);
+    const size_t count = le16(payload, 0) ^ (profile ? profile->table_count_xor : 0u);
     const size_t header = 2 + count * 8;
     if (header > payload.size()) {
         error_ = "truncated game table directory"; return false;
@@ -35,9 +35,9 @@ bool GameDataTable::decode(const std::vector<uint8_t>& payload, PacEncoding enco
     for (size_t i = 0; i < count; ++i) {
         const size_t p = 2 + i * 8;
         GameDataRecord record;
-        record.position = le32(payload, p) ^ (encoded ? (uint32_t(-1887452470) ^ uint32_t(i)) : 0u);
-        record.width = le16(payload, p + 4) ^ (encoded ? (23261u ^ uint32_t(i)) : 0u);
-        record.height = le16(payload, p + 6) ^ (encoded ? (47592u ^ uint32_t(i)) : 0u);
+        record.position = le32(payload, p) ^ (profile ? (profile->table_position_xor ^ uint32_t(i)) : 0u);
+        record.width = le16(payload, p + 4) ^ (profile ? (profile->table_width_xor ^ uint32_t(i)) : 0u);
+        record.height = le16(payload, p + 6) ^ (profile ? (profile->table_height_xor ^ uint32_t(i)) : 0u);
         const uint64_t end = uint64_t(record.position) + uint64_t(record.width) * record.height;
         if (record.position < header || end > payload.size()) {
             error_ = "game table record out of payload bounds: " + std::to_string(i); return false;

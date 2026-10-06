@@ -26,21 +26,6 @@ uint32_t readBe32(const uint8_t* p) {
            (static_cast<uint32_t>(p[2]) << 8) | p[3];
 }
 
-// ext.o constants pinned to the supplied a210795b APK. RGBA is raw DEFLATE,
-// not a PNG even though the Android loader uses its PNG_TYPE slot.
-const char* communityType(uint32_t type) {
-    switch (type) {
-        case 0x5d93757fu: return "act";
-        case 0x8f230d0du: return "bin";
-        case 0x86ffa7f3u: return "cnv";
-        case 0x84dff882u: return "dac";
-        case 0x8728c48au: return "rgba";
-        case 0x83f2e69au: return "spr";
-        case 0x425206e2u: return "wav";
-        default: return nullptr;
-    }
-}
-
 } // namespace
 
 bool PacFile::open(const std::string& path, PacEncoding encoding) {
@@ -76,27 +61,48 @@ bool PacFile::open(const std::string& path, PacEncoding encoding) {
     }
 
     const uint16_t raw_count = readLe16(count_bytes);
-    const uint16_t private_count = raw_count ^ 42802u;
-    encoding_ = encoding == PacEncoding::Community14 ? encoding : PacEncoding::Original;
-    if (encoding == PacEncoding::Auto && (raw_count & 0x8000u) && private_count &&
-        2ull + static_cast<uint64_t>(private_count) * 16 <= file_size_) {
-        // Inspect known type IDs, including PACs with ignored metadata first.
-        // Once identified, corrupt encoded entries fail without plain fallback.
-        for (uint32_t i = 0; i < private_count; ++i) {
-            uint8_t raw[16];
-            if (!readExact(fp, raw, sizeof(raw))) break;
-            if (communityType(readBe32(raw + 8) ^ 0xc569e1efu ^ i)) {
-                encoding_ = PacEncoding::Community14;
-                break;
-            }
+    const CommunityPacProfile* profile = nullptr;
+    encoding_ = PacEncoding::Original;
+
+    if (encoding == PacEncoding::Auto) {
+        // Read only the directory-sized prefix needed by the detector. The
+        // detector validates every decoded extent against the full file size,
+        // so a wrong/private codec cannot silently fall back to another one.
+        size_t profile_count = 0;
+        const CommunityPacProfile* profiles = communityProfiles(profile_count);
+        size_t largest_table = 2;
+        for (size_t p = 0; p < profile_count; ++p) {
+            const uint16_t count = raw_count ^ profiles[p].count_xor;
+            const uint64_t table = 2ull + uint64_t(count) * 16ull;
+            if (count && table <= file_size_ && table > largest_table) largest_table = size_t(table);
         }
+        std::vector<uint8_t> header(largest_table);
+        std::rewind(fp);
+        if (!readExact(fp, header.data(), header.size())) {
+            error_ = "could not read PAC table for profile detection";
+            std::fclose(fp);
+            return false;
+        }
+        encoding_ = detectCommunityEncoding(header.data(), file_size_);
+        profile = communityProfile(encoding_);
         if (std::fseek(fp, 2, SEEK_SET) != 0) {
             error_ = "could not seek to PAC table";
             std::fclose(fp);
             return false;
         }
+    } else if (encoding == PacEncoding::Original) {
+        encoding_ = PacEncoding::Original;
+    } else {
+        profile = communityProfile(encoding);
+        if (!profile) {
+            error_ = "unknown protected PAC profile";
+            std::fclose(fp);
+            return false;
+        }
+        encoding_ = encoding;
     }
-    const uint16_t count = encoding_ == PacEncoding::Community14 ? private_count : raw_count;
+
+    const uint16_t count = profile ? (raw_count ^ profile->count_xor) : raw_count;
     const uint64_t data_base64 = 2ull + static_cast<uint64_t>(count) * 16ull;
     if (data_base64 > file_size_ || data_base64 > 0xFFFFFFFFull) {
         error_ = "PAC table exceeds file size";
@@ -121,11 +127,11 @@ bool PacFile::open(const std::string& path, PacEncoding encoding) {
         entry.size = readLe32(raw + 4);
         std::memcpy(entry.type, raw + 8, 4);
         entry.reserved = readLe32(raw + 12);
-        if (encoding_ == PacEncoding::Community14) {
-            entry.offset ^= 996678763u ^ i;
-            entry.size ^= 47633006u ^ i;
-            entry.encoded_type = readBe32(raw + 8) ^ 0xc569e1efu ^ i;
-            const char* type = communityType(entry.encoded_type);
+        if (profile) {
+            entry.offset ^= profile->offset_xor ^ i;
+            entry.size ^= profile->size_xor ^ i;
+            entry.encoded_type = readBe32(raw + 8) ^ i;
+            const char* type = communityType(*profile, entry.encoded_type);
             std::memset(entry.type, 0, 4);
             std::memcpy(entry.type, type ? type : "unk", type ? std::strlen(type) : 3);
         }
