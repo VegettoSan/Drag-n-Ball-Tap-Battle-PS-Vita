@@ -1,0 +1,46 @@
+name: Community mod profiles
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/community_profiles.hpp'
+      - 'src/pac.cpp'
+      - 'src/pac.hpp'
+      - 'src/image.cpp'
+      - 'src/image.hpp'
+      - 'src/game_data.cpp'
+      - 'src/game_data.hpp'
+      - 'tools/community14.py'
+      - 'tools/extract_apk_data.py'
+      - 'tests/test_community.cpp'
+      - 'tests/test_game_data.cpp'
+      - 'tests/test_extractor.py'
+      - '.github/workflows/community-mod-profiles.yml'
+  workflow_dispatch:
+
+jobs:
+  synthetic-profile-regressions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install host decoder dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends g++ libpng-dev zlib1g-dev
+
+      - name: Validate extractor aliases and protected profile detection
+        run: python3 -m unittest discover -s tests -p test_extractor.py -v
+
+      - name: Validate PAC and image codecs for every audited profile
+        run: |
+          set -euo pipefail
+          g++ -std=c++14 -O2 -Wall -Wextra -Isrc             tests/test_community.cpp src/pac.cpp src/image.cpp             -lpng -lz -o /tmp/dbtb-community-profiles
+          /tmp/dbtb-community-profiles
+
+      - name: Validate converted GameData tables for every audited profile
+        run: |
+          set -euo pipefail
+          g++ -std=c++14 -O2 -Wall -Wextra -Isrc             tests/test_game_data.cpp src/game_data.cpp src/pac.cpp src/vfs.cpp             -o /tmp/dbtb-game-data-profiles
+          /tmp/dbtb-game-data-profiles
