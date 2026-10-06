@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "date": "2026-10-06",
+  "status": "BUILD_AND_HOST_VALIDATED_HARDWARE_PENDING",
+  "source_head": "926eb6b045d6c49e34751bf2ee40f2deef20e518",
+  "hardware_baseline": "00.24",
+  "candidate": {
+    "version": "00.27",
+    "title_id": "DBTB00001",
+    "vpk_name": "DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk",
+    "vpk_bytes": 2634456,
+    "vpk_sha256": "aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf",
+    "eboot_sha256": "0abcd48953c61692c19522c4cd68f897cd41e2e74d9ee39bb5d2303bf1f32b2f",
+    "elf_sha256": "079bdda19f5deb4f579fac8677e428c3f691bd89376eb3f3b7a13bc7d5a0f1e8",
+    "teavm_classes": 467,
+    "teavm_methods": 4086,
+    "livearea_validation": "PASS",
+    "interactive_compile": {
+      "generated_teavm": "-O0",
+      "native_adapters": "-O2",
+      "purpose": "functional hardware validation; not final performance benchmarking"
+    }
+  },
+  "samu_source": {
+    "apk_sha256": "1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d",
+    "dex_sha256": "cba71bc13b9d1281aa8180423be9d08db0deb0fc2f5ef6825cc11ba66a17b729",
+    "assets": 384,
+    "character_triplets": 92,
+    "character_indices": "00..91",
+    "audio_named_ogg": {
+      "total": 17,
+      "mp3": 12,
+      "aac_m4a": 3,
+      "vorbis": 2,
+      "preserved_byte_for_byte": true
+    }
+  },
+  "direct_audio": {
+    "policy": "detect real codec from content at runtime; never transcode or rename Samu BGM",
+    "vorbis": "existing libvorbisfile path retained",
+    "mp3": "SceAudiodec MP3",
+    "aac_m4a": "ISO-BMFF sample-table demux + SceAudiodec AAC raw access units",
+    "output_mixer": "existing 48 kHz Vita mixer",
+    "sample_source_checks": {
+      "bgm_00.ogg": {
+        "codec": "mp3",
+        "rate": 44100,
+        "channels": 2,
+        "bytes": 1487358
+      },
+      "bgm_09.ogg": {
+        "codec": "aac/m4a",
+        "rate": 44100,
+        "channels": 2,
+        "bytes": 78860,
+        "aac_samples": 228,
+        "max_access_unit_bytes": 1114
+      },
+      "bgm_10.ogg": {
+        "codec": "aac/m4a",
+        "rate": 44100,
+        "channels": 2,
+        "bytes": 598959,
+        "aac_samples": 1578,
+        "max_access_unit_bytes": 1143
+      },
+      "bgm_11.ogg": {
+        "codec": "aac/m4a",
+        "rate": 44100,
+        "channels": 2,
+        "bytes": 78860,
+        "aac_samples": 228,
+        "max_access_unit_bytes": 1114
+      },
+      "bgm_12.ogg": {
+        "codec": "vorbis",
+        "rate": 44100,
+        "channels": 2,
+        "bytes": 41141
+      }
+    }
+  },
+  "ci": {
+    "community_mod_profiles": {
+      "run_id": 37544623252,
+      "conclusion": "success",
+      "head": "926eb6b0"
+    },
+    "vita_engine_native_smoke": {
+      "run_id": 37544588962,
+      "conclusion": "success",
+      "head": "5e1808f6"
+    }
+  },
+  "physical_test": "pending"
+}
