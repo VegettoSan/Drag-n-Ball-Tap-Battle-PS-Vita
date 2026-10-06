@@ -181,12 +181,36 @@ allocation **shape and timing**, not only total file size or final decoded conte
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
-> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
-> startup/menu flow, text, audio/voices, character selection and entry into/playing
-> a battle worked normally, with **no error observed in this session**. This makes
-> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
-> memory regression documented in the historical 00.22 records. Historical test
-> documents remain historical evidence; this note does not claim exhaustive coverage
-> of every character, mode, mod or long-duration session.
+> **Current hardware checkpoint — 00.24 (2026-10-05, America/Bogota):** the user
+> confirms `DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk` works on the physical Vita
+> after the Android14 battle-start crash. Runtime source `f5672d4d`, VPK SHA-256
+> `0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345`.
+> The original PAC streaming repair remains; Ogg PCM now uses one exact allocation
+> instead of transient vector doubling, with cache-only resource reclamation.
+> The approved LiveArea is retained. This is a user-confirmed test checkpoint,
+> not exhaustive character/profile/mode or long-session certification. Historical
+> records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## Reusable lesson from 00.23 → 00.24: budget transient native allocations
+
+A correct managed stream adapter does not prevent native OOM. The Android14
+battle-start crash returned from Ogg PCM vector growth with a 9,506,304-byte
+request. bgm_03 needed only 5,454,332 PCM bytes, but incremental resize retained
+the old allocation while requesting a doubled replacement: 14,260,324 C++ bytes
+at peak. Cache budgets did not bound that transient demand.
+
+For seekable Vorbis, query ov_pcm_total, bound dimensions/channels/rate and total
+bytes, validate every chained stream, allocate once, and decode directly into the
+exact buffer. Verify final decoded length and preserve PCM byte-for-byte. Reclaim
+cache-only PAC owners and idle textures before the allocation; shared active
+streams and referenced textures must survive. Keep the old music until a new
+track has decoded successfully. Do not disguise allocation failure by stripping
+music or substituting gameplay.
+
+The regression test compares every sample/frame of all 17 supplied BGM tracks.
+A 6 MiB single-request ceiling reproduces the old bgm_03 bad_alloc while every
+fixed load succeeds. Its fixed C++ peak is 5,454,432 bytes; this measurement
+excludes Vorbis C allocations and other live owners. The user confirms 00.24
+works on physical Vita. Keep artifact identity and limited hardware scope with
+that result; new rebuilds still require device testing.

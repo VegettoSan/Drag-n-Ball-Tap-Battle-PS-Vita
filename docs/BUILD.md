@@ -1,17 +1,18 @@
 # Build and install — full engine 00.24
 
-## 00.24 candidate
+## 00.24 hardware-confirmed full build
 
 The Android14 battle-start audio-memory candidate is built locally from a fresh
 original APK dex2jar/TeaVM generation with pinned tools and the standard full
 `tools/aot/engine/vita/build.py` recipe. The complete TeaVM `all.c` compiles at
 `-O1`, including TCBManajer; native services compile at `-O2`. No split compilation
 or unoptimized gameplay translation unit is used for this candidate. Private
-APK/JAR/generated C remain outside Git/CI. Approved LiveArea files are included
-by the normal build. Hardware verification is pending; see
+APK/JAR/generated C remain outside Git. Approved LiveArea files are included
+by the normal build. The user confirms this VPK works on Vita; see
 [00.24 device test](TEST_VITA_00_24.md).
 
-Current hardware evidence: [00.23](evidence/vita_hardware_full_game_00.23.json). The last fully pinned normal-build artifact evidence remains [00.22](evidence/vita_selection_filter_build_00.22.json); see the 00.23 test-build caveat below.
+Current full-build/hardware evidence: [00.24](evidence/vita_battle_audio_00.24.json).
+The 00.23 split-compilation caveat below applies to that historical package only.
 Read [CURRENT_STATUS](CURRENT_STATUS.md) before interpreting build success as
 hardware success. Commands below run from the repository root; keep private
 inputs/outputs outside it.
@@ -20,14 +21,14 @@ inputs/outputs outside it.
 
 | Target | Inputs / output | Purpose |
 |---|---|---|
-| `tools/aot/engine/vita` | APK-derived JAR → current adapters → generated C → `DBTapBattle-Vita-00.23.vpk` | Full original game engine |
+| `tools/aot/engine/vita` | APK-derived JAR → current adapters → generated C → `DBTapBattle-Vita-00.24.vpk` | Full original game engine |
 | Root `CMakeLists.txt` | Native atlas preview → `dbtb_vita.vpk` | Historical bootstrap; not the game |
 | `.github/workflows/vita-engine-native-smoke.yml` | Tiny non-commercial all.c + real native services | Compile/link/package smoke; no game execution |
 | `tools/aot` input probe | Original KeyData/Controller only | JVM/C feasibility comparison; not the full runtime |
 
-The currently hardware-tested package is `DBTapBattle-Vita-00.23-battle-memory-test.vpk`, SHA-256
-`8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b584dd`, built from
-source `0e17b0ba`. Check `VITA_VERSION` and the embedded source marker for every fresh package.
+The current hardware-tested package is `DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk`,
+SHA-256 `0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345`, built
+from runtime source `f5672d4d`. Check `VITA_VERSION` and the embedded source marker for every fresh package.
 
 ## Dependencies and ABI
 
@@ -192,14 +193,15 @@ For installation, update the VPK without deleting `ux0:data/DBTapBattle/` or sav
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
-> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
-> startup/menu flow, text, audio/voices, character selection and entry into/playing
-> a battle worked normally, with **no error observed in this session**. This makes
-> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
-> memory regression documented in the historical 00.22 records. Historical test
-> documents remain historical evidence; this note does not claim exhaustive coverage
-> of every character, mode, mod or long-duration session.
+> **Current hardware checkpoint — 00.24 (2026-10-05, America/Bogota):** the user
+> confirms `DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk` works on the physical Vita
+> after the Android14 battle-start crash. Runtime source `f5672d4d`, VPK SHA-256
+> `0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345`.
+> The original PAC streaming repair remains; Ogg PCM now uses one exact allocation
+> instead of transient vector doubling, with cache-only resource reclamation.
+> The approved LiveArea is retained. This is a user-confirmed test checkpoint,
+> not exhaustive character/profile/mode or long-session certification. Historical
+> records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## Corrected LiveArea repack — 2026-10-05

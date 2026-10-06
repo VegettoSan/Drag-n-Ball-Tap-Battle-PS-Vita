@@ -1,6 +1,6 @@
-# Current status — 2026-10-06, 00.24 audio-memory retest
+# Current status — 2026-10-05 (America/Bogota), full engine 00.24
 
-## Latest report and candidate — 2026-10-06
+## Current hardware report — 00.24
 
 The user confirms that **00.23 LiveArea-Fixed presentation works on hardware**,
 but reports another battle-start crash with Android14 selected, characters 12/03
@@ -26,10 +26,13 @@ for sample; a 6 MiB single-allocation limit reproduces the old `bgm_03` failure
 and permits all fixed loads. Fixed `bgm_03` C++ peak: 5,454,432 bytes, a reduction
 of 8,805,892 bytes (excluding Vorbis C allocations and unrelated owners).
 Audio setup/DSP and resource ownership probes pass with Vita APIs mocked.
-**00.24 physical-Vita battle recovery remains pending.** See
-[the retest procedure](TEST_VITA_00_24.md).
+**Hardware confirmed by the user on 2026-10-05 at 19:26 America/Bogota:**
+the delivered 00.24 works and resolves the reported battle-start crash. The user
+says it works very well; no new runtime log or exhaustive character/profile
+matrix was supplied. The earlier failing log/core describe 00.23, not 00.24. See
+[the result and broader regression procedure](TEST_VITA_00_24.md).
 
-Delivered candidate: `DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk`, 2,663,883 bytes,
+Hardware-confirmed package: `DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk`, 2,663,883 bytes,
 SHA-256 `0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345`.
 Runtime source: `f5672d4d3fbf6b43cd699d7a5a2b80475e4db9f6`. Fresh generation
 compiled 467 classes/4086 methods; the standard complete TeaVM amalgamation
@@ -40,7 +43,7 @@ and private generated sources are retained with the candidate for crash analysis
 [Identity and measured allocation evidence](evidence/vita_battle_audio_00.24.json).
 
 <!-- DBTB_00_23_DETAIL:START -->
-## Authoritative hardware checkpoint — 00.23 (2026-10-05)
+## Historical hardware checkpoint — 00.23 (2026-10-05)
 
 **Status:** hardware validated for the tested path; no error observed in the user's
 00.23 session.
@@ -74,9 +77,9 @@ Source checkpoint: `0e17b0bac33c47698b414b67a839c839f0e555ce`
 This is the current handoff. It describes implementation and evidence separately.
 Historical audit/test pages remain useful for their pinned APK/builds; their old
 pending statements do not override this page. 00.21 and 00.22 failures are historical checkpoints.
-The 00.23 physical-Vita retest preserves the audio/selection fixes and now enters and plays a battle without the 00.22 memory crash.
+The latest 00.24 user confirmation also resolves the distinct native Ogg memory crash reported after the 00.23 LiveArea repack.
 
-## Delivered build identity
+## Historical 00.23 build identity
 
 | Field | Value |
 |---|---|
@@ -171,12 +174,13 @@ No currently reproduced crash is open in the 00.23 tested path. New failures sho
 [Porting guide](PORTING_GUIDE.md) explains reusable techniques and failures.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
-> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
-> startup/menu flow, text, audio/voices, character selection and entry into/playing
-> a battle worked normally, with **no error observed in this session**. This makes
-> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
-> memory regression documented in the historical 00.22 records. Historical test
-> documents remain historical evidence; this note does not claim exhaustive coverage
-> of every character, mode, mod or long-duration session.
+> **Current hardware checkpoint — 00.24 (2026-10-05, America/Bogota):** the user
+> confirms `DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk` works on the physical Vita
+> after the Android14 battle-start crash. Runtime source `f5672d4d`, VPK SHA-256
+> `0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345`.
+> The original PAC streaming repair remains; Ogg PCM now uses one exact allocation
+> instead of transient vector doubling, with cache-only resource reclamation.
+> The approved LiveArea is retained. This is a user-confirmed test checkpoint,
+> not exhaustive character/profile/mode or long-session certification. Historical
+> records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->

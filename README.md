@@ -1,9 +1,8 @@
 # Dragon Ball Tap Battle PS Vita
 
-Latest runtime candidate: **DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk** fixes
+Current hardware checkpoint: **DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk** fixes
 native PCM allocation growth at Android14 battle start and preserves the now
-hardware-confirmed LiveArea. Full build and host tests pass; 00.24 battle recovery
-needs a device retest. See [00.24 test](docs/TEST_VITA_00_24.md).
+hardware-confirmed LiveArea. Full build, host tests and the user’s Vita retest pass. See [00.24 result](docs/TEST_VITA_00_24.md).
 
 Latest LiveArea test: **DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk**. It preserves
 the hardware-tested 00.23 engine and fixes the splash palette. The previous
@@ -12,9 +11,9 @@ See [current status](docs/CURRENT_STATUS.md) and
 [corrected device test](docs/TEST_VITA_00_23_LIVEAREA_FIXED.md).
 
 <!-- DBTB_00_23_DETAIL:START -->
-## PS Vita hardware status — 00.23
+## Historical PS Vita hardware status — 00.23
 
-The current validated checkpoint is **00.23**. A real-hardware test on 2026-10-05
+The earlier validated checkpoint was **00.23**. A real-hardware test on 2026-10-05
 reported the game working normally with no error observed in that session: the
 previously repaired audio remained clean, character selection remained responsive,
 and the game successfully entered and played a fight instead of crashing during
@@ -35,7 +34,7 @@ APK-derived JAR/classes/C and original game assets are not committed to Git.
 
 ## Current state — 2026-10-06
 
-Latest hardware gameplay checkpoint: **00.23** from source `0e17b0ba`. On a real
+Earlier hardware gameplay checkpoint: **00.23** from source `0e17b0ba`. On a real
 PS Vita the reported test path preserves visible text, clean audio/voices and
 responsive character selection, then enters and plays a battle without the 00.22
 managed-memory crash. The hardware-tested gameplay VPK SHA-256 is
@@ -60,7 +59,7 @@ and LiveArea appearance are the remaining check for that repack.
 | 00.22 | Original masks 187/251 accepted; clean audio/selection reported | Battle startup exposes whole-PAC TeaVM managed allocation failure |
 | 00.23 | Physical Vita: text/audio/selection/battle path passes; no error observed in reported session | Broader regression matrix and release-quality normal build remain open |
 | 00.23 LiveArea-Fixed | User confirms presentation on physical Vita; tested 00.23 eboot unchanged | Android14 battle-start native Ogg allocation crash reported |
-| 00.24 | Full original-engine build; all 17 BGM PCM/low-allocation tests and ownership probes pass | Device battle recovery pending |
+| 00.24 | Full original-engine build; all 17 BGM PCM/low-allocation tests and ownership probes pass | Broader mode/profile and long-session coverage remains open |
 
 Use [current status and evidence](docs/CURRENT_STATUS.md) for the authoritative
 feature matrix, artifact hash and open issues. Older test reports describe their
@@ -143,12 +142,13 @@ physical gameplay mappings, multiplayer and comprehensive save interoperability
 remain open. No stable-public-release claim is made for this test build.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
-> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
-> startup/menu flow, text, audio/voices, character selection and entry into/playing
-> a battle worked normally, with **no error observed in this session**. This makes
-> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
-> memory regression documented in the historical 00.22 records. Historical test
-> documents remain historical evidence; this note does not claim exhaustive coverage
-> of every character, mode, mod or long-duration session.
+> **Current hardware checkpoint — 00.24 (2026-10-05, America/Bogota):** the user
+> confirms `DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk` works on the physical Vita
+> after the Android14 battle-start crash. Runtime source `f5672d4d`, VPK SHA-256
+> `0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345`.
+> The original PAC streaming repair remains; Ogg PCM now uses one exact allocation
+> instead of transient vector doubling, with cache-only resource reclamation.
+> The approved LiveArea is retained. This is a user-confirmed test checkpoint,
+> not exhaustive character/profile/mode or long-session certification. Historical
+> records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->

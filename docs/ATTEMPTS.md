@@ -1,5 +1,14 @@
 # Attempts Log
 
+## 2026-10-05 — 00.24 physical retest confirmed
+
+The user tested the exact delivered 00.24 VPK and reports it works very well.
+The prior battle-start crash is resolved in this test. No new log or exhaustive
+profile/character matrix was supplied. Runtime source f5672d4d, VPK SHA-256
+0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345.
+Preserve both PAC streaming and exact PCM allocation; use test_vita_ogg and
+test_vita_resources before future memory optimizations.
+
 ## 2026-10-06 — 00.24 exact BGM PCM allocation
 
 User confirmed 00.23 LiveArea-Fixed presentation, then supplied an Android14
@@ -886,14 +895,15 @@ coverage rather than reopening the removed whole-PAC bridge design.
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.23 (2026-10-05):** build `00.23` from source
-> commit `0e17b0ba` was tested on a real PS Vita. In the reported test path,
-> startup/menu flow, text, audio/voices, character selection and entry into/playing
-> a battle worked normally, with **no error observed in this session**. This makes
-> 00.23 the current hardware checkpoint and resolves the 00.22 battle-start
-> memory regression documented in the historical 00.22 records. Historical test
-> documents remain historical evidence; this note does not claim exhaustive coverage
-> of every character, mode, mod or long-duration session.
+> **Current hardware checkpoint — 00.24 (2026-10-05, America/Bogota):** the user
+> confirms `DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk` works on the physical Vita
+> after the Android14 battle-start crash. Runtime source `f5672d4d`, VPK SHA-256
+> `0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345`.
+> The original PAC streaming repair remains; Ogg PCM now uses one exact allocation
+> instead of transient vector doubling, with cache-only resource reclamation.
+> The approved LiveArea is retained. This is a user-confirmed test checkpoint,
+> not exhaustive character/profile/mode or long-session certification. Historical
+> records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## 2026-10-05 — Repair the failed Final LiveArea VPK
