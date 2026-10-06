@@ -37,8 +37,7 @@ conversion is required.
 `tools/prepare_invasion_mod.py` is pinned to the audited APK/DEX hashes, uses
 the existing Community14 canonical alias extraction, validates all 22 triplets
 and the 5 MP3 + 2 AAC/M4A + 10 Vorbis BGM matrix, and requires
-`payloads_unchanged: true`. The base `game/` folder remains mandatory because
-Invasion omits `bobj00.pac` and `font00.pac`.
+`payloads_unchanged: true`. Invasion omits `bobj00.pac` and `font00.pac` by design; the supplied protected APKs are autonomous with that inventory. The Vita overlay may still use base fallback when the unchanged original core requests an omitted logical resource, but the installation audit no longer treats `bobj00.pac` as mandatory.
 
 The exact same 00.27 VPK binary is therefore the physical-test candidate for
 both Samu and Invasion. Resource compatibility for Invasion does not imply that
@@ -184,8 +183,10 @@ is build/host validated and still awaits a physical-Vita run.
 Real extracted overlays were exercised through the native C++ paths as well:
 Spanish passes the offline gate with 13 characters and normalizes 106 PAC /
 361 protected images / 198 WAV / 68 BIN; Invasion passes with 22 characters and
-normalizes 139 PAC / 731 protected images / 344 WAV / 80 BIN. Both use the base
-`game/bobj00.pac` fallback because their APKs omit `bobj00`.
+normalizes 139 PAC / 731 protected images / 344 WAV / 80 BIN. Those historical
+00.25 host runs had a base `game/bobj00.pac` available because the then-current
+gate required it. A later direct APK audit established that the protected APKs
+are valid without `bobj00`, so 00.27 removes that artificial gate requirement.
 
 ## Deep APK audit — 2026-10-06
 
