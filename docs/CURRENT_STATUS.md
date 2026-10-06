@@ -1,4 +1,34 @@
-# Current status — 2026-10-05 (America/Bogota), full engine 00.24
+# Current status — 2026-10-05 (America/Bogota), 00.24 hardware / 00.25 candidate
+
+## 00.25 candidate — audited community mod profiles
+
+00.25 is derived from the hardware-confirmed 00.24 path; **00.24 remains the
+last physical-Vita-confirmed artifact until the user tests 00.25**. The existing
+PAC streaming, exact Ogg allocation, clean voice path, responsive selection,
+text fixes and approved LiveArea are retained.
+
+New host/build work adds independent protected-resource profiles for the supplied
+Spanish Android14 mod and TAP BATTLE INVASION BETA 3 instead of changing the
+legacy Android14 constants globally. Detection is per PAC and requires one unique
+fully in-bounds profile match. The Windows/Python extractors canonicalize only
+audited aliases and preserve payload bytes. Invasion's complete contiguous
+character triplets 00..21 are accepted by the local-data gate without weakening
+the 13-character baseline; partial/non-contiguous extensions fail.
+
+Invasion's oversized `bgm_05.ogg` exceeds the 00.24 32 MiB decoded-PCM bound.
+Only oversized BGM switch to bounded sequential Vorbis streaming; ordinary BGM
+continue through the exact hardware-confirmed 00.24 whole-clip path. 48 kHz
+Invasion tracks use the existing source-rate-aware 48 kHz mixer.
+
+Synthetic CI now covers extractor aliases/profile uniqueness, protected PAC/image
+decoding, converted GameData metadata and full engine-resource normalization for
+Android14 + Spanish + Invasion. The three real supplied protected APK corpora were
+also audited locally: Android14 106/106 PACs, Spanish 106/106 and Invasion 139/139
+uniquely match their intended profile with no decoded directory extent outside a
+file. This establishes format/host compatibility, **not** complete reproduction
+of arbitrary changes made only in a mod's `classes.dex`.
+
+See [community mod profiles](COMMUNITY_MOD_PROFILES.md) and [mod compatibility](MODS.md).
 
 ## Current hardware report — 00.24
 
