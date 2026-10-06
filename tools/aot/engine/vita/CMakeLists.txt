@@ -24,7 +24,7 @@ get_filename_component(TEAVM_C_DIR "${TEAVM_C_DIR}" ABSOLUTE)
 
 set(VITA_APP_NAME "Dragon Ball Tap Battle Vita")
 set(VITA_TITLEID "DBTB00001")
-set(VITA_VERSION "00.26")
+set(VITA_VERSION "00.27")
 execute_process(COMMAND git rev-parse --short HEAD WORKING_DIRECTORY "${REPO_ROOT}"
                 OUTPUT_VARIABLE DBTB_COMMIT OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
 if(NOT DBTB_COMMIT)
@@ -38,6 +38,7 @@ add_executable(${PROJECT_NAME}
   "${REPO_ROOT}/tools/aot/engine/native/vita_platform.cpp"
   "${REPO_ROOT}/tools/aot/engine/native/vita_text.cpp"
   "${REPO_ROOT}/tools/aot/engine/native/vita_audio.cpp"
+  "${REPO_ROOT}/tools/aot/engine/native/compressed_bgm.cpp"
   "${REPO_ROOT}/tools/aot/engine/native/vita_compat.c"
   "${REPO_ROOT}/tools/aot/engine/vita/heap.c"
   "${REPO_ROOT}/tools/aot/vita/utf16.c"
@@ -96,7 +97,7 @@ target_link_libraries(${PROJECT_NAME}
   vorbisfile vorbis ogg
   vitaGL png z
   vitashark SceShaccCgExt taihen_stub SceShaccCg_stub mathneon
-  ScePvf_stub SceAudio_stub
+  ScePvf_stub SceAudio_stub SceAudiodec_stub
   SceLibKernel_stub SceAppMgr_stub SceAppUtil_stub SceCommonDialog_stub
   SceGxm_stub SceDisplay_stub SceSysmodule_stub SceKernelDmacMgr_stub
   SceCtrl_stub SceTouch_stub SceIofilemgr_stub ScePower_stub m
