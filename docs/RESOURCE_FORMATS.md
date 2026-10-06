@@ -18,11 +18,31 @@ see [CURRENT_STATUS](CURRENT_STATUS.md) for device/host scope.
 | BIN | Original loader data[2] or selected binCnv table; SPR BIN drives composed quads in DrawSprite | Multiple BIN schemas. SPR draws positions/UVs and blend flags from metadata, not guessed rectangles. Original consumers retained; verified top-level community BIN normalization, nested SPR BIN untouched |
 | GDT | Present in scenarios/card/gamedata/text resources | Not explicitly dispatched by observed GameData branches. Do not confuse tag 'gdt' with gameplay DAC converted to piGameData. Meaning/consumers UNCONFIRMED |
 | BMP/DAT/PLT/DB | Found in common/select/card-preview/background-object PACs | Container/hash/type confirmed. No matching branch in the audited original GameData loader; possible authoring/legacy metadata remains UNCONFIRMED. Preserve bytes; do not claim needed runtime decoders |
-| OGG | Vorbis, 17 stereo BGM + 19 mono effects; all 44.1 kHz | Native Vorbis/PCM services; earlier Vita BGM/SE audible; 00.21 worker/menu recovery confirmed |
+| OGG / exterior audio | Original/Gen/Android14/Spanish: 17 stereo BGM + 19 mono SE, all real Vorbis 44.1 kHz. Invasion keeps the `.ogg` names but changes 7 BGM to 5 MP3 + 2 AAC/M4A; two MP3 are 48 kHz | Native Vorbis services cover the baseline files only. Never infer codec from extension; Invasion's seven changed BGM require adapter/import codec support and hardware evidence |
 | WAV | Original GameData loader has WAV slot support (max 20 original, not 30) | 198 Gen RIFF mono PCM16/22050 streams and 198 community wrapped streams host-checked; audible quality pending |
 | mk.bin | 392-byte raw resource read by Game9 | Present; complete command/schema meaning PENDING |
 | loading.png | 4233-byte standalone raw resource | Present and loader reference confirmed |
 | XML | Android manifest/layout/values resources, not a game XML scene system | Replace platform UI/lifecycle; do not add an invented scene XML parser |
+
+## Audited protected-family additions — 2026-10-06
+
+Android14, Spanish Android14 and Invasion Beta 3 use separate per-PAC protected
+profiles. Their exact XOR constants, semantic type keys, aliases and corpus
+counts are in [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md) and
+[COMMUNITY_MOD_PROFILES](COMMUNITY_MOD_PROFILES.md). Important bounds observed:
+
+- Android14 / Spanish: maximum decoded protected RGBA 512×512.
+- Invasion: maximum observed RGBA 736×500 (1,472,000 bytes), in `char15.pac`;
+  a 512×512 hard limit would reject valid mod data.
+- Android14 / Spanish: 13 contiguous character triplets; Invasion: 22.
+- every audited protected `charXX` uses a 43-record converted BIN table.
+- nested `spr` containers restart their protected entry index at zero.
+- top-level protected WAV is a separate wrapper/ADPCM contract and is unrelated
+  to the exterior music files named `*.ogg`.
+
+The engine itself is not rewritten for these differences. Native/Vita resource
+adapters restore only verified transport/metadata contracts before handing data
+to the preserved original consumers.
 
 ## Important format distinctions
 
@@ -145,3 +165,5 @@ future ports: format conversion and bridge allocation strategy are separate conc
 > not exhaustive character/profile/mode or long-session certification. Historical
 > records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+Deep machine-readable evidence: [apk_deep_structure_2026-10-06.json](evidence/apk_deep_structure_2026-10-06.json).
