@@ -4,15 +4,17 @@ Current hardware checkpoint: **DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk** fix
 native PCM allocation growth at Android14 battle start and preserves the now
 hardware-confirmed LiveArea. Full build, host tests and the user’s Vita retest pass. See [00.24 result](docs/TEST_VITA_00_24.md).
 
-Development candidate **00.25** layers audited protected-resource profiles for the
-supplied Spanish mod and TAP BATTLE INVASION BETA 3 on top of 00.24, including
-Invasion's 22 contiguous character triplets. Synthetic profile/resource CI passes,
-but a deeper media audit found that seven Invasion files named `*.ogg` are
-actually five MP3 tracks plus two AAC/M4A tracks; the current libvorbisfile path
-cannot decode them. 00.25 therefore remains a resource/profile candidate, not
-complete Invasion audio support, and still needs its own physical-Vita test. It
-also does not automatically reproduce mechanics that exist only in the mod's
-changed `classes.dex`. See [community mod profiles](docs/COMMUNITY_MOD_PROFILES.md)
+Development candidate **00.27** keeps the 00.24 gameplay path, the 00.25
+protected-resource profiles and the two-digit character namespace through ID 99.
+Its immediate target is the audited 92-character Zuper/Samu dataset. All 384 Samu
+assets are preserved byte-for-byte: real Vorbis still uses libvorbisfile, while
+MP3 and AAC/M4A files that merely carry an `.ogg` filename are detected by
+content and decoded directly with Vita `SceAudiodec`. No BGM conversion,
+renaming or repacking is required. Public profile/native-smoke CI passes; physical
+Samu roster/audio validation remains pending. The same codec boundary is also
+applicable to Invasion's mislabeled BGM, but Invasion-specific gameplay changes
+from its modified `classes.dex` remain separate work. See
+[00.27 test](docs/TEST_VITA_00_27.md), [community mod profiles](docs/COMMUNITY_MOD_PROFILES.md)
 and the [deep APK reference](docs/APK_TECHNICAL_REFERENCE.md).
 
 Manual full-game publication: [Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml)
@@ -76,7 +78,8 @@ and LiveArea appearance are the remaining check for that repack.
 | 00.22 | Original masks 187/251 accepted; clean audio/selection reported | Battle startup exposes whole-PAC TeaVM managed allocation failure |
 | 00.23 | Physical Vita: text/audio/selection/battle path passes; no error observed in reported session | Broader regression matrix and release-quality normal build remain open |
 | 00.23 LiveArea-Fixed | User confirms presentation on physical Vita; tested 00.23 eboot unchanged | Android14 battle-start native Ogg allocation crash reported |
-| 00.24 | Full original-engine build; all 17 BGM PCM/low-allocation tests and ownership probes pass | Broader mode/profile and long-session coverage remains open |
+| 00.24 | Full original-engine build; all 17 BGM PCM/low-allocation tests and ownership probes pass; user confirms hardware fix | Broader mode/profile and long-session coverage remains open |
+| 00.27 | Build/CI: Samu 00..91 gate + direct Vorbis/MP3/AAC content paths, no asset conversion | Physical Samu roster/audio test pending |
 
 Use [current status and evidence](docs/CURRENT_STATUS.md) for the authoritative
 feature matrix, artifact hash and open issues. Older test reports describe their
@@ -109,8 +112,9 @@ triplets**. It is not a complete battle installation. Supplied Android14 has
 144 encoded assets and 13 indexed triplets; supplied `gen.apk` has 147 ordinary
 assets including those triplets and an optional bundled save. The audited
 `DragonBallZuperSamuGamerYT.apk` is Gen-derived with the same DEX/manifest but
-384 canonical assets and 92 character triplets; it remains a separate mod and is
-not yet a 92-character Vita hardware claim. Original in the selector means the
+384 canonical assets and 92 character triplets. 00.27 can consume its original
+Vorbis/MP3/AAC BGM bytes directly, but the complete 92-character/audio matrix is
+not yet a hardware claim. Original in the selector means the
 base folder, not proof of which APK supplied its contents.
 
 For Windows 10/11, use the [portable drag-and-drop tool](tools/windows/LEEME.txt):
@@ -126,6 +130,8 @@ verification](docs/WINDOWS_DATA_TOOL.md).
 # Run from this repository, using private output outside tracked source.
 python3 tools/extract_apk_data.py /private/gen.apk /private/install/game
 python3 tools/extract_apk_data.py /private/community.apk /private/install --mod Android14
+# Samu: validates the audited identity and preserves every asset byte-for-byte.
+python3 tools/prepare_samu_mod.py /private/DragonBallZuperSamuGamerYT.apk /private/install/mods/ZuperSamu
 ```
 
 Copy `install/game/` and `install/mods/` under `ux0:data/DBTapBattle/`. Keep existing
