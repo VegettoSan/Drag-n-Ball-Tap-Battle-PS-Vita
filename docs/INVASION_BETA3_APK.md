@@ -32,7 +32,7 @@ Firma: certificado Android genérico, fingerprint SHA-256
 - `loading.png`
 - `mk.bin`.
 
-No incluye `save.bin`, `bobj00.pac` ni `font00.pac`.
+No incluye `save.bin`, `bobj00.pac` ni `font00.pac`. Esta ausencia no significa que el APK esté incompleto: el APK es autónomo y el mismo patrón se observa en los otros Android14 protegidos auditados. La familia protegida `bobj` comienza en índice 01.
 
 ### Inventario lógico
 
@@ -263,7 +263,7 @@ El parser no debe fijar un count esperado por nombre de PAC.
 
 1. no tocar el motor original para acomodar 22 personajes.
 2. aceptar datos 00..21 solo mediante los contratos ya verificados y límites del adapter.
-3. mantener fallback de `bobj00`/font desde base.
+3. no exigir `bobj00` ni `font00` como parte del perfil protegido: su ausencia está observada en APKs autónomos; el VFS puede ofrecer fallback si el core original lo solicita, pero eso es una compatibilidad del port, no una dependencia del APK.
 4. no asumir Vorbis por extensión.
 5. no aumentar límites de memoria “a ciegas” para bgm_05; resolver primero codec y estrategia de streaming.
 6. si una mecánica de personaje adicional falla, comparar la ruta concreta con los métodos DEX modificados; no portar 372 métodos indiscriminadamente.
