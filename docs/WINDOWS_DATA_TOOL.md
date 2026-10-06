@@ -22,7 +22,9 @@ VPK separately (00.23 or later); this tool does not build or bundle a VPK.
 | Detected source | Destination within package | VPK selector |
 |---|---|---|
 | Non-empty `res/raw/`, no non-empty `assets/` | `data/DBTapBattle/game/` | Original |
-| Confirmed encoded Community14 aliases | `data/DBTapBattle/mods/Android14/` | Android14 |
+| Protected `community14-a210795b` | `data/DBTapBattle/mods/Android14/` | Android14 |
+| Protected `community14-es-d594affc` | `data/DBTapBattle/mods/Espanol/` | Espanol |
+| Protected `community14-invasion-05aa0c5e` | `data/DBTapBattle/mods/Invasion/` | Invasion |
 | Known supplied Gen SHA-256 | `data/DBTapBattle/mods/Gen/` | Gen |
 | Other canonical `assets/` APK | `data/DBTapBattle/mods/<safe APK stem>/` | Its folder name |
 
@@ -43,10 +45,13 @@ is complete relative to that APK, but is not a complete battle installation.
 ## Preservation and validation
 
 Selected `res/raw/` or `assets/` files retain their exact bytes, including unknown
-extensions and an APK-provided `save.bin`. Community14 applies the pinned
-`community14-a210795b` alias/outer-table contract from `tools/community14.py`;
-106 confirmed filenames in the supplied APK are renamed without decoding or
-rewriting their payloads. Other Community14 codecs are not assumed compatible.
+extensions and an APK-provided `save.bin`. The current tool has three separately
+audited protected profiles in `tools/community14.py`: Android14
+`community14-a210795b` (106 PAC), Spanish `community14-es-d594affc`
+(106 PAC) and Invasion `community14-invasion-05aa0c5e` (139 PAC). Each profile
+has its own aliases/XOR constants. The extractor canonicalizes filenames only;
+it does not decode or rewrite PAC payload bytes. A protected APK that does not
+uniquely satisfy one audited profile must be rejected rather than guessed.
 
 The tool reads ZIP central metadata, verifies selected-file CRC and size while
 streaming, checks Community14 table bounds/type signals, and writes SHA-256
@@ -71,6 +76,16 @@ progress.** The desktop extractor does not connect to a Vita or read its save.
 No progress is shared across profiles. Code-changing Android mods still require
 appropriate engine support; data extraction does not incorporate Android code.
 
+
+### Media caveat: names are not codecs
+
+The extractor intentionally preserves media bytes. Deep audit found that Invasion
+keeps `.ogg` filenames for seven BGM that are actually MP3 or AAC/M4A. The
+extractor therefore must not validate or rename a media file merely from its
+extension. Runtime/import codec adaptation is a separate concern; see
+[INVASION_BETA3_APK](INVASION_BETA3_APK.md). Preserving source bytes and hashes
+is required so any future conversion remains traceable and non-destructive.
+
 ## Verification
 
 - Real supplied APKs were processed locally by the actual PS1 under PowerShell
@@ -92,3 +107,7 @@ existing 00.23 device checkpoint remains unchanged.
 Windows CI run [37390881454](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37390881454) passed all 13 tests, including the actual BAT transport, under PowerShell 5.1.26100.33438 on Windows Server 2025. The first run passed the 12 extractor tests but failed to start the BAT because the Python harness used CRT quote escaping for cmd.exe. Commit `5ef4549` corrects the harness; the second run passes. The file picker and interactive Explorer opening are not automated checks.
 
 See [machine-readable evidence](evidence/windows_extractor_2026-10-05.json).
+
+For the complete five-APK structure, profile constants and cross-APK differences,
+see [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md) and
+[evidence/apk_deep_structure_2026-10-06.json](evidence/apk_deep_structure_2026-10-06.json).
