@@ -119,6 +119,13 @@ still need a physical-Vita test before being called hardware-confirmed. See
   five MP3 and two AAC/M4A BGM as `.ogg`; the current libvorbisfile adapter
   cannot decode those seven. Codec handling belongs in the Vita/import adapter,
   not in the original game logic.
+- Zuper/SamuGamerYT is a separate **Gen-derived Tier B+ case**: its DEX and
+  manifest are byte-identical to Gen, but it expands `char/chardemo/charf`
+  from 13 to 92 indices using ordinary PACs. This is strong evidence of a
+  data-driven roster, not permission to raise Vita limits without core evidence.
+  The current installed-data audit only checks 0..30; indices 31..91 remain
+  outside that gate. The mod also contains 15 MP3/AAC BGM under `.ogg` names,
+  two empty-but-valid charf PACs and nonstandard `u`/`.pn` entry tags.
 - Arbitrary protected containers and synchronized multiplayer are unsupported.
 
 ## Import routes
@@ -133,6 +140,8 @@ python3 tools/extract_apk_data.py community.apk /private/install --mod Android14
 # Audited Spanish/Invasion protected APKs are detected by their own profiles.
 python3 tools/extract_apk_data.py spanish.apk /private/install --mod Espanol
 python3 tools/extract_apk_data.py invasion.apk /private/install --mod Invasion
+# Gen-derived canonical 92-character mod: no alias codec required.
+python3 tools/extract_apk_data.py DragonBallZuperSamuGamerYT.apk /private/install --mod ZuperSamu
 # Other mods only when their layout/names/format contracts are supported.
 python3 tools/extract_apk_data.py mod.apk /private/install --mod MyMod
 ```
@@ -144,8 +153,9 @@ Community14 dataset over the only base copy just to fix a missing resource;
 its absent bobj00/font00 need base fallback. See
 [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md),
 [ANDROID14_APK](ANDROID14_APK.md), [SPANISH_ANDROID14_APK](SPANISH_ANDROID14_APK.md),
-[INVASION_BETA3_APK](INVASION_BETA3_APK.md), [DATA_LAYOUT](DATA_LAYOUT.md) and
-[Original+Characters](ORIGINAL_PLUS_CHARACTERS_APK.md).
+[INVASION_BETA3_APK](INVASION_BETA3_APK.md),
+[DRAGONBALL_ZUPER_SAMUGAMERYT_APK](DRAGONBALL_ZUPER_SAMUGAMERYT_APK.md),
+[DATA_LAYOUT](DATA_LAYOUT.md) and [Original+Characters](ORIGINAL_PLUS_CHARACTERS_APK.md).
 
 ## Performance and cache limits
 
