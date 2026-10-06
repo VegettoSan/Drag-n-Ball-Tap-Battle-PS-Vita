@@ -8,15 +8,16 @@
     "version": "00.27",
     "title_id": "DBTB00001",
     "vpk_name": "DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk",
-    "vpk_bytes": 2634456,
-    "vpk_sha256": "aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf",
-    "eboot_sha256": "0abcd48953c61692c19522c4cd68f897cd41e2e74d9ee39bb5d2303bf1f32b2f",
-    "elf_sha256": "079bdda19f5deb4f579fac8677e428c3f691bd89376eb3f3b7a13bc7d5a0f1e8",
+    "vpk_bytes": 2647595,
+    "vpk_sha256": "bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030",
+    "eboot_sha256": "447324fcd3c0c6400f7a3c3cea92bc3a105f64c240831e376f289a535341a5a3",
+    "elf_sha256": "ecb70e9686b70a330dad4b85e1d0448791ff67a2d1b238c24d1610d1c46704f3",
     "teavm_classes": 467,
     "teavm_methods": 4086,
     "livearea_validation": "PASS",
     "interactive_compile": {
-      "generated_teavm": "-O0",
+      "teavm_remainder": "-O1 split into ten private compilation units",
+      "TCBManajer": "-O0",
       "native_adapters": "-O2",
       "purpose": "functional hardware validation; not final performance benchmarking"
     }
