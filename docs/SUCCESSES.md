@@ -1,5 +1,15 @@
 # Confirmed Successes
 
+## 2026-10-06 — LiveArea on device; exact PCM allocation on host
+
+User confirms 00.23 LiveArea-Fixed presentation on the physical Vita. The new
+00.24 decoder preserves every PCM sample/frame/channel/rate of all 17 private
+BGM tracks compared to the legacy loader. Under a 6 MiB single-request ceiling,
+legacy bgm_03 throws bad_alloc and all fixed tracks succeed. bgm_03 C++ peak drops
+8,805,892 bytes. Native audio/DSP and resource ownership tests pass ASan/UBSan
+(Vita audio/GL APIs mocked); cache reclamation retains active streams/textures.
+These do not establish 00.24 hardware battle recovery, which remains pending.
+
 **Reading checkpoint — 2026-10-05 / 00.21.** Entries retain the source/build and
 evidence available when recorded. Historical pending items can be superseded;
 do not treat them as current blockers or retroactively promote their success.

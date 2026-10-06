@@ -1,5 +1,10 @@
 # Dragon Ball Tap Battle PS Vita
 
+Latest runtime candidate: **DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk** fixes
+native PCM allocation growth at Android14 battle start and preserves the now
+hardware-confirmed LiveArea. Full build and host tests pass; 00.24 battle recovery
+needs a device retest. See [00.24 test](docs/TEST_VITA_00_24.md).
+
 Latest LiveArea test: **DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk**. It preserves
 the hardware-tested 00.23 engine and fixes the splash palette. The previous
 LiveArea-Final VPK contained a non-playable CI probe and must be discarded.

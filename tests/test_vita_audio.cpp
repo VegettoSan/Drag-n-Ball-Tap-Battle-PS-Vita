@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdio>
 std::vector<std::string> audio_test_logs;
+void dbtb_reclaimIdleResources() {}
 void runtimeLog(const std::string& message) {audio_test_logs.push_back(message);}
 const GameVfs& dbtb_vfs(){static GameVfs vfs("/tmp/dbtb-probe");return vfs;}
 std::shared_ptr<Clip> clip(std::initializer_list<int16_t> pcm,int rate=22050,int channels=1){

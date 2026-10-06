@@ -68,6 +68,12 @@ int main(int argc,char** argv){
  // Hold a live texture while idle entries are evicted by later character loads.
  for(int i=1;i<8;++i){auto other=png(argv[1],i);int id=dbtb_loadTexture(other.data(),other.size(),1);assert(id>0);release(id);assert(mock_pixels.count(a)&&texture_cache_bytes<=kTextureCacheBudget);}
  assert(mock_deletes>0&&mock_pixels.at(a)==pixels);
+ // Audio reclamation may drop cached PACs/idle textures, never active owners.
+ int audio_stream=dbtb_openResourceStream(name,251);assert(audio_stream>0);
+ dbtb_reclaimIdleResources();
+ assert(resource_cache.used()==0&&mock_pixels.count(a));
+ assert(dbtb_readResourceStream(audio_stream,0,chunk.data(),2)==2);
+ dbtb_closeResourceStream(audio_stream);
  release(a);assert(trimTextures(kTextureCacheBudget)&&texture_cache.empty());
  int empty=dbtb_emptyTexture(16,16);assert(empty>0);release(empty);assert(!mock_pixels.count(empty));
  // Profile reinitialization discards resource hits, not pending/save aliases.

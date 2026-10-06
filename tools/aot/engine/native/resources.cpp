@@ -132,6 +132,12 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
     return true;
 }
 const GameVfs& dbtb_vfs() { if (!vfs) std::abort(); return *vfs; }
+void dbtb_reclaimIdleResources() {
+    // Cache ownership only: active streams retain shared PAC owners and live
+    // texture references survive trimTextures. Called on the game thread.
+    resource_cache.clear();
+    trimTextures(kTextureCacheBudget);
+}
 bool dbtb_releaseTexture(unsigned id) {
     for (auto& cached : texture_cache) if (cached.id == id) {
         if (cached.users) --cached.users;

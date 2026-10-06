@@ -35,6 +35,14 @@ g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/audio_stubs \
   -lvorbisfile -lvorbis -logg -o /private/probes/audio
 ASAN_OPTIONS=detect_leaks=0 /private/probes/audio
 
+# Private fixture/game/ contains all 17 user-provided bgm_XX.ogg tracks.
+# Tracks C++ allocations; reproduces legacy bgm_03 bad_alloc with a 6 MiB
+# single-request ceiling and verifies exact PCM plus lower fixed-load peaks.
+g++ -std=c++14 -O2 -Itests/audio_stubs -Itools/aot/engine/native -Isrc \
+  tests/test_vita_ogg.cpp src/vfs.cpp -lvorbisfile -lvorbis -logg \
+  -o /private/probes/ogg
+/private/probes/ogg /private/fixture
+
 g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/text_stubs \
   -Itools/aot/engine/native -Isrc tests/test_vita_text.cpp -o /private/probes/text
 ASAN_OPTIONS=detect_leaks=0 /private/probes/text

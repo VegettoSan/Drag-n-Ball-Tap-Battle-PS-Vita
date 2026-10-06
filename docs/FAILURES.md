@@ -1,5 +1,17 @@
 # Failures and Dead Ends
 
+## 2026-10-06 — 00.23 Android14 native BGM allocation
+
+The correctly packaged LiveArea-Fixed full engine still crashes on the newly
+reported Android14 battle-start path. Log: `std::bad_alloc`; original PAC
+streaming remains active. Core return 0x81256787 is immediately after the old
+Ogg PCM vector-growth call. Its 9,506,304-byte request matches bgm_03 in a host
+reproduction. Incremental resizing retains old PCM while allocating a doubled
+replacement, peaking at 14,260,324 C++ bytes for this track. Do not retry that
+decoder unchanged or describe the hardware-tested 00.23 path as all-profile
+certification. 00.24 removes this transient growth and reclaims idle caches;
+host validation passes, physical recovery is pending.
+
 **Reading checkpoint — 2026-10-05 / 00.21.** Entries retain the source/build and
 evidence available when recorded. Historical pending items can be superseded;
 do not treat them as current blockers or retroactively promote their success.

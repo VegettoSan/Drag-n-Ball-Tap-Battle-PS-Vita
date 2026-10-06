@@ -141,19 +141,44 @@ std::shared_ptr<Clip> decodeOgg(const std::string& relative) {
     auto clip = std::make_shared<Clip>();
     clip->channels = info->channels;
     clip->rate = static_cast<int>(info->rate);
-    char buffer[8192];
+    // Files are seekable: Vorbis knows the exact decoded frame count. Growing
+    // a vector in 8 KiB steps temporarily keeps its old allocation alongside
+    // a doubled replacement (the 00.23 Android14 battle-start bad_alloc).
+    const ogg_int64_t frames = ov_pcm_total(&vf, -1);
+    constexpr uint64_t kMaxOggBytes = 32u * 1024u * 1024u;
+    if (frames <= 0 || uint64_t(frames) > kMaxOggBytes / (2u * clip->channels)) {
+        ov_clear(&vf); return nullptr;
+    }
+    for (int link = 0; link < ov_streams(&vf); ++link) {
+        const vorbis_info* part = ov_info(&vf, link);
+        if (!part || part->channels != clip->channels || part->rate != clip->rate) {
+            ov_clear(&vf); return nullptr;
+        }
+    }
+    const size_t samples = size_t(frames) * size_t(clip->channels);
+    dbtb_reclaimIdleResources();
+    runtimeLog("Ogg decode: " + relative + " frames=" + std::to_string(frames) +
+               " pcm_bytes=" + std::to_string(samples * sizeof(int16_t)));
+    clip->pcm.resize(samples);
+    size_t written = 0;
     int bitstream = 0;
     for (;;) {
-        const long got = ov_read(&vf, buffer, sizeof(buffer), 0, 2, 1, &bitstream);
+        // One extra read verifies EOF without growing the allocated PCM.
+        char end_probe[4];
+        const size_t left = samples * sizeof(int16_t) - written;
+        char* target = left ? reinterpret_cast<char*>(clip->pcm.data()) + written : end_probe;
+        const int request = left ? int(std::min(size_t(8192), left)) : sizeof(end_probe);
+        const long got = ov_read(&vf, target, request, 0, 2, 1, &bitstream);
         if (got == 0) break;
-        if (got < 0) { ov_clear(&vf); return nullptr; }
-        const size_t old = clip->pcm.size();
-        clip->pcm.resize(old + size_t(got) / sizeof(int16_t));
-        std::memcpy(clip->pcm.data() + old, buffer, size_t(got));
+        if (got < 0 || size_t(got) > left || (got % (2 * clip->channels))) {
+            ov_clear(&vf); return nullptr;
+        }
+        written += size_t(got);
     }
     ov_clear(&vf);
-    clip->frame_count = clip->pcm.size() / size_t(clip->channels);
-    return clip->frames() ? clip : nullptr;
+    if (written != samples * sizeof(int16_t)) return nullptr;
+    clip->frame_count = size_t(frames);
+    return clip;
 }
 
 std::shared_ptr<Clip> decodeVoiceBytes(const void* raw, int32_t size) {

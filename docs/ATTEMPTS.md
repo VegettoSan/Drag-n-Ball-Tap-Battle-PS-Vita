@@ -1,5 +1,22 @@
 # Attempts Log
 
+## 2026-10-06 — 00.24 exact BGM PCM allocation
+
+User confirmed 00.23 LiveArea-Fixed presentation, then supplied an Android14
+characters 12/03 battle-start crash. Log retains native PAC streaming but ends
+with `std::bad_alloc`. Core stack points to old `decodeOgg` vector resize;
+its 0x910e00 (9,506,304-byte) request is reproduced by private `bgm_03.ogg`.
+Changed Ogg decoding to exact frame-count allocation/direct writes with
+format/length validation and cache-only resource reclamation beforehand.
+Newlib/TeaVM heaps and original gameplay remain unchanged. Private APK-derived
+code/data are generated locally, never committed or sent to CI.
+
+All 17 real BGM tracks compare byte-for-byte against the legacy decoder. A 6 MiB
+single-request ceiling fails legacy bgm_03 and permits every fixed track. That
+track's C++ peak falls from 14,260,324 to 5,454,432 bytes. Existing audio DSP/setup
+and native resource tests pass ASan/UBSan with Vita/GL mocked; active streams and
+live textures survive reclamation. 00.24 device result pending.
+
 **Reading checkpoint — 2026-10-05 / 00.21.** Entries retain the source/build and
 evidence available when recorded. Historical pending items can be superseded;
 do not treat them as current blockers or retroactively promote their success.

@@ -1,0 +1,168 @@
+{
+  "date": "2026-10-06",
+  "version": "00.24",
+  "hardware_status": "pending",
+  "reported_profile": "Android14",
+  "reported_characters": [
+    12,
+    3
+  ],
+  "last_resource": "bobj03.pac",
+  "reported_livearea": "confirmed working by user",
+  "log_sha256": "9099641cc1e50f253d20bddd0f37032549657d6b75c806dae1c5a47f87589d64",
+  "core_sha256": "c5cbb5f96fa438d73749026f2c468e5d02c7c5029a0fe41bceb9bf8a0c58e865",
+  "core": {
+    "game_thread": "DBTB00001",
+    "stop_reason": "0x30002",
+    "pc": "0x8132c786",
+    "main_rx_base": "0x81074000",
+    "decode_ogg_return": "0x81256787",
+    "pcm_growth_call": "0x81256782 -> 0x81257c4c",
+    "requested_bytes": 9506304,
+    "newlib_heap_bytes": 100663296
+  },
+  "fix": [
+    "exact ov_pcm_total allocation",
+    "direct PCM writes",
+    "consistent chained format and exact-length validation",
+    "cache-only PAC/idle-texture reclamation before decode"
+  ],
+  "tests": {
+    "ogg_tracks": [
+      {
+        "track": "bgm_00.ogg",
+        "pcm_bytes": 2142244,
+        "legacy_cpp_peak": 3277924,
+        "exact_cpp_peak": 2142344,
+        "legacy_largest_allocation": 2182656
+      },
+      {
+        "track": "bgm_01.ogg",
+        "pcm_bytes": 1840696,
+        "legacy_cpp_peak": 3694692,
+        "exact_cpp_peak": 1840796,
+        "legacy_largest_allocation": 2461184
+      },
+      {
+        "track": "bgm_02.ogg",
+        "pcm_bytes": 2288432,
+        "legacy_cpp_peak": 3454052,
+        "exact_cpp_peak": 2288532,
+        "legacy_largest_allocation": 2302464
+      },
+      {
+        "track": "bgm_03.ogg",
+        "pcm_bytes": 5454332,
+        "legacy_cpp_peak": 14260324,
+        "exact_cpp_peak": 5454432,
+        "legacy_largest_allocation": 9506304
+      },
+      {
+        "track": "bgm_04.ogg",
+        "pcm_bytes": 4736896,
+        "legacy_cpp_peak": 13955172,
+        "exact_cpp_peak": 4736996,
+        "legacy_largest_allocation": 9302528
+      },
+      {
+        "track": "bgm_05.ogg",
+        "pcm_bytes": 4546148,
+        "legacy_cpp_peak": 13438052,
+        "exact_cpp_peak": 4546248,
+        "legacy_largest_allocation": 8956416
+      },
+      {
+        "track": "bgm_06.ogg",
+        "pcm_bytes": 4639560,
+        "legacy_cpp_peak": 12216420,
+        "exact_cpp_peak": 4639660,
+        "legacy_largest_allocation": 8142336
+      },
+      {
+        "track": "bgm_07.ogg",
+        "pcm_bytes": 5131636,
+        "legacy_cpp_peak": 14313572,
+        "exact_cpp_peak": 5131736,
+        "legacy_largest_allocation": 9542144
+      },
+      {
+        "track": "bgm_08.ogg",
+        "pcm_bytes": 2213648,
+        "legacy_cpp_peak": 3334244,
+        "exact_cpp_peak": 2213748,
+        "legacy_largest_allocation": 2220544
+      },
+      {
+        "track": "bgm_09.ogg",
+        "pcm_bytes": 711084,
+        "legacy_cpp_peak": 1367140,
+        "exact_cpp_peak": 711184,
+        "legacy_largest_allocation": 908800
+      },
+      {
+        "track": "bgm_10.ogg",
+        "pcm_bytes": 955352,
+        "legacy_cpp_peak": 1664100,
+        "exact_cpp_peak": 955452,
+        "legacy_largest_allocation": 1108480
+      },
+      {
+        "track": "bgm_11.ogg",
+        "pcm_bytes": 814156,
+        "legacy_cpp_peak": 1655908,
+        "exact_cpp_peak": 814256,
+        "legacy_largest_allocation": 1101312
+      },
+      {
+        "track": "bgm_12.ogg",
+        "pcm_bytes": 398956,
+        "legacy_cpp_peak": 838756,
+        "exact_cpp_peak": 399056,
+        "legacy_largest_allocation": 557568
+      },
+      {
+        "track": "bgm_13.ogg",
+        "pcm_bytes": 963568,
+        "legacy_cpp_peak": 1561700,
+        "exact_cpp_peak": 963668,
+        "legacy_largest_allocation": 1038848
+      },
+      {
+        "track": "bgm_14.ogg",
+        "pcm_bytes": 5065848,
+        "legacy_cpp_peak": 12496996,
+        "exact_cpp_peak": 5065948,
+        "legacy_largest_allocation": 8329728
+      },
+      {
+        "track": "bgm_15.ogg",
+        "pcm_bytes": 5446740,
+        "legacy_cpp_peak": 13591652,
+        "exact_cpp_peak": 5446840,
+        "legacy_largest_allocation": 9058816
+      },
+      {
+        "track": "bgm_16.ogg",
+        "pcm_bytes": 2978352,
+        "legacy_cpp_peak": 7114852,
+        "exact_cpp_peak": 2978452,
+        "legacy_largest_allocation": 4742656
+      }
+    ],
+    "allocation_fault": "legacy bgm_03 fails at 6 MiB single request ceiling; all 17 fixed tracks pass",
+    "comparison": "every PCM byte, frame count, channel and sample rate identical",
+    "audio": "ASan/UBSan pass; Vita audio/thread APIs mocked",
+    "resources": "ASan/UBSan pass; GL mocked; active stream/live texture preserved",
+    "livearea": "3 Python regression tests pass"
+  },
+  "build": {
+    "generator": "TeaVM 0.12.3",
+    "vitasdk": "2026.08 GCC 15.2.0",
+    "java": "Temurin 17",
+    "generated_c_optimization": "-O1 complete amalgamation",
+    "native_optimization": "-O2",
+    "managed_max_heap_bytes": 50331648,
+    "newlib_heap_bytes": 100663296,
+    "private_inputs_in_git_or_ci": false
+  }
+}

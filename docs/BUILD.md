@@ -1,4 +1,15 @@
-# Build and install — full engine 00.23
+# Build and install — full engine 00.24
+
+## 00.24 candidate
+
+The Android14 battle-start audio-memory candidate is built locally from a fresh
+original APK dex2jar/TeaVM generation with pinned tools and the standard full
+`tools/aot/engine/vita/build.py` recipe. The complete TeaVM `all.c` compiles at
+`-O1`, including TCBManajer; native services compile at `-O2`. No split compilation
+or unoptimized gameplay translation unit is used for this candidate. Private
+APK/JAR/generated C remain outside Git/CI. Approved LiveArea files are included
+by the normal build. Hardware verification is pending; see
+[00.24 device test](TEST_VITA_00_24.md).
 
 Current hardware evidence: [00.23](evidence/vita_hardware_full_game_00.23.json). The last fully pinned normal-build artifact evidence remains [00.22](evidence/vita_selection_filter_build_00.22.json); see the 00.23 test-build caveat below.
 Read [CURRENT_STATUS](CURRENT_STATUS.md) before interpreting build success as

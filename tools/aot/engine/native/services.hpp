@@ -1,4 +1,6 @@
 #pragma once
+// Drop cache-only PAC owners and idle imported textures before large audio loads.
+void dbtb_reclaimIdleResources();
 #include "vfs.hpp"
 #include <string>
 

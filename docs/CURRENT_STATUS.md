@@ -1,4 +1,33 @@
-# Current status — 2026-10-05, full engine 00.23
+# Current status — 2026-10-06, 00.24 audio-memory retest
+
+## Latest report and candidate — 2026-10-06
+
+The user confirms that **00.23 LiveArea-Fixed presentation works on hardware**,
+but reports another battle-start crash with Android14 selected, characters 12/03
+and `bobj03`. The earlier successful 00.23 test path remains historical evidence;
+this extends coverage to a failing native-audio allocation path. The PAC streaming
+repair remains active in the supplied log.
+
+The latest log ends in `std::bad_alloc`. The supplied core's game-thread stack
+returns to `decodeOgg` immediately after PCM vector growth, with a requested
+9,506,304-byte allocation. The old decoder reproduces that exact request for
+`bgm_03.ogg`: its C++ allocation peak is 14,260,324 bytes for a 5,454,332-byte
+PCM track. This differs from 00.22's managed whole-PAC allocation failure.
+
+00.24 allocates the exact Vorbis frame count once, decodes directly into that
+buffer, checks channel/rate consistency and decoded length, and drops cache-only
+PAC owners/idle imported textures before allocating. Active streams and textures
+retain ownership. Newlib remains 96 MiB, TeaVM's maximum remains 48 MiB, and
+original battle logic, music samples, voice DSP and approved LiveArea remain
+unchanged. New Ogg diagnostics identify the track/frame count.
+
+**Host confirmed:** all 17 supplied BGM tracks match the previous decoder sample
+for sample; a 6 MiB single-allocation limit reproduces the old `bgm_03` failure
+and permits all fixed loads. Fixed `bgm_03` C++ peak: 5,454,432 bytes, a reduction
+of 8,805,892 bytes (excluding Vorbis C allocations and unrelated owners).
+Audio setup/DSP and resource ownership probes pass with Vita APIs mocked.
+**00.24 physical-Vita battle recovery remains pending.** See
+[the retest procedure](TEST_VITA_00_24.md).
 
 <!-- DBTB_00_23_DETAIL:START -->
 ## Authoritative hardware checkpoint — 00.23 (2026-10-05)
@@ -61,7 +90,7 @@ executable/SFO and retains every original package entry byte-for-byte, adding
 only the five LiveArea files. `pic0.png` now has the required 256-entry palette
 without changing any decoded pixels; the minimal MetalSyntax a1 gate uses XML
 content revision 2. This package passes the toolkit and strengthened local
-validators; its installation/appearance on real hardware remains pending.
+validators; the user subsequently confirmed its LiveArea works on real hardware.
 
 The previous `DBTapBattle-Vita-00.23-LiveArea-Final.vpk` is **rejected**: its
 `eboot.bin` matches the non-playable CI native link probe (run `37387861902`),
