@@ -131,9 +131,22 @@ function Get-CanonicalName([string]$Name, [string]$Codec = '') {
     $stem = $Name.Substring(0, $Name.Length - 4)
     $canonicalResults = @()
     foreach ($profile in $profiles) {
-        if ($profile.Fixed.ContainsKey($stem)) { $canonicalResults += $profile.Fixed[$stem] + '.pac'; continue }
+        if ($profile.Fixed.ContainsKey($stem)) {
+            $canonicalResults += $profile.Fixed[$stem] + '.pac'
+            continue
+        }
         foreach ($prefix in $profile.Numbered.Keys) {
-            if ($stem -cmatch ('^' + $prefix + '([0-9]{' + $profile.Numbered[$prefix][1] + '})    if ($unique.Count -eq 1) { return $unique[0] }
+            $spec = $profile.Numbered[$prefix]
+            $digits = [int]$spec[1]
+            $pattern = '^' + $prefix + '([0-9]{' + $digits + '})$'
+            if ($stem -cmatch $pattern) {
+                $canonicalResults += [string]$spec[0] + $Matches[1] + '.pac'
+                break
+            }
+        }
+    }
+    $unique = @($canonicalResults | Select-Object -Unique)
+    if ($unique.Count -eq 1) { return $unique[0] }
     return $Name
 }
 
