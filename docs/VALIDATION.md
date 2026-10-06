@@ -293,7 +293,7 @@ Direct-audio validation additionally checks the real Samu containers:
 
 GitHub evidence: Community mod profiles run `37544623252` PASS and Vita engine
 native smoke run `37544588962` PASS. Full candidate VPK SHA-256:
-`aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`.
+`bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030`.
 Audible playback/loop/transition behavior remains a physical gate; see
 [TEST_VITA_00_27](TEST_VITA_00_27.md) and
 [evidence](evidence/vita_samu_direct_audio_00.27.json).
