@@ -202,3 +202,36 @@ testing to repeated battles, additional characters, datasets/mods and long sessi
 > not exhaustive character/profile/mode or long-session certification. Historical
 > records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## Deep APK forensic evidence — 2026-10-06
+
+The current APK reference was regenerated directly from the five supplied APK
+archives, not inferred from filenames or prior notes. The audit records only
+metadata/hashes/structure; commercial payload bytes are not committed.
+
+Validated directly:
+
+- ZIP path/layout counts and SHA-256 identities;
+- DEX header/class/method structure and protected-family code-method comparisons;
+- ordinary and protected PAC directories, nested SPR containers and bounds;
+- decoded protected RGBA dimensions/hashes;
+- converted GameData table metadata;
+- wrapped voice counts/declared PCM contracts;
+- exterior audio codec/rate/channel/duration using content probing;
+- canonical logical-file comparisons after resolving aliases;
+- protected-profile uniqueness across every supplied PAC.
+
+The public evidence set is:
+
+- `docs/APK_TECHNICAL_REFERENCE.md`
+- `docs/APK_CANONICAL_DIFFERENCES.md`
+- `docs/SPANISH_ANDROID14_APK.md`
+- `docs/INVASION_BETA3_APK.md`
+- `docs/evidence/APK_AUDIO_MATRIX_2026-10-06.md`
+- `docs/evidence/apk_deep_structure_2026-10-06.json`
+
+This evidence is sufficient to implement already-audited aliases/codecs/bounds
+without possession of the APKs. It is **not** a substitute for the APK when
+discovering previously undocumented commercial behavior, nor for a physical Vita
+test when changing runtime behavior.
+
