@@ -1062,5 +1062,183 @@
     "Do not infer audio codec from .ogg extension; inspect content magic/container.",
     "Do not claim mod DEX mechanics are supported merely because resources parse.",
     "Any change to a stable runtime path requires concrete evidence, focused regression coverage and corresponding documentation."
-  ]
+  ],
+  "canonical_data_comparisons": {
+    "original_vs_gen": {
+      "common": 57,
+      "byte_identical": 40,
+      "byte_different": 17,
+      "only_original": 0,
+      "only_gen": 90
+    },
+    "original_vs_android14": {
+      "common": 55,
+      "byte_identical": 37,
+      "byte_different": 18,
+      "only_original": 2,
+      "only_android14": 89
+    },
+    "original_vs_spanish": {
+      "common": 55,
+      "byte_identical": 37,
+      "byte_different": 18,
+      "only_original": 2,
+      "only_spanish": 89
+    },
+    "original_vs_invasion": {
+      "common": 55,
+      "byte_identical": 30,
+      "byte_different": 25,
+      "only_original": 2,
+      "only_invasion": 122
+    },
+    "gen_vs_android14": {
+      "common": 144,
+      "byte_identical": 38,
+      "byte_different": 106,
+      "only_gen": 3,
+      "only_android14": 0
+    },
+    "gen_vs_spanish": {
+      "common": 144,
+      "byte_identical": 38,
+      "byte_different": 106,
+      "only_gen": 3,
+      "only_spanish": 0
+    },
+    "gen_vs_invasion": {
+      "common": 144,
+      "byte_identical": 31,
+      "byte_different": 113,
+      "only_gen": 3,
+      "only_invasion": 33
+    },
+    "android14_vs_spanish": {
+      "common": 144,
+      "byte_identical": 38,
+      "byte_different": 106,
+      "only_android14": 0,
+      "only_spanish": 0
+    },
+    "android14_vs_invasion": {
+      "common": 144,
+      "byte_identical": 31,
+      "byte_different": 113,
+      "only_android14": 0,
+      "only_invasion": 33
+    },
+    "spanish_vs_invasion": {
+      "common": 144,
+      "byte_identical": 31,
+      "byte_different": 113,
+      "only_spanish": 0,
+      "only_invasion": 33
+    }
+  },
+  "observed_outliers": {
+    "spanish_card034": {
+      "canonical": "card034.pac",
+      "table_records": 1,
+      "width": 0,
+      "height": 0,
+      "cells": 0,
+      "normalized_payload_bytes": 10,
+      "also_present_in_invasion": true
+    },
+    "invasion_char13": {
+      "entries": 40,
+      "wav_entries": 18,
+      "max_image": "512x512",
+      "bin_records": 43
+    },
+    "invasion_char15": {
+      "entries": 101,
+      "wav_entries": 19,
+      "max_image": "736x500",
+      "max_image_entry": 94,
+      "bin_records": 43,
+      "layout_note": "RGBA entries are interleaved among CNV/DAC/WAV and followed by 39 additional RGBA entries; do not assume all images precede all audio."
+    },
+    "invasion_char16": {
+      "entries": 41,
+      "wav_entries": 19,
+      "max_image": "512x512",
+      "bin_records": 43
+    },
+    "invasion_char20": {
+      "entries": 98,
+      "wav_entries": 15,
+      "max_image": "512x512",
+      "bin_records": 43,
+      "layout_note": "RGBA entries are interleaved among CNV/DAC/WAV and followed by 36 additional RGBA entries."
+    },
+    "invasion_char21": {
+      "entries": 85,
+      "wav_entries": 15,
+      "max_image": "512x512",
+      "bin_records": 43,
+      "layout_note": "67 RGBA entries precede BIN/CNV/DAC and WAV entries."
+    }
+  },
+  "semantic_pac_comparisons": {
+    "android14_vs_spanish": {
+      "common_pacs": 106,
+      "same_semantic_digest": 7,
+      "different_semantic_digest": 99,
+      "same": [
+        "back00.pac",
+        "back01.pac",
+        "back02.pac",
+        "back03.pac",
+        "card000.pac",
+        "card_preview.pac",
+        "demo_08.pac"
+      ]
+    },
+    "android14_vs_invasion": {
+      "common_pacs": 106,
+      "same_semantic_digest": 6,
+      "different_semantic_digest": 100,
+      "same": [
+        "back00.pac",
+        "back01.pac",
+        "back02.pac",
+        "back03.pac",
+        "card000.pac",
+        "card_preview.pac"
+      ]
+    },
+    "spanish_vs_invasion": {
+      "common_pacs": 106,
+      "same_semantic_digest": 81,
+      "different_semantic_digest": 25,
+      "different": [
+        "card048.pac",
+        "card049.pac",
+        "card050.pac",
+        "char00.pac",
+        "char01.pac",
+        "char02.pac",
+        "char03.pac",
+        "char04.pac",
+        "char05.pac",
+        "char06.pac",
+        "char07.pac",
+        "char08.pac",
+        "char09.pac",
+        "char10.pac",
+        "char11.pac",
+        "char12.pac",
+        "chardemo08.pac",
+        "charf0008.pac",
+        "charf0011.pac",
+        "demo_00.pac",
+        "demo_08.pac",
+        "effect.pac",
+        "gamedata.pac",
+        "select0.pac",
+        "text00.pac"
+      ]
+    }
+  }
 }
