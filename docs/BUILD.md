@@ -17,22 +17,22 @@ Exact physical-test artifact:
 
 - `DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`
 - VPK SHA-256
-  `aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`
+  `bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030`
 - eboot SHA-256
-  `0abcd48953c61692c19522c4cd68f897cd41e2e74d9ee39bb5d2303bf1f32b2f`
+  `447324fcd3c0c6400f7a3c3cea92bc3a105f64c240831e376f289a535341a5a3`
 - ELF SHA-256
-  `079bdda19f5deb4f579fac8677e428c3f691bd89376eb3f3b7a13bc7d5a0f1e8`
+  `ecb70e9686b70a330dad4b85e1d0448791ff67a2d1b238c24d1610d1c46704f3`
 - runtime marker `926eb6`, APP_VER `00.27`, TITLE_ID `DBTB00001`
 - generation 467 classes / 4086 methods
 - exact LiveArea validation PASS
 - required full-engine symbols and `sceAudiodecDecode` present.
 
-This interactive functional package compiles the generated TeaVM C at `-O0`
-because the normal giant `-O1` translation units exceed the command window in
-the current runner. Native adapters remain `-O2`. This is not a gameplay-source
-change and is acceptable for validating direct codec behavior, but do not use
-00.27 for final performance/FPS claims. A release-quality build should return
-to the normal `all.c -O1` recipe after device validation.
+This interactive functional package splits the TeaVM remainder into ten private
+compilation units at `-O1`, keeps `TCBManajer.c` at `-O0`, and leaves
+native adapters at `-O2`. This is the same class of interactive-build exception
+already documented for prior physical tests; it changes optimization/packaging,
+not gameplay behavior. Final release performance should still be measured from
+the standard reproducible build recipe.
 
 Public native smoke run `37544588962` and Community mod profile run
 `37544623252` both pass. See [TEST_VITA_00_27](TEST_VITA_00_27.md) and
