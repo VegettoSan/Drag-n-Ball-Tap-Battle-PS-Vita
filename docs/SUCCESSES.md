@@ -464,7 +464,7 @@ valid M4A access-unit tables for `bgm_09/10/11`. Public CI passes Community mod
 profiles run `37544623252` and Vita native smoke run `37544588962`.
 
 A complete 00.27 full-engine VPK was built and validated:
-`aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`.
+`bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030`.
 It contains the expected original TeaVM symbols, direct compressed-audio symbol,
 approved LiveArea and no APK/game-data files. Physical audible validation is the
 remaining gate. See [evidence](evidence/vita_samu_direct_audio_00.27.json).
