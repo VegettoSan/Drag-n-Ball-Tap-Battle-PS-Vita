@@ -1029,10 +1029,10 @@ a missing linker dependency, corrected by `5e1808f6`.
 
 **Full candidate:** 467 TeaVM classes / 4086 methods; APP_VER 00.27;
 `DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`, SHA-256
-`aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`.
-LiveArea and full-engine symbols pass. Interactive generated TeaVM C is `-O0`
-and native adapters remain `-O2`, so this is a functional codec/roster test,
-not final performance evidence.
+`bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030`.
+LiveArea and full-engine symbols pass. Interactive TeaVM remainder is split at `-O1`, `TCBManajer.c` is `-O0`,
+and native adapters remain `-O2`; this is a functional codec/roster test and
+not final release-performance evidence.
 
 **Result:** BUILD/HOST DIRECT-AUDIO SUPPORT CONFIRMED. Audible MP3/AAC playback,
 looping, transitions and high-roster gameplay remain pending on a physical Vita.
