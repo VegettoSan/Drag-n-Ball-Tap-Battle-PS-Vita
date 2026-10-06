@@ -1,19 +1,24 @@
-# Prueba física PS Vita — 00.27 Samu Direct Audio
+# Prueba física PS Vita — 00.27 Samu + Invasion Direct Audio
 
 ## Objetivo
 
-Validar en hardware que el perfil `DragonBallZuperSamuGamerYT.apk` funciona
-con sus recursos **tal cual vienen en el APK**, incluyendo los BGM que conservan
-extensión `.ogg` pero cuyo contenido real es MP3 o AAC/M4A.
+Validar con el mismo ejecutable 00.27 dos rutas complementarias de mods:
 
-No convertir, recodificar ni renombrar ningún BGM para esta prueba.
+1. **Zuper/SamuGamerYT:** roster masivo de 92 personajes con PAC ordinarios y
+   BGM MP3/AAC/Vorbis conservados tal cual vienen en el APK.
+2. **TAP BATTLE INVASION BETA 3:** roster extendido de 22 personajes, PAC
+   protegidos del perfil Invasion y siete BGM no-Vorbis reproducidos directamente.
+
+No convertir, recodificar ni renombrar ningún BGM para estas pruebas. El backend
+00.27 detecta el codec por contenido después de que el VFS resuelve el perfil
+seleccionado.
 
 ## Identidad exacta
 
 - APP_VER: `00.27`
 - TITLE_ID: `DBTB00001`
 - Runtime source marker: `926eb6`
-- VPK: `DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`
+- VPK binario probado: `DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`
 - VPK SHA-256:
   `bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030`
 - eboot SHA-256:
@@ -24,8 +29,10 @@ No convertir, recodificar ni renombrar ningún BGM para esta prueba.
 - LiveArea: PASS
 - Build funcional interactivo: generated TeaVM `-O0`, adaptadores nativos `-O2`.
 
-00.24 sigue siendo el último checkpoint confirmado físicamente. 00.27 es un
-candidato de prueba y no debe promoverse hasta completar esta matriz.
+El nombre histórico del VPK contiene “Samu”, pero el ejecutable no codifica un
+perfil Samu específico: la ruta MP3/AAC es genérica por contenido y el mismo
+binario debe usarse para Invasion. 00.24 sigue siendo el último checkpoint
+confirmado físicamente; 00.27 es candidato hasta completar estas matrices.
 
 ## Preparar Samu sin modificar assets
 
@@ -37,37 +44,82 @@ SHA-256:
 1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d
 ```
 
-Ruta reproducible:
-
 ```sh
 python3 tools/prepare_samu_mod.py \
   DragonBallZuperSamuGamerYT.apk \
   ./install/mods/ZuperSamu
 ```
 
-El helper solo valida y extrae. El manifest debe indicar
-`payloads_unchanged: true`.
+El helper valida y extrae. Debe quedar `payloads_unchanged: true`.
 
-Copiar el resultado a:
+Copiar a:
 
 ```text
 ux0:data/DBTapBattle/mods/ZuperSamu/
 ```
 
-Conservar `ux0:data/DBTapBattle/game/` para fallback. No usar el ZIP AudioFix
-de 00.26; ese camino de conversión está obsoleto.
+No usar el AudioFix de 00.26.
 
-## Qué debe ocurrir con el audio
+## Preparar Invasion sin modificar assets
 
-El juego sigue solicitando los mismos nombres `bgm_XX.ogg`.
+Fuente auditada:
 
-- `bgm_12` y `bgm_13`: Vorbis original → libvorbisfile.
-- 12 pistas reales MP3 → decoder MP3 de Vita `SceAudiodec`.
-- `bgm_09`, `bgm_10`, `bgm_11`: AAC-LC dentro de M4A → demux ISO-BMFF +
-  decoder AAC de Vita `SceAudiodec`.
-- SE y voces conservan sus caminos ya existentes.
+```text
+TAP BATTLE INVASION BETA 3.apk
+SHA-256:
+caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d
+```
 
-En `runtime.log`, una pista MP3/AAC aceptada debe producir una línea semejante a:
+```sh
+python3 tools/prepare_invasion_mod.py \
+  "TAP BATTLE INVASION BETA 3.apk" \
+  ./install/mods/Invasion
+```
+
+El helper usa el extractor Community14 existente para canonicalizar únicamente
+los aliases protegidos. Los bytes de los 177 assets no se transcodifican y el
+manifest debe indicar:
+
+```text
+pac_codec: community14-invasion-05aa0c5e
+payloads_unchanged: true
+```
+
+Copiar a:
+
+```text
+ux0:data/DBTapBattle/mods/Invasion/
+```
+
+**No borrar `ux0:data/DBTapBattle/game/`.** Invasion no incluye
+`bobj00.pac` ni `font00.pac`, por lo que esos recursos deben entrar por el
+fallback normal del VFS.
+
+## Matriz de audio esperada
+
+### Samu
+
+- 12 MP3 directos por `SceAudiodec`.
+- 3 AAC-LC/M4A directos por demux ISO-BMFF + `SceAudiodec`.
+- 2 Vorbis por libvorbisfile.
+- 19 SE y voces por sus rutas existentes.
+
+### Invasion
+
+- `bgm_03`: MP3 44.1 kHz.
+- `bgm_04`: AAC-LC/M4A 44.1 kHz.
+- `bgm_05`: AAC-LC/M4A 44.1 kHz.
+- `bgm_06`: MP3 48 kHz.
+- `bgm_07`: MP3 48 kHz con ID3.
+- `bgm_14`: MP3 44.1 kHz.
+- `bgm_15`: MP3 44.1 kHz con ID3.
+- los otros 10 BGM: Vorbis.
+- los 19 SE: Vorbis baseline.
+
+Los AAC de Invasion tienen access units máximas de 455 y 548 bytes, por debajo
+de `SCE_AUDIODEC_AAC_MAX_ES_SIZE=1536`.
+
+Un MP3/AAC aceptado debe registrar:
 
 ```text
 Compressed BGM direct: bgm_XX.ogg codec=mp3 ...
@@ -79,78 +131,108 @@ o:
 Compressed BGM direct: bgm_XX.ogg codec=aac-m4a ...
 ```
 
-No debe aparecer un requisito de FFmpeg ni archivos `.ogg` convertidos.
+## Matriz mínima de prueba
 
-## Matriz mínima
+### 1. Regresión base
 
-### Regresión base
+Antes de cada perfil:
 
-Antes de concentrarse en Samu:
-
-- iniciar la aplicación;
-- confirmar LiveArea/menu;
-- comprobar texto;
-- comprobar SE y voces sin ronquido;
+- iniciar la aplicación y comprobar LiveArea/menu;
+- texto correcto;
+- SE y voces sin ronquido;
 - abrir/cerrar cartas;
-- iniciar una pelea y volver al menú.
+- iniciar pelea;
+- volver al menú.
 
-### Roster Samu
+### 2. Samu — roster masivo
 
-Recorrer al menos:
+Recorrer:
 
 ```text
 00 12 13 20 21 35 42 54 79 83 91
 ```
 
-Iniciar pelea real con al menos:
+Pelear al menos con:
 
 ```text
 13 20 35 42 54 79 91
 ```
 
-Los índices 35/54 cubren metadata `u`; 42 cubre la entry `.pn`; 20/21 cubren
-`charf` vacíos pero válidos; 79/91 ejercitan la zona alta del roster.
+35/54 cubren metadata `u`; 42 cubre `.pn`; 20/21 cubren `charf` vacíos
+válidos; 79/91 ejercitan la zona alta del roster.
 
-### BGM directos
+Para audio, intentar alcanzar al menos un MP3, un AAC/M4A y un Vorbis.
 
-Intentar escuchar pistas representativas de las tres rutas:
+### 3. Invasion — roster protegido extendido
 
-- MP3: cualquier escenario/ruta que active `bgm_00`, y al menos una pista del
-  grupo `03..08/14..15` si el flujo del juego permite alcanzarla;
-- AAC/M4A: `bgm_09`, `bgm_10` y `bgm_11` si pueden alcanzarse;
-- Vorbis: `bgm_12` o `bgm_13`.
+Recorrer como mínimo:
 
-Para cada una observar:
+```text
+00 12 13 15 20 21
+```
 
-- que empieza a sonar;
-- que no hay cierre/crash;
-- que no suena acelerada/lenta;
-- que los canales no están corruptos;
-- que el loop no produce silencio permanente;
-- que cambiar de pantalla/pista no deja el audio anterior colgado.
+Pelear obligatoriamente con al menos:
+
+```text
+13 15 20 21
+```
+
+El 15 es especialmente útil porque su `char15.pac` tiene 101 entries y una
+RGBA de 736x500; 20/21 ejercitan los layouts grandes del final del roster.
+
+Para audio, priorizar si el flujo permite alcanzarlos:
+
+```text
+MP3:     bgm_03, bgm_06 o bgm_07
+AAC/M4A: bgm_04 o bgm_05
+Vorbis:  cualquier BGM no listado como especial
+```
+
+`bgm_05` es la mejor prueba de streaming/decodificación AAC porque es la pista
+larga (~195 s), sin requerir PCM completo en memoria.
+
+### 4. Churn
+
+Con cada perfil:
+
+- cambiar varios personajes repetidamente;
+- iniciar al menos dos peleas distintas;
+- volver al menú entre ellas;
+- cambiar de BGM/pantalla;
+- comprobar que no queda una pista anterior colgada;
+- comprobar que no reaparece `bad_alloc`.
 
 ## Qué enviar si falla
 
-Indicar personaje, pantalla, pelea y BGM aproximado cuando sea posible. Adjuntar:
+Indicar primero el perfil: **ZuperSamu** o **Invasion**. Luego personaje,
+pantalla/pelea y BGM aproximado si aplica. Adjuntar:
 
 - `ux0:data/DBTapBattle/logs/runtime.log` de esa sesión;
 - `psp2core-*.psp2dmp` si Vita genera uno;
-- video si el fallo es audible;
-- si el juego sigue funcionando pero una pista queda muda, enviar igualmente el
-  log: los mensajes `Compressed BGM rejected` permiten separar demux, decoder y
-  mixer.
+- video si el fallo es audible o visual.
+
+Si el juego sigue vivo pero un BGM queda mudo, enviar igualmente el log:
+`Compressed BGM rejected` separa fallo de demux, decoder y mixer.
 
 ## Criterio de aceptación
 
-00.27 puede considerarse hardware-confirmado para Samu cuando:
+### Samu
 
-1. el roster alto llega a selección y pelea sin regresiones;
-2. voces y SE siguen correctos;
-3. al menos un MP3 y un AAC/M4A originales suenan mediante la ruta directa;
-4. Vorbis sigue funcionando;
-5. no hay conversión previa de los archivos;
-6. iniciar/terminar varias peleas y volver al menú no produce crash;
-7. el log no muestra fallos persistentes de `SceAudiodec`.
+Hardware-confirmado cuando el roster alto llega a pelea, voces/SE siguen
+correctos y al menos un MP3 + un AAC/M4A original suenan por la ruta directa.
+
+### Invasion
+
+Hardware-confirmado para **compatibilidad de recursos** cuando:
+
+1. personajes 13..21 pueden seleccionarse y llegar a pelea;
+2. al menos un MP3 y un AAC/M4A originales suenan directamente;
+3. los PAC protegidos, textos, voces y SE no presentan regresión;
+4. se puede volver al menú y comenzar otra pelea.
+
+Esto no certifica automáticamente las mecánicas exclusivas de su `classes.dex`.
+Si un personaje/recurso carga pero una mecánica concreta difiere de Android, ese
+caso debe aislarse y compararse con el DEX de Invasion antes de tocar el core.
 
 Evidencia de build/host:
 [evidence/vita_samu_direct_audio_00.27.json](evidence/vita_samu_direct_audio_00.27.json).
