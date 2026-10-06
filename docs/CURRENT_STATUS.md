@@ -34,6 +34,29 @@ Host/synthetic evidence: Community mod profiles run
 The 00.26 native VitaSDK smoke build is tracked separately from physical
 gameplay. See [TEST_VITA_00_26](TEST_VITA_00_26.md).
 
+A full private physical-test package was also generated from the pinned original
+APK after the public/runtime checks passed. Identity:
+
+- `DBTapBattle-Vita-00.26-Samu-Roster-Test.vpk`
+- VPK: 2,604,860 bytes, SHA-256
+  `749b9d32e6ed62a7b4593cb6f0b5af6dc2cabbc97cd9f25986757700879e18f5`
+- eboot SHA-256:
+  `1de9962f19cf9c39a1534e9547de14e3a2569950a6b712ca49ab871443f90830`
+- full ELF SHA-256:
+  `db580cd100ac330d88908a9db2cd71f53a50b70c2295700ea0a17fbba68e7e9e`
+- embedded runtime source marker: `d7a4aa2`
+- SFO: APP_VER `00.26`, TITLE_ID `DBTB00001`
+- TeaVM generation: 467 classes / 4086 methods
+- LiveArea validator: PASS for all five approved entries
+- build layout: TeaVM remainder `-O1`, `TCBManajer.c` `-O0`, native Vita
+  adapters `-O2`.
+
+The split compile is an interactive-build packaging exception matching the
+technique used by the hardware-tested 00.23 package; it is suitable for the
+functional Samu test but not for final performance claims. Public CI also passed
+Vita engine native smoke run `37541052112` and tool export run
+`37541052003`. Physical Samu gameplay remains pending.
+
 ## 00.25 candidate — audited community mod profiles
 
 00.25 is derived from the hardware-confirmed 00.24 path; **00.24 remains the

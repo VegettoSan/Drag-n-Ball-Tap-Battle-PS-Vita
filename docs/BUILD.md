@@ -1,10 +1,41 @@
-# Build and install — full engine 00.24
+# Build and install — full engine
 
 For manual GitHub compilation/publication, use the separate
 [release/prerelease workflows](RELEASE_WORKFLOWS.md). They consume the pinned
 original APK privately in an ephemeral runner, generate the full core outside
 Git and publish only compiled binaries and manifests. Configure the private
 download secret before the first run. The native smoke remains non-playable.
+
+## 00.26 Samu interactive physical-test build
+
+The 00.26 Samu candidate has a complete full-engine physical-test package built
+from the same pinned original APK and exported private toolchain used by the
+project. It is not the native smoke probe.
+
+Exact identity:
+
+- `DBTapBattle-Vita-00.26-Samu-Roster-Test.vpk`
+- VPK SHA-256
+  `749b9d32e6ed62a7b4593cb6f0b5af6dc2cabbc97cd9f25986757700879e18f5`
+- eboot SHA-256
+  `1de9962f19cf9c39a1534e9547de14e3a2569950a6b712ca49ab871443f90830`
+- ELF SHA-256
+  `db580cd100ac330d88908a9db2cd71f53a50b70c2295700ea0a17fbba68e7e9e`
+- runtime marker `d7a4aa2`, APP_VER `00.26`, TITLE_ID `DBTB00001`
+- generation 467 classes / 4086 methods
+- exact LiveArea validation PASS.
+
+Because the interactive runner has a per-command compilation limit, this test
+package uses the same split technique previously accepted for the successful
+00.23 device test: the TeaVM remainder is `-O1`,
+`TCBManajer.c` is `-O0`, and native services remain `-O2`. This does not
+alter gameplay source or adapter behavior, but it means this artifact is for
+functional/hardware validation rather than final performance benchmarking.
+A release-quality package should return to the standard monolithic `all.c -O1`
+recipe after Samu functionality is confirmed.
+
+See [00.26 device protocol](TEST_VITA_00_26.md) and
+[evidence](evidence/vita_samu_build_00.26.json).
 
 ## 00.24 hardware-confirmed full build
 

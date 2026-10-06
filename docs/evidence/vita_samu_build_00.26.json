@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "date": "2026-10-06",
+  "status": "FULL_ENGINE_BUILD_CONFIRMED_PHYSICAL_TEST_PENDING",
+  "version": "00.26",
+  "title_id": "DBTB00001",
+  "runtime_source_marker": "d7a4aa2",
+  "source_inputs": {
+    "original_apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+    "samu_apk_sha256": "1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d",
+    "samu_dex_sha256": "cba71bc13b9d1281aa8180423be9d08db0deb0fc2f5ef6825cc11ba66a17b729"
+  },
+  "generation": {
+    "classes": 467,
+    "methods": 4086
+  },
+  "build": {
+    "toolchain": "VitaSDK 2026.08 / GCC 15.2.0 hard-float",
+    "teavm_remainder_optimization": "-O1",
+    "tcbmanajer_optimization": "-O0",
+    "native_optimization": "-O2",
+    "split_compile_reason": "interactive runner execution-window limit",
+    "performance_release_quality": false
+  },
+  "artifact": {
+    "name": "DBTapBattle-Vita-00.26-Samu-Roster-Test.vpk",
+    "bytes": 2604860,
+    "sha256": "749b9d32e6ed62a7b4593cb6f0b5af6dc2cabbc97cd9f25986757700879e18f5",
+    "entries": 10,
+    "eboot_sha256": "1de9962f19cf9c39a1534e9547de14e3a2569950a6b712ca49ab871443f90830",
+    "elf_sha256": "db580cd100ac330d88908a9db2cd71f53a50b70c2295700ea0a17fbba68e7e9e",
+    "livearea_validation": "PASS"
+  },
+  "samu_audio_patch": {
+    "name": "DBTB_ZuperSamu_AudioFix_Vita.zip",
+    "bytes": 22121633,
+    "sha256": "647f556c6eee9375ded73a9c88e9121c11df54e778c705a91abb8f83cb03c012",
+    "normalized_non_vorbis_bgm": 15,
+    "unchanged_source_vorbis_bgm": 2,
+    "target": "Ogg Vorbis 44100 Hz stereo"
+  },
+  "test_kit": {
+    "name": "DBTB_00.26_ZuperSamu_Test_Kit.zip",
+    "bytes": 24734111,
+    "sha256": "5f76b6c6f55125dedce5ed84b7cf1ec209b96297d8909aaaa05f0a894f09e03f"
+  },
+  "ci": {
+    "community_mod_profiles_run": 37540898687,
+    "vita_engine_native_smoke_run": 37541052112,
+    "export_private_build_tools_run": 37541052003
+  },
+  "required_hardware_validation": "docs/TEST_VITA_00_26.md"
+}

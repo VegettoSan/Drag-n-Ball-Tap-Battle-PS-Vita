@@ -11,6 +11,29 @@
 - El core Java/TeaVM de gameplay no fue reemplazado ni parcheado para Samu.
 - Este documento no convierte 00.26 en hardware-confirmado: hace falta esta prueba.
 
+## Identidad exacta del VPK entregado
+
+- Archivo: `DBTapBattle-Vita-00.26-Samu-Roster-Test.vpk`
+- Bytes: `2,604,860`
+- VPK SHA-256:
+  `749b9d32e6ed62a7b4593cb6f0b5af6dc2cabbc97cd9f25986757700879e18f5`
+- eboot SHA-256:
+  `1de9962f19cf9c39a1534e9547de14e3a2569950a6b712ca49ab871443f90830`
+- ELF SHA-256:
+  `db580cd100ac330d88908a9db2cd71f53a50b70c2295700ea0a17fbba68e7e9e`
+- Runtime source marker embebido: `d7a4aa2`
+- Generación TeaVM privada: 467 clases / 4086 métodos.
+- Símbolos comprobados en el ELF: `GameData.Init`, `TCBManajer.Game3`,
+  `VitaEngine.main`, `dbtb_installedData`.
+- LiveArea: PASS exacto en icon0, pic0, bg0, startup y template a1.
+- Compilación interactiva: resto TeaVM `-O1`, `TCBManajer.c` `-O0`,
+  adaptadores nativos Vita `-O2`.
+
+El `-O0` de TCBManajer es solo una excepción de empaquetado del runner para
+obtener el candidato físico; no corresponde a un cambio de lógica. No usar este
+artefacto para afirmar rendimiento final hasta una build monolítica normal
+`-O1`.
+
 ## Preparar el dataset Samu
 
 Usar exactamente el APK auditado:

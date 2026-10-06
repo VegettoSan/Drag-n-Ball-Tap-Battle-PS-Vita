@@ -981,3 +981,23 @@ produced Vorbis 44.1 kHz stereo for all 15 non-Vorbis BGM; `bgm_12` and
 **Result:** HOST/IMPORT SUPPORT CONFIRMED. Physical Vita validation of the 92
 characters, their voices/charf variants, high-index battles and the normalized
 BGM matrix remains pending. 00.24 remains the hardware baseline.
+
+### Attempt 030 follow-up — full 00.26 physical-test artifact
+
+The pinned original APK `b84f98a3...` matched the private build gate. Fresh
+dex2jar/TeaVM generation completed at 467 classes / 4086 methods. Public native
+Vita smoke `37541052112` and tool export `37541052003` both passed.
+
+The interactive runner could not finish the monolithic TeaVM `all.c -O1`
+inside one execution window, so the already documented 00.23 split technique
+was used for this physical-test package: all generated TeaVM C except
+`TCBManajer.c` remains `-O1`, `TCBManajer.c` compiles at `-O0`, and
+native Vita adapters remain `-O2`. ELF -> VELF -> SELF -> VPK completed.
+
+Artifact: `DBTapBattle-Vita-00.26-Samu-Roster-Test.vpk`, 2,604,860 bytes,
+SHA-256 `749b9d32e6ed62a7b4593cb6f0b5af6dc2cabbc97cd9f25986757700879e18f5`.
+Eboot SHA-256 `1de9962f19cf9c39a1534e9547de14e3a2569950a6b712ca49ab871443f90830`;
+ELF SHA-256 `db580cd100ac330d88908a9db2cd71f53a50b70c2295700ea0a17fbba68e7e9e`.
+SFO is 00.26/DBTB00001, embedded runtime marker is `d7a4aa2`, and exact
+LiveArea validation passes. This establishes a real full-engine test VPK, not
+the CI native-link probe. Hardware result remains pending.
