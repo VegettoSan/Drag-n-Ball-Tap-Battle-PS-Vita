@@ -1,4 +1,4 @@
-# Validation and diagnostic reference — 00.23
+# Validation and diagnostic reference — 00.24 hardware / 00.25 candidate
 
 Commands run from the repository root. Use private game data and temporary output
 outside tracked source. This page describes reproducible probes; it does not claim
@@ -17,6 +17,22 @@ pinned in [CURRENT_STATUS](CURRENT_STATUS.md) and evidence JSONs.
 
 No current full-engine Vita3K confirmation is recorded. API mocks must be named.
 Keep build source, VPK SHA, dataset/profile and procedure with every promotion.
+
+## 00.25 protected-profile regression gate
+
+The public `Community mod profiles` workflow runs without APK/game bytes. It
+checks Python extraction/alias safety plus synthetic C++ PAC/image, converted
+GameData and full `engine_resources` normalization for the audited Android14,
+Spanish and Invasion profiles. Run `37415176005` passed the complete gate.
+
+Separately, the 00.25 Vita native smoke at run `37415326012` compiled and
+packaged the Vita target after the profile integration/version bump. That is
+BUILD evidence only; the generated smoke VPK contains the non-commercial link
+probe and is **not playable**. The physical gameplay baseline remains 00.24.
+
+The real user-supplied protected corpora were also checked locally without
+committing bytes: Android14 106/106 PACs, Spanish 106/106 and Invasion 139/139
+uniquely select the intended profile and have in-bounds outer tables.
 
 ## Host probes
 
