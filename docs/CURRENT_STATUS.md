@@ -29,6 +29,16 @@ Audio setup/DSP and resource ownership probes pass with Vita APIs mocked.
 **00.24 physical-Vita battle recovery remains pending.** See
 [the retest procedure](TEST_VITA_00_24.md).
 
+Delivered candidate: `DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk`, 2,663,883 bytes,
+SHA-256 `0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345`.
+Runtime source: `f5672d4d3fbf6b43cd699d7a5a2b80475e4db9f6`. Fresh generation
+compiled 467 classes/4086 methods; the standard complete TeaVM amalgamation
+compiled at -O1 and native services at -O2. Native smoke CI run `37392864767`
+passed, separately from this local full-game build. All five presentation entries
+match the hardware-confirmed 00.23 LiveArea-Fixed package byte-for-byte. Exact ELF
+and private generated sources are retained with the candidate for crash analysis.
+[Identity and measured allocation evidence](evidence/vita_battle_audio_00.24.json).
+
 <!-- DBTB_00_23_DETAIL:START -->
 ## Authoritative hardware checkpoint — 00.23 (2026-10-05)
 

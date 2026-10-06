@@ -33,7 +33,7 @@ original Java game core generated privately to C with TeaVM. The port replaces
 Android services while preserving the original task, drawing and combat logic.
 APK-derived JAR/classes/C and original game assets are not committed to Git.
 
-## Current state — 2026-10-05
+## Current state — 2026-10-06
 
 Latest hardware gameplay checkpoint: **00.23** from source `0e17b0ba`. On a real
 PS Vita the reported test path preserves visible text, clean audio/voices and
@@ -59,7 +59,8 @@ and LiveArea appearance are the remaining check for that repack.
 | 00.21 | Worker starts and user reaches menu on Vita | Character selection rejects char00 mask 187 |
 | 00.22 | Original masks 187/251 accepted; clean audio/selection reported | Battle startup exposes whole-PAC TeaVM managed allocation failure |
 | 00.23 | Physical Vita: text/audio/selection/battle path passes; no error observed in reported session | Broader regression matrix and release-quality normal build remain open |
-| 00.23 LiveArea repack | Exact assets/package structure pass CI; tested 00.23 eboot is unchanged | Physical install and shell appearance pending |
+| 00.23 LiveArea-Fixed | User confirms presentation on physical Vita; tested 00.23 eboot unchanged | Android14 battle-start native Ogg allocation crash reported |
+| 00.24 | Full original-engine build; all 17 BGM PCM/low-allocation tests and ownership probes pass | Device battle recovery pending |
 
 Use [current status and evidence](docs/CURRENT_STATUS.md) for the authoritative
 feature matrix, artifact hash and open issues. Older test reports describe their
@@ -67,12 +68,12 @@ own builds; a host or CI result does not establish physical Vita behavior.
 
 ## Install and data
 
-For the current presentation test, install
-`DBTapBattle-Vita-00.23-LiveArea.vpk` over the existing application with VitaShell,
-preserving `ux0:data/DBTapBattle/` and saves. Follow the
-[00.23 LiveArea test instructions](docs/TEST_VITA_00_23_LIVEAREA.md). The gameplay
-binary in that repack is byte-identical to the already hardware-tested 00.23
-`eboot.bin`. The full engine requires the vitaGL shader compiler setup; see
+For the current runtime retest, install
+`DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk` over the existing application with
+VitaShell, preserving `ux0:data/DBTapBattle/` and saves. Follow the
+[00.24 device test](docs/TEST_VITA_00_24.md). The package has the corrected full
+engine and the exact LiveArea files confirmed by the user in 00.23. The full
+engine requires the vitaGL shader compiler setup; see
 [build/setup](docs/BUILD.md).
 
 | Runtime path | Purpose |
