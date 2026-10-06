@@ -107,8 +107,11 @@ back across profiles. `mod.json` is optional and currently ignored.
 The first supplied original APK has **57 raw resources and no character
 triplets**. It is not a complete battle installation. Supplied Android14 has
 144 encoded assets and 13 indexed triplets; supplied `gen.apk` has 147 ordinary
-assets including those triplets and an optional bundled save. Original in the
-selector means the base folder, not proof of which APK supplied its contents.
+assets including those triplets and an optional bundled save. The audited
+`DragonBallZuperSamuGamerYT.apk` is Gen-derived with the same DEX/manifest but
+384 canonical assets and 92 character triplets; it remains a separate mod and is
+not yet a 92-character Vita hardware claim. Original in the selector means the
+base folder, not proof of which APK supplied its contents.
 
 For Windows 10/11, use the [portable drag-and-drop tool](tools/windows/LEEME.txt):
 extract its ZIP, keep the BAT and PS1 together, and drag one or several APKs onto
@@ -142,7 +145,7 @@ full gameplay engine. [BUILD.md](docs/BUILD.md) gives the current recipe.
 | Status, next work, rules | [CURRENT_STATUS](docs/CURRENT_STATUS.md), [AUDIT_STATUS](docs/AUDIT_STATUS.md), [PORTING_PLAN](docs/PORTING_PLAN.md), [PROJECT_RULES](docs/PROJECT_RULES.md) |
 | Reproduce and validate | [BUILD](docs/BUILD.md), [VALIDATION](docs/VALIDATION.md), [full-engine AOT](tools/aot/engine/README.md) |
 | Architecture and future ports | [ENGINE_MAP](docs/ENGINE_MAP.md), [PLATFORM_SERVICES](docs/PLATFORM_SERVICES.md), [RENDER_MAPPING](docs/RENDER_MAPPING.md), [PORTING_GUIDE](docs/PORTING_GUIDE.md), [DECISIONS](docs/DECISIONS.md) |
-| Data, formats and provenance | [APK technical reference](docs/APK_TECHNICAL_REFERENCE.md), [canonical APK differences](docs/APK_CANONICAL_DIFFERENCES.md), [APK_AUDIT](docs/APK_AUDIT.md), [ANDROID14_APK](docs/ANDROID14_APK.md), [Español](docs/SPANISH_ANDROID14_APK.md), [Invasion Beta 3](docs/INVASION_BETA3_APK.md), [Original+Characters](docs/ORIGINAL_PLUS_CHARACTERS_APK.md), [audio matrix](docs/evidence/APK_AUDIO_MATRIX_2026-10-06.md), [PAC_FORMAT](docs/PAC_FORMAT.md), [RESOURCE_FORMATS](docs/RESOURCE_FORMATS.md), [DATA_LAYOUT](docs/DATA_LAYOUT.md), [MODS](docs/MODS.md) |
+| Data, formats and provenance | [APK technical reference](docs/APK_TECHNICAL_REFERENCE.md), [canonical APK differences](docs/APK_CANONICAL_DIFFERENCES.md), [APK_AUDIT](docs/APK_AUDIT.md), [ANDROID14_APK](docs/ANDROID14_APK.md), [Español](docs/SPANISH_ANDROID14_APK.md), [Invasion Beta 3](docs/INVASION_BETA3_APK.md), [Zuper/SamuGamerYT](docs/DRAGONBALL_ZUPER_SAMUGAMERYT_APK.md), [Original+Characters](docs/ORIGINAL_PLUS_CHARACTERS_APK.md), [audio matrix](docs/evidence/APK_AUDIO_MATRIX_2026-10-06.md), [PAC_FORMAT](docs/PAC_FORMAT.md), [RESOURCE_FORMATS](docs/RESOURCE_FORMATS.md), [DATA_LAYOUT](docs/DATA_LAYOUT.md), [MODS](docs/MODS.md) |
 | Engineering history | [ATTEMPTS](docs/ATTEMPTS.md), [SUCCESSES](docs/SUCCESSES.md), [FAILURES](docs/FAILURES.md), [input AOT experiment](tools/aot/README.md) |
 | Test versions | [00.03](docs/TEST_FULL_ENGINE_00_03.md), [00.13](docs/TEST_VITA_00_13.md), [00.18](docs/TEST_VITA_00_18.md), [00.19](docs/TEST_VITA_00_19.md), [00.20](docs/TEST_VITA_00_20.md), [00.21](docs/TEST_VITA_00_21.md), [00.22](docs/TEST_VITA_00_22.md), [00.23](docs/TEST_VITA_00_23.md), [00.23 LiveArea](docs/TEST_VITA_00_23_LIVEAREA.md) |
 | Attribution | [THIRD_PARTY](docs/THIRD_PARTY.md) and upstream license files in `licenses/` |
