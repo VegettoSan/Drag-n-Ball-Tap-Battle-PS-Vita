@@ -1,6 +1,6 @@
 # Current status — 2026-10-06 (America/Bogota), 00.24 hardware / 00.27 candidate
 
-## 00.27 candidate — Samu source audio unchanged + direct MP3/AAC decoding
+## 00.27 candidate — Samu + Invasion source audio unchanged / direct MP3-AAC decoding
 
 00.27 supersedes the 00.26 Samu import-time audio conversion approach. The user
 explicitly requires the mod to work with the files **exactly as they are stored
@@ -25,6 +25,25 @@ pinned to the audited APK/DEX hashes, verifies all 92 triplets and the known
 12 MP3 + 3 AAC/M4A + 2 Vorbis matrix, but leaves all 384 extracted assets
 byte-for-byte unchanged. Its manifest explicitly records
 `payloads_unchanged: true`.
+
+The same compressed-BGM backend is intentionally profile-agnostic and has now
+been checked against the supplied **TAP BATTLE INVASION BETA 3** APK. Invasion
+keeps 22 contiguous character triplets (00..21) under its protected PAC profile
+and changes seven BGM: five MP3 plus two AAC-LC/M4A. The two AAC files are
+44.1 kHz stereo with maximum access-unit sizes 455 and 548 bytes, safely below
+Vita's 1536-byte AAC ES limit; the MP3 files are valid at 44.1/48 kHz. No audio
+conversion is required.
+
+`tools/prepare_invasion_mod.py` is pinned to the audited APK/DEX hashes, uses
+the existing Community14 canonical alias extraction, validates all 22 triplets
+and the 5 MP3 + 2 AAC/M4A + 10 Vorbis BGM matrix, and requires
+`payloads_unchanged: true`. The base `game/` folder remains mandatory because
+Invasion omits `bobj00.pac` and `font00.pac`.
+
+The exact same 00.27 VPK binary is therefore the physical-test candidate for
+both Samu and Invasion. Resource compatibility for Invasion does not imply that
+all behavior unique to its heavily modified `classes.dex` is already ported;
+any such mismatch must be isolated after the resource/audio path passes.
 
 Public validation passes:
 
