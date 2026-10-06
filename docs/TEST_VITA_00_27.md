@@ -15,11 +15,11 @@ No convertir, recodificar ni renombrar ningún BGM para esta prueba.
 - Runtime source marker: `926eb6`
 - VPK: `DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`
 - VPK SHA-256:
-  `aed6da94abb44e8ee1cf8f889aa72b674a4422d506422dc5b074390ff500a6bf`
+  `bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030`
 - eboot SHA-256:
-  `0abcd48953c61692c19522c4cd68f897cd41e2e74d9ee39bb5d2303bf1f32b2f`
+  `447324fcd3c0c6400f7a3c3cea92bc3a105f64c240831e376f289a535341a5a3`
 - ELF SHA-256:
-  `079bdda19f5deb4f579fac8677e428c3f691bd89376eb3f3b7a13bc7d5a0f1e8`
+  `ecb70e9686b70a330dad4b85e1d0448791ff67a2d1b238c24d1610d1c46704f3`
 - TeaVM: 467 clases / 4086 métodos
 - LiveArea: PASS
 - Build funcional interactivo: generated TeaVM `-O0`, adaptadores nativos `-O2`.
