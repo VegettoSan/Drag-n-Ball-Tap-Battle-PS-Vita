@@ -84,7 +84,7 @@ The initial selector intentionally works without JSON and uses the folder name. 
 
 The port must never require a mod installer to rewrite `game/`. Mod activation is a runtime decision only.
 
-## Current compatibility checkpoint — 00.24 baseline + audited mod profiles
+## Current compatibility checkpoint — 00.24 baseline + 00.26 Samu candidate
 
 The physical-Vita baseline is 00.24: the supplied legacy Android14 profile
 reaches selection/battle with the later text, audio, selection, PAC-streaming
@@ -109,9 +109,11 @@ still need a physical-Vita test before being called hardware-confirmed. See
 - Save is only the selected `game/save.bin` or `mods/<Profile>/save.bin`, never
   a shared fallback. Bundled saves are preserved; choose imports intentionally.
 - Format-valid data may still depend on APK/Dalvik code changes. The local-data
-  gate keeps the 13-character baseline but now accepts contiguous complete
-  character triplets up to the original core's 31 loaded GameData slots;
-  Invasion supplies 22. This is resource compatibility, not a universal mod API.
+  gate keeps the 13-character baseline and now audits the complete two-digit
+  character namespace 00..99 (up to 100 contiguous complete triplets). It
+  rejects incomplete triplets and gaps followed by later character data.
+  Invasion supplies 22; Samu supplies 92. This is resource compatibility, not
+  a universal mod API or a claim that every theoretical slot has content.
 - Invasion is also a Tier-C code mod: compared with Android14, 372 of 595 common
   code-method signatures have different DEX instructions. Do not port those
   changes wholesale; investigate only a concrete missing mechanic with evidence.
@@ -121,11 +123,12 @@ still need a physical-Vita test before being called hardware-confirmed. See
   not in the original game logic.
 - Zuper/SamuGamerYT is a separate **Gen-derived Tier B+ case**: its DEX and
   manifest are byte-identical to Gen, but it expands `char/chardemo/charf`
-  from 13 to 92 indices using ordinary PACs. This is strong evidence of a
-  data-driven roster, not permission to raise Vita limits without core evidence.
-  The current installed-data audit only checks 0..30; indices 31..91 remain
-  outside that gate. The mod also contains 15 MP3/AAC BGM under `.ogg` names,
-  two empty-but-valid charf PACs and nonstandard `u`/`.pn` entry tags.
+  from 13 to 92 indices using ordinary PACs. 00.26 now audits all 92 supplied
+  triplets and keeps capacity through ID 99 without modifying original gameplay
+  logic. The source also contains 15 MP3/AAC BGM under `.ogg` names; the
+  supported Samu import helper explicitly transcodes those 15 to real Vorbis
+  while retaining the requested filenames. Two empty-but-valid charf PACs and
+  nonstandard `u`/`.pn` entry tags are preserved as source data.
 - Arbitrary protected containers and synchronized multiplayer are unsupported.
 
 ## Import routes
@@ -140,15 +143,18 @@ python3 tools/extract_apk_data.py community.apk /private/install --mod Android14
 # Audited Spanish/Invasion protected APKs are detected by their own profiles.
 python3 tools/extract_apk_data.py spanish.apk /private/install --mod Espanol
 python3 tools/extract_apk_data.py invasion.apk /private/install --mod Invasion
-# Gen-derived canonical 92-character mod: no alias codec required.
-python3 tools/extract_apk_data.py DragonBallZuperSamuGamerYT.apk /private/install --mod ZuperSamu
+# Gen-derived 92-character Samu mod: validates the pinned APK and normalizes
+# its 15 MP3/AAC-backed BGM to real Vorbis without touching PAC bytes.
+python3 tools/prepare_samu_mod.py DragonBallZuperSamuGamerYT.apk /private/install/mods/ZuperSamu
 # Other mods only when their layout/names/format contracts are supported.
 python3 tools/extract_apk_data.py mod.apk /private/install --mod MyMod
 ```
 
-The extractor preserves data bytes, records hashes/aliases and refuses ambiguous
+The generic extractor preserves data bytes, records hashes/aliases and refuses ambiguous
 or conflicting imports. Android .so/DEX are omitted. Unknown extensions can be
-preserved without claiming a runtime decoder. Do not install an encoded
+preserved without claiming a runtime decoder. The Samu helper is intentionally
+an explicit exception for audio only: it records source/output hashes and codec
+metadata for every one of the 15 transformed BGM; it does not rewrite PAC data. Do not install an encoded
 Community14 dataset over the only base copy just to fix a missing resource;
 its absent bobj00/font00 need base fallback. See
 [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md),

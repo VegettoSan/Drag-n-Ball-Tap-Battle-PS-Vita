@@ -424,3 +424,23 @@ Android14 needs 106 aliases but no payload conversion. Windows tool needs no
 Python, Java, 7-Zip or administrator access on the user's PC. This is extraction
 evidence, not new Vita gameplay coverage.
 See [evidence](evidence/windows_extractor_2026-10-05.json).
+
+## 2026-10-06 — Samu large-roster and audio preparation path validated on host
+
+**Scope: HOST/IMPORT CONFIRMED; physical Vita pending.**
+
+The Vita installation gate now accepts contiguous complete character triplets
+across the full two-digit ID namespace 00..99. Regression coverage passes for
+13 (baseline), 22 (Invasion), 92 (the audited Samu count) and all 100 two-digit
+positions. This changes no original selection/combat method.
+
+The Samu-specific importer is hash-pinned to the audited APK/DEX and validates
+all 92 supplied triplets. Direct testing with the supplied APK converted its
+12 MP3 + 3 AAC/M4A BGM to real Ogg Vorbis 44.1 kHz stereo while preserving
+`bgm_XX.ogg` names; the two source Vorbis tracks remain unchanged. This lets
+Samu use the existing 00.24 libvorbisfile path instead of adding an untested
+runtime codec.
+
+Synthetic CI run `37540898687` passes. This success does not yet claim that
+all 92 characters or all normalized tracks have been exercised on a physical
+Vita; use `TEST_VITA_00_26.md`.

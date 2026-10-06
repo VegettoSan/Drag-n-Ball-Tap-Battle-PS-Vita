@@ -251,3 +251,37 @@ Directly validated: 345/345 ordinary PAC directories, six nested SPR containers,
 `u`/ `.pn` entry tags, charf placeholder patterns, and content-based probing of
 all 36 exterior audio files. This is APK/host evidence only; it does not certify
 92-character Vita runtime behavior.
+
+## Samu 00.26 large-roster/import validation
+
+Public synthetic checks:
+
+```sh
+python3 -m unittest discover -s tests -p test_prepare_samu_mod.py -v
+
+g++ -std=c++14 -O2 -Wall -Wextra -Isrc \
+  tests/test_installed_data.cpp src/installed_data.cpp src/pac.cpp src/vfs.cpp \
+  -o /tmp/dbtb-installed-data
+/tmp/dbtb-installed-data
+```
+
+Expected roster coverage: baseline 13, Invasion 22, Samu 92, complete two-digit
+namespace 100 positions (`00..99`), incomplete-triplet rejection, gap
+rejection and invalid >100-bound rejection.
+
+For the exact audited user-owned Samu APK, the reproducible import check is:
+
+```sh
+python3 tools/prepare_samu_mod.py \
+  DragonBallZuperSamuGamerYT.apk \
+  /private/install/mods/ZuperSamu
+```
+
+The helper must reject a different APK/DEX hash. Success requires 384 extracted
+assets, 92 complete triplets, the documented 12 MP3 + 3 AAC/M4A + 2 Vorbis BGM
+source matrix, exactly 15 conversions, and decode-valid Ogg Vorbis output at
+44.1 kHz stereo. The produced manifest records before/after hashes and sizes;
+do not call the source payloads unchanged after normalization.
+
+GitHub synthetic evidence: run `37540898687` PASS. Physical coverage is a
+separate gate; see [TEST_VITA_00_26](TEST_VITA_00_26.md).

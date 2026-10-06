@@ -553,25 +553,35 @@ soporta 92:
 - 15 BGM requieren codec no-Vorbis;
 - una prueba física sigue siendo obligatoria.
 
-## 12. Implicación del gate actual de Vita
+## 12. Integración del gate Vita en 00.26
 
-El helper actual `auditInstalledData()` fue diseñado con un máximo de
-**31 índices auditados**.
+Antes de 00.26, `auditInstalledData()` solo inspeccionaba 31 posiciones
+(`00..30`). Esa era una política del adaptador Vita, no un límite demostrado
+del roster del juego.
 
-Para este mod eso significa:
+La evidencia de este APK —DEX Gen byte-idéntico, 92 tripletes completos y
+92/92 `charXX` con el mismo contrato BIN de 43 registros— permitió ampliar de
+forma focalizada **la auditoría Vita**, no la lógica del motor. 00.26 valida el
+espacio completo de IDs de dos dígitos:
 
-- el gate puede validar `char00..30`;
-- **no inspecciona 31..91**;
-- los archivos extra no necesariamente son rechazados por el VFS, pero tampoco
-  están cubiertos por esa validación;
-- no debe aumentarse el límite a 92 "porque sí".
+```text
+char00.pac .. char99.pac
+chardemo00.pac .. chardemo99.pac
+charf0000.pac .. charf0099.pac
+```
 
-Antes de modificar ese límite hay que obtener evidencia de cómo el core original
-indexa el roster/data y añadir pruebas que demuestren que el cambio no rompe
-Original/Gen/Android14/Español/Invasion.
+Eso equivale a capacidad de auditoría para hasta 100 posiciones `00..99`.
+El dataset Samu observado usa 92 (`00..91`). El gate sigue exigiendo mínimo
+13 personajes, tripletes completos y secuencia contigua; una ausencia al final
+es válida, pero un hueco seguido de índices posteriores es error.
 
-La existencia de este APK con DEX Gen idéntico es evidencia relevante para esa
-investigación, pero no sustituye el análisis del core ni una prueba Vita.
+Las regresiones sintéticas cubren 13, 22, 92 y 100 tripletes y también un bound
+inválido >100. No se modificó `Utility.InttoString()`, `TCBManajer`, Game3,
+la selección ni el combate. El límite de dos dígitos se conserva: un futuro
+índice 100 requiere evidencia separada y no forma parte de este soporte.
+
+Esto es **HOST/ADAPTER CONFIRMED**, todavía no certificación física de los 92
+personajes.
 
 ## 13. Compatibilidad esperada del extractor
 
@@ -583,7 +593,9 @@ Una herramienta correcta debe:
 2. conservar los 384 archivos de assets;
 3. no truncar personajes a 13/22/31 durante extracción;
 4. preservar PAC bytes;
-5. preservar los `.ogg` tal como vienen y registrar codec real por magic;
+5. el extractor genérico preserva los `.ogg`; para el perfil Samu preparado en
+   Vita, `prepare_samu_mod.py` normaliza explícitamente los 15 MP3/AAC a Vorbis
+   y registra hashes/codec de entrada y salida;
 6. no sobrescribir un save existente con el `save.bin` empaquetado;
 7. registrar source APK SHA-256 y, de ser posible, el DEX SHA idéntico a Gen.
 
@@ -609,7 +621,8 @@ Propuesta documental:
 - **Tier A:** reemplazos de recursos sobre Gen.
 - **Tier B+:** expansión masiva de índices usando el mismo DEX Gen.
 - **No Tier C respecto a Gen:** el DEX es idéntico.
-- **Audio especial:** 15 BGM MP3/AAC con nombres `.ogg`.
+- **Audio especial:** 15 BGM MP3/AAC con nombres `.ogg`; 00.26 dispone de
+  preparación explícita a Vorbis manteniendo los nombres lógicos.
 - **Vita hardware:** pendiente.
 
 La diferencia entre "data-driven en Android" y "confirmado en Vita" debe
@@ -683,3 +696,38 @@ Si alguna diferencia impide usar el mod en Vita:
 
 La meta sigue siendo que **Vita se adapte al contrato del motor**, no que el
 motor sea reemplazado por una interpretación nueva para soportar mods.
+
+## 18. Ruta reproducible Vita añadida en 00.26
+
+La integración pública no almacena el APK ni sus assets. El helper:
+
+```sh
+python3 tools/prepare_samu_mod.py \
+  DragonBallZuperSamuGamerYT.apk \
+  ./install/mods/ZuperSamu
+```
+
+hace lo siguiente:
+
+1. exige el APK SHA-256 `1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d`;
+2. exige el DEX SHA-256 `cba71bc13b9d1281aa8180423be9d08db0deb0fc2f5ef6825cc11ba66a17b729`;
+3. extrae los 384 assets por la ruta ordinaria `assets/`;
+4. verifica los 92 tripletes `00..91` y rechaza contenido inesperado `92..99`
+   para esta identidad concreta de APK;
+5. comprueba por magic la matriz conocida: 12 MP3, 3 AAC/M4A y 2 Vorbis;
+6. convierte únicamente los 15 no-Vorbis a Ogg Vorbis 44.1 kHz estéreo,
+   conservando `bgm_00..16.ogg` como nombres solicitados por el motor;
+7. decodifica cada salida con FFmpeg para comprobar que el Vorbis resultante es
+   legible antes de publicar el directorio;
+8. actualiza `dbtb_manifest.json` con hashes/tamaños de origen y salida,
+   versión de FFmpeg y la identidad del perfil.
+
+Prueba directa en el APK suministrado el 2026-10-06: las 15 conversiones
+terminaron correctamente y los 17 BGM finales fueron identificados como Vorbis,
+44.1 kHz, estéreo. Los dos Vorbis originales (`bgm_12`, `bgm_13`) se
+mantuvieron sin recodificación. Esta preparación conserva el backend
+libvorbisfile/mezclador de 00.24 y evita introducir un decoder MP3/AAC nuevo en
+Vita.
+
+CI: `Community mod profiles` run `37540898687` PASS. La prueba física
+completa está definida en [TEST_VITA_00_26](TEST_VITA_00_26.md).

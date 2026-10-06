@@ -1,4 +1,38 @@
-# Current status — 2026-10-06 (America/Bogota), 00.24 hardware / 00.25 candidate
+# Current status — 2026-10-06 (America/Bogota), 00.24 hardware / 00.26 candidate
+
+## 00.26 candidate — Samu 92-character roster + two-digit namespace
+
+00.26 keeps the hardware-confirmed 00.24 gameplay/audio path and the 00.25
+protected-profile work. **00.24 remains the latest physical-Vita-confirmed
+artifact until 00.26 is tested on hardware.**
+
+The Vita-side offline installation audit no longer stops at 31 character slots.
+It now validates the complete two-digit resource namespace **00..99** (up to 100
+contiguous triplets), while preserving the 13-character minimum, rejecting
+partial triplets and rejecting a gap followed by later character data. This
+change is an adapter/gate correction only; the original TeaVM game logic is not
+rewritten. Synthetic coverage now exercises 13, 22, 92 and 100 contiguous
+triplets.
+
+For the audited `DragonBallZuperSamuGamerYT.apk`, the known dataset remains
+**92 characters (00..91)**. Its DEX and manifest are byte-identical to Gen, so
+no Samu-specific gameplay bytecode is being transplanted. The new
+`tools/prepare_samu_mod.py` is pinned to the audited APK/DEX hashes, extracts
+all 384 assets, verifies all 92 `char/chardemo/charf` triplets, and explicitly
+normalizes only the 15 BGM whose contents are MP3/AAC despite their `.ogg`
+names. They become real Ogg Vorbis 44.1 kHz stereo under the same logical
+`bgm_XX.ogg` names. The two already-Vorbis BGM are left unchanged. Every
+transformation is recorded in `dbtb_manifest.json`; PAC bytes are not rewritten.
+
+This keeps the hardware-tested libvorbisfile mixer and exact-allocation repair
+unchanged instead of adding an untested MP3/AAC decoder to the Vita executable.
+The original APK itself is therefore still not direct-audio-compatible; the
+prepared Vita dataset is the supported Samu import route.
+
+Host/synthetic evidence: Community mod profiles run
+`37540898687` passes the Samu preparation rules and the extended roster gate.
+The 00.26 native VitaSDK smoke build is tracked separately from physical
+gameplay. See [TEST_VITA_00_26](TEST_VITA_00_26.md).
 
 ## 00.25 candidate — audited community mod profiles
 
@@ -87,11 +121,14 @@ a Gen-derived ordinary-PAC build with **92 character triplets (00..91)** while
 keeping Gen's `classes.dex` and `AndroidManifest.xml` byte-identical. Its 384
 assets contain 345 PACs; 345/345 outer PACs are structurally valid, all 92
 `charXX` contain a 43-record BIN, and 237 files are new versus Gen. This is
-strong evidence of a data-driven large roster, but Vita's current installation
-audit only inspects indices 0..30 and no 92-character hardware claim is made.
+strong evidence of a data-driven large roster. The 00.26 Vita-side audit now
+covers the complete two-digit namespace 00..99; no 92-character hardware claim
+is made until the physical test protocol passes.
 
 The same mod also broadens the media issue: **15/17 BGM named `.ogg` are
-actually MP3 or AAC/M4A**, while all 19 SE remain baseline Vorbis. It contains
+actually MP3 or AAC/M4A**, while all 19 SE remain baseline Vorbis. 00.26 adds an
+explicit import-time Samu preparation path that normalizes those 15 files to
+real Vorbis without changing their logical names or the original game core. It contains
 two empty-but-valid `charf` PACs (20/21), 18 type-`u` URL metadata entries and
 one malformed type `.pn` whose payload is a valid PNG. These are source
 outliers to document, not a reason to globally weaken the runtime parser.

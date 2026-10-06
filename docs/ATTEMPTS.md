@@ -948,3 +948,36 @@ tests on PowerShell 5.1/Windows Server 2025, including special-path BAT transpor
 No runtime/VPK changes or new Vita gameplay evidence. See
 [evidence](evidence/windows_extractor_2026-10-05.json) and
 [usage/contract](WINDOWS_DATA_TOOL.md).
+
+## 2026-10-06 — Attempt 030 — Samu 92-character roster / IDs 00..99 / BGM normalization
+
+**Goal:** integrate the audited `DragonBallZuperSamuGamerYT.apk` without
+rewriting the original engine, make all 92 supplied character triplets visible
+to the Vita-side installation audit, retain headroom through two-digit ID 99,
+and make the mod's mislabeled MP3/AAC BGM consumable by the already-tested
+Vorbis backend.
+
+**Source evidence:** APK
+`1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d`;
+DEX `cba71bc13b9d1281aa8180423be9d08db0deb0fc2f5ef6825cc11ba66a17b729`
+(byte-identical to Gen); 92 complete triplets `00..91`.
+
+**Changes:** `auditInstalledData()` now scans the complete two-digit namespace
+00..99 while retaining minimum/contiguity/completeness checks. No original
+TeaVM gameplay method was changed. Added `tools/prepare_samu_mod.py`, pinned
+to the audited APK/DEX, to normalize exactly the documented 12 MP3 + 3 AAC/M4A
+BGM into Ogg Vorbis 44.1 kHz stereo and record all transformations. Version
+candidate bumped to 00.26.
+
+**Commits:** `7af4720` (roster audit), `063b779` (Samu preparer/tests),
+`278da8f` (CI regression), `d7a4aa2` (00.26 version).
+
+**Validation:** synthetic installed-data tests cover 13, 22, 92 and 100
+contiguous triplets and reject >100 audit bounds. Community mod profiles run
+`37540898687` PASS. Direct conversion against the supplied APK successfully
+produced Vorbis 44.1 kHz stereo for all 15 non-Vorbis BGM; `bgm_12` and
+`bgm_13` were already Vorbis and remain unchanged.
+
+**Result:** HOST/IMPORT SUPPORT CONFIRMED. Physical Vita validation of the 92
+characters, their voices/charf variants, high-index battles and the normalized
+BGM matrix remains pending. 00.24 remains the hardware baseline.
