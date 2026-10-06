@@ -1,0 +1,379 @@
+{
+  "schema": 1,
+  "date": "2026-10-06",
+  "source_file": "DragonBallZuperSamuGamerYT.apk",
+  "apk": {
+    "sha256": "1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d",
+    "bytes": 388634969,
+    "zip_entries": 461
+  },
+  "relationship_to_gen": {
+    "classes_dex_identical": true,
+    "dex_sha256": "cba71bc13b9d1281aa8180423be9d08db0deb0fc2f5ef6825cc11ba66a17b729",
+    "android_manifest_identical": true,
+    "manifest_sha256": "0d83c2e0880708eb24c61ec870a87c90a6d08c8b43dae000ce641896b193726e",
+    "certificate_sha256": "a40da80a59d170caa950cf15c18c454d47a39b26989d8b640ecd745ba71bf5dc",
+    "assets_common": 147,
+    "assets_byte_identical": 117,
+    "assets_byte_different": 30,
+    "assets_only_gen": 0,
+    "assets_only_mod": 237,
+    "changed_common_files": [
+      "bgm_00.ogg",
+      "bgm_01.ogg",
+      "bgm_02.ogg",
+      "bgm_03.ogg",
+      "bgm_04.ogg",
+      "bgm_05.ogg",
+      "bgm_06.ogg",
+      "bgm_07.ogg",
+      "bgm_08.ogg",
+      "bgm_09.ogg",
+      "bgm_10.ogg",
+      "bgm_11.ogg",
+      "bgm_14.ogg",
+      "bgm_15.ogg",
+      "bgm_16.ogg",
+      "bobj04.pac",
+      "char00.pac",
+      "char10.pac",
+      "char11.pac",
+      "chardemo00.pac",
+      "chardemo10.pac",
+      "charf0000.pac",
+      "charf0010.pac",
+      "common.pac",
+      "demo_00.pac",
+      "demo_08.pac",
+      "effect.pac",
+      "gamedata.pac",
+      "select0.pac",
+      "text00.pac"
+    ]
+  },
+  "zip_layout": {
+    "assets_files": 384,
+    "res_raw_files": 57,
+    "res_raw_nonzero": 0,
+    "native_libs": 0,
+    "asset_extensions": {
+      "pac": 345,
+      "ogg_named": 36,
+      "bin": 2,
+      "png": 1
+    }
+  },
+  "logical_inventory": {
+    "characters": "00..91",
+    "character_count": 92,
+    "chardemo": "00..91",
+    "charf": "0000..0091",
+    "cards": "000..050",
+    "card_count": 51,
+    "backgrounds": "00..03",
+    "bobj": "00..04",
+    "bgm": "00..16",
+    "se": "00..18",
+    "additional_character_triplets_vs_gen": 79,
+    "additional_pacs_vs_gen": 237
+  },
+  "shared_files": {
+    "loading_png": {
+      "bytes": 3394,
+      "sha256": "92565342ed5d33ce05400d1f4cd9ada2159bd83f2f87e55a12f897c8a70c817b"
+    },
+    "mk_bin": {
+      "bytes": 392,
+      "sha256": "2caef8c445b71896f34d560e90be6e04d1911d6bf8010d73c84dd9288b30251f"
+    },
+    "save_bin": {
+      "bytes": 12906,
+      "sha256": "8b65f591ca2ba4724af55bfab4adf9e8a4260c7cd517f6bd93aa4c69a1239714"
+    }
+  },
+  "pac_audit": {
+    "encoding": "ordinary",
+    "outer_pacs": 345,
+    "outer_invalid": 0,
+    "nested_spr": 6,
+    "total_containers": 351,
+    "top_level_entries": 4305,
+    "top_level_types": {
+      "png": 1994,
+      "wav": 1443,
+      "cnv": 343,
+      "dac": 343,
+      "bin": 148,
+      "spr": 6,
+      "act": 4,
+      "plt": 5,
+      "u": 18,
+      ".pn": 1
+    },
+    "all_types_including_nested": {
+      "png": 2023,
+      "wav": 1443,
+      "cnv": 343,
+      "dac": 343,
+      "bin": 154,
+      "spr": 6,
+      "act": 4,
+      "plt": 5,
+      "u": 18,
+      ".pn": 1
+    },
+    "max_png": {
+      "width": 512,
+      "height": 512,
+      "pac": "back00.pac",
+      "entry": 0
+    },
+    "char_bin_records": {
+      "all_92": 43
+    },
+    "char_entry_range": {
+      "min": 31,
+      "min_index": 60,
+      "max": 48,
+      "max_indices": [
+        35,
+        54
+      ]
+    },
+    "char_png_range": {
+      "min": 14,
+      "min_index": 66,
+      "max": 21,
+      "max_indices": [
+        3,
+        79,
+        83
+      ]
+    },
+    "char_wav_range": {
+      "min": 10,
+      "min_index": 60,
+      "max": 19,
+      "max_indices": [
+        28,
+        69
+      ]
+    }
+  },
+  "nonstandard_entries": {
+    "type_u": {
+      "count": 18,
+      "locations": {
+        "char35.pac": 8,
+        "char54.pac": 8,
+        "chardemo35.pac": 1,
+        "chardemo54.pac": 1
+      },
+      "payload": "76-byte HTTP URL strings under pm1.narvii.com pointing to .jpg references"
+    },
+    "type_dot_pn": {
+      "count": 1,
+      "pac": "char42.pac",
+      "entry": 9,
+      "raw_type_hex": "2e706e00",
+      "payload_is_valid_png": true,
+      "payload_bytes": 28635
+    },
+    "empty_charf": [
+      "charf0020.pac",
+      "charf0021.pac"
+    ],
+    "charf_patterns": {
+      "png,png,cnv,dac": 65,
+      "cnv,dac": 20,
+      "png,png,png,cnv,dac": 4,
+      "png,cnv,dac": 1,
+      "empty_count_0": 2
+    },
+    "charf_unique_sha256_count": 36,
+    "chardemo_unique_sha256_count": 92,
+    "char_unique_sha256_count": 92
+  },
+  "changed_pac_layout_vs_gen": {
+    "char10.pac": {
+      "gen": "34 entries: 16 PNG, BIN, CNV, DAC, 15 WAV",
+      "mod": "38 entries: 20 PNG, BIN, CNV, DAC, 15 WAV"
+    },
+    "charf0010.pac": {
+      "gen": "5 entries: PNG,PNG,PNG,CNV,DAC",
+      "mod": "2 entries: CNV,DAC"
+    }
+  },
+  "text": {
+    "text00_bytes": 26963,
+    "outer_types": [
+      "cnv",
+      "dac"
+    ],
+    "normalized_table_records": 1,
+    "normalized_table_cells": 315,
+    "observed_language": "Spanish UTF-8 content"
+  },
+  "audio": {
+    "se_00_18_identical_to_gen_vorbis": true,
+    "bgm_non_vorbis_count": 15,
+    "bgm_baseline_vorbis_unchanged": [
+      "bgm_12.ogg",
+      "bgm_13.ogg"
+    ],
+    "changed": {
+      "bgm_00.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 85.159125,
+        "bytes": 1487358,
+        "sha12": "bef751b48466"
+      },
+      "bgm_01.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 139.337125,
+        "bytes": 2333810,
+        "sha12": "4164ffca64c4"
+      },
+      "bgm_02.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 161.888813,
+        "bytes": 2590598,
+        "sha12": "e7a8e589b6f9"
+      },
+      "bgm_03.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 88.346125,
+        "bytes": 1546843,
+        "sha12": "770dd996d604"
+      },
+      "bgm_04.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 88.346125,
+        "bytes": 1546843,
+        "sha12": "770dd996d604"
+      },
+      "bgm_05.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 88.346125,
+        "bytes": 1546843,
+        "sha12": "770dd996d604"
+      },
+      "bgm_06.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 88.346125,
+        "bytes": 1546843,
+        "sha12": "770dd996d604"
+      },
+      "bgm_07.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 88.346125,
+        "bytes": 1546843,
+        "sha12": "770dd996d604"
+      },
+      "bgm_08.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 88.346125,
+        "bytes": 1546843,
+        "sha12": "770dd996d604"
+      },
+      "bgm_09.ogg": {
+        "codec": "aac",
+        "container": "M4A/ISO-BMFF",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 5.25,
+        "bytes": 78860,
+        "sha12": "cc72739a23e1"
+      },
+      "bgm_10.ogg": {
+        "codec": "aac",
+        "container": "M4A/ISO-BMFF",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 36.598005,
+        "bytes": 598959,
+        "sha12": "4119ed102c82"
+      },
+      "bgm_11.ogg": {
+        "codec": "aac",
+        "container": "M4A/ISO-BMFF",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 5.25,
+        "bytes": 78860,
+        "sha12": "cc72739a23e1"
+      },
+      "bgm_14.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 88.346125,
+        "bytes": 1546843,
+        "sha12": "770dd996d604"
+      },
+      "bgm_15.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 88.346125,
+        "bytes": 1546843,
+        "sha12": "770dd996d604"
+      },
+      "bgm_16.ogg": {
+        "codec": "mp3",
+        "hz": 44100,
+        "ch": 2,
+        "duration_s": 85.159125,
+        "bytes": 1487358,
+        "sha12": "bef751b48466"
+      }
+    },
+    "duplicate_groups": [
+      [
+        "bgm_03.ogg",
+        "bgm_04.ogg",
+        "bgm_05.ogg",
+        "bgm_06.ogg",
+        "bgm_07.ogg",
+        "bgm_08.ogg",
+        "bgm_14.ogg",
+        "bgm_15.ogg"
+      ],
+      [
+        "bgm_00.ogg",
+        "bgm_16.ogg"
+      ],
+      [
+        "bgm_09.ogg",
+        "bgm_11.ogg"
+      ]
+    ]
+  },
+  "vita_implications": [
+    "This mod is Gen-derived and data-expanded; its DEX is not a new Tier-C code mod relative to Gen.",
+    "Current auditInstalledData() only audits indices 0..30; it does not validate 31..91.",
+    "Do not raise the Vita gate to 92 without evidence from the preserved core and regression tests.",
+    "Do not infer codec from .ogg extension: 15/17 BGM are MP3/AAC.",
+    "Do not assume every charf contains images or entries.",
+    "Do not globally reinterpret unknown PAC types; type u and .pn require evidence before runtime changes.",
+    "Preserve the hardware-confirmed 00.24 path and adapt Vita boundaries rather than rewriting engine logic."
+  ]
+}
