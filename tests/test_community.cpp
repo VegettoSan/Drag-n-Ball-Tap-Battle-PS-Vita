@@ -72,7 +72,7 @@ static bool profileTests(const std::string& path) {
                                 PacEncoding::Community14Invasion}) {
         const CommunityPacProfile* profile=communityProfile(encoding);
         CHECK(profile);
-        auto payload=imagePayload(expected,2,1,1,encoding);
+        auto payload=imagePayload(expected,2,1,0,encoding);
         CHECK(!payload.empty());
         std::vector<uint8_t> pac;
         le16(pac,uint16_t(1u^profile->count_xor));
