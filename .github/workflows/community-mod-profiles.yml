@@ -13,11 +13,14 @@ on:
       - 'src/game_data.hpp'
       - 'src/engine_resources.cpp'
       - 'src/engine_resources.hpp'
+      - 'src/installed_data.cpp'
+      - 'src/installed_data.hpp'
       - 'tools/community14.py'
       - 'tools/extract_apk_data.py'
       - 'tests/test_community.cpp'
       - 'tests/test_game_data.cpp'
       - 'tests/test_engine_resources.cpp'
+      - 'tests/test_installed_data.cpp'
       - 'tests/test_extractor.py'
       - '.github/workflows/community-mod-profiles.yml'
   workflow_dispatch:
@@ -56,3 +59,11 @@ jobs:
             src/pac.cpp src/vfs.cpp src/image.cpp -lpng -lz \
             -o /tmp/dbtb-engine-resource-profiles
           /tmp/dbtb-engine-resource-profiles
+
+      - name: Validate extended offline character installation gate
+        run: |
+          set -euo pipefail
+          g++ -std=c++14 -O2 -Wall -Wextra -Isrc \
+            tests/test_installed_data.cpp src/installed_data.cpp src/pac.cpp src/vfs.cpp \
+            -o /tmp/dbtb-installed-data
+          /tmp/dbtb-installed-data
