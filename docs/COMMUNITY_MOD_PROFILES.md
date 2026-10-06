@@ -97,19 +97,25 @@ Original, Gen, Android14 and Spanish carry the same 36 real Vorbis files
 byte-for-byte: 17 stereo BGM + 19 mono SE at 44.1 kHz.
 
 Invasion preserves 29/36 of those files, but changes exactly
-`bgm_03/04/05/06/07/14/15`. Despite retaining the `.ogg` filenames, a
-content/magic and media-stream audit shows that `03/06/07/14/15` are MP3 and
-`04/05` are AAC in M4A/ISO-BMFF containers. The current Vita adapter uses
-libvorbisfile, so `ov_fopen()` cannot decode those seven files. In particular,
-the previous observation that `bgm_05` would exceed the whole-PCM limit after
-decoding remains useful for memory planning, but **streaming Vorbis is not a
-solution because the source is AAC, not Vorbis**.
+`bgm_03/04/05/06/07/14/15`. Despite retaining the `.ogg` filenames,
+`03/06/07/14/15` are MP3 and `04/05` are AAC-LC inside M4A/ISO-BMFF.
 
-Do not modify the original game engine or rename the BGM it requests. The
-compatible solution belongs at the Vita/import boundary: detect the actual codec
-from content, then decode/stream it with a supported Vita-side codec or convert
-it during import while preserving source provenance. Invasion BGM compatibility
-remains pending until that boundary is implemented and physically tested.
+00.27 no converts or renames them. The BGM adapter first retains the already
+hardware-proven Vorbis path and, when that fails, sniffs the selected VFS file
+by content. MP3 is sent to the Vita hardware MP3 decoder and AAC/M4A is demuxed
+to its original AAC access units and sent to the Vita AAC decoder through
+`SceAudiodec`.
+
+The supplied Invasion AAC tracks were checked against that contract: both are
+44.1 kHz stereo and their largest access units are 455 and 548 bytes,
+respectively, below Vita's 1536-byte AAC ES limit. Its MP3 tracks are valid
+MPEG Layer III at 44.1 or 48 kHz and also fit the native decoder limits.
+
+Therefore Invasion's seven non-Vorbis BGM are now **implemented as a 00.27
+candidate path with source bytes unchanged**. Hardware confirmation remains
+pending. Do not modify the original engine or pre-convert the BGM for the 00.27
+test; a successful device log should show `Compressed BGM direct:` for the
+MP3/AAC cases.
 
 ## Validation rules for future profiles
 
