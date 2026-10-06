@@ -7,21 +7,23 @@
 #define CHECK(x) do { if (!(x)) { std::cerr << "FAIL game data " << __LINE__ << ": " << #x << '\n'; return false; } } while (0)
 static void le16(std::vector<uint8_t>& v, uint16_t n) { v.push_back(n); v.push_back(n >> 8); }
 static void le32(std::vector<uint8_t>& v, uint32_t n) { for (int i=0; i<4; ++i) v.push_back(n >> (i*8)); }
-static std::vector<uint8_t> fixture(bool encoded) {
+static std::vector<uint8_t> fixture(PacEncoding encoding) {
+    const CommunityPacProfile* profile=communityProfile(encoding);
     std::vector<uint8_t> v;
-    le16(v, 2 ^ (encoded ? 34594u : 0u));
+    le16(v, uint16_t(2u ^ (profile ? profile->table_count_xor : 0u)));
     for (uint32_t i=0; i<2; ++i) {
-        le32(v, (18+i*4) ^ (encoded ? (uint32_t(-1887452470)^i) : 0u));
-        le16(v, 2 ^ (encoded ? (23261u^i) : 0u));
-        le16(v, 2 ^ (encoded ? (47592u^i) : 0u));
+        le32(v, uint32_t(18+i*4) ^ (profile ? (profile->table_position_xor^i) : 0u));
+        le16(v, uint16_t(2u ^ (profile ? (profile->table_width_xor^i) : 0u)));
+        le16(v, uint16_t(2u ^ (profile ? (profile->table_height_xor^i) : 0u)));
     }
     v.insert(v.end(), {0,128,254,255,7,8,9,10});
     return v;
 }
 static bool bounds() {
     GameDataTable t; uint8_t value;
-    for (auto codec : {PacEncoding::Original, PacEncoding::Community14}) {
-        const auto data = fixture(codec == PacEncoding::Community14);
+    for (auto codec : {PacEncoding::Original, PacEncoding::Community14,
+                       PacEncoding::Community14Spanish, PacEncoding::Community14Invasion}) {
+        const auto data = fixture(codec);
         CHECK(t.decode(data, codec));
         CHECK(t.records().size() == 2 && t.encoding() == codec);
         CHECK(t.value(0,1,1,value) && value==255);
@@ -35,16 +37,19 @@ static bool bounds() {
             CHECK(t.records().empty() && !t.value(0,0,0,value));
         }
     }
-    auto bad = fixture(false);
+    auto bad = fixture(PacEncoding::Original);
     bad[2]=0; CHECK(!t.decode(bad,PacEncoding::Original)); // header overlap
-    bad=fixture(false);
+    bad=fixture(PacEncoding::Original);
     for(size_t i=2;i<6;++i) bad[i]=255;
     CHECK(!t.decode(bad,PacEncoding::Original)); // u32 position, no overflow
-    bad=fixture(false); bad[6]=255; bad[7]=255; bad[8]=255; bad[9]=255;
+    bad=fixture(PacEncoding::Original); bad[6]=255; bad[7]=255; bad[8]=255; bad[9]=255;
     CHECK(!t.decode(bad,PacEncoding::Original)); // huge row product
-    CHECK(!t.decode(fixture(false),PacEncoding::Auto));
-    CHECK(!t.decode(fixture(true),PacEncoding::Original));
-    CHECK(!t.decode(fixture(false),PacEncoding::Community14));
+    CHECK(!t.decode(fixture(PacEncoding::Original),PacEncoding::Auto));
+    for (auto codec : {PacEncoding::Community14, PacEncoding::Community14Spanish,
+                       PacEncoding::Community14Invasion}) {
+        CHECK(!t.decode(fixture(codec),PacEncoding::Original));
+        CHECK(!t.decode(fixture(PacEncoding::Original),codec));
+    }
     return true;
 }
 static bool copy(const std::string& from, const std::string& to) {
