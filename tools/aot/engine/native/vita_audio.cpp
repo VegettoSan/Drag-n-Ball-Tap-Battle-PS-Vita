@@ -40,6 +40,37 @@ struct Voice {
     bool loop = false;
 };
 
+// Keep the hardware-confirmed 00.24 whole-clip path for ordinary OGGs. Mods can
+// carry much longer BGM, so only clips whose decoded PCM would exceed that
+// proven 32 MiB bound switch to this small sequential Vorbis reader.
+constexpr uint64_t kWholeOggPcmLimit = 32u * 1024u * 1024u;
+struct BgmStream {
+    OggVorbis_File vf{};
+    bool open = false;
+    bool loop = false;
+    bool primed = false;
+    bool eof_after_next = false;
+    int channels = 0;
+    int rate = 0;
+    uint64_t phase = 0;       // fractional 32.32 position between current/next
+    uint64_t step = 0;
+    float gain = 1.0f;
+    std::array<char, 32768> decoded{};
+    size_t decoded_pos = 0, decoded_size = 0;
+    int16_t current_l = 0, current_r = 0;
+    int16_t next_l = 0, next_r = 0;
+
+    BgmStream() = default;
+    BgmStream(const BgmStream&) = delete;
+    BgmStream& operator=(const BgmStream&) = delete;
+    ~BgmStream() { close(); }
+    void close() {
+        if (open) ov_clear(&vf);
+        open = false;
+        primed = false;
+        decoded_pos = decoded_size = 0;
+    }
+};
 std::atomic_flag audio_lock = ATOMIC_FLAG_INIT;
 
 struct AudioLockGuard {
@@ -56,6 +87,7 @@ std::vector<std::shared_ptr<Clip>> streamed_voice_clips;
 std::vector<Voice> active_effects;
 std::vector<Voice> active_voices;
 Voice bgm;
+std::shared_ptr<BgmStream> bgm_stream;
 int audio_port = -1;
 SceUID audio_thread = -1;
 std::atomic<bool> audio_running{false};
@@ -127,8 +159,9 @@ std::string audioName(const char* raw) {
     return name;
 }
 
-std::shared_ptr<Clip> decodeOgg(const std::string& relative) {
+std::shared_ptr<Clip> decodeOgg(const std::string& relative, bool* stream_required = nullptr) {
     DbtbTimedScope timer(dbtb_performance().audio_decode_us);
+    if (stream_required) *stream_required = false;
     std::string path;
     if (!dbtb_vfs().resolve(relative, path)) return nullptr;
     OggVorbis_File vf{};
@@ -145,9 +178,14 @@ std::shared_ptr<Clip> decodeOgg(const std::string& relative) {
     // a vector in 8 KiB steps temporarily keeps its old allocation alongside
     // a doubled replacement (the 00.23 Android14 battle-start bad_alloc).
     const ogg_int64_t frames = ov_pcm_total(&vf, -1);
-    constexpr uint64_t kMaxOggBytes = 32u * 1024u * 1024u;
-    if (frames <= 0 || uint64_t(frames) > kMaxOggBytes / (2u * clip->channels)) {
+    if (frames <= 0) {
         ov_clear(&vf); return nullptr;
+    }
+    const uint64_t decoded_bytes = uint64_t(frames) * uint64_t(clip->channels) * sizeof(int16_t);
+    if (decoded_bytes > kWholeOggPcmLimit) {
+        if (stream_required) *stream_required = true;
+        ov_clear(&vf);
+        return nullptr;
     }
     for (int link = 0; link < ov_streams(&vf); ++link) {
         const vorbis_info* part = ov_info(&vf, link);
@@ -179,6 +217,93 @@ std::shared_ptr<Clip> decodeOgg(const std::string& relative) {
     if (written != samples * sizeof(int16_t)) return nullptr;
     clip->frame_count = size_t(frames);
     return clip;
+}
+
+
+bool readBgmStreamFrame(BgmStream& stream, int16_t& left, int16_t& right) {
+    const size_t frame_bytes = size_t(stream.channels) * sizeof(int16_t);
+    for (;;) {
+        if (stream.decoded_size - stream.decoded_pos >= frame_bytes) {
+            const auto* p = reinterpret_cast<const uint8_t*>(stream.decoded.data() + stream.decoded_pos);
+            left = static_cast<int16_t>(uint16_t(p[0]) | (uint16_t(p[1]) << 8));
+            if (stream.channels == 2)
+                right = static_cast<int16_t>(uint16_t(p[2]) | (uint16_t(p[3]) << 8));
+            else
+                right = left;
+            stream.decoded_pos += frame_bytes;
+            return true;
+        }
+        stream.decoded_pos = stream.decoded_size = 0;
+        int bitstream = 0;
+        const long got = ov_read(&stream.vf, stream.decoded.data(), int(stream.decoded.size()), 0, 2, 1, &bitstream);
+        if (got > 0) {
+            if (size_t(got) % frame_bytes) return false;
+            stream.decoded_size = size_t(got);
+            continue;
+        }
+        if (got < 0 || !stream.loop) return false;
+        if (ov_pcm_seek(&stream.vf, 0) != 0) return false;
+    }
+}
+
+std::shared_ptr<BgmStream> openBgmStream(const std::string& relative, float gain, bool loop) {
+    DbtbTimedScope timer(dbtb_performance().audio_decode_us);
+    std::string path;
+    if (!dbtb_vfs().resolve(relative, path)) return nullptr;
+    dbtb_reclaimIdleResources();
+    auto stream = std::make_shared<BgmStream>();
+    if (ov_fopen(path.c_str(), &stream->vf) != 0) return nullptr;
+    stream->open = true;
+    const vorbis_info* info = ov_info(&stream->vf, -1);
+    if (!info || (info->channels != 1 && info->channels != 2) || info->rate <= 0) return nullptr;
+    stream->channels = info->channels;
+    stream->rate = int(info->rate);
+    stream->gain = std::max(0.0f, std::min(2.0f, gain));
+    stream->loop = loop;
+    stream->step = (uint64_t(uint32_t(stream->rate)) << 32) / uint64_t(kOutputRate);
+    if (!stream->step) return nullptr;
+    for (int link = 0; link < ov_streams(&stream->vf); ++link) {
+        const vorbis_info* part = ov_info(&stream->vf, link);
+        if (!part || part->channels != stream->channels || part->rate != stream->rate) return nullptr;
+    }
+    if (!readBgmStreamFrame(*stream, stream->current_l, stream->current_r)) return nullptr;
+    if (!readBgmStreamFrame(*stream, stream->next_l, stream->next_r)) {
+        stream->next_l = stream->current_l;
+        stream->next_r = stream->current_r;
+        stream->eof_after_next = true;
+    }
+    stream->primed = true;
+    runtimeLog("Ogg stream: " + relative + " rate=" + std::to_string(stream->rate) +
+               " channels=" + std::to_string(stream->channels) +
+               " buffer_bytes=" + std::to_string(stream->decoded.size()));
+    return stream;
+}
+
+void mixBgmStream(BgmStream& stream, int32_t& left, int32_t& right) {
+    if (!stream.open || !stream.primed || !stream.step) return;
+    const uint32_t frac = static_cast<uint32_t>((stream.phase >> 16) & 0xffffu);
+    const uint32_t inv = 65536u - frac;
+    const auto interpolate = [frac, inv](int32_t x, int32_t y) -> int32_t {
+        return (x * static_cast<int32_t>(inv) + y * static_cast<int32_t>(frac)) >> 16;
+    };
+    left += static_cast<int32_t>(interpolate(stream.current_l, stream.next_l) * stream.gain);
+    right += static_cast<int32_t>(interpolate(stream.current_r, stream.next_r) * stream.gain);
+    stream.phase += stream.step;
+    const uint64_t one = uint64_t(1) << 32;
+    while (stream.phase >= one && stream.open) {
+        stream.phase -= one;
+        if (stream.eof_after_next) {
+            stream.close();
+            break;
+        }
+        stream.current_l = stream.next_l;
+        stream.current_r = stream.next_r;
+        if (!readBgmStreamFrame(stream, stream.next_l, stream.next_r)) {
+            stream.next_l = stream.current_l;
+            stream.next_r = stream.current_r;
+            stream.eof_after_next = true;
+        }
+    }
 }
 
 std::shared_ptr<Clip> decodeVoiceBytes(const void* raw, int32_t size) {
@@ -378,6 +503,7 @@ void dbtb_mixAudio(short* interleaved, int frames) {
           for (int i = base; i < end; ++i) {
               int32_t left = 0, right = 0;
               mixVoice(bgm, left, right);
+              if (bgm_stream) mixBgmStream(*bgm_stream, left, right);
               for (auto& v : active_effects) mixVoice(v, left, right);
               for (auto& v : active_voices) mixVoice(v, left, right);
               overloaded += left < -32768 || left > 32767;
@@ -507,16 +633,22 @@ void dbtb_voiceStop(void) {
 
 int32_t dbtb_bgmPlay(void* raw_name, float gain, int32_t loop) {
     if (!raw_name || !ensureAudio()) return -1;
-    auto clip = decodeOgg(audioName(static_cast<const char*>(raw_name)));
-    if (!clip) return -1;
+    const std::string name = audioName(static_cast<const char*>(raw_name));
+    bool stream_required = false;
+    auto clip = decodeOgg(name, &stream_required);
+    std::shared_ptr<BgmStream> stream;
+    if (!clip && stream_required) stream = openBgmStream(name, gain, loop != 0);
+    if (!clip && !stream) return -1;
     AudioLockGuard lock;
-    bgm = makeVoice(std::move(clip), gain, loop != 0);
+    bgm = clip ? makeVoice(std::move(clip), gain, loop != 0) : Voice{};
+    bgm_stream = std::move(stream);
     return 0;
 }
 
 void dbtb_bgmStop(void) {
     AudioLockGuard lock;
     bgm = Voice{};
+    bgm_stream.reset();
 }
 
 void dbtb_audioDispose(void) {
@@ -532,6 +664,7 @@ void dbtb_audioDispose(void) {
     }
     AudioLockGuard lock;
     bgm = Voice{};
+    bgm_stream.reset();
     active_effects.clear();
     active_voices.clear();
     effects.clear();
