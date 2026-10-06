@@ -112,6 +112,13 @@ def extract(apk, output, overwrite=False, layout='auto'):
         names = set()
         total = 0
         for info in sorted(archive.infolist(), key=lambda x: x.filename):
+            # zipfile normalizes backslashes to '/' on Windows when constructing
+            # ZipInfo.filename. Validate the original central-directory name too,
+            # otherwise an APK entry such as res/raw/bad\\x can masquerade as a
+            # nested safe path only on Windows.
+            original_name = getattr(info, 'orig_filename', info.filename)
+            if original_name != info.filename and (original_name.startswith(prefix) or info.filename.startswith(prefix)):
+                raise ValueError(f'unsafe ZIP path separator: {original_name!r}')
             if not info.filename.startswith(prefix):
                 continue
             name = info.filename[len(prefix):]
