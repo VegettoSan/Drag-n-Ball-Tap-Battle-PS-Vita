@@ -4,6 +4,13 @@ Current hardware checkpoint: **DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk** fix
 native PCM allocation growth at Android14 battle start and preserves the now
 hardware-confirmed LiveArea. Full build, host tests and the user’s Vita retest pass. See [00.24 result](docs/TEST_VITA_00_24.md).
 
+Development candidate **00.25** layers audited protected-resource profiles for the
+supplied Spanish mod and TAP BATTLE INVASION BETA 3 on top of 00.24, including
+Invasion's 22 contiguous character triplets and bounded streaming for oversized
+BGM. Synthetic profile/resource CI passes; 00.25 still needs its own physical-Vita
+test and does not automatically reproduce mechanics that exist only in a mod's
+changed `classes.dex`. See [community mod profiles](docs/COMMUNITY_MOD_PROFILES.md).
+
 Manual full-game publication: [Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml)
 or [Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml).
 Both compile the original engine and publish validated VPK/symbols/hashes to
