@@ -210,15 +210,28 @@ void dbtb_closeResourceStream(int32_t handle) {
     resource_streams.erase(stream);
 }
 int32_t dbtb_installedData() {
-    // These are the 13 complete character triplets confirmed in the supplied
-    // community APK, plus the shared assets needed for selection/combat.
-    for (int i=0;i<13;++i) {
+    // The original core has room for 31 loaded character GameData slots. Keep
+    // the hardware-confirmed 13-character requirement, but accept audited mods
+    // that append complete contiguous triplets (for example Invasion's 22).
+    // A partial triplet or a later character after a gap is rejected instead of
+    // advertising an installation the original loader cannot consume cleanly.
+    int complete_characters = 0;
+    bool gap = false;
+    for (int i=0;i<31;++i) {
+        bool any = false, all = true;
         for (const char* format : {"char%02d.pac", "chardemo%02d.pac", "charf00%02d.pac"}) {
             char name[48]; std::snprintf(name,sizeof(name),format,i);
             std::string path; PacFile pac;
-            if (!dbtb_vfs().resolve(name,path) || !pac.open(path)) return 0;
+            const bool present = dbtb_vfs().resolve(name,path) && pac.open(path);
+            any |= present;
+            all &= present;
         }
+        if (!any) { gap = true; continue; }
+        if (gap || !all) return 0;
+        ++complete_characters;
     }
+    if (complete_characters < 13) return 0;
+    std::fprintf(stderr,"Offline character triplets: %d\n",complete_characters);
     for (const char* name : {"select0.pac", "effect.pac", "back00.pac", "bobj00.pac"}) {
         std::string path; PacFile pac;
         if (!dbtb_vfs().resolve(name,path) || !pac.open(path)) return 0;
