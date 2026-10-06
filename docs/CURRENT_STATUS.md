@@ -15,10 +15,15 @@ audited aliases and preserve payload bytes. Invasion's complete contiguous
 character triplets 00..21 are accepted by the local-data gate without weakening
 the 13-character baseline; partial/non-contiguous extensions fail.
 
-Invasion's oversized `bgm_05.ogg` exceeds the 00.24 32 MiB decoded-PCM bound.
-Only oversized BGM switch to bounded sequential Vorbis streaming; ordinary BGM
-continue through the exact hardware-confirmed 00.24 whole-clip path. 48 kHz
-Invasion tracks use the existing source-rate-aware 48 kHz mixer.
+A deeper APK/media audit found an additional Invasion blocker that supersedes
+the earlier "long Vorbis" assumption. Seven files keep the `.ogg` extension but
+are not Vorbis: `bgm_03/06/07/14/15` are MP3 and `bgm_04/05` are AAC inside
+M4A/ISO-BMFF. The current Vita BGM adapter opens music with libvorbisfile
+(`ov_fopen`), so these seven cannot be decoded by the existing path. The bounded
+Vorbis streaming branch therefore does **not** complete Invasion audio support.
+This must be solved at the Vita audio/import boundary by content-based codec
+detection plus a supported decoder/conversion path; the original engine must
+continue requesting the same logical BGM names.
 
 Synthetic CI now covers extractor aliases/profile uniqueness, protected PAC/image
 decoding, converted GameData metadata and full engine-resource normalization for
@@ -28,8 +33,10 @@ uniquely match their intended profile with no decoded directory extent outside a
 file. This establishes format/host compatibility, **not** complete reproduction
 of arbitrary changes made only in a mod's `classes.dex`.
 
-See [community mod profiles](COMMUNITY_MOD_PROFILES.md), [mod compatibility](MODS.md)
-and the [00.25 physical test protocol](TEST_VITA_00_25.md).
+See [community mod profiles](COMMUNITY_MOD_PROFILES.md), [mod compatibility](MODS.md),
+the [deep APK technical reference](APK_TECHNICAL_REFERENCE.md), the
+[Invasion audit](INVASION_BETA3_APK.md), and the
+[00.25 physical test protocol](TEST_VITA_00_25.md).
 
 A full private local 00.25 build using the original TeaVM core also completed:
 467 classes / 4086 methods, VPK SHA-256
