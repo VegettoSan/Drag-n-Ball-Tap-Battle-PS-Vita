@@ -1,5 +1,12 @@
 # Prueba física PS Vita — 00.28 perfiles APK independientes
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 ## Objetivo
 
 Validar que un APK/dataset seleccionado funciona en Vita **sin instalar ningún
