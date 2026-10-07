@@ -21,8 +21,18 @@ These rules are part of the technical contract of the port.
 
 16. **Keep both battle-memory repairs.** Preserve native-backed streaming `GameData.Init`; never bridge a whole PAC into Java. Decode seekable Ogg using the exact bounded frame count, never incremental PCM vector doubling. Test PCM byte equality, transient allocation peaks and active-owner survival after cache reclamation.
 
-17. **Manual publication keeps private inputs ephemeral.** Explicitly dispatched full-engine release/prerelease workflows may consume the pinned original APK and generate JAR/classes/C in a temporary runner directory outside Git. Never commit/cache/upload those inputs, generated sources or private logs. Publish only validated compiled VPK/ELF/VELF and provenance/checksum manifests. Automatic validation/native-smoke jobs remain public-source-only. Publishing a new binary is not a hardware-test result.
-18. **Large transformed resources must finish with ownership transfer, not a hidden copy.** After building a multi-MiB normalized PAC, hand its buffer to the final owner with an explicit `swap`/verified move path. Do not use ambiguous conditional vector assignment. 00.32's Invasion coredump proved that an extra ~4.6 MiB copy can fail after battle-memory fragmentation even when cache budgets are respected.
+17. **Public data extractors must stay contract-equivalent.** Web Extractor 1.0
+    and Windows Extractor 1.5 both target `profiles-v1`, derive visible profile
+    names from APK filenames, preserve payload bytes, exclude APK-local
+    `save.bin`, and apply only audited protected aliases. The web extractor must
+    remain local-only: no APK upload or network-dependent extraction.
+
+20. **GitHub Pages must deploy only validated static assets.** The Pages workflow
+    syntax-checks/tests the web core and reconstructs the approved selector PNGs
+    from the repository's validated source payload before deployment.
+
+19. **Manual publication keeps private inputs ephemeral.** Explicitly dispatched full-engine release/prerelease workflows may consume the pinned original APK and generate JAR/classes/C in a temporary runner directory outside Git. Never commit/cache/upload those inputs, generated sources or private logs. Publish only validated compiled VPK/ELF/VELF and provenance/checksum manifests. Automatic validation/native-smoke jobs remain public-source-only. Publishing a new binary is not a hardware-test result.
+20. **Large transformed resources must finish with ownership transfer, not a hidden copy.** After building a multi-MiB normalized PAC, hand its buffer to the final owner with an explicit `swap`/verified move path. Do not use ambiguous conditional vector assignment. 00.32's Invasion coredump proved that an extra ~4.6 MiB copy can fail after battle-memory fragmentation even when cache budgets are respected.
 
 ## Target stack
 
