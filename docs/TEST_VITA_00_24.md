@@ -1,5 +1,12 @@
 # 00.24 — confirmed battle-start audio-memory recovery
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 **User confirmation — 2026-10-05 19:26 America/Bogota:** “Ya funciono, queda super bien”.
 The delivered VPK is confirmed working after the previously reported battle-start
 crash. SHA-256: `0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345`;
