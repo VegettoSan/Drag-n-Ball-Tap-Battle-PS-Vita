@@ -1,5 +1,31 @@
 # Build and packaging
 
+## 00.32 physical-test build — Loading loop regression fix
+
+00.32 retains the 00.31 roster/Shop/memory work but corrects the offline
+Downloader polarity and replaces the deep startup PAC audit with a presence-only
+profile scan.
+
+Artifact:
+
+- `DBTapBattle-Vita-00.32-Loading-Loop-Fix.vpk`
+- size: 2,650,991 bytes
+- VPK SHA-256: `07a8ab63923e4913cc1810a5658c84ef925d3eddf08ac04b81658c683956b4b9`
+- eboot SHA-256: `4cc9b5cdc4e6409f6d59151b15dc38187fdb28908d86a7ac071f9ea541ff8863`
+- ELF SHA-256: `d0cb6478a4e93af7a85f706a23b7cd1c81b35c931d7aa6255932889b924e14f4`
+- APP_VER: `00.32`
+- TITLE_ID: `DBTB00001`
+- runtime checkpoint: `5d2c8ded88731da8340f0e029d4a666e4fbbec88`
+- LiveArea validation: PASS
+- exact VPK save seed retained.
+
+The package is a complete private original-engine build. As with recent hardware
+candidates, the interactive build uses split TeaVM compilation to fit the runner;
+this does not change the runtime source behavior being tested.
+
+See [TEST_VITA_00_32](TEST_VITA_00_32.md) and
+[evidence](evidence/vita_build_00.32.json).
+
 ## 00.31 physical-test build — roster / Shop / memory / startup
 
 Built privately from the pinned original APK after the 00.30 physical report.
