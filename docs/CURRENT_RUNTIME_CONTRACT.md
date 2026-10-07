@@ -43,7 +43,7 @@ inside `profiles/`.
 - A folder called `Original` appears only if the user actually has a
   `profiles/Original/` directory.
 - If no profile directories exist, the selector shows **NO GAME DATA FOUND** and
-  tells the user to prepare a Tap Battle APK with the Windows extractor.
+  tells the user to prepare a Tap Battle APK with the Web or Windows extractor.
 - The folder name is the selector display name.
 - Renaming the folder changes the selector label; PAC files do not need editing.
 
@@ -81,9 +81,19 @@ overwritten by profile switching or a VPK update.
 APK-bundled `save.bin` files are recorded by the extractor for provenance but
 are not installed as mutable Vita progress.
 
-## Windows extractor contract
+## Extractor contract
 
-The Windows extractor must produce:
+Two user-facing extractors implement the same contract:
+
+- **Web Extractor 1.0:** https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
+- **Windows Extractor 1.5:** `tools/windows/Extract_APK_for_Vita.bat`
+
+The Web Extractor processes APK bytes locally in the browser and does not upload
+them. Both tools must produce the same `profiles-v1` structure and save policy.
+
+### Output
+
+Both extractors must produce:
 
 ```text
 data/DBTapBattle/profiles/<sanitized APK filename>/
@@ -105,10 +115,15 @@ TAP BATTLE INVASION BETA 3.apk
 -> data/DBTapBattle/profiles/TAP_BATTLE_INVASION_BETA_3/
 ```
 
-The extractor validates archive safety, CRCs, file sizes, protected PAC profile
+Both extractors validate archive safety, CRCs, file sizes, protected PAC profile
 structure, collisions, SHA-256 provenance, `common.pac`, and the supported
-contiguous character-triplet namespace. It never writes a runtime `game/` or
-`mods/` directory.
+contiguous character-triplet namespace. Neither writes a runtime `game/` or
+`mods/` directory. APK-bundled `save.bin` is never installed as profile
+progress.
+
+Web-specific implementation and validation evidence is documented in
+[WEB_DATA_TOOL](WEB_DATA_TOOL.md); Windows-specific details remain in
+[WINDOWS_DATA_TOOL](WINDOWS_DATA_TOOL.md).
 
 ## Evidence status
 
