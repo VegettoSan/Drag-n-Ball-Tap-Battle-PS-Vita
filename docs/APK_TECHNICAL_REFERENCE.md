@@ -200,7 +200,7 @@ Ausencias deliberadas en el APK:
 - `bobj00.pac`
 - `font00.pac`
 
-Por eso requieren fallback desde `game/` cuando se usan como overlay en Vita.
+Estas ausencias son válidas en los APK autónomos. Desde 00.28, al seleccionarlos en Vita no se usa `game/` como fallback; cualquier solicitud adicional del core original se trata como una diferencia de adaptación.
 
 ### Invasion Beta 3
 
@@ -702,9 +702,9 @@ Conclusión válida: comparten el mismo helper nativo. Conclusión **no** válid
 ## 15. Implicaciones directas para el port Vita
 
 1. **Original/Gen** son PAC ordinarios. No aplicarles perfil protegido.
-2. **Android14/Español/Invasion** requieren detección por PAC, no una variable global de “mod activo”, porque el VFS puede mezclar override protegido + fallback original ordinario.
+2. **Android14/Español/Invasion** requieren detección por PAC, no una variable global de codec. En 00.28 cada perfil está aislado y sus PAC se detectan individualmente dentro del mismo dataset.
 3. Un perfil solo se acepta cuando su directorio completo está dentro de bounds y el match es único.
-4. `bobj00` y `font00` faltantes deben provenir del base compatible; no fabricar archivos vacíos.
+4. `bobj00` y `font00` ausentes no deben copiarse desde otro dataset ni fabricarse vacíos. Si el core original los solicita, portar la decisión de carga del APK correspondiente con evidencia.
 5. Invasion necesita aceptar 22 tripletes contiguos, pero eso no autoriza a reemplazar arrays/lógica del motor sin evidencia.
 6. Las imágenes Invasion llegan hasta 736×500; no introducir límites de 512×512.
 7. El audio de Invasion exige detección real de codec; extensión `.ogg` no es suficiente.
@@ -720,7 +720,7 @@ Conclusión válida: comparten el mismo helper nativo. Conclusión **no** válid
 - Normalización: `src/engine_resources.cpp`
 - PAC reader: `src/pac.cpp`
 - GameData convertido: `src/game_data.cpp`
-- VFS/fallback: `src/vfs.cpp`
+- VFS/perfiles independientes: `src/vfs.cpp`
 - gate de tripletes: `src/installed_data.cpp`
 - extractor Python: `tools/community14.py`, `tools/extract_apk_data.py`
 - extractor Windows: `tools/windows/Extraer_APK_para_Vita.ps1`
@@ -752,7 +752,7 @@ Nunca declarar “compatible” un APK nuevo por nombre, tamaño o apariencia. R
 - audio detectado por magic/codec, no extensión;
 - tripletes de personajes completos y contiguos;
 - cambios DEX frente a un perfil conocido;
-- recursos ausentes que requieran fallback;
+- recursos ausentes que revelen una diferencia entre el core original y el APK seleccionado;
 - resultados host/build/hardware por separado.
 
 La documentación debe poder permitir repetir el trabajo **sin el APK**, pero nunca sustituir evidencia de hardware cuando se cambia el runtime Vita.
