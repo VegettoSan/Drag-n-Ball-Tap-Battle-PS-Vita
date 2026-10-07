@@ -369,7 +369,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         if ($layout -eq 'community14') { $codec = $communityCodec }
         $roster = Get-CharacterInventory $names
         $rawUnknown = @(); if ($layout -eq 'raw') { $rawUnknown = $unknown }
-        $manifest = [ordered]@{ format=4; tool='DBTapBattle Windows Extractor 1.1'; source_layout=$layout;
+        $manifest = [ordered]@{ format=4; tool='DBTapBattle Windows Extractor 1.2'; source_layout=$layout;
             pac_codec=$codec; payloads_unchanged=$true; standalone_profile=($profile -ne 'game');
             requires_game_directory=$false; renamed_files=@($renamed);
             source_apk=[IO.Path]::GetFileName($Apk); source_apk_sha256=$apkHash;
@@ -440,13 +440,13 @@ try {
     $lines = @('DATOS DRAGON BALL TAP BATTLE PARA PS VITA', '',
         'Copia la carpeta data de ESTE paquete a la raiz ux0: con VitaShell.',
         'La ruta final debe quedar ux0:data/DBTapBattle/. No copies Paquete_* dentro de ux0:data.',
-        'Instala por separado el VPK 00.28 o posterior para perfiles independientes.', '', 'PERFILES EXTRAIDOS:')
+        'Instala por separado el VPK 00.29 o posterior para perfiles independientes.', '', 'PERFILES EXTRAIDOS:')
     foreach ($report in $reports) {
         $label = $report.profile.Substring($report.profile.LastIndexOf('/')+1)
         if ($report.profile -eq 'game') { $label = 'Original' }
         $lines += ('- {0}: ux0:data/DBTapBattle/{1}/ -> elige {2} en el VPK.' -f $report.apk,$report.profile,$label)
         $lines += ('  Personajes detectados: {0} {1}' -f $report.character_count,$report.character_indices)
-        if (-not $report.character_runtime_compatible) { $lines += '  AVISO: el roster no cumple por completo el contrato 00.28; revisa dbtb_manifest.json.' }
+        if (-not $report.character_runtime_compatible) { $lines += '  AVISO: el roster no cumple por completo el contrato 00.29; revisa dbtb_manifest.json.' }
         if ($report.bundled_save) { $lines += '  El APK incluia save.bin, pero no se instala: 00.29 usa el save global del VPK.' }
     }
     $lines += @('',
@@ -467,7 +467,7 @@ try {
         'pueden requerir cambios del port; extraer datos no incorpora esos cambios de codigo.',
         'RESULTADO.json y SHA256SUMS.txt documentan este paquete.')
     [IO.File]::WriteAllLines((Join-Path $stage 'LEEME_COPIAR_A_VITA.txt'), [string[]]$lines, $utf8)
-    Write-Json (Join-Path $stage 'RESULTADO.json') ([ordered]@{ tool_version='1.1'; standalone_profiles=$true; verified=$true; profiles=@($reports) })
+    Write-Json (Join-Path $stage 'RESULTADO.json') ([ordered]@{ tool_version='1.2'; standalone_profiles=$true; verified=$true; profiles=@($reports) })
     $sums = @()
     foreach ($file in @(Get-ChildItem -LiteralPath $stage -Recurse -File | Sort-Object FullName)) {
         $relative = $file.FullName.Substring($stage.Length+1).Replace('\','/')
