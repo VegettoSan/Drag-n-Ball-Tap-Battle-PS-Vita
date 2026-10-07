@@ -137,9 +137,9 @@ int upload(const RgbaImage& image, bool linear) {
 }
 }
 
-bool dbtb_initResources(const std::string& base, const std::string& mod) {
+bool dbtb_initResources(const std::string& base, const std::string& profile) {
     vfs.reset(new GameVfs(base));
-    if (!vfs->prepareDirectories() || (!mod.empty() && !vfs->selectMod(mod))) return false;
+    if (!vfs->prepareDirectories() || profile.empty() || !vfs->selectProfile(profile)) return false;
 
     installed_audit = scanInstalledData(*vfs);
     if (installed_audit.ready)
@@ -151,7 +151,7 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
     // profile starts from the same exact VPK-bundled seed. app0: is read-only:
     // copy app0:/save.bin only when this profile has no save yet. Never overwrite
     // existing profile progress on launch, profile switches or VPK updates.
-    save_path = mod.empty() ? base + "/game/save.bin" : base + "/mods/" + mod + "/save.bin";
+    save_path = base + "/profiles/" + profile + "/save.bin";
     save_cache.clear();
     resource_exists_cache.clear();
     resource_streams.clear();
