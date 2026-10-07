@@ -53,6 +53,7 @@ See:
 
 - [Current runtime contract](../docs/CURRENT_RUNTIME_CONTRACT.md)
 - [Data layout](../docs/DATA_LAYOUT.md)
+- [Web extractor](../docs/WEB_DATA_TOOL.md)
 - [Windows extractor](../docs/WINDOWS_DATA_TOOL.md)
 - [Current status](../docs/CURRENT_STATUS.md)
 - [Build](../docs/BUILD.md)
