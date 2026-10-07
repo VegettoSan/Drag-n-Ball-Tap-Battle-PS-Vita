@@ -51,11 +51,29 @@ Shared-save seed:
   `64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb`.
 
 Public CI/native smoke has passed the BGM handoff source, VPK save materializer,
-global save path and Vita link/package changes. Physical verification of Samu
-past the title and Invasion's corrected result string remains the acceptance
-gate for 00.29.
+global save path and Vita link/package changes. A complete physical-test artifact
+has also been built:
 
-See [TEST_VITA_00_29](TEST_VITA_00_29.md).
+- `DBTapBattle-Vita-00.29-Samu-Invasion-SharedSave-Test.vpk`
+- 2,653,396 bytes
+- VPK SHA-256:
+  `fc2a4ced375212eeb32609c199b95e0c58b55dfc6ccf07c0ce6da95f9a093e75`
+- eboot SHA-256:
+  `4f5f911adc27de89dea996670fdfd6d64b6a29b340f2f0826c1638eddfa6f06a`
+- ELF SHA-256:
+  `a3574f8777eb2d12a1db08af6a96bde509bff6787ee1d0af293d65b19e755f58`
+- runtime source checkpoint: `1fe6e2dbff77b456846f7c4b6203c01383a5a549`
+- APP_VER `00.29`, TITLE_ID `DBTB00001`
+- LiveArea: PASS
+- bundled save seed: 12,906 bytes with the approved exact SHA-256.
+
+This interactive hardware-test build uses 24 TeaVM remainder units at `-O1`,
+`TCBManajer.c` at `-O0`, and native adapters at `-O2` to fit the runner
+execution window. Physical verification of Samu past the title, Invasion's
+corrected result string and shared-save continuity remains the acceptance gate.
+
+See [TEST_VITA_00_29](TEST_VITA_00_29.md) and
+[evidence](evidence/vita_build_00.29.json).
 
 ## Historical 00.28 candidate — standalone APK-derived profiles
 
