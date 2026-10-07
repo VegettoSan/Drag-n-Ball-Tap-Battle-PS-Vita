@@ -1,5 +1,12 @@
 # Prueba física PS Vita — 00.26 Zuper/Samu large-roster candidate
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 ## Estado
 
 - APP_VER objetivo: `00.26`
