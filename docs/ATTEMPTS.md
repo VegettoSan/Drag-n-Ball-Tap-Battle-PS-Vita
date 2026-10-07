@@ -31,8 +31,10 @@ excludes the lower blue orb by sampling only the approved background band.
 original, Gen, Android14 and Invasion; Invasion generated 22 contiguous
 characters and an independently CRC-valid Vita ZIP without APK `save.bin`.
 
-**Deployment attempt:** Pages build/artifact PASS; first deployment API call
-returned GitHub HTTP 500. Deployment re-run requested.
+**Deployment result:** first deployment API call returned a transient GitHub
+HTTP 500 after a successful build/artifact. The subsequent Pages run
+`37703911061` completed successfully and published
+https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/.
 
 ## 2026-10-07 — 00.34 — recenter themed buttons and labels
 
