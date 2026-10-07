@@ -20,6 +20,21 @@ Current hardware checkpoint: **DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk** fix
 native PCM allocation growth at Android14 battle start and preserves the now
 hardware-confirmed LiveArea. Full build, host tests and the user’s Vita retest pass. See [00.24 result](docs/TEST_VITA_00_24.md).
 
+Development candidate **00.33** keeps the standalone-profile and
+independent-save model while targeting the last reproduced Invasion battle
+crash. Physical 00.32 testing confirms the Loading loop is fixed and extended
+mod rosters now show correctly, including Samu's full roster. The remaining
+repro is Invasion Saitama -> second fight vs Freezer.
+
+The supplied 00.32 Vita coredump, symbolicated against its exact ELF, resolves
+the native `std::bad_alloc` through `std::vector<unsigned char>::operator=`
+inside protected-PAC normalization. Invasion `char15.pac` expands from about
+4.05 MiB to 4.64 MiB; GCC 15 turned the previous conditional move expression
+into another vector copy. 00.33 explicitly transfers the changed buffer with
+`output.swap(out)`, eliminating that duplicate PAC-sized allocation without
+altering source PAC bytes, DEX or gameplay logic. Physical confirmation remains
+pending; see [00.33 test](docs/TEST_VITA_00_33.md).
+
 Development candidate **00.30** keeps the 00.28 standalone-data architecture and
 adds the fixes discovered by the user's physical Vita test. `game/` remains only
 the optional Original profile: selecting `mods/<Profile>/` resolves PAC/audio/data
@@ -106,7 +121,10 @@ and LiveArea appearance are the remaining check for that repack.
 | 00.24 | Full original-engine build; all 17 BGM PCM/low-allocation tests and ownership probes pass; user confirms hardware fix | Broader mode/profile and long-session coverage remains open |
 | 00.28 | Physical Vita: Invasion standalone gameplay/textures/direct audio work; Samu standalone detects 92 characters but exits during MP3 BGM transition | Invasion result text corrupt; Samu MP3 decoder handoff fails |
 | 00.29 | CI/native build: Samu decoder handoff + Invasion charset fallback + experimental global save | Superseded save model |
-| 00.30 | Same Samu/Invasion fixes; VPK seed copied independently to each selected profile on first use | Physical profile-save isolation retest pending |
+| 00.30 | Same Samu/Invasion fixes; VPK seed copied independently to each selected profile on first use | Superseded by later hardware candidates |
+| 00.31 | Dynamic roster, Shop return and memory/startup experiments | Introduced infinite Loading regression |
+| 00.32 | Physical Vita: Loading fixed and complete mod rosters visible | Invasion Saitama second fight vs Freezer crashes with native `std::bad_alloc` |
+| 00.33 | Coredump-driven protected-PAC ownership fix removes duplicate ~4.6 MiB copy | Physical Saitama -> Freezer retest pending |
 
 Use [current status and evidence](docs/CURRENT_STATUS.md) for the authoritative
 feature matrix, artifact hash and open issues. Older test reports describe their
@@ -132,14 +150,14 @@ engine requires the vitaGL shader compiler setup; see
 
 Resource resolution is profile-local. With a profile selected, only
 `mods/<Profile>/` is read; missing files do **not** fall back to `game/`. With
-Original selected, only `game/` is read. Gameplay resources and save progress are profile-local in 00.30. Every profile starts from the same VPK seed but then modifies only its own `save.bin`. `mod.json` is optional and currently ignored.
+Original selected, only `game/` is read. Gameplay resources and save progress are profile-local in 00.33. Every profile starts from the same VPK seed but then modifies only its own `save.bin`. `mod.json` is optional and currently ignored.
 
 The first supplied original APK has **57 raw resources and no character
 triplets**. It is not a complete battle installation. Supplied Android14 has
 144 encoded assets and 13 indexed triplets; supplied `gen.apk` has 147 ordinary
 assets including those triplets and an optional bundled save. The audited
 `DragonBallZuperSamuGamerYT.apk` is Gen-derived with the same DEX/manifest but
-384 canonical assets and 92 character triplets. 00.30 can consume its original
+384 canonical assets and 92 character triplets. 00.33 can consume its original
 Vorbis/MP3/AAC BGM bytes directly, but the complete 92-character/audio matrix is
 not yet a hardware claim. Original in the selector means the
 base folder, not proof of which APK supplied its contents.
