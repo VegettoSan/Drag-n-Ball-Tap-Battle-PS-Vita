@@ -256,7 +256,19 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
     }
     // Preserve original gaps, ordering, reserved metadata and bytes exactly
     // whenever neither this directory nor any nested directory was adapted.
-    output = changed ? std::move(out) : input;
+    //
+    // IMPORTANT: do not write this as
+    //     output = changed ? std::move(out) : input;
+    // GCC 15 lowered that conditional to vector copy-assignment even on the
+    // changed/protected-PAC path. The 00.32 Invasion Vita coredump symbolicates
+    // the failing allocation exactly through vector::operator= -> normalise()
+    // while reloading char15.pac for Saitama's next fight. At that point 'out'
+    // already owns the fully normalised ~4.6 MiB PAC, so the extra copy asks
+    // for another contiguous multi-MiB allocation and terminates in bad_alloc.
+    // Swap transfers ownership without allocating; the unchanged path still
+    // performs the intentional byte-for-byte copy from input.
+    if (changed) output.swap(out);
+    else output = input;
     return true;
 }
 }
