@@ -175,3 +175,16 @@ hardware in the 00.23 test session.
 > not exhaustive character/profile/mode or long-session certification. Historical
 > records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## 00.33 resource ownership checkpoint
+
+The native resource service now has hardware-confirmed protection against a
+specific large-PAC allocation failure. After a protected/community PAC has been
+rebuilt in memory, changed data is handed to the cached resource owner with
+explicit `swap` rather than an ambiguous conditional vector assignment. The
+matching 00.32 coredump showed the old path entering vector copy-assignment and
+then `std::bad_alloc`; 00.33 eliminates that duplicate multi-MiB allocation.
+
+Physical Vita testing completed several Invasion fights without reproducing the
+Saitama -> Freezer crash. Stream ownership, profile-local VFS behavior, save
+isolation and source PAC bytes remain unchanged.
