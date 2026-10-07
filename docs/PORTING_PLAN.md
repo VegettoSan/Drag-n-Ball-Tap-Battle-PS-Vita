@@ -1,4 +1,4 @@
-# Porting plan — checkpoint 00.33, 2026-10-07
+# Porting plan — v1.0 / 00.34 hardware baseline, 2026-10-07
 
 The original plan began with an atlas preview. The chosen implementation now
 preserves the original Java engine through private TeaVM AOT and replaces its
@@ -16,7 +16,7 @@ order. Completion below applies only to the stated scope/build.
 | Text | 00.19 image-rectangle fix restores visible text | Size/layout/script and lifecycle matrix |
 | Audio | Decode/three channels/limiter/reconstruction; 00.21 setup repair | Clean audio/voices reported in the current hardware path; broaden character/phrase and long-session coverage |
 | Saves/mods | Independent per-profile seeded save, dynamic installed roster 00..99, standalone resource isolation | Broader save semantics and code-mod compatibility matrix |
-| Product/distribution | 00.33 full functional VPK and hardware confirmation, small main commits, manual release/prerelease automation | Broader compatibility and release-quality reproducible/performance build |
+| Product/distribution | v1.0 public package identity; 00.34 hardware-confirmed runtime, small main commits, manual release/prerelease automation | Broader compatibility, install/launch sanity on DBTB01178 and release-performance validation |
 
 ## Immediate physical checks
 
