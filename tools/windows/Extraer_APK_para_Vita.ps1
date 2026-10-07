@@ -365,7 +365,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         if ($layout -eq 'community14') { $codec = $communityCodec }
         $roster = Get-CharacterInventory $names
         $rawUnknown = @(); if ($layout -eq 'raw') { $rawUnknown = $unknown }
-        $manifest = [ordered]@{ format=4; tool='DBTapBattle Windows Extractor 1.4'; source_layout=$layout;
+        $manifest = [ordered]@{ format=4; tool='DBTapBattle Windows Extractor 1.5'; runtime_contract='profiles-v1'; source_layout=$layout;
             pac_codec=$codec; payloads_unchanged=$true; standalone_profile=$true;
             requires_game_directory=$false; renamed_files=@($renamed);
             source_apk=[IO.Path]::GetFileName($Apk); source_apk_sha256=$apkHash;
@@ -439,14 +439,14 @@ try {
         'Install the Dragon Ball Tap Battle Vita VPK separately. This package contains data only.', '', 'EXTRACTED PROFILES:')
     foreach ($report in $reports) {
         $label = $report.profile.Substring($report.profile.LastIndexOf('/')+1)
-        if ($report.profile -eq 'game') { $label = 'Original' }
-        $lines += ('- {0}: ux0:data/DBTapBattle/{1}/ -> select {2} in the VPK.' -f $report.apk,$report.profile,$label)
+                $lines += ('- {0}: ux0:data/DBTapBattle/{1}/ -> select {2} in the VPK.' -f $report.apk,$report.profile,$label)
         $lines += ('  Characters detected: {0} {1}' -f $report.character_count,$report.character_indices)
         if (-not $report.character_runtime_compatible) { $lines += '  WARNING: the roster does not fully satisfy the current Vita runtime contract; check dbtb_manifest.json.' }
         if ($report.bundled_save) { $lines += '  The APK contained save.bin, but it is not installed: the Vita port creates an independent profile save from the VPK seed.' }
     }
     $lines += @('',
         'Every APK is stored as an independent profile under profiles/, using the APK filename as the profile folder.',
+        'The Vita selector lists only first-level folders that actually exist inside profiles/. There is no built-in Original row.',
         'You can install any supported complete APK as its own profile; there is no separate game/ directory.',
         'The current runtime does NOT fall back between profiles. If a resource is missing, that APK/mod needs compatibility work; do not copy it from another profile.',
         'To change the name shown in the Vita selector, rename the extracted folder inside profiles/.',
@@ -463,7 +463,7 @@ try {
         'may require port changes; extracting data does not reproduce Android code changes.',
         'RESULTADO.json and SHA256SUMS.txt document this package.')
     [IO.File]::WriteAllLines((Join-Path $stage 'LEEME_COPIAR_A_VITA.txt'), [string[]]$lines, $utf8)
-    Write-Json (Join-Path $stage 'RESULTADO.json') ([ordered]@{ tool_version='1.4'; standalone_profiles=$true; verified=$true; profiles=@($reports) })
+    Write-Json (Join-Path $stage 'RESULTADO.json') ([ordered]@{ tool_version='1.5'; runtime_contract='profiles-v1'; runtime_root='ux0:data/DBTapBattle/profiles/'; standalone_profiles=$true; verified=$true; profiles=@($reports) })
     $sums = @()
     foreach ($file in @(Get-ChildItem -LiteralPath $stage -Recurse -File | Sort-Object FullName)) {
         $relative = $file.FullName.Substring($stage.Length+1).Replace('\','/')
