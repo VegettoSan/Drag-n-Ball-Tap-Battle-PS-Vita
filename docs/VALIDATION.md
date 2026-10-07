@@ -1,4 +1,4 @@
-# Validation and diagnostic reference — 00.24 hardware / 00.25 candidate
+# Validation and diagnostic reference — 00.33 hardware checkpoint
 
 Commands run from the repository root. Use private game data and temporary output
 outside tracked source. This page describes reproducible probes; it does not claim
@@ -164,7 +164,7 @@ unsupported diagnostics must not be treated as reliable numbers.
 
 ## Physical test protocol
 
-Use [00.23 instructions](TEST_VITA_00_23.md) as the gameplay baseline. For the current
+Use [00.33 instructions/result](TEST_VITA_00_33.md) as the current gameplay regression checkpoint. Historical 00.23 instructions remain useful for the original baseline. For the current
 LiveArea-only derivative, follow
 [TEST_VITA_00_23_LIVEAREA](TEST_VITA_00_23_LIVEAREA.md): verify VitaShell
 installation, bubble icon, LiveArea background and startup gate first, then perform
@@ -178,6 +178,21 @@ Report exact profile/data provenance, version/hash and whether a clean exception
 or native crash occurs. Copy `runtime.log`; include `psp2core` only if produced.
 Screenshots/photos establish physical LiveArea rendering; recordings remain the
 right evidence for audible artifacts that counters cannot establish.
+
+## Latest hardware validation — 00.33
+
+Physical Vita testing confirms the reproduced Invasion repeated-fight crash is
+fixed. The user completed several fights on 00.33 without another crash after
+the protected-PAC ownership handoff changed from an implicit vector assignment
+to explicit `output.swap(out)`.
+
+The same recent hardware sequence confirms the 00.31 Loading regression is gone
+and dynamic mod rosters work, including Samu's 92 characters. Treat this as
+feature/path evidence, not exhaustive certification of every mode, mod or
+arbitrarily long session.
+
+Current VPK SHA-256:
+`d241499a356ac11c523909a84b0c383910ef7a387efcfdc2c05d3581be86fd77`.
 
 <!-- DBTB_00_23_DETAIL:START -->
 ## Latest hardware validation — 00.23
