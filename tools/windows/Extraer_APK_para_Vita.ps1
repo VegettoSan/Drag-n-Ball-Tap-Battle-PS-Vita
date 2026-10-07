@@ -289,25 +289,21 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         if ($rawBytes -gt 0 -and $assetBytes -gt 0) { throw 'Ambiguous APK: non-empty game data exists in both res/raw and assets.' }
         if ($rawBytes -gt 0) {
             $layout = 'raw'; $prefix = 'res/raw/'
-            if ($apkHash -eq $KnownOriginalSha) { $profile = 'game' }
-            else { $profile = 'mods/' + (Get-ProfileName ([IO.Path]::GetFileNameWithoutExtension($Apk))) }
         }
         elseif ($assetBytes -gt 0) {
             $layout = 'assets'; $prefix = 'assets/'; $communityCodec = $null
             $communityCodec = Get-CommunityProfileFromNames @($assets | ForEach-Object { $_.FullName.Substring(7) })
             if ($communityCodec) { $layout = 'community14' }
-            if ($apkHash -eq $KnownGenSha) { $profile = 'mods/Gen' }
-            elseif ($apkHash -eq $KnownSamuSha) { $profile = 'mods/ZuperSamu' }
-            elseif ($apkHash -eq $KnownAndroid14Sha) { $profile = 'mods/Android14' }
-            elseif ($apkHash -eq $KnownSpanishSha) { $profile = 'mods/Espanol' }
-            elseif ($apkHash -eq $KnownInvasionSha) { $profile = 'mods/Invasion' }
-            else { $profile = 'mods/' + (Get-ProfileName ([IO.Path]::GetFileNameWithoutExtension($Apk))) }
         }
         else { throw 'The APK contains no usable game data in res/raw or assets.' }
+
+        # Every APK is a standalone Vita profile. The profile folder name is
+        # always derived from the APK filename; codec/layout detection never
+        # changes the visible profile name.
+        $profile = 'profiles/' + (Get-ProfileName ([IO.Path]::GetFileNameWithoutExtension($Apk)))
         $originalProfile = $profile; $suffix = 2
         while ($UsedProfiles.ContainsKey($profile.ToLowerInvariant())) {
-            if ($originalProfile -eq 'game') { $profile = 'mods/Original_' + $suffix }
-            else { $profile = $originalProfile + '_' + $suffix }
+            $profile = $originalProfile + '_' + $suffix
             $suffix++
         }
         $UsedProfiles.Add($profile.ToLowerInvariant(), $true)
@@ -369,8 +365,8 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         if ($layout -eq 'community14') { $codec = $communityCodec }
         $roster = Get-CharacterInventory $names
         $rawUnknown = @(); if ($layout -eq 'raw') { $rawUnknown = $unknown }
-        $manifest = [ordered]@{ format=4; tool='DBTapBattle Windows Extractor 1.3'; source_layout=$layout;
-            pac_codec=$codec; payloads_unchanged=$true; standalone_profile=($profile -ne 'game');
+        $manifest = [ordered]@{ format=4; tool='DBTapBattle Windows Extractor 1.4'; source_layout=$layout;
+            pac_codec=$codec; payloads_unchanged=$true; standalone_profile=$true;
             requires_game_directory=$false; renamed_files=@($renamed);
             source_apk=[IO.Path]::GetFileName($Apk); source_apk_sha256=$apkHash;
             file_count=$files.Count; files=@($files); unknown_files=@($unknown); unknown_raw_files=@($rawUnknown);
@@ -450,13 +446,13 @@ try {
         if ($report.bundled_save) { $lines += '  The APK contained save.bin, but it is not installed: the Vita port creates an independent profile save from the VPK seed.' }
     }
     $lines += @('',
-        'Each APK/mod is stored as an independent profile under mods/, except the exact audited Original APK.',
-        'You can install only Gen, Android14, Espanol, Invasion, ZuperSamu, or another complete profile; game/ may remain empty.',
-        'The current runtime does NOT fall back between profiles. If a resource is missing, that APK/mod needs compatibility work; do not copy it from game/.',
-        'If you intentionally want Gen to act as Original, copy the CONTENTS of mods/Gen/ into game/.',
-        'Gen works as an independent selectable profile in mods/Gen/; moving it is not required.', '',
+        'Every APK is stored as an independent profile under profiles/, using the APK filename as the profile folder.',
+        'You can install any supported complete APK as its own profile; there is no separate game/ directory.',
+        'The current runtime does NOT fall back between profiles. If a resource is missing, that APK/mod needs compatibility work; do not copy it from another profile.',
+        'To change the name shown in the Vita selector, rename the extracted folder inside profiles/.',
+        'The folder name is the selector name; no other metadata rename is required.', '',
         'IMPORTANT WHEN UPDATING AN EXISTING INSTALLATION:',
-        'Each profile uses its own save.bin inside game/ or mods/<Profile>/.',
+        'Each profile uses its own save.bin inside game/ or profiles/<Profile>/.',
         'The VPK creates that save from its bundled seed only when the profile save does not already exist.',
         'save.bin files bundled inside APKs/mods are not copied automatically; each profile starts from the same VPK seed.',
         'Do not share save files between Original, Gen, Android14, or other profiles.',
@@ -467,7 +463,7 @@ try {
         'may require port changes; extracting data does not reproduce Android code changes.',
         'RESULTADO.json and SHA256SUMS.txt document this package.')
     [IO.File]::WriteAllLines((Join-Path $stage 'LEEME_COPIAR_A_VITA.txt'), [string[]]$lines, $utf8)
-    Write-Json (Join-Path $stage 'RESULTADO.json') ([ordered]@{ tool_version='1.3'; standalone_profiles=$true; verified=$true; profiles=@($reports) })
+    Write-Json (Join-Path $stage 'RESULTADO.json') ([ordered]@{ tool_version='1.4'; standalone_profiles=$true; verified=$true; profiles=@($reports) })
     $sums = @()
     foreach ($file in @(Get-ChildItem -LiteralPath $stage -Recurse -File | Sort-Object FullName)) {
         $relative = $file.FullName.Substring($stage.Length+1).Replace('\','/')
