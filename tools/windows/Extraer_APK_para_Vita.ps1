@@ -251,7 +251,7 @@ function Get-CharacterInventory($Names) {
     }
 
     $unsupported = @($Names.Keys | Where-Object {
-        $_ -match '^char[0-9]{3,}[.]pac([string]$Apk, [string]$Package, $UsedProfiles) {
+        ($_ -match '^char[0-9]{3,}[.]pac
     $stream = $null; $archive = $null
     try {
         if (-not [IO.File]::Exists($Apk) -or [IO.Path]::GetExtension($Apk) -ine '.apk') {
@@ -279,7 +279,6 @@ function Get-CharacterInventory($Names) {
             $layout = 'assets'; $prefix = 'assets/'; $communityCodec = $null
             $communityCodec = Get-CommunityProfileFromNames @($assets | ForEach-Object { $_.FullName.Substring(7) })
             if ($communityCodec) { $layout = 'community14' }
-
             if ($apkHash -eq $KnownGenSha) { $profile = 'mods/Gen' }
             elseif ($apkHash -eq $KnownSamuSha) { $profile = 'mods/ZuperSamu' }
             elseif ($apkHash -eq $KnownAndroid14Sha) { $profile = 'mods/Android14' }
@@ -469,8 +468,8 @@ catch {
     Write-Host 'No se publico ningun paquete parcial. Los APK y las salidas anteriores se conservan.'
     exit 2
 }
- -or
-        $_ -match '^chardemo[0-9]{3,}[.]pac([string]$Apk, [string]$Package, $UsedProfiles) {
+) -or
+        ($_ -match '^chardemo[0-9]{3,}[.]pac
     $stream = $null; $archive = $null
     try {
         if (-not [IO.File]::Exists($Apk) -or [IO.Path]::GetExtension($Apk) -ine '.apk') {
@@ -674,8 +673,8 @@ catch {
     Write-Host 'No se publico ningun paquete parcial. Los APK y las salidas anteriores se conservan.'
     exit 2
 }
- -or
-        $_ -match '^charf[0-9]{5,}[.]pac([string]$Apk, [string]$Package, $UsedProfiles) {
+) -or
+        ($_ -match '^charf[0-9]{5,}[.]pac
     $stream = $null; $archive = $null
     try {
         if (-not [IO.File]::Exists($Apk) -or [IO.Path]::GetExtension($Apk) -ine '.apk') {
@@ -879,7 +878,7 @@ catch {
     Write-Host 'No se publico ningun paquete parcial. Los APK y las salidas anteriores se conservan.'
     exit 2
 }
-
+)
     } | Sort-Object)
 
     $completeIndices = ''
