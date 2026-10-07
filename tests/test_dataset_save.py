@@ -36,7 +36,7 @@ class DatasetSaveTest(unittest.TestCase):
         manifest = extractor.extract(self.apk, self.output)
         self.assertEqual(manifest['source_layout'], 'assets')
         self.assertEqual(manifest['format'], 4)
-        self.assertEqual(manifest['save_policy'], 'global-vpk-seed-ux0-root')
+        self.assertEqual(manifest['save_policy'], 'per-profile-vpk-seed')
         self.assertFalse((self.output / 'save.bin').exists())
         self.assertNotIn('save.bin', [entry['name'] for entry in manifest['files']])
         ignored = manifest['ignored_profile_save']
