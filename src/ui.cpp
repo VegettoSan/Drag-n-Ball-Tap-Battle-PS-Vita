@@ -236,9 +236,9 @@ void begin2D() {
 
 } // namespace
 
-bool runBootSelector(const std::vector<std::string>& mods, bool original_data_present, BootChoice& choice) {
-    const int total = static_cast<int>(mods.size()) + 1;
-    int selected = (!original_data_present && !mods.empty()) ? 1 : 0;
+bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choice) {
+    const int total = static_cast<int>(profiles.size());
+    int selected = 0;
     VitaInput input;
 
     UiTexture theme_background, theme_header, theme_button, theme_ball;
@@ -254,21 +254,27 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
         runtimeLog("Boot selector: Gen select0.pac visual theme loaded (no character art)");
     }
 
-    runtimeLog("Boot selector entered: " + std::to_string(total) + " choices");
+    runtimeLog("Boot selector entered: " + std::to_string(total) + " installed profiles");
 
     for (;;) {
         const InputFrame frame = input.poll();
-        if (frame.up && selected > 0) --selected;
-        if (frame.down && selected + 1 < total) ++selected;
+        if (total > 0 && frame.up && selected > 0) --selected;
+        if (total > 0 && frame.down && selected + 1 < total) ++selected;
 
         const int visible = theme_ready ? 6 : 8;
         int first = std::max(0, selected - visible / 2);
         first = std::min(first, std::max(0, total - visible));
-        bool confirm = frame.confirm;
+        bool confirm = total > 0 && frame.confirm;
 
         for (size_t p = 0; p < frame.pointer_count; ++p) {
             const PointerEvent& pointer = frame.pointers[p];
             if (pointer.phase != PointerPhase::Begin) continue;
+            if (total == 0) {
+                centeredShadowText(480.0f, 218.0f, 2.35f, "NO GAME DATA FOUND", 1.0f, 0.94f, 0.76f);
+                centeredShadowText(480.0f, 258.0f, 1.75f, "PREPARE A TAP BATTLE APK WITH THE EXTRACTOR", 0.90f, 0.94f, 1.0f);
+                centeredShadowText(480.0f, 288.0f, 1.75f, "THEN COPY IT TO UX0:DATA/DBTAPBATTLE/PROFILES/", 0.90f, 0.94f, 1.0f);
+            }
+
             for (int row = 0; row < visible && first + row < total; ++row) {
                 const float y = theme_ready ? (132.0f + row * 58.0f) : (120.0f + row * 44.0f);
                 const float x0 = theme_ready ? 176.0f : 44.0f;
@@ -285,19 +291,7 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
         }
 
         if (confirm) {
-            if (selected == 0) {
-                // Do not start a known-empty Original profile. A user may
-                // install only one standalone APK dataset under mods/.
-                if (!original_data_present) {
-                    runtimeLog("Original selection ignored: data missing");
-                    continue;
-                }
-                choice.original = true;
-                choice.mod_directory.clear();
-            } else {
-                choice.original = false;
-                choice.mod_directory = mods[static_cast<size_t>(selected - 1)];
-            }
+            choice.profile_directory = profiles[static_cast<size_t>(selected)];
             destroySelectorTheme(theme_background, theme_header, theme_button, theme_ball);
             return true;
         }
@@ -340,14 +334,10 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
                 drawUiTexture(theme_ball, 184.0f, y - 3.0f, 52.0f, 52.0f, active ? 1.0f : 0.66f);
                 drawUiTexture(theme_button, 248.0f, y, 664.0f, 46.0f, tint);
 
-                std::string label;
-                if (index == 0) {
-                    label = original_data_present ? "ORIGINAL" : "ORIGINAL - DATA MISSING";
-                } else {
-                    char number[16];
-                    std::snprintf(number, sizeof(number), "%02d - ", index);
-                    label = std::string(number) + clipped(mods[static_cast<size_t>(index - 1)], 39);
-                }
+                char number[16];
+                std::snprintf(number, sizeof(number), "%02d - ", index + 1);
+                const std::string label = std::string(number) +
+                    clipped(profiles[static_cast<size_t>(index)], 39);
 
                 const float scale = label.size() > 34 ? 1.75f : (label.size() > 27 ? 2.0f : 2.25f);
                 shadowText(282.0f, y + 13.0f, scale, label,
@@ -371,6 +361,12 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
             text(48, 32, 4, "DRAGON BALL TAP BATTLE VITA", 1.0f, 0.85f, 0.15f);
             text(50, 76, 2, "SELECT DATA SET", 0.75f, 0.82f, 1.0f);
 
+            if (total == 0) {
+                text(92, 210, 3, "NO GAME DATA FOUND", 1.0f, 0.90f, 0.65f);
+                text(92, 264, 2, "PREPARE A TAP BATTLE APK WITH THE EXTRACTOR", 0.82f, 0.88f, 1.0f);
+                text(92, 296, 2, "COPY IT TO UX0:DATA/DBTAPBATTLE/PROFILES/", 0.82f, 0.88f, 1.0f);
+            }
+
             for (int row = 0; row < visible && first + row < total; ++row) {
                 const int index = first + row;
                 const float y = 120.0f + row * 44.0f;
@@ -378,14 +374,10 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
                 rect(44, y - 7, 872, 38, active ? 0.22f : 0.09f,
                      active ? 0.40f : 0.10f, active ? 0.66f : 0.14f);
 
-                std::string label;
-                if (index == 0) {
-                    label = original_data_present ? "ORIGINAL" : "ORIGINAL - DATA MISSING";
-                } else {
-                    char number[16];
-                    std::snprintf(number, sizeof(number), "%02d - ", index);
-                    label = std::string(number) + clipped(mods[static_cast<size_t>(index - 1)], 37);
-                }
+                char number[16];
+                std::snprintf(number, sizeof(number), "%02d - ", index + 1);
+                const std::string label = std::string(number) +
+                    clipped(profiles[static_cast<size_t>(index)], 37);
                 text(62, y, 3, label, active ? 1.0f : 0.80f,
                      active ? 1.0f : 0.82f, active ? 1.0f : 0.86f);
             }
