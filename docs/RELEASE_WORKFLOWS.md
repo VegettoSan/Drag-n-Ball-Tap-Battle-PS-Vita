@@ -29,8 +29,11 @@ El VPK v1.0 (APP_VER `01.00`, TITLE_ID `DBTB01178`) espera datos externos exclus
 ux0:data/DBTapBattle/profiles/<Profile>/
 ```
 
-La publicación del VPK no incluye esos datasets. El extractor Windows 1.5 genera
-exactamente esa estructura y registra `runtime_contract: profiles-v1`.
+La publicación del VPK no incluye esos datasets. Tanto Web Extractor 1.0 como
+Windows Extractor 1.5 generan exactamente esa estructura y registran
+`runtime_contract: profiles-v1`. La web está en
+https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/ y procesa los APK
+localmente en el navegador.
 
 ## Configuracion una sola vez
 
@@ -125,3 +128,19 @@ La release **v1.0** usa APP_VER `01.00` y TITLE_ID `DBTB01178`. Hereda el
 runtime/juego del checkpoint 00.34 confirmado en Vita física. Los documentos de
 prueba 00.34 conservan `DBTB00001` porque describen el artefacto histórico exacto
 que fue probado; no deben reescribirse como si ese VPK hubiera usado el nuevo ID.
+
+
+## GitHub Pages / Web Extractor
+
+`.github/workflows/pages.yml` publica el contenido estático de `web/` mediante
+GitHub Pages. Antes del deploy:
+
+1. ejecuta `node --check` sobre el núcleo y la UI;
+2. ejecuta `tests/web_extractor_core.mjs`;
+3. reconstruye y valida los cuatro PNG del selector desde
+   `assets/selector/` usando `tools/materialize_selector_theme.py`;
+4. solo entonces sube el artifact de Pages.
+
+La página no contiene APKs ni datasets. Su Content Security Policy usa
+`connect-src 'none'`: la selección y extracción del APK ocurre en el navegador
+del usuario y el ZIP final se crea localmente.
