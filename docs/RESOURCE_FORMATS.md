@@ -106,8 +106,11 @@ mkdir /tmp/dbtb-table-test
 ASAN_OPTIONS=detect_leaks=0 /tmp/test_game_data /path/to/install /tmp/dbtb-table-test
 ```
 
-The corpus expects original files in install/game and the audited community
-files in install/mods/Android14. Use a fresh temporary test directory each run.
+Current VFS regression fixtures use independent first-level profiles, for example
+`install/profiles/Original/` and `install/profiles/Android14/`. Use a fresh
+temporary test directory each run. Historical corpus results generated before
+00.34 may retain their old fixture path names, but the current runtime never
+uses `game/` or `mods/` as active profile roots.
 
 ```sh
 python tools/audit_internal_formats.py /path/to/DBTapBattle.apk docs/evidence/internal_tables.json
