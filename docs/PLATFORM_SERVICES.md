@@ -89,25 +89,36 @@ payload schemas in memory. Directory slots/order/reserved fields stay stable.
 See [PAC_FORMAT](PAC_FORMAT.md) and [DATA_LAYOUT](DATA_LAYOUT.md).
 
 Original ConfigData is 12906 bytes; _FILELoad/_FILESave/_FILESaveLen and original
-partial offsets remain the semantic authority. Only `save.bin` is writable:
+partial offsets remain the semantic authority. Only `save.bin` is writable.
 
-| Selected profile | Save |
-|---|---|
-| Original base | `ux0:data/DBTapBattle/game/save.bin` |
-| Mod/alternate dataset | `ux0:data/DBTapBattle/mods/<Profile>/save.bin` |
+Starting with 00.29, Original and every mod/profile use one mutable path:
+
+```text
+ux0:data/DBTapBattle/save.bin
+```
+
+The VPK contains the exact user-approved 12,906-byte seed at read-only
+`app0:/save.bin` (SHA-256
+`64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb`).
+If the root ux0 save is absent, the runtime copies that seed once. Existing
+progress is never overwritten merely because the selected profile changes or
+because the VPK is updated.
 
 Save loading is cached for the session, writes validate bounds and use exclusive
 save.bin.tmp creation, write, fsync, close and rename before updating cached
 state. A failed publication reports failure and removes the temporary file it
-created; an already-existing temp file is not overwritten. Full Android save
-round-trip and arbitrary mod progression compatibility are not established.
+created; an already-existing temp file is not overwritten. Full Android
+round-trip and arbitrary mod progression compatibility are still separate
+validation work.
 
-No cross-profile fallback or automatic migration is performed. Old saves/shared
-and saves/<profile> layouts remain historical/backups, not current inputs.
-An APK-bundled save is preserved by extraction and may be used by the selected
-profile; choose it intentionally and preserve existing progress. Some save fields
-are BE; PAC LE offsets do not imply universal endianness. SharedPreferences Smap
-identity and billing SQLite are not the main gameplay save.
+There is no cross-profile **gameplay-resource** fallback. Save sharing is an
+intentional 00.29 exception: all profiles use the same root save. Old
+`saves/shared`, `saves/<profile>`, `game/save.bin` and
+`mods/<Profile>/save.bin` remain historical/backups and are not current runtime
+inputs. APK-bundled saves may remain in extracted datasets for provenance but
+00.29 does not select them as gameplay state. Some save fields are BE; PAC LE
+offsets do not imply universal endianness. SharedPreferences Smap identity and
+billing SQLite are not the main gameplay save.
 
 ## Offline installed data
 
