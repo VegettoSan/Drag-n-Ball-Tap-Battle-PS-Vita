@@ -118,13 +118,9 @@ managed-memory abort and 00.23 hardware testing validates the streaming repair.
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.24 (2026-10-05, America/Bogota):** the user
-> confirms `DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk` works on the physical Vita
-> after the Android14 battle-start crash. Runtime source `f5672d4d`, VPK SHA-256
-> `0a156820a065a273a4ed24b064145fa1eed1dad72c44d8e03185f5e857dbf345`.
-> The original PAC streaming repair remains; Ogg PCM now uses one exact allocation
-> instead of transient vector doubling, with cache-only resource reclamation.
-> The approved LiveArea is retained. This is a user-confirmed test checkpoint,
-> not exhaustive character/profile/mode or long-session certification. Historical
-> records keep their original artifact and evidence scope.
+> **Current hardware checkpoint — 00.33 (2026-10-07):** physical Vita testing
+> confirms the reproduced Invasion repeated-fight/Saitama→Freezer crash is fixed
+> after the protected-PAC ownership-transfer repair. The recent hardware sequence
+> also confirms Loading recovery and dynamic installed rosters, including Samu's
+> 92 characters. Scope is limited to tested paths; see [CURRENT_STATUS](../../../docs/CURRENT_STATUS.md).
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
