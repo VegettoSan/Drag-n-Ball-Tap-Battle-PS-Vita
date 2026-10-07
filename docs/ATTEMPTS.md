@@ -1,5 +1,13 @@
 # Attempts Log
 
+> **Historical document notice — current 00.34 contract:** this file preserves
+> evidence/instructions for the build or investigation named here. The current
+> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
+> current `game/` or `mods/` profile roots and no built-in Original selector
+> row. Do not reuse historical install paths for 00.34. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 ## 2026-10-07 — 00.34 — Restyle the native data selector from Gen/select0.pac
 
 **Goal:** make the Vita-only profile chooser look like it belongs to Dragon Ball
