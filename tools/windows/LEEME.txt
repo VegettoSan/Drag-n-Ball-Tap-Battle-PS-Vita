@@ -12,7 +12,7 @@ USO
 3. Espera a que aparezca LISTO. Se abrira la carpeta del paquete generado.
 4. Copia su carpeta data a la raiz ux0: de la Vita con VitaShell.
    Debe quedar ux0:data/DBTapBattle/; NO ux0:data/data/DBTapBattle/.
-5. Abre el VPK del port 00.29 o posterior y selecciona el perfil indicado.
+5. Abre el VPK del port 00.30 o posterior y selecciona el perfil indicado.
 
 SALIDA
 Junto al BAT se crea Listo_para_Vita/Paquete_fecha_hora_identificador/.
@@ -30,7 +30,7 @@ PERFILES AUTOMATICOS
 - Mods Android14 protegidos que reutilicen uno de los perfiles ya auditados se extraen
   como perfil independiente y sus aliases se renombran automaticamente.
 
-Cada APK/mod es independiente en 00.29. No necesita una carpeta game/ poblada y
+Cada APK/mod es independiente en 00.30. No necesita una carpeta game/ poblada y
 nunca toma archivos de otro perfil por fallback.
 
 La herramienta detecta dinamicamente la cantidad de personajes por tripletas
@@ -42,13 +42,17 @@ El primer APK original suministrado NO contiene todos los personajes descargados
 Se extrae exactamente lo que trae, pero la herramienta no inventa datos faltantes.
 
 PARTIDAS GUARDADAS
-00.29 usa UN solo save para Original y todos los mods:
-ux0:data/DBTapBattle/save.bin
+00.30 usa una misma SEMILLA incluida en el VPK, pero cada perfil tiene su propia
+partida modificable:
 
-El VPK incluye la semilla inicial. Si el save global ya existe, no lo reemplaza.
-Si un APK trae su propio save.bin, la herramienta detecta ese hecho pero NO lo
-instala dentro del perfil. Asi no puede pisar ni dividir tu progreso.
-Haz backup del save global antes de mantenimiento destructivo.
+- Original: ux0:data/DBTapBattle/game/save.bin
+- Mod: ux0:data/DBTapBattle/mods/<Perfil>/save.bin
+
+Al abrir un perfil por primera vez, el VPK copia la semilla solo si ese perfil no
+tiene save.bin. En los siguientes inicios conserva y modifica esa copia.
+Si un APK trae su propio save.bin, la herramienta lo detecta pero NO lo instala.
+Asi todos parten del mismo save inicial sin mezclar el progreso entre mods.
+Haz backup del save.bin de cada perfil antes de mantenimiento destructivo.
 
 VERIFICACION
 Se comprueban rutas seguras, duplicados, limites de tamano y CRC de cada dato ZIP.
