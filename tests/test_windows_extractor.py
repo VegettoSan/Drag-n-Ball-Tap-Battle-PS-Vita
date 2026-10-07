@@ -133,7 +133,7 @@ class WindowsExtractorTests(unittest.TestCase):
                 source = self.apk(stem, [('assets/' + common_alias, data),
                                          ('assets/' + char_alias, data)])
                 packages = self.run_tool(source)
-                package = packages[-1]
+                package = max(packages, key=lambda p: p.stat().st_mtime_ns)
                 report = json.loads((package / 'RESULTADO.json').read_text('utf-8'))
                 selected = report['profiles'][0]['profile']
                 m = self.manifest(package, selected)
