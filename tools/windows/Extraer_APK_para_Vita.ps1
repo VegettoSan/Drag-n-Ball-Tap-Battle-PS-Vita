@@ -435,7 +435,7 @@ try {
     }
     $lines = @('DRAGON BALL TAP BATTLE DATA FOR PS VITA', '',
         'Copy the data folder from THIS package to the ux0: root using VitaShell.',
-        'The final path must be ux0:data/DBTapBattle/. Do not copy the Package_* folder itself into ux0:data.',
+        'The final path must be ux0:data/DBTapBattle/profiles/<Profile>/. Do not copy the Package_* folder itself into ux0:data.',
         'Install the Dragon Ball Tap Battle Vita VPK separately. This package contains data only.', '', 'EXTRACTED PROFILES:')
     foreach ($report in $reports) {
         $label = $report.profile.Substring($report.profile.LastIndexOf('/')+1)
@@ -452,7 +452,7 @@ try {
         'To change the name shown in the Vita selector, rename the extracted folder inside profiles/.',
         'The folder name is the selector name; no other metadata rename is required.', '',
         'IMPORTANT WHEN UPDATING AN EXISTING INSTALLATION:',
-        'Each profile uses its own save.bin inside game/ or profiles/<Profile>/.',
+        'Each profile uses its own save.bin inside profiles/<Profile>/.',
         'The VPK creates that save from its bundled seed only when the profile save does not already exist.',
         'save.bin files bundled inside APKs/mods are not copied automatically; each profile starts from the same VPK seed.',
         'Do not share save files between Original, Gen, Android14, or other profiles.',
