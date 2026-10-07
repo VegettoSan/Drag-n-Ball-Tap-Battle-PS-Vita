@@ -1,5 +1,12 @@
 # PS Vita test — 00.23 LiveArea-only repack
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 Historical test instructions. For the corrected package after the reported Final
 failure, use [the Fixed VPK test](TEST_VITA_00_23_LIVEAREA_FIXED.md). The Final
 package's native CI executable was not the hardware-tested engine, and its splash
