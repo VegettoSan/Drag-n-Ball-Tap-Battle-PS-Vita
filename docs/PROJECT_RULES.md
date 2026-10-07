@@ -27,7 +27,7 @@ These rules are part of the technical contract of the port.
     `save.bin`, and apply only audited protected aliases. The web extractor must
     remain local-only: no APK upload or network-dependent extraction.
 
-20. **GitHub Pages must deploy only validated static assets.** The Pages workflow
+18. **GitHub Pages must deploy only validated static assets.** The Pages workflow
     syntax-checks/tests the web core and reconstructs the approved selector PNGs
     from the repository's validated source payload before deployment.
 
