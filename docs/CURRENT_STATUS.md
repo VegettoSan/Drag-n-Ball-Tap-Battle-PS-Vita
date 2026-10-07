@@ -1,4 +1,46 @@
-# Current status — 2026-10-06/07 (America/Bogota), 00.24 baseline / 00.30 hardware findings / 00.31 candidate
+# Current status — 2026-10-07 (America/Bogota), 00.32 hardware findings / 00.33 candidate
+
+## 00.33 candidate — Invasion Saitama -> Freezer protected-PAC ownership
+
+The physical 00.32 retest closes two important items: the Loading loop is fixed
+and extended mod rosters now load correctly on Vita. Invasion still crashes on a
+specific story transition: Saitama (char15) advances to his second fight against
+Freezer (char05).
+
+The supplied 00.32 `psp2core` was symbolicated against the exact matching
+unstripped ELF. The native call chain reaches
+`std::vector<unsigned char>::operator=` inside protected-PAC `normalise()`,
+then `normaliseEnginePac -> readEngineResource -> EngineResourceCache::read ->`
+the native GameData stream. This is a native allocation failure, not a TeaVM
+managed OOM and not evidence that either character PAC is corrupt.
+
+Invasion `char15.pac` is 4,054,165 bytes on disk and normalizes to 4,638,744
+bytes. GCC 15 lowered the old final conditional move expression into a vector
+copy on the changed path, asking for a second ~4.6 MiB contiguous allocation.
+00.33 replaces that path with `output.swap(out)` and therefore transfers the
+already-built normalized buffer without allocating another PAC-sized copy.
+
+Complete test artifact:
+
+- `DBTapBattle-Vita-00.33-Invasion-Saitama-Freezer-Fix.vpk`
+- size 2,650,664 bytes
+- VPK SHA-256:
+  `d241499a356ac11c523909a84b0c383910ef7a387efcfdc2c05d3581be86fd77`
+- eboot SHA-256:
+  `bc0a0d4293e5b416084d02050dd6b3c17529cc63fab00bfe7a48d0310303d43b`
+- ELF SHA-256:
+  `6c55a58f59277bee0d2632dbefca8c1a938d577457b867489d3605a11cee7dbe`
+- APP_VER 00.33 / TITLE_ID DBTB00001
+- runtime checkpoint `71b95d54ad6eef0ebd2043eb96269f6e7a4e1370`
+- LiveArea PASS.
+
+00.32's dynamic roster, independent saves, Loading fix, Shop return path, Samu
+direct audio and Invasion text handling are retained. Hardware acceptance is the
+exact Saitama -> Freezer second-fight transition followed by several additional
+fight transitions.
+
+See [TEST_VITA_00_33](TEST_VITA_00_33.md) and
+[evidence](evidence/vita_build_00.33.json).
 
 ## 00.32 candidate — fix 00.31 infinite Loading
 
