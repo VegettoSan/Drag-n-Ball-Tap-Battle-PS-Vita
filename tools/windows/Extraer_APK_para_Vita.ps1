@@ -455,7 +455,7 @@ try {
         'Each profile uses its own save.bin inside profiles/<Profile>/.',
         'The VPK creates that save from its bundled seed only when the profile save does not already exist.',
         'save.bin files bundled inside APKs/mods are not copied automatically; each profile starts from the same VPK seed.',
-        'Do not share save files between Original, Gen, Android14, or other profiles.',
+        'Do not copy one profile's save.bin over another profile unless you intentionally want to replace its progress.',
         'Each run creates a new package and does not delete or merge previous outputs.', '',
         'PAC and media files are preserved byte-for-byte. Protected Android14-family profiles only rename audited aliases.',
         'File sizes, ZIP CRCs, and SHA-256 hashes are verified. dbtb_manifest.json records provenance.',
