@@ -72,7 +72,7 @@ Build/tool evidence for the current candidate:
   PASS for original, Gen, Android14, Spanish Android14, Invasion Beta 3 and Samu.
   The Samu stress case generated a 405,409,508-byte ZIP with 92 characters and
   passed independent ZIP CRC validation.
-- GitHub Pages deployment: run `37703911061` PASS. GitHub reports the live URL:
+- GitHub Pages deployment: run `37704582648` PASS. GitHub reports the live URL:
   https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
   (an earlier deployment request hit a transient GitHub HTTP 500; the subsequent
   deployment completed successfully).
