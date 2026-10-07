@@ -1,5 +1,12 @@
 # PS Vita physical test — 00.33 Invasion Saitama -> Freezer
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 ## Hardware result — PASS (2026-10-07)
 
 The user retested 00.33 on a physical PS Vita and reports **several consecutive
