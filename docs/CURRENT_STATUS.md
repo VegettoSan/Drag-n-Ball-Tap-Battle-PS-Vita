@@ -100,8 +100,10 @@ failures/limits:
    battle allocation peak that ended 00.30 with `std::bad_alloc`.
 3. Vita Shop completes the Android Smap lifecycle edge synchronously and returns
    to the game instead of throwing. Android purchasing is still not implemented.
-4. Vita Downloader now matches the original Gen offline stub semantics:
-   empty data, size 0, SetURL false, isDownload true.
+4. 00.31 attempted to model the offline Downloader with
+   empty data, size 0, SetURL false and `isDownload=true`. Hardware testing then
+   proved that polarity was wrong: `true` means the async request is still in
+   progress. 00.32 corrects this to immediate completion with `isDownload=false`.
 
 Complete physical-test artifact:
 
