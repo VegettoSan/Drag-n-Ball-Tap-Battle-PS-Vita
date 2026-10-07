@@ -9,7 +9,11 @@ on:
       - '.github/workflows/vita-publish.yml'
       - '.github/workflows/validate-vita-publication.yml'
       - 'tools/releases/**'
+      - 'tools/materialize_selector_theme.py'
+      - 'assets/selector/**'
+      - 'tools/aot/engine/vita/CMakeLists.txt'
       - 'tests/test_release_workflows.py'
+      - 'tests/test_selector_theme.py'
   workflow_dispatch:
 
 permissions:
@@ -36,3 +40,4 @@ jobs:
         run: |
           python3 -m unittest discover -s tests -p test_release_workflows.py -v
           python3 -m unittest discover -s tests -p test_livearea.py -v
+          python3 -m unittest discover -s tests -p test_selector_theme.py -v
