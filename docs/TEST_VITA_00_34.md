@@ -5,13 +5,13 @@
 
 ## Exact user-test artifact
 
-- File: `DBTapBattle-Vita-00.34-Selector-UX-Fix.vpk`
+- File: `DBTapBattle-Vita-00.34-No-Blue-Orb-Fix.vpk`
 - APP_VER: `00.34`
 - TITLE_ID: `DBTB00001`
 - VPK SHA-256:
-  `e06ded147eead1c7ee8e5a558552d5129a98b5916395c59780125782c8d55c92`
+  `4f0abc4aba15c766847657d152de9cff50877df3f7b13a169f06be4226d2367b`
 - Runtime/selector source checkpoint:
-  `63bc0f90d33d4a5d8d90c4816ff0f0ae07272751`
+  `18559dcea316076bb1225080bb8506dd439df6f6`
 
 Documentation/extractor commits may be newer than this source checkpoint without
 changing the VPK executable.
@@ -50,9 +50,12 @@ Expected behavior:
 6. No synthetic **Original**, **Original (missing)** or
    **ORIGINAL - DATA MISSING** row.
 7. If there are no profiles, the selector shows **NO GAME DATA FOUND**.
-8. The background uses its non-transparent content bounds and is stretched to
-   fill the complete 960×544 Vita viewport.
-9. Long profile names reduce text scale rather than escaping the button.
+8. The background uses only the continuous cyan/grid band from the top of
+   `select0_background.png` (482×320 px detected from the 512×512 source) and
+   stretches that region to the complete 960×544 Vita viewport.
+9. The separate blue energy orb embedded in the lower transparent portion of
+   that PNG must never be sampled or shown.
+10. Long profile names reduce text scale rather than escaping the button.
 
 The packaged theme remains optional at runtime: if one of the selector PNGs is
 missing/corrupt or cannot upload, the safe flat selector fallback remains
