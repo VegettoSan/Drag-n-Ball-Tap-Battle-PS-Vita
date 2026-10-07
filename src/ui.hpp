@@ -5,9 +5,8 @@
 #include <vector>
 
 struct BootChoice {
-    bool original = true;
-    std::string mod_directory;
+    std::string profile_directory;
 };
 
-bool runBootSelector(const std::vector<std::string>& mods, bool original_data_present, BootChoice& choice);
+bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choice);
 void showPacResult(bool success, const std::string& detail, const RgbaImage* image = nullptr);
