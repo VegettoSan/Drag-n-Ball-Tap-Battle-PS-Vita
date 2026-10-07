@@ -24,14 +24,14 @@ class SharedSaveSeedTest(unittest.TestCase):
             self.assertEqual(len(data), EXPECTED_SIZE)
             self.assertEqual(hashlib.sha256(data).hexdigest(), EXPECTED_SHA256)
 
-    def test_vpk_packages_seed_and_runtime_uses_global_mutable_path(self):
+    def test_vpk_packages_seed_and_runtime_uses_independent_profile_paths(self):
         cmake = (ROOT / "tools/aot/engine/vita/CMakeLists.txt").read_text()
         resources = (ROOT / "tools/aot/engine/native/resources.cpp").read_text()
         self.assertIn('FILE "${DBTB_DEFAULT_SAVE}" save.bin', cmake)
-        self.assertIn('save_path = base + "/save.bin";', resources)
+        self.assertIn('mod.empty() ? base + "/game/save.bin" : base + "/mods/" + mod + "/save.bin"', resources)
         self.assertIn('readFile("app0:/save.bin", seed)', resources)
-        self.assertNotIn('base + "/game/save.bin"', resources)
-        self.assertNotIn('base + "/mods/" + mod + "/save.bin"', resources)
+        self.assertNotIn('save_path = base + "/save.bin";', resources)
+        self.assertIn('Never overwrite', resources)
 
 
 if __name__ == "__main__":
