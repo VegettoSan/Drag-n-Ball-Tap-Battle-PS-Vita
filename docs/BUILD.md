@@ -1,6 +1,6 @@
 # Build and packaging
 
-## 00.34 current user-test build — unified profiles + selector UX
+## 00.34 stable hardware-confirmed build — unified profiles + selector UX
 
 Current complete user-test artifact:
 
@@ -11,7 +11,7 @@ Current complete user-test artifact:
   `24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03`
 - runtime/selector checkpoint:
   `0da8684805d1510caf93130a22eed523a854c1d6`
-- physical result: pending
+- physical result: **HARDWARE CONFIRMED — stable and functional**
 
 00.34 retains the 00.33 gameplay fixes and changes the external dataset contract
 to `ux0:data/DBTapBattle/profiles/<Profile>/`. The VPK no longer distinguishes
@@ -29,6 +29,9 @@ LOADING GAME DATA...** before the original engine loads that selected directory.
 
 The interactive full-engine build uses the documented split TeaVM compilation
 technique only as a compilation strategy; original game behavior is not replaced.
+The user reports this exact VPK stable and functional on physical Vita, with no
+problem found so far in the exercised paths.
+
 See [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md) and
 [TEST_VITA_00_34](TEST_VITA_00_34.md).
 
