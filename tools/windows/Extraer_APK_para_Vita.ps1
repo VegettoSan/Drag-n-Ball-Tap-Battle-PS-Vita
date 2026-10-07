@@ -44,7 +44,7 @@ public static class DbtbZipChecks {
     }
     public static DbtbZipRecord[] Central(Stream stream) {
         if (stream.Length < 22 || stream.Length > 1024L * 1024 * 1024)
-            throw new InvalidDataException("APK truncado o mayor de 1 GiB.");
+            throw new InvalidDataException("Truncated APK or APK larger than 1 GiB.");
         int n = (int)Math.Min(stream.Length, 65557);
         byte[] tail = new byte[n];
         stream.Position = stream.Length - n;
@@ -59,7 +59,7 @@ public static class DbtbZipChecks {
             if (BitConverter.ToUInt32(tail, i) == 0x06054b50U &&
                 i + 22 + BitConverter.ToUInt16(tail, i + 20) == n) { e = i; break; }
         }
-        if (e < 0) throw new InvalidDataException("No es un APK/ZIP valido.");
+        if (e < 0) throw new InvalidDataException("Not a valid APK/ZIP archive.");
         ushort count = BitConverter.ToUInt16(tail, e + 10);
         uint size = BitConverter.ToUInt32(tail, e + 12);
         uint offset = BitConverter.ToUInt32(tail, e + 16);
@@ -67,12 +67,12 @@ public static class DbtbZipChecks {
             BitConverter.ToUInt16(tail, e + 8) != count || count == 65535 ||
             count > 8192 || size > 16 * 1024 * 1024 ||
             (long)offset + size > stream.Length - n + e)
-            throw new InvalidDataException("ZIP dividido, ZIP64 o directorio fuera de limites.");
+            throw new InvalidDataException("Split ZIP, ZIP64, or out-of-bounds directory is not supported.");
         stream.Position = offset;
         var br = new BinaryReader(stream, System.Text.Encoding.UTF8, true);
         var result = new List<DbtbZipRecord>();
         for (int i = 0; i < count; i++) {
-            if (br.ReadUInt32() != 0x02014b50U) throw new InvalidDataException("Directorio ZIP danado.");
+            if (br.ReadUInt32() != 0x02014b50U) throw new InvalidDataException("Damaged ZIP central directory.");
             br.ReadUInt16(); br.ReadUInt16();
             var r = new DbtbZipRecord();
             r.Flags = br.ReadUInt16(); r.Method = br.ReadUInt16();
@@ -83,12 +83,12 @@ public static class DbtbZipChecks {
             r.Attributes = br.ReadUInt32(); uint local = br.ReadUInt32();
             if (disk != 0 || r.Size == uint.MaxValue || r.CompressedSize == uint.MaxValue ||
                 local == uint.MaxValue || local >= offset)
-                throw new InvalidDataException("Entrada ZIP no soportada o fuera de limites.");
+                throw new InvalidDataException("Unsupported or out-of-bounds ZIP entry.");
             stream.Seek(name + extra + comment, SeekOrigin.Current);
-            if (stream.Position > (long)offset + size) throw new InvalidDataException("Directorio truncado.");
+            if (stream.Position > (long)offset + size) throw new InvalidDataException("Truncated ZIP directory.");
             result.Add(r);
         }
-        if (stream.Position != (long)offset + size) throw new InvalidDataException("Tamano de directorio ZIP incorrecto.");
+        if (stream.Position != (long)offset + size) throw new InvalidDataException("Incorrect ZIP directory size.");
         stream.Position = 0;
         return result.ToArray();
     }
@@ -98,13 +98,13 @@ public static class DbtbZipChecks {
             int read;
             while ((read = source.Read(buffer, 0, buffer.Length)) > 0) {
                 total += read;
-                if (total > expected) throw new InvalidDataException("Datos descomprimidos exceden el tamano declarado.");
+                if (total > expected) throw new InvalidDataException("Decompressed data exceeds the declared size.");
                 for (int i = 0; i < read; i++) crc = Table[(crc ^ buffer[i]) & 255] ^ (crc >> 8);
                 dest.Write(buffer, 0, read);
             }
         }
         if (total != expected || (crc ^ 0xffffffffU) != expectedCrc)
-            throw new InvalidDataException("APK danado: fallo de tamano o CRC.");
+            throw new InvalidDataException("Damaged APK: size or CRC check failed.");
     }
 }
 '@
@@ -171,24 +171,24 @@ function Get-CommunityProfileFromNames($Names) {
 
 function Assert-SafeName([string]$Name) {
     if ([string]::IsNullOrEmpty($Name) -or $Name -match '[\x00-\x1f\x7f\\:*?"<>|]' -or
-        $utf8.GetByteCount($Name) -gt 200) { throw "Ruta no segura o demasiado larga: $Name" }
+        $utf8.GetByteCount($Name) -gt 200) { throw "Unsafe or overly long path: $Name" }
     foreach ($part in $Name.Split('/')) {
         if ($part -eq '' -or $part -eq '.' -or $part -eq '..' -or $part -match '[. ]$' -or
             $part -match '^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])([.]|$)' -or
             $part -match '^(dbtb_manifest[.]json|mod[.]json)([.]|$)') {
-            throw "Nombre no seguro o reservado: $Name"
+            throw "Unsafe or reserved name: $Name"
         }
     }
 }
 
 function Assert-CommunityPac([string]$Path, [string]$Codec) {
     $profile = @(Get-CommunityProfiles) | Where-Object { $_.Name -ceq $Codec } | Select-Object -First 1
-    if (-not $profile) { throw "Perfil Android14 desconocido: $Codec" }
+    if (-not $profile) { throw "Unknown Android14 profile: $Codec" }
     $bytes = [IO.File]::ReadAllBytes($Path)
-    if ($bytes.Length -lt 18) { throw "PAC Android14 truncado: $Path" }
+    if ($bytes.Length -lt 18) { throw "Truncated Android14 PAC: $Path" }
     $count = [BitConverter]::ToUInt16($bytes, 0) -bxor $profile.Count
     $base = 2L + $count * 16L
-    if ($count -eq 0 -or $base -gt $bytes.Length) { throw "Codec Android14 no soportado: $Path" }
+    if ($count -eq 0 -or $base -gt $bytes.Length) { throw "Unsupported Android14 PAC codec: $Path" }
     $found = $false
     for ($i = 0; $i -lt $count; $i++) {
         $pos = 2 + $i * 16
@@ -199,10 +199,10 @@ function Assert-CommunityPac([string]$Path, [string]$Codec) {
         $key = $key -bxor [uint32]$i
         if ($profile.Types -contains $key) { $found = $true }
         if ($base + [long]$offset -gt $bytes.Length -or [long]$size -gt $bytes.Length - $base - [long]$offset) {
-            throw "Entrada PAC Android14 fuera de limites: $Path"
+            throw "Android14 PAC entry is out of bounds: $Path"
         }
     }
-    if (-not $found) { throw "Codec Android14 desconocido: $Path" }
+    if (-not $found) { throw "Unknown Android14 PAC codec: $Path" }
 }
 
 function Get-Sha([string]$Path) { return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant() }
@@ -221,7 +221,7 @@ function Assert-NoReparse([string]$Path) {
     while ($current) {
         if ([IO.File]::Exists($current) -or [IO.Directory]::Exists($current)) {
             if (([IO.File]::GetAttributes($current) -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
-                throw "La salida no puede contener enlaces o uniones: $current"
+                throw "Output path cannot contain symlinks or junctions: $current"
             }
         }
         $current = [IO.Path]::GetDirectoryName($current)
@@ -272,7 +272,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
     $stream = $null; $archive = $null
     try {
         if (-not [IO.File]::Exists($Apk) -or [IO.Path]::GetExtension($Apk) -ine '.apk') {
-            throw "No es un archivo APK existente: $Apk"
+            throw "Not an existing APK file: $Apk"
         }
         $stream = [IO.File]::Open($Apk, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::Read)
         $records = [DbtbZipChecks]::Central($stream)
@@ -280,13 +280,13 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         try { $apkHash = ([BitConverter]::ToString($sha.ComputeHash($stream))).Replace('-','').ToLowerInvariant() }
         finally { $sha.Dispose(); $stream.Position = 0 }
         $archive = New-Object IO.Compression.ZipArchive($stream, [IO.Compression.ZipArchiveMode]::Read, $true)
-        if ($archive.Entries.Count -ne $records.Length) { throw 'El directorio ZIP no coincide.' }
+        if ($archive.Entries.Count -ne $records.Length) { throw 'ZIP directory metadata does not match.' }
         $raw = @($archive.Entries | Where-Object { $_.FullName.StartsWith('res/raw/',[StringComparison]::Ordinal) -and $_.Name -ne '' })
         $assets = @($archive.Entries | Where-Object { $_.FullName.StartsWith('assets/',[StringComparison]::Ordinal) -and $_.Name -ne '' })
         [long]$rawBytes = 0; [long]$assetBytes = 0
         foreach ($entry in $raw) { $rawBytes += $entry.Length }
         foreach ($entry in $assets) { $assetBytes += $entry.Length }
-        if ($rawBytes -gt 0 -and $assetBytes -gt 0) { throw 'APK ambiguo: contiene datos tanto en res/raw como en assets.' }
+        if ($rawBytes -gt 0 -and $assetBytes -gt 0) { throw 'Ambiguous APK: non-empty game data exists in both res/raw and assets.' }
         if ($rawBytes -gt 0) {
             $layout = 'raw'; $prefix = 'res/raw/'
             if ($apkHash -eq $KnownOriginalSha) { $profile = 'game' }
@@ -303,7 +303,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             elseif ($apkHash -eq $KnownInvasionSha) { $profile = 'mods/Invasion' }
             else { $profile = 'mods/' + (Get-ProfileName ([IO.Path]::GetFileNameWithoutExtension($Apk))) }
         }
-        else { throw 'El APK no contiene datos utiles en res/raw o assets.' }
+        else { throw 'The APK contains no usable game data in res/raw or assets.' }
         $originalProfile = $profile; $suffix = 2
         while ($UsedProfiles.ContainsKey($profile.ToLowerInvariant())) {
             if ($originalProfile -eq 'game') { $profile = 'mods/Original_' + $suffix }
@@ -322,29 +322,29 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             Assert-SafeName $name
             if ($layout -eq 'community14') { $name = Get-CanonicalName $name $communityCodec }
             $key = $name.ToLowerInvariant()
-            if ($names.ContainsKey($key)) { throw "Nombre duplicado tras normalizar: $name" }
+            if ($names.ContainsKey($key)) { throw "Duplicate name after normalization: $name" }
             $record = $records[$index]
             $mode = ($record.Attributes -shr 16) -band 61440
-            if ($mode -ne 0 -and $mode -ne 32768) { throw "Entrada ZIP no regular: $name" }
-            if (($record.Flags -band 1) -ne 0 -or $record.Method -notin @(0,8)) { throw "Entrada cifrada o compresion no soportada: $name" }
-            if ($entry.Length -ne $record.Size) { throw "Tamano ZIP inconsistente: $name" }
+            if ($mode -ne 0 -and $mode -ne 32768) { throw "Non-regular ZIP entry: $name" }
+            if (($record.Flags -band 1) -ne 0 -or $record.Method -notin @(0,8)) { throw "Encrypted entry or unsupported compression: $name" }
+            if ($entry.Length -ne $record.Size) { throw "Inconsistent ZIP size: $name" }
             if ($key -eq 'save.bin') {
-                if ($bundledSave) { throw 'El APK contiene mas de un save.bin en el layout seleccionado.' }
+                if ($bundledSave) { throw 'The selected APK layout contains more than one save.bin.' }
                 $bundledSave = $true
                 continue
             }
             $names.Add($key,$true)
             $total += $entry.Length
-            if ($entry.Length -gt 64MB -or $total -gt 512MB) { throw 'Datos exceden limites: 64 MiB por archivo / 512 MiB por APK.' }
+            if ($entry.Length -gt 64MB -or $total -gt 512MB) { throw 'Data exceeds limits: 64 MiB per file / 512 MiB per APK.' }
             $items.Add([pscustomobject]@{ Entry=$entry; Name=$name; Record=$record })
         }
         foreach ($key in $names.Keys) {
             $parts = $key.Split('/')
             for ($i=1; $i -lt $parts.Length; $i++) {
-                if ($names.ContainsKey(($parts[0..($i-1)] -join '/'))) { throw "Colision archivo/carpeta: $key" }
+                if ($names.ContainsKey(($parts[0..($i-1)] -join '/'))) { throw "File/directory collision: $key" }
             }
         }
-        if (-not $names.ContainsKey('common.pac')) { throw "No se encontro common.pac; no parece un APK completo de Tap Battle: $Apk" }
+        if (-not $names.ContainsKey('common.pac')) { throw "common.pac was not found; this does not look like a complete Tap Battle APK: $Apk" }
         [void][IO.Directory]::CreateDirectory($target)
         $files = @(); $renamed = @(); $unknown = @()
         $known = @('.pac','.ogg','.png','.bmp','.bin','.dat','.db','.dac','.gdt','.cnv','.spr','.act','.plt','.xml')
@@ -369,7 +369,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         if ($layout -eq 'community14') { $codec = $communityCodec }
         $roster = Get-CharacterInventory $names
         $rawUnknown = @(); if ($layout -eq 'raw') { $rawUnknown = $unknown }
-        $manifest = [ordered]@{ format=4; tool='DBTapBattle Windows Extractor 1.2'; source_layout=$layout;
+        $manifest = [ordered]@{ format=4; tool='DBTapBattle Windows Extractor 1.3'; source_layout=$layout;
             pac_codec=$codec; payloads_unchanged=$true; standalone_profile=($profile -ne 'game');
             requires_game_directory=$false; renamed_files=@($renamed);
             source_apk=[IO.Path]::GetFileName($Apk); source_apk_sha256=$apkHash;
@@ -383,14 +383,14 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             save_policy='per-profile-vpk-seed';
             bundled_save=$bundledSave; profile_save_installed=$false }
         Write-Json (Join-Path $target 'dbtb_manifest.json') $manifest
-        Write-Host ("OK: {0} -> {1} ({2} archivos, {3} renombrados, {4} personajes)" -f [IO.Path]::GetFileName($Apk),$profile,$files.Count,$renamed.Count,$roster.Count)
+        Write-Host ("OK: {0} -> {1} ({2} files, {3} renamed, {4} characters)" -f [IO.Path]::GetFileName($Apk),$profile,$files.Count,$renamed.Count,$roster.Count)
         if (-not $roster.RuntimeCompatible) {
-            Write-Host 'AVISO: el roster no cumple completamente el contrato Vita 00.30 (13..100 slots continuos, sin tripletas parciales).' -ForegroundColor Yellow
+            Write-Host 'WARNING: the roster does not fully satisfy the Vita 00.33+ contract (contiguous 00..99 namespace, no partial character triplets).' -ForegroundColor Yellow
         }
         if ($roster.Unsupported.Count) {
-            Write-Host 'AVISO: se encontraron IDs de personaje de 3+ digitos; 00.30 solo soporta indices 00..99.' -ForegroundColor Yellow
+            Write-Host 'WARNING: 3+ digit character IDs were found; the current Vita runtime supports indices 00..99.' -ForegroundColor Yellow
         }
-        if ($bundledSave) { Write-Host 'INFO: el APK trae save.bin, pero 00.30 no lo instala; el VPK crea un save independiente dentro de cada perfil.' -ForegroundColor Yellow }
+        if ($bundledSave) { Write-Host 'INFO: the APK contains save.bin, but the extractor does not install it; the VPK creates an independent save inside each profile.' -ForegroundColor Yellow }
         return [pscustomobject]@{ apk=[IO.Path]::GetFileName($Apk); profile=$profile; files=$files.Count;
             source_sha256=$apkHash; character_count=$roster.Count; character_indices=$roster.CompleteIndices;
             character_runtime_compatible=$roster.RuntimeCompatible; bundled_save=$bundledSave }
@@ -402,7 +402,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
 }
 
 try {
-    Write-Host 'DRAGON BALL TAP BATTLE - DATOS PARA PS VITA' -ForegroundColor Cyan
+    Write-Host 'DRAGON BALL TAP BATTLE - PS VITA DATA EXTRACTOR' -ForegroundColor Cyan
     if ($FromLauncher) {
         if ([string]::IsNullOrEmpty($OutputRoot)) { $OutputRoot = $env:DBTB_OUTPUT }
         $ApkPaths = @()
@@ -414,10 +414,10 @@ try {
         Add-Type -AssemblyName System.Windows.Forms
         $dialog = New-Object Windows.Forms.OpenFileDialog
         try {
-            $dialog.Title = 'Elige uno o varios APK de Dragon Ball Tap Battle'
-            $dialog.Filter = 'Archivos APK (*.apk)|*.apk'
+            $dialog.Title = 'Choose one or more Dragon Ball Tap Battle APKs'
+            $dialog.Filter = 'APK files (*.apk)|*.apk'
             $dialog.Multiselect = $true
-            if ($dialog.ShowDialog() -ne [Windows.Forms.DialogResult]::OK) { Write-Host 'Cancelado.'; exit 0 }
+            if ($dialog.ShowDialog() -ne [Windows.Forms.DialogResult]::OK) { Write-Host 'Cancelled.'; exit 0 }
             $ApkPaths = @($dialog.FileNames)
         } finally { $dialog.Dispose() }
     }
@@ -437,37 +437,37 @@ try {
         $unique.Add($full.ToLowerInvariant(),$true)
         $reports += Import-Apk $full $stage $used
     }
-    $lines = @('DATOS DRAGON BALL TAP BATTLE PARA PS VITA', '',
-        'Copia la carpeta data de ESTE paquete a la raiz ux0: con VitaShell.',
-        'La ruta final debe quedar ux0:data/DBTapBattle/. No copies Paquete_* dentro de ux0:data.',
-        'Instala por separado el VPK 00.30 o posterior para perfiles independientes.', '', 'PERFILES EXTRAIDOS:')
+    $lines = @('DRAGON BALL TAP BATTLE DATA FOR PS VITA', '',
+        'Copy the data folder from THIS package to the ux0: root using VitaShell.',
+        'The final path must be ux0:data/DBTapBattle/. Do not copy the Package_* folder itself into ux0:data.',
+        'Install the Dragon Ball Tap Battle Vita VPK separately. This package contains data only.', '', 'EXTRACTED PROFILES:')
     foreach ($report in $reports) {
         $label = $report.profile.Substring($report.profile.LastIndexOf('/')+1)
         if ($report.profile -eq 'game') { $label = 'Original' }
-        $lines += ('- {0}: ux0:data/DBTapBattle/{1}/ -> elige {2} en el VPK.' -f $report.apk,$report.profile,$label)
-        $lines += ('  Personajes detectados: {0} {1}' -f $report.character_count,$report.character_indices)
-        if (-not $report.character_runtime_compatible) { $lines += '  AVISO: el roster no cumple por completo el contrato 00.30; revisa dbtb_manifest.json.' }
-        if ($report.bundled_save) { $lines += '  El APK incluia save.bin, pero no se instala: 00.30 usa una copia propia sembrada desde el VPK.' }
+        $lines += ('- {0}: ux0:data/DBTapBattle/{1}/ -> select {2} in the VPK.' -f $report.apk,$report.profile,$label)
+        $lines += ('  Characters detected: {0} {1}' -f $report.character_count,$report.character_indices)
+        if (-not $report.character_runtime_compatible) { $lines += '  WARNING: the roster does not fully satisfy the current Vita runtime contract; check dbtb_manifest.json.' }
+        if ($report.bundled_save) { $lines += '  The APK contained save.bin, but it is not installed: the Vita port creates an independent profile save from the VPK seed.' }
     }
     $lines += @('',
-        'Cada APK/mod se guarda como perfil independiente dentro de mods/, salvo el APK Original exacto.',
-        'Puedes instalar solo Gen, Android14, Espanol, Invasion, ZuperSamu u otro perfil completo: game/ puede quedar vacio.',
-        '00.28 NO usa fallback entre perfiles. Si falta un recurso, hay que adaptar ese APK/mod; no copiarlo desde game/.',
-        'Para usar Gen como base Original, copia el CONTENIDO de mods/Gen/ a game/ deliberadamente.',
-        'Gen en mods/Gen/ funciona como perfil independiente; no necesita moverlo para seleccionarlo.', '',
-        'IMPORTANTE AL ACTUALIZAR UNA INSTALACION:',
-        'Cada perfil usa su propio save.bin dentro de game/ o mods/<Perfil>/.',
-        'El VPK 00.30 crea esa copia desde su semilla incluida solo cuando el save del perfil no existe.',
-        'Los save.bin incluidos por APKs/mods no se copian automaticamente: cada perfil parte de la misma semilla del VPK.',
-        'No compartas partidas entre Original, Gen y Android14.',
-        'Cada uso de la herramienta crea un paquete nuevo; no borra ni mezcla salidas anteriores.', '',
-        'Los PAC y OGG se conservan byte por byte. Los perfiles Android14 solo cambian nombres confirmados.',
-        'Se verifican tamanos, CRC ZIP y hashes SHA-256. dbtb_manifest.json registra el origen.',
-        'No se incluyen APK, DEX ni bibliotecas Android. Los mods que cambian codigo Android',
-        'pueden requerir cambios del port; extraer datos no incorpora esos cambios de codigo.',
-        'RESULTADO.json y SHA256SUMS.txt documentan este paquete.')
+        'Each APK/mod is stored as an independent profile under mods/, except the exact audited Original APK.',
+        'You can install only Gen, Android14, Espanol, Invasion, ZuperSamu, or another complete profile; game/ may remain empty.',
+        'The current runtime does NOT fall back between profiles. If a resource is missing, that APK/mod needs compatibility work; do not copy it from game/.',
+        'If you intentionally want Gen to act as Original, copy the CONTENTS of mods/Gen/ into game/.',
+        'Gen works as an independent selectable profile in mods/Gen/; moving it is not required.', '',
+        'IMPORTANT WHEN UPDATING AN EXISTING INSTALLATION:',
+        'Each profile uses its own save.bin inside game/ or mods/<Profile>/.',
+        'The VPK creates that save from its bundled seed only when the profile save does not already exist.',
+        'save.bin files bundled inside APKs/mods are not copied automatically; each profile starts from the same VPK seed.',
+        'Do not share save files between Original, Gen, Android14, or other profiles.',
+        'Each run creates a new package and does not delete or merge previous outputs.', '',
+        'PAC and media files are preserved byte-for-byte. Protected Android14-family profiles only rename audited aliases.',
+        'File sizes, ZIP CRCs, and SHA-256 hashes are verified. dbtb_manifest.json records provenance.',
+        'APK files, DEX code, and Android libraries are not included. Mods that change Android code',
+        'may require port changes; extracting data does not reproduce Android code changes.',
+        'RESULTADO.json and SHA256SUMS.txt document this package.')
     [IO.File]::WriteAllLines((Join-Path $stage 'LEEME_COPIAR_A_VITA.txt'), [string[]]$lines, $utf8)
-    Write-Json (Join-Path $stage 'RESULTADO.json') ([ordered]@{ tool_version='1.2'; standalone_profiles=$true; verified=$true; profiles=@($reports) })
+    Write-Json (Join-Path $stage 'RESULTADO.json') ([ordered]@{ tool_version='1.3'; standalone_profiles=$true; verified=$true; profiles=@($reports) })
     $sums = @()
     foreach ($file in @(Get-ChildItem -LiteralPath $stage -Recurse -File | Sort-Object FullName)) {
         $relative = $file.FullName.Substring($stage.Length+1).Replace('\','/')
@@ -477,17 +477,17 @@ try {
     [IO.Directory]::Move($stage, $final)
     $stage = $null
     Write-Host ''
-    Write-Host 'LISTO. Copia la carpeta data de:' -ForegroundColor Green
+    Write-Host 'READY. Copy the data folder from:' -ForegroundColor Green
     Write-Host $final
-    Write-Host 'a la raiz ux0: de tu PS Vita. Lee LEEME_COPIAR_A_VITA.txt antes de reemplazar una partida.'
+    Write-Host 'to the ux0: root of your PS Vita. Read LEEME_COPIAR_A_VITA.txt before replacing any existing profile data.'
     if ($FromLauncher -and -not $NoOpen -and $env:DBTB_NO_OPEN -ne '1') {
-        try { Invoke-Item -LiteralPath $final } catch { Write-Host 'No se pudo abrir el Explorador; la carpeta ya esta creada.' }
+        try { Invoke-Item -LiteralPath $final } catch { Write-Host 'Explorer could not be opened; the package folder was still created.' }
     }
     exit 0
 }
 catch {
     if ($stage -and [IO.Directory]::Exists($stage)) { [IO.Directory]::Delete($stage, $true) }
     Write-Host ('ERROR: ' + $_.Exception.Message) -ForegroundColor Red
-    Write-Host 'No se publico ningun paquete parcial. Los APK y las salidas anteriores se conservan.'
+    Write-Host 'No partial package was published. Your APKs and previous outputs are unchanged.'
     exit 2
 }
