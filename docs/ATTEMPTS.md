@@ -1120,3 +1120,24 @@ starts from the same known VPK seed while remaining independently writable.
 
 **Version:** 00.30. Native smoke and extractor/profile CI cover the source-policy
 change; physical isolation validation remains pending.
+
+## 2026-10-07 — Attempt 035 — 00.31 infinite Loading regression
+
+**Hardware evidence:** both Invasion and Zuper/Samu remain alive at ~60 FPS but
+never advance beyond Loading. Their last meaningful line is the rejected
+`device/screensize.csv` request.
+
+**Root cause:** the 00.31 Downloader stub inverted the original API meaning.
+Direct inspection of the pinned APK proves `Downloader.isDownload()` returns the
+DownloadTask `bDL` flag: true while the request is still running, false after the
+worker completes. Returning true permanently therefore blocks the preserved TCB
+state forever.
+
+**Second startup regression:** 00.31 called the deep PAC audit before original
+engine startup. Hardware timestamps show roughly 13 seconds for Invasion and 34
+seconds for Samu between profile selection and VFS initialization.
+
+**00.32 fix:** offline requests complete immediately with no data and the runtime
+uses a presence/contiguity roster scan at startup instead of opening/parsing every
+character PAC. The 00.31 roster, Shop, large-PAC memory and text/audio fixes are
+retained.
