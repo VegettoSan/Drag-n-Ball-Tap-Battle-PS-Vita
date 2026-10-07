@@ -1,5 +1,23 @@
 # Confirmed Successes
 
+## 2026-10-07 — 00.34 Gen-styled selector builds and packages in VitaSDK CI
+
+**Scope: BUILD CONFIRMED; physical Vita pending.** The native first-screen data
+selector now renders with four non-character visual derivatives from the supplied
+Gen `assets/select0.pac`: grid/energy background, beveled header, beveled menu
+button and a one-star Dragon Ball marker. The profile/VFS/input contract is
+unchanged, selector textures are released before entering the engine, and a
+legacy flat-selector fallback remains available if any embedded texture fails.
+
+The split Base64 payload reconstructs to the pinned ZIP SHA-256
+`90418a27c6681ee644d5cc383e31fc73248a5c412527839d216b61bcc2516c12`;
+each materialized PNG also has a pinned hash/dimensions contract. VitaSDK native
+smoke run [37622687132](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37622687132)
+passes with the themed renderer and VPK packaging, while publication/actionlint
+validation run [37622780686](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37622780686)
+passes the selector regression suite. This does not supersede the 00.33
+hardware-confirmed gameplay checkpoint.
+
 ## 2026-10-05 — publication guardrails validated
 
 Manual Release/Prerelease definitions pass actionlint. Ten tests verify original
