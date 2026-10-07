@@ -174,6 +174,9 @@ This establishes the extraction/package core against all six supplied project
 APK families. Device/browser UI and memory behavior should still be reported
 separately when testing specific Android/iOS browsers.
 
+Machine-readable evidence:
+[`docs/evidence/web_extractor_1.0_2026-10-07.json`](evidence/web_extractor_1.0_2026-10-07.json).
+
 ## Development validation
 
 From the repository root:
