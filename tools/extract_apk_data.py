@@ -33,6 +33,14 @@ def file_hash(path):
     return digest.hexdigest()
 
 
+def zip_member_hash(archive, info):
+    digest = hashlib.sha256()
+    with archive.open(info) as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def safe_name(name):
     parts = name.split('/')
     return (bool(name) and not any(ord(c) < 32 or ord(c) == 127 for c in name)
@@ -134,6 +142,7 @@ def extract(apk, output, overwrite=False, layout='auto'):
                 raise ValueError('unsupported or ambiguous Community14 profile')
         entries = []
         names = set()
+        ignored_profile_save = None
         total = 0
         for info in sorted(archive.infolist(), key=lambda x: x.filename):
             # zipfile normalizes backslashes to '/' on Windows when constructing
@@ -165,6 +174,16 @@ def extract(apk, output, overwrite=False, layout='auto'):
                 raise ValueError(f'non-regular ZIP entry: {name}')
             if info.flag_bits & 1:
                 raise ValueError(f'encrypted raw file: {name}')
+            if key == 'save.bin':
+                if ignored_profile_save is not None:
+                    raise ValueError('multiple save.bin entries in selected APK data layout')
+                ignored_profile_save = {
+                    'apk_path': info.filename,
+                    'size': info.file_size,
+                    'sha256': zip_member_hash(archive, info),
+                    'runtime_policy': 'ignored-profile-save-use-vpk-global-save',
+                }
+                continue
             total += info.file_size
             if info.file_size > MAX_FILE or total > MAX_TOTAL:
                 raise ValueError('raw data exceeds extraction budget (64 MiB/file, 512 MiB total)')
@@ -201,9 +220,11 @@ def extract(apk, output, overwrite=False, layout='auto'):
                 files.append({'name': name, 'size': info.file_size, 'sha256': file_hash(target),
                               'apk_path': info.filename})
             unknown = [f['name'] for f in files if Path(f['name']).suffix.lower() not in KNOWN]
-            manifest = {'format': 3, 'source_layout': layout,
+            manifest = {'format': 4, 'source_layout': layout,
                         'pac_codec': profile.name if profile else 'original-or-unknown',
                         'payloads_unchanged': True,
+                        'save_policy': 'global-vpk-seed-ux0-root',
+                        'ignored_profile_save': ignored_profile_save,
                         'renamed_files': [{'apk_path': f['apk_path'], 'name': f['name']} for f in files
                                           if f['apk_path'][len(prefix):] != f['name']], 'source_apk': apk.name, 'source_apk_sha256': file_hash(apk),
                         'file_count': len(files), 'files': files, 'unknown_files': unknown,
