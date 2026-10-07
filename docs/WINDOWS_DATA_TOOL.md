@@ -17,35 +17,38 @@ not change the permanent machine/user execution policy.
 Each launch creates a new `Listo_para_Vita/Paquete_<time>_<id>/` beside the tool.
 Copy that package's **data** directory to the Vita's **ux0:** root with VitaShell.
 The resulting runtime root is `ux0:data/DBTapBattle/`. Install the full engine
-VPK separately (00.23 or later); this tool does not build or bundle a VPK.
+VPK separately (00.28 or later); this tool does not build or bundle a VPK.
 
 | Detected source | Destination within package | VPK selector |
 |---|---|---|
-| Non-empty `res/raw/`, no non-empty `assets/` | `data/DBTapBattle/game/` | Original |
-| Protected `community14-a210795b` | `data/DBTapBattle/mods/Android14/` | Android14 |
-| Protected `community14-es-d594affc` | `data/DBTapBattle/mods/Espanol/` | Espanol |
-| Protected `community14-invasion-05aa0c5e` | `data/DBTapBattle/mods/Invasion/` | Invasion |
-| Known supplied Gen SHA-256 | `data/DBTapBattle/mods/Gen/` | Gen |
-| Other canonical `assets/` APK | `data/DBTapBattle/mods/<safe APK stem>/` | Its folder name |
+| Exact audited Original APK hash | `data/DBTapBattle/game/` | Original |
+| Exact audited Gen APK hash | `data/DBTapBattle/mods/Gen/` | Gen |
+| Exact audited Zuper/Samu APK hash | `data/DBTapBattle/mods/ZuperSamu/` | ZuperSamu |
+| Exact audited Android14 APK hash | `data/DBTapBattle/mods/Android14/` | Android14 |
+| Exact audited Spanish APK hash | `data/DBTapBattle/mods/Espanol/` | Espanol |
+| Exact audited Invasion APK hash | `data/DBTapBattle/mods/Invasion/` | Invasion |
+| Other canonical/Gen-style `assets/` APK | `data/DBTapBattle/mods/<safe APK stem>/` | Its folder name |
+| Other non-Original `res/raw/` APK | `data/DBTapBattle/mods/<safe APK stem>/` | Its folder name |
+| Protected Android14-style APK matching an audited codec profile | `data/DBTapBattle/mods/<safe APK stem>/` | Its folder name |
 
-Gen is recognized by source content hash, not filename. Modified Gen-derived
-APKs receive their own sanitized stem. Multiple colliding profile names receive
-suffixes rather than being merged; further raw APKs use `mods/Original_2`, etc.
+The exact known APKs are recognized by source SHA-256, not filename. Modified
+Gen-derived APKs and non-Original raw APKs receive their own sanitized profile
+name. Multiple colliding names receive suffixes rather than being merged.
 
-`DragonBallZuperSamuGamerYT.apk` is an audited example of this generic
-Gen-derived route: its DEX/manifest are identical to Gen but its APK hash differs
-and it contains 384 canonical assets with 92 character triplets. It should remain
-a separate mod folder rather than being mislabeled as the pinned 13-character Gen
-dataset. The extractor must not truncate the 00..91 files merely because Gen has
-13 characters.
+`DragonBallZuperSamuGamerYT.apk` is the audited large Gen-derived reference: its
+DEX/manifest are identical to Gen, it contains 384 canonical assets and 92
+character triplets, and the exact source hash is labeled `ZuperSamu`. Unknown
+Gen-derived mods are still accepted under their own sanitized profile name. The
+extractor counts contiguous triplets dynamically through the two-digit namespace
+`00..99`; it does not truncate a 70/92-character mod to Gen's 13 characters.
 Dragging the same input path twice imports it once. Non-empty resources on both
 raw and assets sides are rejected as ambiguous. Gen's empty raw stubs are ignored.
 
-Assets/mod profiles deliberately never overwrite `game/`. A complete Gen or
-Android14 dataset can be selected independently; Original may show DATA MISSING
-when no base is installed. For Gen as a deliberate base installation, copy the
-contents of `mods/Gen/` into `game/` yourself. Ordinary partial data mods can need
-compatible base resources for fallback; this full-APK tool requires `common.pac`.
+Every non-Original APK is emitted as a standalone profile under `mods/`.
+00.28 does not use cross-profile fallback: `game/` may remain empty. A missing
+resource in the selected profile is a compatibility issue to investigate, not a
+reason to borrow bytes from Original. The full-APK tool requires `common.pac`
+so arbitrary partial patch ZIPs are not misrepresented as complete profiles.
 The first supplied original APK lacks all 13 character triplets. Its extraction
 is complete relative to that APK, but is not a complete battle installation.
 
@@ -57,8 +60,7 @@ audited protected profiles in `tools/community14.py`: Android14
 `community14-a210795b` (106 PAC), Spanish `community14-es-d594affc`
 (106 PAC) and Invasion `community14-invasion-05aa0c5e` (139 PAC). Each profile
 has its own aliases/XOR constants. The extractor canonicalizes filenames only;
-it does not decode or rewrite PAC payload bytes. A protected APK that does not
-uniquely satisfy one audited profile must be rejected rather than guessed.
+it does not decode or rewrite PAC payload bytes. A protected APK that does not uniquely satisfy one audited profile must be rejected rather than guessed. Therefore “Android14-compatible” currently means it reuses the audited Android14, Spanish or Invasion alias/XOR family; a new protection family requires one audit before the Windows tool can safely extract it.
 
 The tool reads ZIP central metadata, verifies selected-file CRC and size while
 streaming, checks Community14 table bounds/type signals, and writes SHA-256
@@ -70,8 +72,8 @@ points. A whole multi-APK operation is staged privately in the output directory;
 only successful completion publishes the folder with a same-filesystem rename.
 A failure removes its own staging directory and leaves previous output intact.
 
-Each profile includes format-3 `dbtb_manifest.json`, with additional tool/profile,
-character-completeness and bundled-save fields. The package contains
+Each profile includes format-4 `dbtb_manifest.json`, with standalone-profile,
+dynamic-roster, tool/profile and bundled-save fields. The package contains
 `LEEME_COPIAR_A_VITA.txt`, `RESULTADO.json` and `SHA256SUMS.txt`. The manifest covers
 only imported data; SHA256SUMS also covers generated instructions/manifests,
 excluding itself. DEX, classes, signatures and Android libraries outside the
@@ -101,7 +103,7 @@ is required so any future conversion remains traceable and non-destructive.
   7.4.6/Linux. An independent Python ZIP reader and the existing name/codec parser
   checked every output byte, filename and manifest hash against the APK.
 - `tests/test_windows_extractor.py` executes the actual script on synthetic ZIPs:
-  raw/assets/Community14, bundled save, unknown data, SHA sums, duplicate inputs
+  standalone raw/assets/Community14, a 70-character Gen-style roster, bundled save, unknown data, SHA sums, duplicate inputs
   and profile names, repeated output, late CRC corruption, batch rollback,
   traversal/device names, file/directory collisions, symlinks, oversized entries,
   ambiguous APKs and unsupported codecs.
