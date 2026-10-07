@@ -1,5 +1,12 @@
 # DragonBallZuperSamuGamerYT.apk — referencia técnica completa
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 Auditoría directa: **2026-10-06**.
 
 Fuente suministrada al proyecto:
