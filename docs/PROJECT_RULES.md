@@ -36,8 +36,10 @@ These rules are part of the technical contract of the port.
 
 The port should eventually accept ordinary community asset/data mods without requiring a Vita-specific repack whenever those mods only replace formats already understood by the original game.
 
-Current hardware checkpoint: full engine **00.33** is user-confirmed on Vita for the
-reproduced Invasion repeated-fight crash. **00.34** is the current user-test candidate for the unified `profiles/` layout and selector UX; it is not hardware-confirmed yet. Loading recovery and dynamic installed
+Current hardware checkpoint: full engine **00.34** is user-confirmed stable and
+functional on Vita for the exercised selector/profile/gameplay paths. It retains
+the 00.33 protected-PAC fix and adds the unified `profiles/` contract plus the
+final selector UX corrections. Loading recovery and dynamic installed
 rosters are also hardware-confirmed in the recent test sequence. Original masks
 187/251, PAC streaming, direct audio, independent saves and approved LiveArea are
 retained. The 00.33 protected-PAC ownership fix must remain allocation-free.
