@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "date": "2026-10-07",
+  "version": "00.29",
+  "title_id": "DBTB00001",
+  "purpose": "Physical retest candidate for Samu decoder handoff, Invasion character-text fallback and one shared VPK-seeded save.",
+  "runtime_source_checkpoint": "1fe6e2dbff77b456846f7c4b6203c01383a5a549",
+  "original_apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+  "build": {
+    "teavm": "0.12.3",
+    "vitasdk": "2026.08",
+    "interactive_split": {
+      "remainder_units": 24,
+      "remainder_optimization": "-O1",
+      "tcbmanajer_optimization": "-O0",
+      "native_adapters": "-O2",
+      "reason": "container execution-window limit; same functional split-build technique as prior physical test artifacts"
+    }
+  },
+  "artifact": {
+    "name": "DBTapBattle-Vita-00.29-Samu-Invasion-SharedSave-Test.vpk",
+    "bytes": 2653396,
+    "sha256": "fc2a4ced375212eeb32609c199b95e0c58b55dfc6ccf07c0ce6da95f9a093e75",
+    "eboot_sha256": "4f5f911adc27de89dea996670fdfd6d64b6a29b340f2f0826c1638eddfa6f06a",
+    "elf_sha256": "a3574f8777eb2d12a1db08af6a96bde509bff6787ee1d0af293d65b19e755f58",
+    "livearea": "PASS",
+    "app_ver": "00.29"
+  },
+  "shared_save": {
+    "vpk_path": "app0:/save.bin",
+    "bytes": 12906,
+    "sha256": "64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb",
+    "mutable_path": "ux0:data/DBTapBattle/save.bin",
+    "overwrite_existing": false
+  },
+  "validation": {
+    "windows_extractor_run": 37564149917,
+    "windows_extractor": "PASS",
+    "native_smoke_run": 37563445723,
+    "native_smoke": "PASS",
+    "note": "Physical Vita acceptance of the 00.29 fixes remains pending."
+  }
+}
