@@ -1,5 +1,12 @@
 # Prueba fisica PS Vita — 00.25 Community Mod Profiles
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 ## Identidad exacta del candidato
 
 - Version Vita: `00.25`
