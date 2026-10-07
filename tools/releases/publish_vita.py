@@ -177,7 +177,7 @@ def package(plan, private_root, output):
                             'dex2jar': '2.4', 'ecj': '3.37.0', 'generated_c': '-O1', 'native': '-O2',
                             'docker_image': (private_root / 'sdk-image.txt').read_text().strip()},
               'artifacts': {path.name: {'sha256': digest(path), 'size_bytes': path.stat().st_size} for path in (target, symbols)},
-              'hardware_scope': '00.24 checkpoint user-confirmed; this fresh CI artifact has not itself been device-tested'}
+              'hardware_scope': '00.33 checkpoint user-confirmed; this fresh 00.34+ CI artifact has not itself been device-tested'}
     (output / 'build.json').write_text(json.dumps(report, indent=2) + '\n')
     (output / 'SHA256SUMS.txt').write_text(''.join(f'{digest(path)}  {path.name}\n' for path in (target, symbols, output / 'build.json')))
     notes = (f'Dragon Ball Tap Battle Vita {plan["version"]}\n\n'
@@ -185,7 +185,7 @@ def package(plan, private_root, output):
              f'TeaVM generation: {generation["classes"]} classes / {generation["methods"]} methods.\n'
              'Includes the approved LiveArea, the validated Gen-styled data selector and both battle-memory repairs: native PAC streaming and exact Ogg PCM allocation.\n\n'
              'Install the VPK as an update; preserve `ux0:data/DBTapBattle/` and saves. Original game data is supplied separately.\n'
-             '00.24 was confirmed working on a physical Vita; this newly compiled artifact needs its own device retest.\n'
+             '00.33 is the current physical-Vita gameplay checkpoint; this newly compiled 00.34 selector candidate needs its own device retest.\n'
              'The symbols ZIP contains compiled ELF/VELF for crash analysis, never APK/JAR/classes/generated C or game data.\n')
     extra = os.environ.get('RELEASE_NOTES', '').strip()
     (output / 'release-notes.md').write_text(notes + ('\n' + extra + '\n' if extra else ''))
