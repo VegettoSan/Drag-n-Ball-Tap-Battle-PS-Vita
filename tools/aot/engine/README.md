@@ -1,4 +1,4 @@
-# Original core integration — 00.34 hardware-confirmed stable
+# Original core integration — v1.0 release / 00.34 hardware-confirmed baseline
 
 This directory contains the handwritten platform layer for the original APK's
 Java core. The full private engine can now be generated with TeaVM and built for
@@ -8,7 +8,8 @@ outside Git; a successful build is not by itself hardware-playability evidence.
 
 ## Current checkpoint
 
-Latest full-engine hardware checkpoint is 00.34. The exact
+Current public release is **v1.0** (APP_VER `01.00`, TITLE_ID `DBTB01178`).
+The latest full-engine hardware checkpoint is 00.34. The exact
 `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is reported stable and
 functional on physical Vita, retaining the 00.33 protected-PAC repair while
 adding the unified `profiles/<Profile>/` contract and final selector UX. The original core remains preserved;
