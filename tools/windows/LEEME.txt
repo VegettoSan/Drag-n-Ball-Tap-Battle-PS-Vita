@@ -1,81 +1,27 @@
-DRAGON BALL TAP BATTLE - EXTRACTOR PARA WINDOWS 1.2
+DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.3
 
-Windows 10 / 11, con Windows PowerShell 5.1 integrado.
-No necesita instalar Python, 7-Zip, Java ni ejecutar como administrador.
-No descarga nada de Internet ni modifica tus APK.
+This file is kept for compatibility with older extractor ZIPs.
+For the current English instructions, read README.txt in this same folder.
 
-USO
-1. Extrae TODO este ZIP en una carpeta de tu PC.
-   Mantiene juntos Extraer_APK_para_Vita.bat y Extraer_APK_para_Vita.ps1.
-2. Arrastra uno o varios APK sobre Extraer_APK_para_Vita.bat.
-   Tambien puedes hacer doble clic en el BAT y elegir los APK en una ventana.
-3. Espera a que aparezca LISTO. Se abrira la carpeta del paquete generado.
-4. Copia su carpeta data a la raiz ux0: de la Vita con VitaShell.
-   Debe quedar ux0:data/DBTapBattle/; NO ux0:data/data/DBTapBattle/.
-5. Abre el VPK del port 00.30 o posterior y selecciona el perfil indicado.
+PRIMARY LAUNCHER
+  Extract_APK_for_Vita.bat
 
-SALIDA
-Junto al BAT se crea Listo_para_Vita/Paquete_fecha_hora_identificador/.
-Cada ejecucion genera un paquete nuevo, sin mezclar ni borrar los anteriores.
+LEGACY LAUNCHER
+  Extraer_APK_para_Vita.bat
 
-PERFILES AUTOMATICOS
-- APK Original exacto conocido: data/DBTapBattle/game/ -> Original.
-- gen.apk exacto conocido: data/DBTapBattle/mods/Gen/ -> Gen.
-- Zuper/Samu exacto conocido: data/DBTapBattle/mods/ZuperSamu/.
-- Android14 exacto conocido: data/DBTapBattle/mods/Android14/.
-- Espanol exacto conocido: data/DBTapBattle/mods/Espanol/.
-- Invasion exacto conocido: data/DBTapBattle/mods/Invasion/.
-- Otros APK con estructura Gen/canonical: data/DBTapBattle/mods/Nombre_del_APK/.
-- Otros APK res/raw que NO sean el Original exacto: tambien van a mods/Nombre_del_APK/.
-- Mods Android14 protegidos que reutilicen uno de los perfiles ya auditados se extraen
-  como perfil independiente y sus aliases se renombran automaticamente.
+Both launchers use the same PowerShell extractor and produce the same Vita-ready
+data layout.
 
-Cada APK/mod es independiente en 00.30. No necesita una carpeta game/ poblada y
-nunca toma archivos de otro perfil por fallback.
+Quick install:
+1. Extract the whole tool ZIP.
+2. Drag one or more APK files onto Extract_APK_for_Vita.bat.
+3. Open the generated package.
+4. Copy its data folder to the root of ux0: with VitaShell.
+5. Confirm the final path is ux0:data/DBTapBattle/.
+6. Start the Vita port and select the extracted profile.
 
-La herramienta detecta dinamicamente la cantidad de personajes por tripletas
-charXX/chardemoXX/charfXXXX, desde 00 hasta 99. Un mod con 70 personajes queda
-registrado como 00..69; uno con 92 como 00..91. No se recorta a 13.
-Si hay huecos, tripletas incompletas o IDs 100+, se avisa en dbtb_manifest.json.
+Do not copy the package folder itself inside ux0:data/.
+Do not overwrite an existing profile save.bin unless you intentionally want to
+replace that profile's progress.
 
-El primer APK original suministrado NO contiene todos los personajes descargados.
-Se extrae exactamente lo que trae, pero la herramienta no inventa datos faltantes.
-
-PARTIDAS GUARDADAS
-00.30 usa una misma SEMILLA incluida en el VPK, pero cada perfil tiene su propia
-partida modificable:
-
-- Original: ux0:data/DBTapBattle/game/save.bin
-- Mod: ux0:data/DBTapBattle/mods/<Perfil>/save.bin
-
-Al abrir un perfil por primera vez, el VPK copia la semilla solo si ese perfil no
-tiene save.bin. En los siguientes inicios conserva y modifica esa copia.
-Si un APK trae su propio save.bin, la herramienta lo detecta pero NO lo instala.
-Asi todos parten del mismo save inicial sin mezclar el progreso entre mods.
-Haz backup del save.bin de cada perfil antes de mantenimiento destructivo.
-
-VERIFICACION
-Se comprueban rutas seguras, duplicados, limites de tamano y CRC de cada dato ZIP.
-Android14 usa perfiles protegidos auditados: se renombran aliases PAC sin alterar
-sus bytes. No se descifran, recomprimen ni convierten los recursos.
-Perfiles conocidos: Android14, Espanol e Invasion. Un Android14 protegido con
-aliases/claves XOR nuevas se RECHAZA hasta auditarlo; la herramienta no adivina.
-Cada perfil tiene dbtb_manifest.json y el paquete tiene SHA256SUMS.txt.
-RESULTADO.json identifica los perfiles y la cantidad de personajes detectada.
-Un error elimina la extraccion temporal y no publica un paquete incompleto.
-Los formatos de datos desconocidos se conservan en el perfil y se registran.
-No se copian DEX, clases Java ni bibliotecas Android fuera del area de datos.
-Un mod que cambia codigo Android puede requerir cambios del port para funcionar.
-
-SOLUCION DE PROBLEMAS
-- Si falta el PS1: extrae todos los archivos del ZIP antes de usar el BAT.
-- Si Windows marca el ZIP como descargado: Propiedades del ZIP > Desbloquear,
-  y luego extraelo. El BAT aplica Bypass solo al proceso que ejecuta esta
-  herramienta; no cambia la politica permanente de PowerShell.
-- Usa una carpeta corta y con permiso de escritura, por ejemplo C:\DBTBExtractor.
-- APK con datos no vacios en res/raw y assets: se rechaza por ambiguo.
-- Otro codec/alias de Android14 no auditado: se rechaza antes de publicar datos incompatibles.
-- Un equipo de empresa puede impedir PowerShell por politica: esta herramienta
-  no puede desactivar esas restricciones.
-
-La herramienta prepara datos. El VPK se instala por separado y no esta incluido.
+See README.txt for profile mapping, save behavior, validation, and troubleshooting.
