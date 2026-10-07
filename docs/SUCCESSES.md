@@ -468,3 +468,15 @@ A complete 00.27 full-engine VPK was built and validated:
 It contains the expected original TeaVM symbols, direct compressed-audio symbol,
 approved LiveArea and no APK/game-data files. Physical audible validation is the
 remaining gate. See [evidence](evidence/vita_samu_direct_audio_00.27.json).
+
+## 2026-10-06 — Protected profiles do not require bobj00
+
+Direct audit of the supplied Android14, Spanish and Invasion APKs confirmed that
+all three standalone protected builds omit `font00.pac` and begin their protected
+`bobj` family at index 01. Therefore `bobj00.pac` is not a universal mod-profile
+requirement. Commit `7fec715` removes the artificial `bobj00` requirement from
+the Vita installed-data gate while preserving ordinary VFS fallback if the
+unchanged original core requests an omitted logical resource. Community-profile
+CI, installed-data regression CI and Vita native smoke all pass. The corrected
+00.27 physical-test VPK has SHA-256
+`311a820f948e337b0626b7b46e6dcb2ca0628b81364941b11d4c837867ee1b96`.
