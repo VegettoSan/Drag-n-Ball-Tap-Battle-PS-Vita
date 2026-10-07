@@ -66,7 +66,7 @@ Meaningful experiments must be recorded in `ATTEMPTS.md`; validated successes an
 
 ## ADR-008 — Profile-local saves and original input service
 
-**Status:** updated to implemented contract — 2026-10-05.
+**Status:** save portion superseded by ADR-017 in 00.29; input portion remains historical/valid.
 The early separate saves/ proposal is superseded: Original uses game/save.bin;
 a selected mod uses mods/<Profile>/save.bin. Only save.bin is writable through
 the resource adapter. No save fallback/migration crosses profiles. Exclusive
@@ -179,3 +179,27 @@ incompatibility requires a narrower adaptation.
 > not exhaustive character/profile/mode or long-session certification. Historical
 > records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## ADR-017 — One shared mutable save seeded by the VPK
+
+**Status:** accepted and implemented — 2026-10-07, candidate 00.29.
+
+Original and every selectable APK-derived profile use exactly one writable save:
+`ux0:data/DBTapBattle/save.bin`. The VPK carries the exact user-provided 12,906-byte
+seed at read-only `app0:/save.bin`, SHA-256
+`64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb`.
+Boot copies it only if the root ux0 save does not exist; an existing save is never
+overwritten by profile selection or VPK update. APK-local saves are not installed
+by current extractors. Resource isolation from ADR-016 remains unchanged: only
+save state is intentionally shared.
+
+## ADR-018 — Adapt only evidenced mod text/audio boundaries
+
+**Status:** accepted and implemented for 00.29 candidate.
+
+The 00.28 Samu failure is a Vita decoder-lifetime issue, not a media-format issue:
+release the active one-stream SceAudiodec BGM before creating its replacement.
+For protected character strings, retain exact GameData-object charset mapping first;
+when modified APK SetString slot conventions miss that map, fall back only to the
+charset content-detected from the active character PAC. Do not rewrite strings,
+PACs or wholesale-port modified DEX methods without a concrete behavioral need.
