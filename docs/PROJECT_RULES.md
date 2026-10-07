@@ -36,18 +36,20 @@ These rules are part of the technical contract of the port.
 
 The port should eventually accept ordinary community asset/data mods without requiring a Vita-specific repack whenever those mods only replace formats already understood by the original game.
 
-Current hardware checkpoint: full engine **00.34** is user-confirmed stable and
-functional on Vita for the exercised selector/profile/gameplay paths. It retains
-the 00.33 protected-PAC fix and adds the unified `profiles/` contract plus the
-final selector UX corrections. Loading recovery and dynamic installed
+Current public release: **v1.0** with Vita APP_VER `01.00` and TITLE_ID
+`DBTB01178`. Its gameplay/runtime baseline is full engine **00.34**, which is
+user-confirmed stable and functional on Vita for the exercised
+selector/profile/gameplay paths. It retains the 00.33 protected-PAC fix and the
+unified `profiles/` contract plus the final selector UX corrections. Loading recovery and dynamic installed
 rosters are also hardware-confirmed in the recent test sequence. Original masks
 187/251, PAC streaming, direct audio, independent saves and approved LiveArea are
 retained. The 00.33 protected-PAC ownership fix must remain allocation-free.
 See [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md) and [CURRENT_STATUS](CURRENT_STATUS.md) and [PORTING_GUIDE](PORTING_GUIDE.md).
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
+> **Current release — v1.0 (2026-10-07):** APP_VER `01.00`, TITLE_ID
+> `DBTB01178`. Gameplay/runtime is inherited from the exact
+> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk`, which is user-confirmed stable
 > and functional on physical PS Vita for the exercised selector, profile-loading
 > and gameplay paths, with no issue found so far. It retains the 00.33
 > protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
