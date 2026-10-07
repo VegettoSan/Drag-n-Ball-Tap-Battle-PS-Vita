@@ -1,5 +1,12 @@
 # Dragon Ball Tap Battle — referencia técnica de los APK auditados
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 Fecha de auditoría profunda: **2026-10-06**.
 
 Este documento existe para que el port de PS Vita pueda seguir desarrollándose **sin necesitar los APK originales/modificados a mano**. No contiene payloads comerciales, clases decompiladas ni assets; registra estructura, hashes, tamaños, contratos binarios, inventarios y diferencias observadas directamente en los seis APK suministrados al proyecto.
