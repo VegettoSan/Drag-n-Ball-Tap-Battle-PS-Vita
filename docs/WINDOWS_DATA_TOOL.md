@@ -1,5 +1,12 @@
 # Windows APK data extractor
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 `tools/windows/Extraer_APK_para_Vita.bat` prepares a Vita installation from one
 or several user-owned Tap Battle APKs. Extract the distributed tool ZIP first,
 keep its BAT and PS1 together, then drag APKs onto the BAT. Double-clicking the
