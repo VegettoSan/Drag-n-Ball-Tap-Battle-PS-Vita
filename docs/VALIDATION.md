@@ -22,6 +22,38 @@ correct in its historical test record. For v1.0, verify the new SFO identity plu
 ZIP CRC and confirm that the gameplay executable/resources remain the 00.34
 release baseline.
 
+## Web Extractor validation
+
+Static/browser extraction is validated separately from Vita runtime behavior.
+
+Repository checks:
+
+```sh
+node --check web/extractor-core.mjs
+node --check web/app.mjs
+node tests/web_extractor_core.mjs
+python3 tools/materialize_selector_theme.py assets/selector /tmp/dbtb-web-selector
+```
+
+The browser core was also exercised against real project APK inputs before
+publication:
+
+- original `DBTapBattle.apk`: raw layout, PASS;
+- `gen.apk`: assets layout, 13-character roster, PASS;
+- `tap battle android 14.apk`: audited `community14-a210795b`, PASS;
+- Invasion Beta 3: audited `community14-invasion-05aa0c5e`, 22-character
+  roster `00..21`, PASS.
+
+The generated Invasion ZIP was reopened and CRC-tested independently. It
+contained canonical `common.pac`, omitted APK `save.bin`, and reported the
+expected `profiles-v1` manifest. These checks establish extraction/package
+behavior, not every browser/device memory ceiling or mod compatibility.
+
+The Pages workflow fails closed: JavaScript validation and selector-theme
+materialization must pass before the static artifact can be deployed.
+
+See [WEB_DATA_TOOL](WEB_DATA_TOOL.md).
+
 ## Evidence levels
 
 | Label | Establishes | Does not establish |
@@ -182,7 +214,7 @@ unsupported diagnostics must not be treated as reliable numbers.
 
 ## Physical test protocol
 
-Use [00.33 instructions/result](TEST_VITA_00_33.md) as the hardware-confirmed gameplay regression checkpoint and [00.34](TEST_VITA_00_34.md) for the current unified-profile/selector candidate. Historical 00.23 instructions remain useful for the original baseline. For the current
+Use [00.34](TEST_VITA_00_34.md) as the current hardware-confirmed gameplay/selector regression checkpoint. [00.33](TEST_VITA_00_33.md) remains historical evidence for the protected-PAC repeated-fight repair. Historical 00.23 instructions remain useful for the original baseline. For the current
 LiveArea-only derivative, follow
 [TEST_VITA_00_23_LIVEAREA](TEST_VITA_00_23_LIVEAREA.md): verify VitaShell
 installation, bubble icon, LiveArea background and startup gate first, then perform
@@ -197,7 +229,7 @@ or native crash occurs. Copy `runtime.log`; include `psp2core` only if produced.
 Screenshots/photos establish physical LiveArea rendering; recordings remain the
 right evidence for audible artifacts that counters cannot establish.
 
-## Latest hardware validation — 00.33
+## Historical hardware validation — 00.33
 
 Physical Vita testing confirms the reproduced Invasion repeated-fight crash is
 fixed. The user completed several fights on 00.33 without another crash after
