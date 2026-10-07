@@ -7,10 +7,7 @@
 <!-- DBTB_DOC_STATUS:END -->
 
 
-`tools/windows/Extraer_APK_para_Vita.bat` prepares a Vita installation from one
-or several user-owned Tap Battle APKs. Extract the distributed tool ZIP first,
-keep its BAT and PS1 together, then drag APKs onto the BAT. Double-clicking the
-BAT opens a multi-file APK picker. Windows 10/11 built-in PowerShell 5.1 and .NET
+`tools/windows/Extract_APK_for_Vita.bat` is the primary public launcher for preparing Vita data from one or several user-owned Tap Battle APKs. Extract the distributed tool ZIP first, keep the BAT and PS1 together, then drag APKs onto the BAT. Double-clicking the BAT opens a multi-file APK picker. The older `Extraer_APK_para_Vita.bat` launcher is retained only for compatibility and runs the same extractor. Windows 10/11 built-in PowerShell 5.1 and .NET
 are the only runtime requirements; no Python, Java, 7-Zip, administrator access
 or network request is needed on the user's PC.
 
@@ -21,10 +18,9 @@ not change the permanent machine/user execution policy.
 
 ## Output and copy procedure
 
-Each launch creates a new `Listo_para_Vita/Paquete_<time>_<id>/` beside the tool.
+Each launch creates a new `Listo_para_Vita/Paquete_<time>_<id>/` beside the tool. The folder names are retained for compatibility with existing tests/packages; all current user-facing instructions and console messages are English.
 Copy that package's **data** directory to the Vita's **ux0:** root with VitaShell.
-The resulting runtime root is `ux0:data/DBTapBattle/`. Install the full engine
-VPK separately (00.33 current checkpoint; 00.30+ share the profile-save model); this tool does not build or bundle a VPK.
+The resulting runtime root is `ux0:data/DBTapBattle/`. Install the full engine VPK separately (00.33 is the current hardware-confirmed checkpoint); this tool does not build or bundle a VPK.
 
 | Detected source | Destination within package | VPK selector |
 |---|---|---|
@@ -61,7 +57,7 @@ is complete relative to that APK, but is not a complete battle installation.
 
 ## Preservation and validation
 
-Selected `res/raw/` or `assets/` gameplay files retain their exact bytes, including unknown extensions. If the APK contains `save.bin`, its presence/hash is recorded but that file is intentionally excluded from the installed profile; 00.33 continues this policy. The current tool has three separately
+Selected `res/raw/` or `assets/` gameplay files retain their exact bytes, including unknown extensions. If the APK contains `save.bin`, its presence/hash is recorded but that file is intentionally excluded from the installed profile; 00.33 and later current-profile builds continue this policy. The current tool has three separately
 audited protected profiles in `tools/community14.py`: Android14
 `community14-a210795b` (106 PAC), Spanish `community14-es-d594affc`
 (106 PAC) and Invasion `community14-invasion-05aa0c5e` (139 PAC). Each profile
@@ -78,8 +74,7 @@ points. A whole multi-APK operation is staged privately in the output directory;
 only successful completion publishes the folder with a same-filesystem rename.
 A failure removes its own staging directory and leaves previous output intact.
 
-Each profile includes format-4 `dbtb_manifest.json`, with standalone-profile, dynamic-roster, tool/profile and source-save metadata. APK-local `save.bin` is recorded but not installed; the runtime creates an independent profile save from the VPK seed on first use. The package contains
-`LEEME_COPIAR_A_VITA.txt`, `RESULTADO.json` and `SHA256SUMS.txt`. The manifest covers
+Each profile includes format-4 `dbtb_manifest.json`, with standalone-profile, dynamic-roster, tool/profile and source-save metadata. APK-local `save.bin` is recorded but not installed; the runtime creates an independent profile save from the VPK seed on first use. The package contains an English `LEEME_COPIAR_A_VITA.txt` installation guide, `RESULTADO.json`, and `SHA256SUMS.txt`. The manifest covers
 only imported data; SHA256SUMS also covers generated instructions/manifests,
 excluding itself. DEX, classes, signatures and Android libraries outside the
 selected data prefix are not extracted.
