@@ -87,3 +87,16 @@ an Original selector label identifies a folder, not a particular APK hash.
 ## Deep offline reference — 2026-10-06
 
 A newer forensic pass compares all five supplied APKs at ZIP/manifest/DEX/data/PAC/audio/native-library level so future work does not require the binaries. See [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md) and [machine-readable evidence](evidence/apk_deep_structure_2026-10-06.json). Profile-specific details are in [SPANISH_ANDROID14_APK](SPANISH_ANDROID14_APK.md) and [INVASION_BETA3_APK](INVASION_BETA3_APK.md). The deep audit also establishes that seven Invasion BGM files retain `.ogg` names while containing MP3/AAC media; do not generalize the baseline Vorbis contract to that mod.
+
+## Runtime hardware update — 00.33
+
+The deep APK audit remains format/provenance evidence, but later runtime work now
+has corresponding hardware confirmation. 00.32/00.33 physical testing confirms
+dynamic installed rosters (including Samu's 92-character dataset) and resolves
+the reproducible Invasion repeated-fight crash. The latter was not a malformed
+APK/PAC: the matching coredump identified a duplicate native vector allocation
+at the final protected-PAC normalization handoff. 00.33 transfers that buffer by
+ownership and several subsequent Invasion fights complete without a crash.
+
+Keep this distinction explicit: APK structure validation proves the data shape;
+hardware tests prove only the runtime paths actually exercised.
