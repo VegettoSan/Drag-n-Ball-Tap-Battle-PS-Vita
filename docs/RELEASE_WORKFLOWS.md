@@ -11,8 +11,8 @@ Hay dos botones manuales en **Actions**:
 
 | Workflow | Etiqueta automatica (version actual) | Publicacion |
 |---|---|---|
-| [Publicar VPK - Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml) | `v00.33` con el CMake actual | Release normal, marcada Latest |
-| [Publicar VPK - Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml) | `v00.33-pre.<run_id>` con el CMake actual | Prerelease para pruebas, no reemplaza Latest |
+| [Publicar VPK - Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml) | `v00.34` con el CMake actual | Release normal, marcada Latest |
+| [Publicar VPK - Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml) | `v00.34-pre.<run_id>` con el CMake actual | Prerelease para pruebas, no reemplaza Latest |
 
 Ambos usan la version de `tools/aot/engine/vita/CMakeLists.txt`, el commit exacto
 seleccionado al ejecutar el workflow y el mismo compilador compartido. No usan
@@ -59,7 +59,7 @@ prueba en GitHub; el APP_VER del VPK sigue siendo la version base de CMake.
 
 ## Archivos publicados y conservacion de fuentes privadas
 
-- `DBTapBattle-Vita-<version>[-pre.<run_id>].vpk`: juego completo, LiveArea y notices.
+- `DBTapBattle-Vita-<version>[-pre.<run_id>].vpk`: juego completo, LiveArea, notices y los cuatro PNG validados del selector Gen.
 - `DBTapBattle-Vita-<version>[-pre.<run_id>].symbols.zip`: solo ELF/VELF compilados
   para analizar futuros crash dumps; no incluye C/JAR/classes/APK.
 - `build.json`: commit, version, canal, SHA del APK fuente, evidencia de clases/
@@ -72,7 +72,9 @@ APKs, JARs, clases, C generado y logs privados no se cachean ni se suben: estan
 fuera del checkout, en un directorio temporal borrado incluso al fallar el job.
 La entrada privada en un runner efimero es parte de estos workflows manuales
 autorizados; los workflows automaticos siguen usando solo codigo/herramientas
-publicas. No se distribuyen datasets de personajes/musica dentro del VPK.
+publicas. No se distribuyen datasets de personajes/musica dentro del VPK. Desde
+00.34 se empaquetan unicamente cuatro PNG de interfaz derivados de Gen/select0.pac
+para vestir el selector inicial; sus hashes son parte de la validacion de release.
 
 La publicacion empieza como borrador con todos los archivos. Solo se hace
 publica despues de verificar su commit, canal y subidas completas. Si GitHub
@@ -83,7 +85,7 @@ ese borrador desde Releases o usa una nueva version/prerelease.
 ## Validacion y alcance
 
 `validate-vita-publication.yml` valida automaticamente la sintaxis/expresiones
-con actionlint y ejecuta las pruebas de publicacion y LiveArea. No usa el APK
+con actionlint y ejecuta las pruebas de publicacion, LiveArea y reconstruccion del selector. No usa el APK
 privado ni publica. El builder manual ejecuta tambien las pruebas reales de
 PCM de las 17 BGM del APK original y las pruebas ASan/UBSan de audio con APIs Vita
 simuladas. Un fallo impide la publicacion. El ELF debe contener el motor original
