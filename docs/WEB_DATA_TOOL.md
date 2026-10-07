@@ -8,7 +8,7 @@ Web app:
 https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
 
 The site is deployed from the repository by `.github/workflows/pages.yml`.
-GitHub Pages deployment run `37703911061` completed successfully and reported
+GitHub Pages deployment run `37704582648` completed successfully and reported
 the URL above.
 
 ## Privacy model
