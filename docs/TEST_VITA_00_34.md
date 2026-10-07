@@ -16,6 +16,19 @@
 Documentation/extractor commits may be newer than this source checkpoint without
 changing the VPK executable.
 
+## v1.0 release identity note
+
+This document intentionally keeps `TITLE_ID DBTB00001` above because it records
+the exact 00.34 VPK that was physically tested. The first public stable release
+**v1.0** promotes the same gameplay/runtime baseline with:
+
+- APP_VER: `01.00`
+- TITLE_ID: `DBTB01178`
+- VPK: `Dragon-Ball-Tap-Battle-PS-Vita-v1.0.vpk`
+
+Do not rewrite the historical 00.34 metadata as `DBTB01178`; doing so would make
+the hardware evidence inaccurate.
+
 ## Purpose
 
 00.34 keeps the hardware-confirmed 00.33 game/runtime fixes and changes the data
