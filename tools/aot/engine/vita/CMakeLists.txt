@@ -24,7 +24,7 @@ get_filename_component(TEAVM_C_DIR "${TEAVM_C_DIR}" ABSOLUTE)
 
 set(VITA_APP_NAME "Dragon Ball Tap Battle Vita")
 set(VITA_TITLEID "DBTB00001")
-set(VITA_VERSION "00.33")
+set(VITA_VERSION "00.34")
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 set(DBTB_DEFAULT_SAVE "${CMAKE_CURRENT_BINARY_DIR}/default_save.bin")
@@ -35,6 +35,23 @@ execute_process(
 )
 if(NOT DBTB_DEFAULT_SAVE_RESULT EQUAL 0 OR NOT EXISTS "${DBTB_DEFAULT_SAVE}")
   message(FATAL_ERROR "Failed to materialize verified VPK save.bin seed")
+endif()
+
+# The first-screen selector is intentionally self-contained in app0 so it can
+# be themed before any Original/mod dataset has been selected. Only four
+# validated PNG derivatives from Gen's select0.pac are materialized.
+set(DBTB_SELECTOR_DIR "${CMAKE_CURRENT_BINARY_DIR}/selector-theme")
+execute_process(
+  COMMAND "${Python3_EXECUTABLE}" "${REPO_ROOT}/tools/materialize_selector_theme.py"
+          "${REPO_ROOT}/assets/selector" "${DBTB_SELECTOR_DIR}"
+  RESULT_VARIABLE DBTB_SELECTOR_RESULT
+)
+if(NOT DBTB_SELECTOR_RESULT EQUAL 0
+   OR NOT EXISTS "${DBTB_SELECTOR_DIR}/select0_background.png"
+   OR NOT EXISTS "${DBTB_SELECTOR_DIR}/select0_header.png"
+   OR NOT EXISTS "${DBTB_SELECTOR_DIR}/select0_button.png"
+   OR NOT EXISTS "${DBTB_SELECTOR_DIR}/select0_ball_1.png")
+  message(FATAL_ERROR "Failed to materialize validated Gen selector theme")
 endif()
 execute_process(COMMAND git rev-parse --short HEAD WORKING_DIRECTORY "${REPO_ROOT}"
                 OUTPUT_VARIABLE DBTB_COMMIT OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
@@ -123,6 +140,10 @@ vita_create_vpk(DBTapBattle-Vita-${VITA_VERSION}.vpk ${VITA_TITLEID} eboot.bin
   FILE "${DBTB_LIVEAREA_DIR}/startup.png" sce_sys/livearea/contents/startup.png
   FILE "${REPO_ROOT}/assets/livearea/template.xml" sce_sys/livearea/contents/template.xml
   FILE "${DBTB_DEFAULT_SAVE}" save.bin
+  FILE "${DBTB_SELECTOR_DIR}/select0_background.png" selector/select0_background.png
+  FILE "${DBTB_SELECTOR_DIR}/select0_header.png" selector/select0_header.png
+  FILE "${DBTB_SELECTOR_DIR}/select0_button.png" selector/select0_button.png
+  FILE "${DBTB_SELECTOR_DIR}/select0_ball_1.png" selector/select0_ball_1.png
   FILE "${REPO_ROOT}/docs/THIRD_PARTY.md" notices/THIRD_PARTY.md
   FILE "${REPO_ROOT}/licenses/vitaGL-GPL-3.0.txt" notices/vitaGL-GPL-3.0.txt
   FILE "${REPO_ROOT}/licenses/vitaGL-LGPL-3.0.txt" notices/vitaGL-LGPL-3.0.txt
