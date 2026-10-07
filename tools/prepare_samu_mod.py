@@ -2,7 +2,7 @@
 """Prepare the audited SamuGamerYT/Gen-derived APK as a Vita mod dataset.
 
 All game payloads are preserved byte-for-byte, including BGM files whose `.ogg`
-name hides MP3 or AAC/M4A content. The Vita 00.29 runtime detects the real codec from
+name hides MP3 or AAC/M4A content. The Vita 00.30 runtime detects the real codec from
 content and decodes it directly; this helper only validates the known profile,
 extracts it safely, and records metadata.
 """
@@ -115,9 +115,10 @@ def update_manifest(root: Path, audio: list[dict]) -> None:
         "character_count": SAMU_CHARACTER_COUNT,
         "vita_two_digit_namespace": "00..99",
     }
-    manifest["shared_save_runtime"] = {
-        "policy": "ignore-apk-local-save-use-vpk-global-save",
-        "global_path": "ux0:data/DBTapBattle/save.bin",
+    manifest["profile_save_runtime"] = {
+        "policy": "ignore-apk-local-save-use-vpk-profile-seed",
+        "profile_path": "mods/ZuperSamu/save.bin",
+        "seed_path": "app0:/save.bin",
     }
     manifest["audio_runtime"] = {
         "policy": "preserve-source-bytes-and-detect-by-content",
