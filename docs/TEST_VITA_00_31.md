@@ -1,5 +1,12 @@
 # PS Vita physical test — 00.31
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 00.31 is the hardware-regression candidate built from the user's 00.30 test.
 
 ## What 00.30 proved
