@@ -48,15 +48,15 @@ rectangle usage. Current audio setup logs distinguish actual failed syscalls.
 - Verify full-engine notices/attribution and relink materials before public
   distribution; [THIRD_PARTY](THIRD_PARTY.md) records actual delivered scope.
 
-Next: broaden 00.33 regression coverage to Shop return, return-to-menu,
+Next: broaden v1.0 / 00.34-baseline regression coverage to Shop return, return-to-menu,
 suspend/resume, saves across more profiles, secondary modes, additional mods and
 longer sessions. [PORTING_PLAN](PORTING_PLAN.md) tracks that work; resolved
 loading/allocation blockers should not be reopened without new evidence.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.33 (2026-10-07):** physical Vita testing
-> confirms the reproduced Invasion repeated-fight/Saitama→Freezer crash is fixed
-> after the protected-PAC ownership-transfer repair. The recent hardware sequence
-> also confirms Loading recovery and dynamic installed rosters, including Samu's
-> 92 characters. Scope is limited to tested paths; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current public release — v1.0 / DBTB01178 (2026-10-07):** gameplay/runtime
+> baseline 00.34 is hardware-confirmed stable for the tested selector/profile/gameplay
+> paths. The earlier 00.33 hardware sequence remains historical evidence for the
+> protected-PAC repeated-fight repair, Loading recovery and dynamic rosters.
+> Scope is limited to tested paths; see [CURRENT_STATUS](CURRENT_STATUS.md).
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
