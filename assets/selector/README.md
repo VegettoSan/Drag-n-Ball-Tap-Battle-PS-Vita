@@ -21,3 +21,21 @@ plain selector as a fallback if an embedded texture cannot be loaded.
 
 Do not replace these parts casually: the hashes are an integrity/provenance
 contract for the exact theme tested by the port.
+
+
+## 00.34 runtime use
+
+The 00.34 selector draws the background from its non-transparent content bounds
+(the source PNG has transparent padding on its right edge) and stretches that
+visible region across the complete 960×544 Vita viewport. The header/button/ball
+textures retain their independent placement and sizing.
+
+The same background, header and button assets are reused for the
+**OPENING PROFILE / LOADING GAME DATA...** transition shown immediately after
+profile confirmation.
+
+These assets are presentation-only. They do not select a codec, alter resource
+paths, modify PAC bytes or change original gameplay behavior.
+
+Current data/selector contract:
+[CURRENT_RUNTIME_CONTRACT](../../docs/CURRENT_RUNTIME_CONTRACT.md).
