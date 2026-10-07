@@ -28,6 +28,12 @@ VitaSDK CI. This does not promote 00.34 to a physical gameplay checkpoint; the
 current real-Vita gameplay baseline remains **00.33** until the full 00.34 VPK is
 built and tested on hardware.
 
+A one-shot full-prerelease attempt (Actions run
+[37623204195](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37623204195))
+stopped **before generation/compilation** because the repository does not currently
+have the private `DBTB_ORIGINAL_APK_URL` secret configured. That run is not a
+selector/code failure and produced no playable VPK.
+
 ## 00.33 hardware-confirmed — Invasion repeated-fight allocation fix
 
 00.33 is now the current physical-Vita development checkpoint.
