@@ -70,6 +70,8 @@
     "private_export": "PASS",
     "complete_private_build": "PASS",
     "livearea": "PASS",
-    "hardware_00_33": "PENDING"
+    "hardware_00_33": "PENDING",
+    "pac_ownership_regression_run": 37576489894,
+    "pac_ownership_regression": "PASS"
   }
 }
