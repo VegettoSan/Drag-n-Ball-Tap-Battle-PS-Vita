@@ -8,6 +8,32 @@
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
+## 2026-10-07 — Web Extractor 1.0 — local browser packaging validated
+
+A new static GitHub Pages extractor under `web/` implements the current
+`profiles-v1` contract without requiring Windows. The APK stays on the user's
+device; the page uses browser File/Blob/stream APIs and its Content Security
+Policy blocks network connections from the extractor itself.
+
+Confirmed before publication:
+
+- JavaScript syntax/unit checks PASS;
+- exact validated Gen selector artwork reused by the web UI;
+- responsive layouts for desktop, portrait mobile and landscape mobile;
+- original DBTapBattle APK extraction PASS;
+- Gen APK extraction PASS, 13-character roster;
+- Android14 protected extraction PASS using `community14-a210795b`;
+- Invasion Beta 3 extraction PASS using
+  `community14-invasion-05aa0c5e`, 22 characters `00..21`;
+- generated Vita ZIP reopened with CRC validation PASS;
+- APK-bundled `save.bin` remains excluded.
+
+The GitHub Pages build stage passed. A first Pages deployment call received an
+HTTP 500 from GitHub after artifact creation; that infrastructure failure is
+separate from the successfully validated static build and was re-run.
+
+See [WEB_DATA_TOOL](WEB_DATA_TOOL.md).
+
 ## 2026-10-07 — 00.34 HARDWARE CONFIRMED — stable unified profiles and selector
 
 The user tested `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` on a
@@ -50,8 +76,8 @@ evidence for the protected-PAC repeated-fight allocation repair.
 - Complete user-test VPK SHA-256:
   `e06ded147eead1c7ee8e5a558552d5129a98b5916395c59780125782c8d55c92`.
 
-This success does **not** replace the 00.33 HARDWARE CONFIRMED checkpoint until
-the exact 00.34 VPK is tested on a real Vita.
+This build-only note is historical. The later exact 00.34 button/text-center
+VPK was tested on a real Vita and promoted to HARDWARE CONFIRMED above.
 
 ## 2026-10-07 — 00.34 Gen-styled selector builds and packages in VitaSDK CI
 
