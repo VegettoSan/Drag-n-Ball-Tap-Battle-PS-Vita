@@ -30,7 +30,7 @@ Confirmed before publication:
 - generated Invasion, Spanish and Samu Vita ZIPs reopened with CRC validation PASS;
 - APK-bundled `save.bin` remains excluded; Samu explicitly exercised this path.
 
-GitHub Pages deployment run `37703911061` completed successfully after build,
+GitHub Pages deployment run `37704582648` completed successfully after build,
 tests, selector materialization and artifact upload all passed. GitHub reports
 the live URL as
 https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/.
