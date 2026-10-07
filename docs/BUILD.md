@@ -27,12 +27,9 @@ Invasion `char15.pac`, the normalized buffer is about 4.64 MiB. 00.33 uses
 transferred rather than copied into a second contiguous vector.
 
 The interactive full-engine package uses the same documented split TeaVM
-compilation technique as recent hardware candidates. Runtime native smoke,
-Community profile tests, private tool export, complete private link/SELF/VPK and
-LiveArea validation pass. Physical Saitama -> Freezer retest remains pending.
+compilation technique as recent hardware candidates. Runtime native smoke, Community profile tests, private tool export, complete private link/SELF/VPK and LiveArea validation pass. Physical Vita testing subsequently completed several Invasion fights without reproducing the Saitama -> Freezer crash, so this build is hardware-confirmed for that failure path.
 
-See [TEST_VITA_00_33](TEST_VITA_00_33.md) and
-[evidence](evidence/vita_build_00.33.json).
+See [TEST_VITA_00_33](TEST_VITA_00_33.md), [build evidence](evidence/vita_build_00.33.json) and [hardware result](evidence/vita_hardware_00.33.json).
 
 ## 00.32 physical-test build — Loading loop regression fix
 
