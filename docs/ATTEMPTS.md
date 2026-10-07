@@ -8,6 +8,32 @@
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
+## 2026-10-07 — Web Extractor 1.0 + GitHub Pages
+
+**Goal:** let users without a PC prepare APK data on Android/tablet/desktop
+through a static page while preserving the exact `profiles-v1` contract.
+
+**Implementation:** added `web/index.html`, responsive `web/styles.css`,
+`web/app.mjs` and a dependency-free browser extraction core. The core parses
+ZIP32 APKs, supports Store/Deflate, verifies CRC/SHA-256, validates paths and
+limits, detects raw/assets/protected layouts, applies only audited PAC aliases,
+validates protected PAC bounds, checks roster triplets and builds a Vita-ready
+stored ZIP locally.
+
+**Privacy:** no APK upload. CSP uses `connect-src 'none'`; APK bytes are read
+from the user's local File/Blob object and output is a local Blob download/share.
+
+**Visuals:** Pages materializes the same four hash-pinned Gen selector assets at
+deploy time. CSS covers desktop plus portrait/landscape mobile layouts and
+excludes the lower blue orb by sampling only the approved background band.
+
+**Validation:** unit/syntax checks PASS. Real project APK extraction PASS for
+original, Gen, Android14 and Invasion; Invasion generated 22 contiguous
+characters and an independently CRC-valid Vita ZIP without APK `save.bin`.
+
+**Deployment attempt:** Pages build/artifact PASS; first deployment API call
+returned GitHub HTTP 500. Deployment re-run requested.
+
 ## 2026-10-07 — 00.34 — recenter themed buttons and labels
 
 **Observed on physical Vita:** after the no-orb background correction, profile
@@ -30,7 +56,7 @@ region and vertically center each glyph row inside the 46 px button height.
 
 **SHA-256:** `24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03`
 
-Physical verification of this exact geometry is pending.
+Historical note: physical verification later passed; the final 00.34 VPK was promoted to HARDWARE CONFIRMED.
 
 ## 2026-10-07 — 00.34 — remove embedded blue orb from selector background
 
