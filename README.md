@@ -1,5 +1,20 @@
 # Dragon Ball Tap Battle PS Vita
 
+## 00.34 test candidate — in-game-style data selector
+
+00.34 introduces a presentation-only redesign of the first Vita data-set selector.
+It uses four non-character visual elements derived from the supplied Gen
+`assets/select0.pac` (grid/energy background, beveled header/button and one-star
+Dragon Ball) so the profile chooser visually belongs to Tap Battle before the
+original engine starts. The selector input/VFS contract is unchanged and the old
+flat selector remains an automatic fallback if the embedded theme cannot load.
+
+The four PNGs are reconstructed from hash-pinned split Base64 at build time and
+packaged under `app0:/selector/`; no APK, PAC, character roster, music or playable
+data set is embedded. VitaSDK native smoke CI compiles/packages the new renderer.
+A full 00.34 TeaVM VPK still needs real-hardware testing, so **00.33 remains the
+current hardware-confirmed gameplay checkpoint**.
+
 ## Current hardware checkpoint — 00.33 (2026-10-07)
 
 **DBTapBattle-Vita-00.33-Invasion-Saitama-Freezer-Fix.vpk** is the current
@@ -65,7 +80,7 @@ avoiding the multi-megabyte managed bridge allocation that exhausted TeaVM memor
 Native PS Vita port of Dragon Ball Tap Battle using VitaSDK, vitaGL and the
 original Java game core generated privately to C with TeaVM. The port replaces
 Android services while preserving the original task, drawing and combat logic.
-APK-derived JAR/classes/C and original game assets are not committed to Git.
+APK-derived JAR/classes/C and playable original/mod datasets are not committed to Git. The only embedded game-derived presentation exception is the four hash-pinned Gen/select0.pac selector PNG derivatives documented in `assets/selector/README.md`.
 
 ## Historical progression through 00.33
 
