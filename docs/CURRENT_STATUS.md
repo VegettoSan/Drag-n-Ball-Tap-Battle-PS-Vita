@@ -1,12 +1,71 @@
-# Current status — 2026-10-06 (America/Bogota), 00.24 hardware / 00.28 candidate
+# Current status — 2026-10-06/07 (America/Bogota), 00.24 baseline / 00.28 hardware findings / 00.29 candidate
 
-## 00.28 candidate — standalone APK-derived profiles
+## 00.29 candidate — Samu BGM handoff, Invasion text fallback, one global save
+
+00.29 is built directly from the user's 00.28 physical Vita results.
+
+**00.28 hardware findings:**
+
+- Invasion runs as a standalone profile with `game/` absent.
+- Invasion textures and direct external audio were reported working normally.
+- Invasion's post-battle/result text showed corrupted glyph/string content while
+  surrounding UI text (for example the character name and GANADOR/result frame)
+  remained correct.
+- Samu, both with and without `game/`, detected its 92-character dataset and
+  reached the title flow, then exited.
+- Both Samu logs identify the same concrete failure:
+  `sceAudiodecCreateDecoder failed 0x807f0007` while replacing MP3 BGM.
+- Direct APK inspection proves Samu `bgm_16.ogg` and `bgm_00.ogg` are
+  byte-identical valid MP3 payloads. The failure therefore came from decoder
+  lifetime, not damaged media: the backend was configured for one MP3 stream and
+  00.28 tried to create the replacement decoder before destroying the active one.
+
+**00.29 changes:**
+
+1. `dbtb_bgmPlay` now clears the active Voice/Vorbis/compressed BGM under the
+   audio lock before opening the replacement compressed track. This preserves
+   the one-stream `SceAudiodec` contract and specifically fixes the observed
+   Samu title transition without converting assets.
+2. Character PAC text remains data-driven. Invasion `char20.pac` (Ranma) was
+   decoded from the supplied APK and contains valid UTF-8, including
+   `Ranma está disponible！`; the native content detector also classifies that
+   character PAC as UTF-8. The original Gen `SetString` slot convention can
+   miss the GameData object used by the modified Invasion DEX, so
+   `ResourceAdapter.stringCharset` now keeps the exact per-object charset first
+   and falls back to the detected active character-profile charset instead of
+   blindly falling back to Shift_JIS.
+3. Save state is intentionally global. The exact user-provided 12,906-byte
+   `save.bin` is included in the VPK at read-only `app0:/save.bin`; if and
+   only if `ux0:data/DBTapBattle/save.bin` is absent, boot copies the seed
+   byte-for-byte there. Original and every mod/profile then read/write that one
+   global save. Existing progress is never overwritten on profile switches or
+   VPK updates.
+4. APK-local saves are no longer installed by the Python or Windows dataset
+   extractors. Their presence can still be recorded for provenance, but gameplay
+   uses only the global 00.29 save.
+
+Shared-save seed:
+
+- size: 12,906 bytes;
+- SHA-256:
+  `64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb`.
+
+Public CI/native smoke has passed the BGM handoff source, VPK save materializer,
+global save path and Vita link/package changes. Physical verification of Samu
+past the title and Invasion's corrected result string remains the acceptance
+gate for 00.29.
+
+See [TEST_VITA_00_29](TEST_VITA_00_29.md).
+
+## Historical 00.28 candidate — standalone APK-derived profiles
+
+
 
 00.28 changes the runtime data contract so every selected APK-derived profile is
 autonomous. `game/` is now only the optional Original profile. When
 `mods/<Profile>/` is selected, `GameVfs` resolves PAC/data/audio **only** from
 that directory and reports `missing selected profile resource: ...` rather than
-borrowing from Original. Saves remain profile-local.
+borrowing from Original. At that historical 00.28 checkpoint saves were still profile-local; 00.29 supersedes that save policy with one global save.
 
 This is deliberate: Android14, Español and Invasion are independently runnable
 APKs even though their inventories differ from Original/Gen. If the preserved
@@ -437,7 +496,7 @@ See [corrected package evidence](evidence/vita_livearea_fixed_00.23.json) and
 | Voice samples | Original PCM16 mono 22050 Hz or decoded Community14 wrapper; 3 voice channels | Format/host decoding verified; later physical tests report clean voices/audio |
 | Voice output | 16-tap/256-phase Q14 reconstruction to 48000 Hz, peak limiter, PCM cache | Clean audible result reported on the physical 00.22/00.23 path; broader character/phrase matrix remains open |
 | Audio startup | Restored `0x10000100`; exact open/create/start diagnostics, failure cleanup/latch | 00.21 worker/menu recovery confirmed and no audio regression reported in 00.23 |
-| Saves | Active dataset's `save.bin`, max 12906 bytes; cached reads and temp/fsync/rename writes | Host ownership tests; full Android round-trip/mod progression matrix pending |
+| Saves | 00.29: one `ux0:data/DBTapBattle/save.bin`, seeded once from exact VPK `app0:/save.bin`; cached reads and temp/fsync/rename writes | Seed/hash + native build confirmed; multi-profile physical progression retest pending |
 | Input | Stable slots mapped from Vita touch IDs; original coordinate transform and Controller | Touch gameplay confirmed; physical buttons serve selector, are neutral during game |
 | Online / Bluetooth | Offline installed-data boundary; HTTP rejected; Bluetooth disconnected | Current local single-player path; multiplayer/billing/remote downloads unsupported |
 
