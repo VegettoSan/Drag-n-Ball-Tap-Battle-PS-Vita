@@ -1,4 +1,4 @@
-# Validation and diagnostic reference — 00.33 hardware / 00.34 candidate
+# Validation and diagnostic reference — v1.0 release / 00.34 hardware baseline
 
 > Current data/selector contract: [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 > Historical fixtures keep their build identity; current VFS/runtime validation uses
@@ -8,6 +8,19 @@ Commands run from the repository root. Use private game data and temporary outpu
 outside tracked source. This page describes reproducible probes; it does not claim
 all commands were freshly rerun for the documentation update. Recorded passes are
 pinned in [CURRENT_STATUS](CURRENT_STATUS.md) and evidence JSONs.
+
+## v1.0 package identity validation
+
+Current public package metadata must validate as:
+
+- APP_VER: `01.00`
+- TITLE_ID: `DBTB01178`
+- VPK: `Dragon-Ball-Tap-Battle-PS-Vita-v1.0.vpk`
+
+The exact 00.34 hardware-test artifact used `DBTB00001`; that value remains
+correct in its historical test record. For v1.0, verify the new SFO identity plus
+ZIP CRC and confirm that the gameplay executable/resources remain the 00.34
+release baseline.
 
 ## Evidence levels
 
