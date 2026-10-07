@@ -42,3 +42,18 @@ paths, modify PAC bytes or change original gameplay behavior.
 
 Current data/selector contract:
 [CURRENT_RUNTIME_CONTRACT](../../docs/CURRENT_RUNTIME_CONTRACT.md).
+
+
+## Web Extractor use
+
+Web Extractor 1.0 reuses these exact validated assets instead of maintaining a
+second visual copy. During the GitHub Pages workflow,
+`tools/materialize_selector_theme.py` reconstructs the four PNGs into the
+deployment artifact under `web/selector/`.
+
+The web background also samples only the approved 482×320 cyan/grid region from
+`select0_background.png`, excluding the lower blue energy orb. Responsive CSS
+adapts the same visual language to desktop, portrait phones and landscape
+phones/tablets.
+
+See [WEB_DATA_TOOL](../../docs/WEB_DATA_TOOL.md).
