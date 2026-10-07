@@ -26,7 +26,7 @@ class DatasetSaveTest(unittest.TestCase):
             for name, data in entries:
                 archive.writestr(name, data)
 
-    def test_assets_save_is_preserved_byte_for_byte(self):
+    def test_assets_save_is_recorded_but_not_installed(self):
         save = bytes((i * 37 + 11) & 0xff for i in range(12906))
         self.write_apk([
             ('res/raw/common.pac', b''),
@@ -35,13 +35,19 @@ class DatasetSaveTest(unittest.TestCase):
         ])
         manifest = extractor.extract(self.apk, self.output)
         self.assertEqual(manifest['source_layout'], 'assets')
-        self.assertEqual((self.output / 'save.bin').read_bytes(), save)
-        self.assertIn('save.bin', [entry['name'] for entry in manifest['files']])
+        self.assertEqual(manifest['format'], 4)
+        self.assertEqual(manifest['save_policy'], 'global-vpk-seed-ux0-root')
+        self.assertFalse((self.output / 'save.bin').exists())
+        self.assertNotIn('save.bin', [entry['name'] for entry in manifest['files']])
+        ignored = manifest['ignored_profile_save']
+        self.assertEqual(ignored['size'], len(save))
+        self.assertEqual(ignored['sha256'], __import__('hashlib').sha256(save).hexdigest())
 
     def test_profile_without_save_does_not_invent_one(self):
         self.write_apk([('assets/common.pac', b'profile data')])
-        extractor.extract(self.apk, self.output, layout='assets')
+        manifest = extractor.extract(self.apk, self.output, layout='assets')
         self.assertFalse((self.output / 'save.bin').exists())
+        self.assertIsNone(manifest['ignored_profile_save'])
 
 
 if __name__ == '__main__':
