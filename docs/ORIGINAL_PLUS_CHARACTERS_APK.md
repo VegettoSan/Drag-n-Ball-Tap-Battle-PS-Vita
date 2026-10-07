@@ -10,13 +10,7 @@ original APK lacks.
 
 ## Layout
 
-The 57 `res/raw/` entries are zero-byte stubs. The actual runtime data lives in
-`assets/`: 147 files total, including 108 PACs, 36 OGGs, `loading.png`, `mk.bin`
-and an APK-bundled `save.bin`. The current port reads/writes the selected
-profile's save: game/save.bin for Original, mods/<Profile>/save.bin for a mod.
-Extraction preserves that bundled file; installing it can provide the profile's
-initial/current save. Back up existing progress before replacing it. Old saves/
-paths are not read automatically; no migration or cross-profile fallback occurs.
+The 57 `res/raw/` entries are zero-byte stubs. The actual runtime data lives in `assets/`: 147 files total, including 108 PACs, 36 OGGs, `loading.png`, `mk.bin` and an APK-bundled `save.bin`. The current port reads/writes the selected profile's save: `game/save.bin` for Original or `mods/<Profile>/save.bin` for a mod. Current extractors record the APK-bundled save for provenance but do **not** install it as runtime progress. A fresh profile is seeded from the exact VPK `app0:/save.bin` only when that profile has no save yet. Existing profile progress is never overwritten by profile selection or VPK update; there is no migration or cross-profile fallback.
 
 `tools/extract_apk_data.py` auto mode now recognizes this pattern: when
 `res/raw/` contains only empty stubs and `assets/` contains real payloads, it
@@ -27,8 +21,7 @@ on both sides remain ambiguous and still require `--layout` explicitly.
 python tools/extract_apk_data.py gen.apk ./install/game
 ```
 
-Copy the resulting files to `ux0:data/DBTapBattle/game/`, preserving any existing
-save deliberately. To retain another base, import it separately instead:
+Copy the resulting files to `ux0:data/DBTapBattle/game/`, preserving any existing runtime `save.bin`. The source APK save is not installed by the current extractor. To retain another base, import it separately instead:
 
 ```sh
 python tools/extract_apk_data.py gen.apk ./install --mod Gen
@@ -73,19 +66,9 @@ strict-UTF-8 signal. This preserves:
 
 Evidence: `docs/evidence/original_plus_characters_apk_2026-10-05.json`.
 
-Status: **FORMAT CONFIRMED + HOST COMPATIBILITY CONFIRMED**. The full engine now
-builds as 00.22, but selection/voices and every mode with this exact source hash
-still need a physical run identified by its manifest. An Original selector label
-alone does not establish which dataset was tested. Do not promote this exact
-profile to complete HARDWARE CONFIRMED from generic earlier game observations.
+Status: **FORMAT CONFIRMED + HOST COMPATIBILITY CONFIRMED**. Later physical Vita checkpoints validate the shared runtime systems, dynamic roster path and repeated-battle memory fixes, but a selector label alone still does not prove that this exact Gen source hash was exercised for every mode. Keep dataset provenance explicit instead of promoting unrelated hardware observations into complete profile certification.
 
-The mixed charset is handled at normalized payload boundaries; ordinary PAC
-headers do not imply Shift_JIS text00. 00.20 introduces selective character reads,
-texture/PCM reuse and voice sinc reconstruction; its startup regression prevents
-a device quality/latency conclusion. Current test: [TEST_VITA_00_22](TEST_VITA_00_22.md).
-Current saves have bounded/atomic host coverage, but bundled-save Android
-round-trip, all progress fields and a complete profile-isolation matrix remain
-pending. See [CURRENT_STATUS](CURRENT_STATUS.md) and [VALIDATION](VALIDATION.md).
+The mixed charset is handled at normalized payload boundaries; ordinary PAC headers do not imply Shift_JIS text00. Historical 00.20/00.22 notes remain useful for the origin of selective reads and selection fixes; the current runtime checkpoint is 00.33. Save publication is profile-local and atomic, while complete Android save-field interoperability remains broader validation work. See [CURRENT_STATUS](CURRENT_STATUS.md) and [VALIDATION](VALIDATION.md).
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
 > **Current hardware checkpoint — 00.33 (2026-10-07):** physical Vita testing
