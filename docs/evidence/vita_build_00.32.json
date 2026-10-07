@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "date": "2026-10-07",
+  "version": "00.32",
+  "purpose": "Fix 00.31 infinite loading regression and remove deep PAC validation from Vita profile startup.",
+  "runtime_source_checkpoint": "5d2c8ded88731da8340f0e029d4a666e4fbbec88",
+  "hardware_00_31_findings": {
+    "invasion": "stuck forever at Loading",
+    "samu": "stuck forever at Loading",
+    "shared_last_log": "Offline catalog skipped: http://smap-ai.channel.or.jp/dragonball_tap/device/screensize.csv",
+    "frame_loop": "continues at ~60 FPS with no further state/resource progress",
+    "samu_profile_init_delay_seconds": 34,
+    "invasion_profile_init_delay_seconds": 13
+  },
+  "root_causes": {
+    "downloader_polarity": "Original APK Downloader.isDownload() returns DownloadTask.isEnd(), whose bDL is true while the request is still running and false after completion. 00.31 incorrectly returned true forever.",
+    "startup_audit": "00.31 performed auditInstalledData() during dbtb_initResources(), parsing every character PAC before original-engine startup."
+  },
+  "fixes": {
+    "downloader": "Vita offline stub now returns isDownload=false, GetData=null, GetSize=0, taking the original engine's normal failed/offline request path immediately.",
+    "roster_scan": "Startup uses scanInstalledData(): presence/contiguity only; deep PAC parsing remains available for tooling/tests but is not performed before engine start.",
+    "retained": [
+      "00.31 dynamic roster/save synchronization",
+      "00.31 Shop lifecycle fix",
+      "00.31 large-PAC cache policy",
+      "Invasion UTF-8 fallback",
+      "Samu direct compressed audio"
+    ]
+  },
+  "artifact": {
+    "name": "DBTapBattle-Vita-00.32-Loading-Loop-Fix.vpk",
+    "bytes": 2653824,
+    "sha256": "07a8ab63923e4913cc1810a5658c84ef925d3eddf08ac04b81658c683956b4b9",
+    "eboot_sha256": "4cc9b5cdc4e6409f6d59151b15dc38187fdb28908d86a7ac071f9ea541ff8863",
+    "elf_sha256": "d0cb6478a4e93af7a85f706a23b7cd1c81b35c931d7aa6255932889b924e14f4",
+    "app_ver": "00.32",
+    "title_id": "DBTB00001",
+    "livearea": "PASS",
+    "save_seed_sha256": "64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb"
+  },
+  "build": {
+    "original_apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+    "teavm": "0.12.3",
+    "vitasdk": "2026.08",
+    "layout": "24 balanced TeaVM remainder units at -O1; TCBManajer at -O0; native adapters at -O2"
+  },
+  "validation": {
+    "private_generation": "PASS",
+    "full_private_engine_build": "PASS",
+    "livearea": "PASS",
+    "physical_vita": "PENDING"
+  }
+}
