@@ -25,7 +25,9 @@ Logical-name comparison: **37 identical resources, 18 changed, 2 absent, 89 adde
 All 36 Ogg files and mk.bin are byte-identical. loading.png differs. The 17
 mapped PACs have different bytes and often different entry counts; bobj00.pac
 and font00.pac are not bundled in the community APK. D0BD is the font alias in
-DEX, but that file is absent. Preserve original fallback for those resources.
+DEX, but that file is absent. The APK is nevertheless standalone on Android;
+00.28 therefore treats these omissions as profile behavior and does not borrow
+those resources from Original.
 
 The 89 added files are char00–12, chardemo00–12, charf0000–0012 (39 files) and
 card001–050 (50 files). The original already has card000. This establishes 13
@@ -163,17 +165,17 @@ and listed. All earlier path/symlink/CRC/conflict/budget protections remain.
 ```sh
 # Preserve the original installation.
 python tools/extract_apk_data.py original.apk ./install/game
-# Place the complete community dataset in a separately selectable overlay.
+# Place the complete community dataset in a separately selectable standalone profile.
 python tools/extract_apk_data.py community.apk ./install --mod Android14
 # The same import route handles mods retaining this APK's names/codec.
 python tools/extract_apk_data.py my-community-mod.apk ./install --mod MyMod
 ```
 
-Copy `install/game/` and `install/mods/` into `ux0:data/DBTapBattle/`. Keep the
-original base available for missing bobj00/font00 resources. Importing the
-community APK directly as the sole base is not an equivalent complete dataset;
-required shared files need an explicitly audited compatible source.
-Do not merge it over an existing original install. `--overwrite` operates only
+Copy the generated profile under `ux0:data/DBTapBattle/mods/`. Original data is
+optional and is not consulted while this profile is selected. Do not copy
+`bobj00`/`font00` from another dataset: if the Vita core requests an omitted
+resource, record the request and adapt the port from this APK's behavior.
+Do not merge one APK dataset over another. `--overwrite` operates only
 on the selected destination. `--mod NAME` confines output to `OUTPUT/mods/NAME`.
 
 Format-3 dbtb_manifest.json records source SHA, layout/profile, all 106 alias
@@ -192,7 +194,7 @@ file matches its APK entry byte-for-byte and all 13 triplets have canonical name
 PacFile now reads original tables and this encoded profile, preserving unknown
 record IDs. The preview decodes either original PNG or community raw-DEFLATE
 RGBA directly into memory, records the codec in runtime.log and uses the correct
-alpha blend. Existing VFS overlay/fallback needs no new global codec switch.
+alpha blend. Per-file codec detection needs no global profile codec switch; 00.28 keeps each selected dataset isolated.
 The actual new-source common preview is original 9 entries/community 6 entries,
 each with a first 512×512 atlas. No Android binary is required at runtime.
 
