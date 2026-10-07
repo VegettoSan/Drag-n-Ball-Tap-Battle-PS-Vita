@@ -12,12 +12,6 @@ $utf8 = New-Object System.Text.UTF8Encoding($false)
 $stage = $null
 $final = $null
 
-$KnownOriginalSha = 'b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b'
-$KnownGenSha = 'd52cbd7ef248d995ad17ba6ec8ec6fa08590a344ac2a9786e5ac839bf7715f28'
-$KnownSamuSha = '1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d'
-$KnownAndroid14Sha = 'a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4'
-$KnownSpanishSha = 'b38cc2c4ae3f20d1b1c6c1419a7b6b62ab57ea8954468874f6c5f8c40b39a098'
-$KnownInvasionSha = 'caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d'
 
 # Use only Windows/.NET built-ins. This helper checks ZIP CRCs explicitly:
 # ZipArchive on .NET Framework does not guarantee CRC verification on read.
@@ -381,7 +375,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         Write-Json (Join-Path $target 'dbtb_manifest.json') $manifest
         Write-Host ("OK: {0} -> {1} ({2} files, {3} renamed, {4} characters)" -f [IO.Path]::GetFileName($Apk),$profile,$files.Count,$renamed.Count,$roster.Count)
         if (-not $roster.RuntimeCompatible) {
-            Write-Host 'WARNING: the roster does not fully satisfy the Vita 00.33+ contract (contiguous 00..99 namespace, no partial character triplets).' -ForegroundColor Yellow
+            Write-Host 'WARNING: the roster does not fully satisfy the current Vita profiles-v1 contract (contiguous 00..99 namespace, no partial character triplets).' -ForegroundColor Yellow
         }
         if ($roster.Unsupported.Count) {
             Write-Host 'WARNING: 3+ digit character IDs were found; the current Vita runtime supports indices 00..99.' -ForegroundColor Yellow
@@ -441,7 +435,7 @@ try {
         $label = $report.profile.Substring($report.profile.LastIndexOf('/')+1)
                 $lines += ('- {0}: ux0:data/DBTapBattle/{1}/ -> select {2} in the VPK.' -f $report.apk,$report.profile,$label)
         $lines += ('  Characters detected: {0} {1}' -f $report.character_count,$report.character_indices)
-        if (-not $report.character_runtime_compatible) { $lines += '  WARNING: the roster does not fully satisfy the current Vita runtime contract; check dbtb_manifest.json.' }
+        if (-not $report.character_runtime_compatible) { $lines += '  WARNING: the roster does not fully satisfy the current Vita profiles-v1 runtime contract; check dbtb_manifest.json.' }
         if ($report.bundled_save) { $lines += '  The APK contained save.bin, but it is not installed: the Vita port creates an independent profile save from the VPK seed.' }
     }
     $lines += @('',
