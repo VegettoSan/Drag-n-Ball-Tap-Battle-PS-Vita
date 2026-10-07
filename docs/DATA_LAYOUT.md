@@ -1,5 +1,7 @@
 # Runtime data layout — unified profiles
 
+> Source of truth for the current executable/extractor contract: [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md). The migration section at the bottom intentionally names historical paths.
+
 Current source contract after the unified-profile selector refactor.
 
 ## Base path
