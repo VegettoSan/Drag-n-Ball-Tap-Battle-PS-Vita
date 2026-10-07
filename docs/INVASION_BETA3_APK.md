@@ -1,5 +1,12 @@
 # TAP BATTLE INVASION BETA 3 — referencia técnica completa
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 Fuente auditada: `TAP BATTLE INVASION BETA 3.apk`
 
 - APK SHA-256: `caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d`
