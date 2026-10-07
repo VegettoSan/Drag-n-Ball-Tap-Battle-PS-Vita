@@ -1,4 +1,42 @@
-# Current status — 2026-10-07 (America/Bogota), 00.33 hardware checkpoint / 00.34 unified-profile candidate
+# Current status — 2026-10-07 (America/Bogota), 00.33 hardware / 00.34 user-test candidate
+
+> **Authoritative current contract:** [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+> Any later section in this document that mentions `game/`, `mods/`, an
+> unconditional Original selector entry, or the old profile-save paths describes
+> the historical build named by that section; it does **not** override 00.34.
+
+## 00.34 latest user-test VPK
+
+The latest complete user-test package is:
+
+- `DBTapBattle-Vita-00.34-Selector-UX-Fix.vpk`
+- SHA-256:
+  `e06ded147eead1c7ee8e5a558552d5129a98b5916395c59780125782c8d55c92`
+- runtime/selector source:
+  `63bc0f90d33d4a5d8d90c4816ff0f0ae07272751`
+- physical Vita result: **pending**
+
+Current runtime/data behavior:
+
+```text
+ux0:data/DBTapBattle/profiles/<Profile>/
+```
+
+There is no current `game/` or `mods/` split. The selector lists only real
+profile directories, has no synthetic Original row, and shows a no-data message
+when `profiles/` is empty. Profile saves live inside the selected profile and
+are seeded once from `app0:/save.bin`.
+
+The selector background now uses the non-transparent content bounds of the
+Gen-derived background and fills 960×544. After profile confirmation, a themed
+**OPENING PROFILE / LOADING GAME DATA...** screen is presented before the
+original engine begins loading the selected dataset.
+
+Windows extractor 1.5 targets the same `profiles-v1` contract and always derives
+the visible profile folder from the APK filename.
+
+00.33 remains the latest **HARDWARE CONFIRMED** gameplay checkpoint until the user
+finishes the 00.34 physical test.
 
 ## 00.34 candidate update — unified APK profiles
 
