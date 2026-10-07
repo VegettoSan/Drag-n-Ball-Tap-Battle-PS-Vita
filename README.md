@@ -11,9 +11,11 @@ assets are preserved byte-for-byte: real Vorbis still uses libvorbisfile, while
 MP3 and AAC/M4A files that merely carry an `.ogg` filename are detected by
 content and decoded directly with Vita `SceAudiodec`. No BGM conversion,
 renaming or repacking is required. Public profile/native-smoke CI passes; physical
-Samu roster/audio validation remains pending. The same codec boundary is also
-applicable to Invasion's mislabeled BGM, but Invasion-specific gameplay changes
-from its modified `classes.dex` remain separate work. See
+Samu roster/audio validation remains pending. The same 00.27 runtime now targets
+Invasion's mislabeled BGM and protected 22-character dataset as well. Direct APK
+audit confirmed that protected profiles validly omit `bobj00.pac`/`font00.pac`,
+so the Vita install gate no longer requires `bobj00`; Invasion-specific gameplay
+changes from its modified `classes.dex` remain separate work. See
 [00.27 test](docs/TEST_VITA_00_27.md), [community mod profiles](docs/COMMUNITY_MOD_PROFILES.md)
 and the [deep APK reference](docs/APK_TECHNICAL_REFERENCE.md).
 
@@ -79,7 +81,7 @@ and LiveArea appearance are the remaining check for that repack.
 | 00.23 | Physical Vita: text/audio/selection/battle path passes; no error observed in reported session | Broader regression matrix and release-quality normal build remain open |
 | 00.23 LiveArea-Fixed | User confirms presentation on physical Vita; tested 00.23 eboot unchanged | Android14 battle-start native Ogg allocation crash reported |
 | 00.24 | Full original-engine build; all 17 BGM PCM/low-allocation tests and ownership probes pass; user confirms hardware fix | Broader mode/profile and long-session coverage remains open |
-| 00.27 | Build/CI: Samu 00..91 gate + direct Vorbis/MP3/AAC content paths, no asset conversion | Physical Samu roster/audio test pending |
+| 00.27 | Build/CI: Samu 00..91 + Invasion 00..21, direct Vorbis/MP3/AAC, protected profiles need no artificial bobj00 gate | Physical Samu/Invasion roster/audio test pending |
 
 Use [current status and evidence](docs/CURRENT_STATUS.md) for the authoritative
 feature matrix, artifact hash and open issues. Older test reports describe their
