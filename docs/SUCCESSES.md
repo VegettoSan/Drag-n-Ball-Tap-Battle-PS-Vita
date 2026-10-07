@@ -28,9 +28,12 @@ Confirmed before publication:
 - generated Vita ZIP reopened with CRC validation PASS;
 - APK-bundled `save.bin` remains excluded.
 
-The GitHub Pages build stage passed. A first Pages deployment call received an
-HTTP 500 from GitHub after artifact creation; that infrastructure failure is
-separate from the successfully validated static build and was re-run.
+GitHub Pages deployment run `37703911061` completed successfully after build,
+tests, selector materialization and artifact upload all passed. GitHub reports
+the live URL as
+https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/.
+An earlier deployment API call returned a transient HTTP 500, then succeeded on
+the subsequent deployment.
 
 See [WEB_DATA_TOOL](WEB_DATA_TOOL.md).
 
