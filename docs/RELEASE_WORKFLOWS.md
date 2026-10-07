@@ -1,9 +1,10 @@
 # Compilar y publicar VPK desde GitHub Actions
 
 <!-- DBTB_DOC_STATUS:START -->
-> **Project checkpoint:** 00.33 is the current hardware-confirmed development
-> checkpoint for the tested paths. This file may document an earlier component
-> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+> **Project checkpoint:** 00.33 is the latest hardware-confirmed gameplay
+> checkpoint. 00.34 is the current unified-profile/selector user-test candidate.
+> See [CURRENT_STATUS](CURRENT_STATUS.md) and
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 <!-- DBTB_DOC_STATUS:END -->
 
 
@@ -19,6 +20,17 @@ seleccionado al ejecutar el workflow y el mismo compilador compartido. No usan
 el bootstrap de la raiz ni el ejecutable dummy del native smoke. La compilacion
 de release tambien mantiene `-O1` para todo el core TeaVM y `-O2` para servicios
 nativos, con el mismo pipeline completo; la referencia física actual es 00.33.
+
+## Contrato de datos del VPK
+
+El VPK 00.34 espera datos externos exclusivamente en:
+
+```text
+ux0:data/DBTapBattle/profiles/<Profile>/
+```
+
+La publicación del VPK no incluye esos datasets. El extractor Windows 1.5 genera
+exactamente esa estructura y registra `runtime_contract: profiles-v1`.
 
 ## Configuracion una sola vez
 
