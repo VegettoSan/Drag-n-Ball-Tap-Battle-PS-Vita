@@ -29,7 +29,7 @@
   },
   "artifact": {
     "name": "DBTapBattle-Vita-00.32-Loading-Loop-Fix.vpk",
-    "bytes": 2653824,
+    "bytes": 2650991,
     "sha256": "07a8ab63923e4913cc1810a5658c84ef925d3eddf08ac04b81658c683956b4b9",
     "eboot_sha256": "4cc9b5cdc4e6409f6d59151b15dc38187fdb28908d86a7ac071f9ea541ff8863",
     "elf_sha256": "d0cb6478a4e93af7a85f706a23b7cd1c81b35c931d7aa6255932889b924e14f4",
