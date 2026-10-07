@@ -92,7 +92,7 @@ Tras canonicalizar aliases:
 
 No incluye `font00.pac`.
 
-La ausencia de `bobj00`/font obliga a usar fallback compatible desde `game/`.
+La ausencia de `bobj00`/`font00` es válida en este APK autónomo. En 00.28 el perfil no usa fallback desde `game/`; si el core original TeaVM solicita uno de esos recursos, la diferencia debe adaptarse explícitamente desde evidencia del APK/DEX.
 
 ## Alias exactos
 
@@ -207,7 +207,7 @@ Esto es evidencia de linaje técnico de contenido, no prueba de autoría.
 
 - usar codec por PAC, no global.
 - canonicalizar nombres sin modificar bytes extraídos.
-- mantener fallback a `game/` para `bobj00`/font.
+- mantener el perfil autónomo: no copiar `bobj00`/`font00` desde `game/`; investigar cualquier solicitud del core original como una diferencia de compatibilidad.
 - no ejecutar `classes.dex` del mod.
 - no cambiar el motor original para acomodar esta traducción.
 - cualquier diferencia de comportamiento no explicada por datos requiere evidencia DEX/método concreta antes de tocar un adapter Vita.
