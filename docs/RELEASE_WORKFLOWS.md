@@ -1,8 +1,7 @@
 # Compilar y publicar VPK desde GitHub Actions
 
 <!-- DBTB_DOC_STATUS:START -->
-> **Project checkpoint:** 00.33 is the latest hardware-confirmed gameplay
-> checkpoint. 00.34 is the current unified-profile/selector user-test candidate.
+> **Project checkpoint:** 00.34 is the latest hardware-confirmed stable checkpoint.
 > See [CURRENT_STATUS](CURRENT_STATUS.md) and
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 <!-- DBTB_DOC_STATUS:END -->
@@ -104,7 +103,7 @@ simuladas. Un fallo impide la publicacion. El ELF debe contener el motor origina
 y el log de generacion debe demostrar un core completo; un native link probe
 no puede pasar por un VPK jugable.
 
-La 00.33 es el checkpoint físico actual para los recorridos documentados. Cada VPK nuevo tiene otro commit/hash: compilar/publicar automáticamente no equivale a probar ese nuevo binario en consola. Usa [la prueba/resultados 00.33](TEST_VITA_00_33.md) como regresión actual y guarda el VPK, `build.json`, `runtime.log` y el ZIP de símbolos correspondiente.
+La 00.34 es el checkpoint físico estable actual para los recorridos documentados. Cada VPK nuevo tiene otro commit/hash: compilar/publicar automáticamente no equivale a probar ese nuevo binario en consola. Usa [la prueba/resultados 00.34](TEST_VITA_00_34.md) como regresión actual y guarda el VPK, `build.json`, `runtime.log` y el ZIP de símbolos correspondiente.
 
 La sintaxis, pruebas unitarias y staging con el VPK real se verificaron localmente.
 La [validacion en GitHub](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37395626518)
