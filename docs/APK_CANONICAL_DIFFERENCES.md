@@ -308,7 +308,8 @@ Dos PAC comunes cambian además de layout exterior:
 El resto de los PAC comunes modificados conserva la secuencia de tipos exterior.
 
 La expansión a 92 personajes con DEX Gen intacto es evidencia de que este mod
-pretende ser data-driven. No equivale a hardware confirmation del port Vita.
+pretende ser data-driven. La prueba física 00.32 confirmó que Vita expone los 92
+personajes; la cobertura exhaustiva de cada personaje/pelea sigue siendo aparte.
 Consulta [la auditoría específica](DRAGONBALL_ZUPER_SAMUGAMERYT_APK.md).
 
 ## Original → Zuper/SamuGamerYT
@@ -322,3 +323,11 @@ Los 57 nombres del APK original suministrado aparecen en el mod.
 
 Esto separa claramente el rol del mod: conserva partes del baseline, adopta la
 arquitectura offline de Gen y expande sobre ella.
+
+## Estado de hardware 00.33
+
+Las diferencias canónicas anteriores siguen describiendo los APK, pero ya existe
+evidencia de runtime adicional: Samu muestra sus 92 personajes en Vita y el perfil
+Invasion supera varias peleas consecutivas en 00.33 después de corregir una copia
+nativa duplicada del PAC protegido normalizado. Ese arreglo no cambia ninguna de
+las diferencias de APK documentadas aquí.
