@@ -1,18 +1,17 @@
 # Full original-engine Vita test — 00.03
 
-> **Historical document notice — current 00.34 contract:** this file preserves
+> **Historical document notice — current v1.0 contract:** this file preserves
 > evidence/instructions for the build or investigation named here. The current
 > Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
 > current `game/` or `mods/` profile roots and no built-in Original selector
-> row. Do not reuse historical install paths for 00.34. See
+> row. Do not reuse historical install paths for v1.0. See
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
 **Archived test sheet.** 00.03 is the first full-core build, not the current
 installation recommendation. Its device startup rejected vitaGL's normal false
 return; that interpretation was corrected in subsequent builds. The original
-publication's pending checks below are retained as history. Current active test:
-[TEST_VITA_00_22](TEST_VITA_00_22.md), status: [CURRENT_STATUS](CURRENT_STATUS.md).
+publication's pending checks below are retained as history. Current hardware baseline: [TEST_VITA_00_34](TEST_VITA_00_34.md); public release status: [CURRENT_STATUS](CURRENT_STATUS.md).
 Evidence: [00.03 startup finding](evidence/vita_hardware_vgl_init_00.03.json).
 
 This is the first PS Vita package built from the complete reachable original
