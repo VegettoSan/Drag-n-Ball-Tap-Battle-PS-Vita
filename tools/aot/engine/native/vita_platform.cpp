@@ -81,20 +81,20 @@ int32_t dbtb_start(void) {
         ? "vitaGL initialized with framebuffer resolution fallback"
         : "vitaGL initialized: 960x544 (no resolution fallback)");
 
-    const std::vector<std::string> mods = selector_vfs.listMods();
-    runtimeLog("Detected data/mod profiles: " + std::to_string(mods.size()));
+    const std::vector<std::string> profiles = selector_vfs.listProfiles();
+    runtimeLog("Detected data profiles: " + std::to_string(profiles.size()));
     if (!selector_vfs.error().empty())
-        runtimeLog("Mod scan: " + selector_vfs.error());
+        runtimeLog("Profile scan: " + selector_vfs.error());
 
     BootChoice choice;
-    if (!runBootSelector(mods, selector_vfs.originalDataPresent(), choice)) {
+    if (!runBootSelector(profiles, choice)) {
         runtimeLog("Data selection cancelled");
         return 0;
     }
 
-    const std::string mod = choice.original ? std::string() : choice.mod_directory;
-    runtimeLog(std::string("Selected profile: ") + (choice.original ? "Original" : choice.mod_directory));
-    if (!dbtb_initResources(GameVfs::kBasePath, mod)) {
+    const std::string profile = choice.profile_directory;
+    runtimeLog("Selected profile: " + profile);
+    if (!dbtb_initResources(GameVfs::kBasePath, profile)) {
         runtimeLog("FATAL: resource VFS initialization failed");
         return 0;
     }
@@ -103,7 +103,7 @@ int32_t dbtb_start(void) {
     // Construct after the selector so held touches are primed and cannot leak
     // into the original title/menu as a new Begin event.
     input.reset(new VitaInput());
-    std::printf("Vita platform ready: %s\n", choice.original ? "Original" : choice.mod_directory.c_str());
+    std::printf("Vita platform ready: %s\n", choice.profile_directory.c_str());
     return 1;
 }
 
