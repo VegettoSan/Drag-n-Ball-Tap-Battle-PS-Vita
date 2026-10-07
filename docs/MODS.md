@@ -80,7 +80,7 @@ The initial selector intentionally works without JSON and uses the folder name. 
 
 The port must never require a mod installer to rewrite `game/`. Mod activation is a runtime decision only.
 
-## Current compatibility checkpoint — 00.24 baseline + 00.27 Samu direct-audio candidate
+## Current compatibility checkpoint — 00.24 hardware baseline + 00.28 standalone-profile candidate
 
 The physical-Vita baseline is 00.24: the supplied legacy Android14 profile
 reaches selection/battle with the later text, audio, selection, PAC-streaming
@@ -112,7 +112,7 @@ still need a physical-Vita test before being called hardware-confirmed. See
 - Invasion is also a Tier-C code mod: compared with Android14, 372 of 595 common
   code-method signatures have different DEX instructions. Do not port those
   changes wholesale; investigate only a concrete missing mechanic with evidence.
-- Audio compatibility is independent of PAC compatibility. 00.27 detects the
+- Audio compatibility is independent of PAC compatibility. 00.28 detects the
   actual BGM codec from file content: ordinary Vorbis keeps the existing
   libvorbisfile path, while MP3 and AAC/M4A are decoded directly with Vita
   `SceAudiodec`. The logical `.ogg` filename is not treated as codec proof.
@@ -134,14 +134,14 @@ still need a physical-Vita test before being called hardware-confirmed. See
 # Base original resources; does not include downloaded character triplets.
 python3 tools/extract_apk_data.py original.apk /private/install/game
 # Original-style populated assets plus characters; auto ignores empty raw stubs.
-python3 tools/extract_apk_data.py gen.apk /private/install-gen/game
+python3 tools/extract_apk_data.py gen.apk /private/install --mod Gen
 # Pinned Community14 aliases/codec, confined to its own profile.
 python3 tools/extract_apk_data.py community.apk /private/install --mod Android14
 # Audited Spanish/Invasion protected APKs are detected by their own profiles.
 python3 tools/extract_apk_data.py spanish.apk /private/install --mod Espanol
 python3 tools/extract_apk_data.py invasion.apk /private/install --mod Invasion
 # Gen-derived 92-character Samu mod: validates the pinned APK and preserves
-# every source asset byte-for-byte. 00.27 decodes MP3/AAC/Vorbis by content.
+# every source asset byte-for-byte. 00.28 decodes MP3/AAC/Vorbis by content.
 python3 tools/prepare_samu_mod.py DragonBallZuperSamuGamerYT.apk /private/install/mods/ZuperSamu
 # Other mods only when their layout/names/format contracts are supported.
 python3 tools/extract_apk_data.py mod.apk /private/install --mod MyMod
