@@ -268,3 +268,22 @@ El parser no debe fijar un count esperado por nombre de PAC.
 5. no aumentar límites de memoria “a ciegas” para bgm_05; resolver primero codec y estrategia de streaming.
 6. si una mecánica de personaje adicional falla, comparar la ruta concreta con los métodos DEX modificados; no portar 372 métodos indiscriminadamente.
 7. documentar evidencia y regresión contra el VPK 00.24 estable antes de cambiar cualquier ruta ya funcional.
+
+## Prueba física 00.28 y corrección 00.29
+
+En Vita real, Invasion Beta 3 funciona como perfil independiente sin `game/`:
+el usuario confirmó navegación/juego, texturas y audio exterior sin problemas
+observados. El defecto visible fue el texto del cuadro de resultado/diálogo tras
+la pelea, mientras textos vecinos como nombre del personaje, EXP y GANADOR se
+renderizaban correctamente.
+
+El PAC no está corrupto: el BIN convertido de `char20.pac` (Ranma) contiene UTF-8
+válido, incluido `Ranma está disponible！`, y el detector nativo clasifica el PAC
+de personaje como UTF-8. Invasion modifica ampliamente su DEX y su equivalente de
+SetString difiere sustancialmente del core Gen preservado. 00.29 no copia ese DEX:
+mantiene primero el charset del objeto GameData exacto y, si la convención de slot
+del SetString Gen no encuentra ese objeto, usa como fallback el charset detectado
+del perfil de personajes activo. La corrección requiere retest físico.
+
+La prueba 00.28 también confirma en hardware que los BGM MP3/AAC-M4A/Vorbis de
+Invasion pueden consumirse directamente sin conversión en el recorrido probado.
