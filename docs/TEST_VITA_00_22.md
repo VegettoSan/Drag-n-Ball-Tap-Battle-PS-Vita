@@ -1,5 +1,13 @@
 # Prueba Vita 00.22 — cierre al escoger personaje
 
+> **Historical document notice — current 00.34 contract:** this file preserves
+> evidence/instructions for the build or investigation named here. The current
+> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
+> current `game/` or `mods/` profile roots and no built-in Original selector
+> row. Do not reuse historical install paths for 00.34. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 00.21 ya inicia el worker de audio y entra al menú en la prueba física recibida.
 Al escoger personaje rechaza char00 por invalid GameData filter, luego sale con
 NullPointerException en Game3, md=1018/frame 1273.
