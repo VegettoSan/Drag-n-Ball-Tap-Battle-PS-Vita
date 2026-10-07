@@ -882,9 +882,11 @@ catch {
 
     } | Sort-Object)
 
+    $completeIndices = ''
+    if ($complete -gt 0) { $completeIndices = ('00..{0:D2}' -f ($complete - 1)) }
     return [pscustomobject]@{
         Count=$complete
-        CompleteIndices=if ($complete -gt 0) { ('00..{0:D2}' -f ($complete - 1)) } else { '' }
+        CompleteIndices=$completeIndices
         Incomplete=@($incomplete)
         LaterAfterGap=@($laterAfterGap)
         Unsupported=@($unsupported)
