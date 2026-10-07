@@ -2,7 +2,7 @@
 
 > Current filesystem/selector contract: [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
-Current hardware gameplay checkpoint 00.33; current selector/data-layout candidate 00.34. Original-code facts refer to the pinned original
+Current public release v1.0 uses APP_VER `01.00` and TITLE_ID `DBTB01178`; the hardware-confirmed gameplay/selector/data-layout baseline is 00.34. Original-code facts refer to the pinned original
 APK, not the community archive. The full original core executes through private
 AOT; this is no longer an atlas-only bootstrap. [CURRENT_STATUS](CURRENT_STATUS.md)
 and [VALIDATION](VALIDATION.md) qualify the hardware/host evidence.
