@@ -1,8 +1,19 @@
-# Current runtime/data contract — 00.34 stable
+# Current runtime/data contract — v1.0 (00.34 stable runtime baseline)
 
 > This file is the source of truth for the **current** runtime and extractor
 > contract. Historical test documents may mention older `game/` and `mods/`
 > layouts because those paths were correct for those specific builds.
+
+## Current package identity
+
+- public release: **v1.0**
+- Vita APP_VER: `01.00`
+- TITLE_ID: `DBTB01178`
+- gameplay/runtime baseline: hardware-confirmed 00.34
+
+Historical 00.34 test records intentionally retain `DBTB00001`, because that
+was the Title ID of the exact VPK tested on hardware. The v1.0 release changes
+package identity, not the runtime/data contract below.
 
 ## Runtime root
 
@@ -24,7 +35,7 @@ ux0:data/DBTapBattle/profiles/DragonBallZuperSamuGamerYT/
 
 ## Selector contract
 
-The 00.34 selector enumerates only directories that actually exist directly
+The v1.0 selector (runtime inherited from 00.34) enumerates only directories that actually exist directly
 inside `profiles/`.
 
 - There is no unconditional **Original** row.
@@ -40,7 +51,7 @@ The Gen-derived selector theme uses the four packaged assets under
 `app0:/selector/`. The background is drawn using its non-transparent content
 bounds and stretched to the complete 960×544 Vita viewport.
 
-After a profile is confirmed, 00.34 presents a themed **OPENING PROFILE** /
+After a profile is confirmed, v1.0 presents the 00.34 themed **OPENING PROFILE** /
 **LOADING GAME DATA...** transition before the original engine starts loading
 that profile. This is presentation only; it does not change original game logic.
 
