@@ -1,4 +1,32 @@
-# Current status — 2026-10-07 (America/Bogota), 00.33 hardware-confirmed checkpoint
+# Current status — 2026-10-07 (America/Bogota), 00.33 hardware checkpoint / 00.34 selector candidate
+
+## 00.34 candidate — Gen-styled first-screen data selector
+
+The next test build is **00.34**. Its only intended presentation change is the
+native Vita data-set selector shown before the original engine starts. The old
+flat dark list is replaced, when the embedded theme loads correctly, by a menu
+composed from four non-character visual elements extracted/cropped from the
+supplied `gen.apk` `assets/select0.pac`: the blue/cyan grid-energy background,
+beveled title bar, beveled menu button and one-star Dragon Ball marker.
+
+The selector still owns only data-profile choice; it does **not** replace or alter
+the original Tap Battle title/menu/combat logic. D-pad/stick, X, touch and Circle
+retain the same selector semantics. The four textures are loaded once from
+`app0:/selector/`, released before entering the game, and the already-tested
+plain selector remains as a safe fallback if any packaged PNG is missing or fails
+to decode/upload.
+
+The theme is stored in Git as a hash-validated split Base64 ZIP reconstructed by
+`tools/materialize_selector_theme.py`. The VPK contains only the four derived PNGs,
+not `gen.apk`, `select0.pac`, characters, music or a playable data set. Release
+validation pins each embedded PNG SHA-256 so a damaged/replaced theme cannot be
+published silently.
+
+**BUILD CONFIRMED for the native Vita smoke target:** the 00.34 CMake packaging and
+the new `src/ui.cpp` selector renderer both compile/link/package successfully in
+VitaSDK CI. This does not promote 00.34 to a physical gameplay checkpoint; the
+current real-Vita gameplay baseline remains **00.33** until the full 00.34 VPK is
+built and tested on hardware.
 
 ## 00.33 hardware-confirmed — Invasion repeated-fight allocation fix
 
