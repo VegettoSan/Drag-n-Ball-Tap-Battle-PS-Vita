@@ -1,5 +1,13 @@
 # PS Vita hardware test — 00.23
 
+> **Historical document notice — current 00.34 contract:** this file preserves
+> evidence/instructions for the build or investigation named here. The current
+> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
+> current `game/` or `mods/` profile roots and no built-in Original selector
+> row. Do not reuse historical install paths for 00.34. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 Date: 2026-10-05  
 Source checkpoint: `0e17b0bac33c47698b414b67a839c839f0e555ce`  
 Test VPK: `DBTapBattle-Vita-00.23-battle-memory-test.vpk`  
