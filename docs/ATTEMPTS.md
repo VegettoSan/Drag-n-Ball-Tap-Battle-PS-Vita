@@ -8,6 +8,32 @@
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
+## 2026-10-07 — 00.34 — remove embedded blue orb from selector background
+
+**Observed on physical Vita:** the previous fullscreen-background attempt still
+showed a large blue energy orb in the lower-left area and left transparent/black
+space around it.
+
+**Cause:** `select0_background.png` is a 512×512 atlas-like derivative, not one
+full-screen rectangular background. Its desired cyan/grid art is the continuous
+upper band; the separate blue orb is embedded later in the transparent lower
+part. Cropping only the transparent right edge still sampled the orb vertically.
+
+**Fix:** detect the continuous populated band from the top. For the approved
+asset this resolves to 482×320 px. Runtime now crops both U and V to that region
+and stretches only it to 960×544. The lower orb region is excluded completely.
+
+**Source:** `18559dcea316076bb1225080bb8506dd439df6f6`.
+
+**Build evidence:** Vita native smoke/build for that commit PASS. Complete VPK
+generated locally and LiveArea validation PASS.
+
+**User-test VPK:** `DBTapBattle-Vita-00.34-No-Blue-Orb-Fix.vpk`
+
+**SHA-256:** `4f0abc4aba15c766847657d152de9cff50877df3f7b13a169f06be4226d2367b`
+
+Physical verification of this corrected VPK is pending.
+
 ## 2026-10-07 — 00.34 — unified profiles + fullscreen selector + opening-profile transition
 
 **Goal:** remove the artificial Original/mod split, make extractor output identical
