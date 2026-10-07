@@ -1141,3 +1141,31 @@ seconds for Samu between profile selection and VFS initialization.
 uses a presence/contiguity roster scan at startup instead of opening/parsing every
 character PAC. The 00.31 roster, Shop, large-PAC memory and text/audio fixes are
 retained.
+
+## 2026-10-07 — Attempt 036 — 00.32 Invasion Saitama -> Freezer bad_alloc
+
+**Hardware result:** 00.32 fixes the Loading loop and the user confirms complete
+mod rosters now appear. Invasion still crashes reproducibly when Saitama advances
+to his second fight against Freezer.
+
+**Crash evidence:** the supplied Vita coredump resolves the native stack through
+`operator new -> std::vector<unsigned char>::operator= -> normalise ->
+normaliseEnginePac -> readEngineResource -> EngineResourceCache::read ->
+GameData.Init`. The failing normalise return address is immediately after a
+GCC-generated vector copy-assignment.
+
+**Root cause:** protected Invasion `char15.pac` is ~4.05 MiB on disk and ~4.64 MiB
+normalized. The source expression `output = changed ? std::move(out) : input`
+looked like an ownership transfer but GCC 15 lowered the conditional to copy
+assignment on the changed path. That requested a second PAC-sized contiguous
+allocation after the normalized output already existed. It succeeds in some
+transitions but fails after heap fragmentation in the reproduced second fight.
+
+**00.33 change:** use explicit `if (changed) output.swap(out); else output = input;`.
+Protected/changed PAC ownership transfers without allocation. Ordinary unchanged
+PACs preserve their intentional byte-for-byte copy. No PAC, DEX or original
+gameplay logic is modified. A source regression guards against reintroducing the
+conditional assignment.
+
+**Status:** full 00.33 VPK builds and LiveArea validates. Hardware retest of the
+exact Saitama -> Freezer path is pending.
