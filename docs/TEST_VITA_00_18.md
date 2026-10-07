@@ -1,5 +1,13 @@
 # Prueba Vita 00.18 — personajes, voces y FPS
 
+> **Historical document notice — current 00.34 contract:** this file preserves
+> evidence/instructions for the build or investigation named here. The current
+> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
+> current `game/` or `mods/` profile roots and no built-in Original selector
+> row. Do not reuse historical install paths for 00.34. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 **Prueba archivada; resultado recibido.** El usuario confirma pelea estabilizada
 a 60 FPS; el log registra 15 ventanas estables a 59,9 FPS. Los textos desaparecen,
 las voces siguen roncas y persisten pausas de selección. El texto se recupera en
