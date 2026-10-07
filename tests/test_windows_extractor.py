@@ -103,7 +103,7 @@ class WindowsExtractorTests(unittest.TestCase):
         self.assertTrue(m['bundled_save'])
         self.assertFalse((package / 'data/DBTapBattle/mods/original/save.bin').exists())
         self.assertFalse(m['profile_save_installed'])
-        self.assertEqual(m['save_policy'], 'global-vpk-seed-ux0-root')
+        self.assertEqual(m['save_policy'], 'per-profile-vpk-seed')
         self.assertFalse(list(package.rglob('classes.dex')))
         for line in (package / 'SHA256SUMS.txt').read_text().splitlines():
             digest, name = line.split('  ', 1)
