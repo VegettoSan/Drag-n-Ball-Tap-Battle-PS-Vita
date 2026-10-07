@@ -1,5 +1,13 @@
 # Prueba física PS Vita — 00.26 Zuper/Samu large-roster candidate
 
+> **Historical document notice — current 00.34 contract:** this file preserves
+> evidence/instructions for the build or investigation named here. The current
+> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
+> current `game/` or `mods/` profile roots and no built-in Original selector
+> row. Do not reuse historical install paths for 00.34. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 <!-- DBTB_DOC_STATUS:START -->
 > **Project checkpoint:** 00.33 is the current hardware-confirmed development
 > checkpoint for the tested paths. This file may document an earlier component
