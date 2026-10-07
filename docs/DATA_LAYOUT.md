@@ -1,7 +1,7 @@
-# Runtime data and mod layout — 00.30 standalone datasets + per-profile seeded saves
+# Runtime data and mod layout — 00.33 standalone datasets + per-profile seeded saves
 
 Current contract, checked against `src/vfs.cpp` and native `resources.cpp` on
-2026-10-05. See [CURRENT_STATUS](CURRENT_STATUS.md) for verification scope.
+2026-10-07. See [CURRENT_STATUS](CURRENT_STATUS.md) for verification scope.
 
 ## Base path
 
@@ -100,7 +100,7 @@ Rules:
 - Once created, a profile save is never overwritten merely by launching the profile again, switching profiles or updating the VPK.
 - Extractors record an APK-bundled `save.bin` for provenance but do **not** install it as the runtime save; every profile starts from the same known VPK seed.
 - Resources and saves are both profile-local. A selected profile never reads a missing PAC/OGG or save from another profile.
-- Historical `ux0:data/DBTapBattle/save.bin`, `saves/shared/` and `saves/<profile>/` files are not 00.30 runtime inputs.
+- Historical `ux0:data/DBTapBattle/save.bin`, `saves/shared/` and `saves/<profile>/` files are not 00.33 runtime inputs.
 
 This design is intentionally profile-local because different mods may reuse the same character slots for different characters or store progression differently, while still guaranteeing that all profiles begin from the same known initial save.
 
@@ -151,7 +151,7 @@ Original data presence currently means `game/common.pac` is a regular file, inde
 install/mods/Android14/
 ```
 
-with canonical names and untouched encoded PACs. If the APK supplies `save.bin`, extraction records that source payload for provenance but does not install it; 00.30 creates the profile's runtime `save.bin` from the VPK seed on first use.
+with canonical names and untouched encoded PACs. If the APK supplies `save.bin`, extraction records that source payload for provenance but does not install it; 00.33 retains the same policy: it creates the profile's runtime `save.bin` from the VPK seed on first use.
 
 Format-3 import manifest records profile, alias mapping and original APK content hashes. Native codec detection is per PAC, not globally per active mod. See `ANDROID14_APK.md` for the exact profile and resource/engine compatibility boundary.
 
@@ -171,7 +171,7 @@ running; restart after installing/changing a dataset. Stat-based invalidation is
 not cryptographic content validation. Imported textures/voices require exact byte
 and mode checks after content hashes; see [PORTING_GUIDE](PORTING_GUIDE.md).
 
-The raw extractor records a bundled source save when supplied but 00.30 does not install it as runtime progress. The audited original/Community14 pair has no bundled save; Gen does. Back up profile-local runtime saves before replacing data. The two-source ZIP tool's raw-input
+The raw extractor records a bundled source save when supplied but 00.33 does not install it as runtime progress. The audited original/Community14 pair has no bundled save; Gen does. Back up profile-local runtime saves before replacing data. The two-source ZIP tool's raw-input
 contract is not a Gen importer; use the ordinary assets/auto extractor for Gen.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
@@ -195,3 +195,15 @@ Unknown canonical assets APKs use a sanitized filename as a separate mod profile
 An APK-provided save is not installed as the runtime save. Preserve each existing profile-local save when copying updates. No cross-profile gameplay-resource fallback occurs.
 See [Windows tool](WINDOWS_DATA_TOOL.md) for profile naming, byte preservation,
 source recognition, incomplete-original warnings and verification scope.
+
+## Dynamic roster runtime note — 00.33
+
+Profile data remains independent, but the runtime no longer assumes a fixed
+13-character roster. It scans the selected profile's contiguous character
+triplets in the supported two-digit namespace 00..99 and synchronizes the
+corresponding character availability flags in that profile's own save. Hardware
+testing confirms this exposes Samu's 92 characters while preserving smaller
+profiles such as Invasion's 22.
+
+This does not alter the directory layout: all resource and save ownership remains
+inside the selected profile, with no fallback to another dataset.
