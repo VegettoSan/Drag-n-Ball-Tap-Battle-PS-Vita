@@ -44,7 +44,7 @@ observed in this session.
 
 ## Interpretation
 
-00.23 is the current hardware checkpoint and resolves the reproduced 00.22
+00.23 was the hardware checkpoint for this historical test and resolved the reproduced 00.22
 battle-start managed-allocation regression. It is not an exhaustive certification
 of every character, mode, mod, repeated-battle sequence or long-duration memory
 behavior. Those remain regression work for later checkpoints.
