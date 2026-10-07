@@ -1,17 +1,17 @@
 # PS Vita hardware test — 00.13
 
-> **Historical document notice — current 00.34 contract:** this file preserves
+> **Historical document notice — current v1.0 contract:** this file preserves
 > evidence/instructions for the build or investigation named here. The current
 > Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
 > current `game/` or `mods/` profile roots and no built-in Original selector
-> row. Do not reuse historical install paths for 00.34. See
+> row. Do not reuse historical install paths for v1.0. See
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
 **Archived test sheet.** These expectations describe 00.13 at publication and
 are not current unresolved-engine milestones. Later tests restore visible text
 (00.19), while rough voices and character pauses remain unresolved. Latest
-00.22 selection recovery is pending after 00.21 starts audio/reaches menu. See [CURRENT_STATUS](CURRENT_STATUS.md) and
+Later hardware checkpoints supersede this pending state; see [CURRENT_STATUS](CURRENT_STATUS.md) and
 [TEST_VITA_00_22](TEST_VITA_00_22.md). Do not infer this exact Gen APK hash or every
 00.13 fix is hardware-confirmed from a later generic Original-profile test.
 
