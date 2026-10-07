@@ -13,6 +13,7 @@ on:
       - 'tests/test_livearea.py'
       - 'tests/test_shared_save_seed.py'
       - 'tests/test_offline_startup_contract.py'
+      - 'tests/test_protected_pac_ownership.py'
       - 'tools/aot/engine/java/com/namcobandaigames/dragonballtap/apk/Downloader.java'
       - 'assets/default_save.bin.zlib.b64'
       - 'tools/materialize_default_save.py'
@@ -39,6 +40,7 @@ jobs:
           python3 -m unittest discover -s tests -p test_livearea.py -v
           python3 -m unittest discover -s tests -p test_shared_save_seed.py -v
           python3 -m unittest discover -s tests -p test_offline_startup_contract.py -v
+          python3 -m unittest discover -s tests -p test_protected_pac_ownership.py -v
           rm -rf /tmp/dbtb-livearea-check
           python3 tools/decode_livearea_assets.py \
             --source assets/livearea \
