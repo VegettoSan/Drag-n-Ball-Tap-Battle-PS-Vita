@@ -38,16 +38,22 @@ python3 tools/materialize_selector_theme.py assets/selector /tmp/dbtb-web-select
 The browser core was also exercised against real project APK inputs before
 publication:
 
-- original `DBTapBattle.apk`: raw layout, PASS;
-- `gen.apk`: assets layout, 13-character roster, PASS;
-- `tap battle android 14.apk`: audited `community14-a210795b`, PASS;
-- Invasion Beta 3: audited `community14-invasion-05aa0c5e`, 22-character
-  roster `00..21`, PASS.
+- original `DBTapBattle.apk`: raw layout, 57 data files, PASS;
+- `gen.apk`: assets layout, 146 data files, 13-character roster, PASS;
+- `tap battle android 14.apk`: audited `community14-a210795b`, 144 data files,
+  13-character roster, PASS;
+- Spanish Android14: audited `community14-es-d594affc`, 144 data files,
+  13-character roster, PASS;
+- Invasion Beta 3: audited `community14-invasion-05aa0c5e`, 177 data files,
+  22-character roster `00..21`, PASS;
+- Samu: assets layout, 383 data files, 92-character roster `00..91`, PASS;
+  APK-bundled `save.bin` detected but intentionally omitted.
 
-The generated Invasion ZIP was reopened and CRC-tested independently. It
-contained canonical `common.pac`, omitted APK `save.bin`, and reported the
-expected `profiles-v1` manifest. These checks establish extraction/package
-behavior, not every browser/device memory ceiling or mod compatibility.
+The generated Invasion, Spanish and Samu ZIPs were reopened and CRC-tested
+independently. They reported the expected `profiles-v1` manifests and protected
+codec identities; Samu's generated ZIP is 405,409,508 bytes and still passes ZIP
+CRC validation. These checks establish extraction/package behavior, not every
+browser/device memory ceiling or arbitrary mod compatibility.
 
 The Pages workflow fails closed: JavaScript validation and selector-theme
 materialization must pass before the static artifact can be deployed.
