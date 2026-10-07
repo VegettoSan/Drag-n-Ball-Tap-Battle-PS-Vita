@@ -21,12 +21,14 @@ reference, not a drop-in engine. Its licensing/completeness is not established.
 | Downloader / Smap | HTTP, catalog/device/news data and marketplace downloads/billing | Local installed-data path; HTTP rejected, offline catalog boundary |
 | BluetoothManajer / BluetoothSearch | RFCOMM discovery/transport; game receives/sends battle data | Transport adapter, not a generic input remap; multiplayer PENDING |
 
-## Current checkpoint — 00.22
+## Current checkpoint — 00.33
 
-The original core is now privately AOT-compiled with TeaVM, not manually
-reconstructed. Earlier Vita builds run menus/front touch/selection/battle.
-00.21 starts audio/reaches menu but rejects original selection mask 187.
-00.22 preserves that mask; physical selection recovery is pending. See
+The original core is privately AOT-compiled with TeaVM rather than manually
+reconstructed. The current 00.33 hardware checkpoint preserves the original task,
+selection and combat flow while the platform layer now supports standalone
+profiles, dynamic installed rosters, direct Vorbis/MP3/AAC and profile-local
+saves. The reproduced Invasion Saitama -> Freezer native allocation crash is
+hardware-confirmed fixed after explicit protected-PAC ownership transfer. See
 [CURRENT_STATUS](CURRENT_STATUS.md) and [PORTING_GUIDE](PORTING_GUIDE.md).
 
 ## Main-loop ordering recovered
@@ -133,3 +135,12 @@ in the reported 00.23 session.
 > not exhaustive character/profile/mode or long-session certification. Historical
 > records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## 00.33 engine-boundary note
+
+The latest repeated-fight fix is intentionally outside the original game logic.
+The coredump resolved the fault through native protected-PAC normalization before
+the resource reached original `GameData.Init`; no combat handler, AI method or
+character-specific DEX behavior was changed. This is the preferred adaptation
+pattern: prove the platform/resource boundary is responsible before modifying the
+preserved engine.
