@@ -10,9 +10,8 @@ bool openPac(const GameVfs& vfs, const char* logical, bool& present, std::string
         // Missing data is handled by the caller as a gap. Other VFS failures
         // (for example a non-regular override) are structural errors.
         const std::string& vfs_error = vfs.error();
-        const bool missing_original = vfs_error.compare(0, 26, "missing original resource:") == 0;
         const bool missing_profile = vfs_error.compare(0, 34, "missing selected profile resource:") == 0;
-        if (!missing_original && !missing_profile) {
+        if (!missing_profile) {
             error = vfs_error;
             return false;
         }
@@ -72,7 +71,7 @@ InstalledDataAudit auditInstalledData(const GameVfs& vfs, int min_characters,
     // not bundle bobj00.pac. Do not impose the original dataset's bobj00
     // inventory as a Vita installation requirement. If the preserved original
     // core later requests an omitted resource, that is a profile-adaptation
-    // issue to diagnose; selected profiles never borrow it from game/.
+    // issue to diagnose; selected profiles never borrow it from another profile.
     for (const char* logical : {"select0.pac", "effect.pac", "back00.pac"}) {
         bool present = false;
         if (!openPac(vfs, logical, present, result.error)) return result;
@@ -99,9 +98,8 @@ InstalledDataAudit scanInstalledData(const GameVfs& vfs, int min_characters,
         if (vfs.resolve(logical, path)) { exists = true; return true; }
         exists = false;
         const std::string& e = vfs.error();
-        const bool missing_original = e.compare(0, 26, "missing original resource:") == 0;
         const bool missing_profile = e.compare(0, 34, "missing selected profile resource:") == 0;
-        if (!missing_original && !missing_profile) { result.error = e; return false; }
+        if (!missing_profile) { result.error = e; return false; }
         return true;
     };
 
