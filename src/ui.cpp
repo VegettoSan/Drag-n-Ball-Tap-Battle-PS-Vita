@@ -34,6 +34,7 @@ struct UiTexture {
     uint32_t width = 0;
     uint32_t height = 0;
     float content_u_max = 1.0f;
+    float content_v_max = 1.0f;
 };
 
 bool readUiFile(const char* path, std::vector<uint8_t>& bytes) {
@@ -91,9 +92,35 @@ bool loadUiTexture(const char* path, UiTexture& texture) {
     texture.width = image.width;
     texture.height = image.height;
 
+    // select0_background.png contains the wanted cyan/grid background in
+    // its upper band, but also contains a separate blue energy orb in the
+    // transparent lower area. The selector must use only the background band.
+    // Detect the first continuous, substantially populated band from the top,
+    // then crop both U and V to that band before stretching it to 960x544.
+    uint32_t content_bottom = image.height;
+    const std::string ui_path(path ? path : "");
+    if (ui_path.find("select0_background.png") != std::string::npos) {
+        content_bottom = 0;
+        for (uint32_t y = 0; y < image.height; ++y) {
+            uint32_t row_visible = 0;
+            for (uint32_t x = 0; x < image.width; ++x) {
+                if (image.pixels[(static_cast<size_t>(y) * image.width + x) * 4 + 3] != 0)
+                    ++row_visible;
+            }
+            // The real background occupies almost the complete row. The first
+            // sparse row marks the transparent/orb section and is excluded.
+            if (row_visible < image.width / 2) break;
+            content_bottom = y + 1;
+        }
+        if (content_bottom == 0) content_bottom = image.height;
+        if (content_bottom < image.height)
+            texture.content_v_max =
+                static_cast<float>(content_bottom) / static_cast<float>(image.height);
+    }
+
     uint32_t rightmost = 0;
     bool visible = false;
-    for (uint32_t y = 0; y < image.height; ++y) {
+    for (uint32_t y = 0; y < content_bottom; ++y) {
         for (uint32_t x = 0; x < image.width; ++x) {
             if (image.pixels[(static_cast<size_t>(y) * image.width + x) * 4 + 3] != 0) {
                 rightmost = std::max(rightmost, x);
@@ -102,7 +129,14 @@ bool loadUiTexture(const char* path, UiTexture& texture) {
         }
     }
     if (visible && rightmost + 1 < image.width)
-        texture.content_u_max = static_cast<float>(rightmost + 1) / static_cast<float>(image.width);
+        texture.content_u_max =
+            static_cast<float>(rightmost + 1) / static_cast<float>(image.width);
+
+    if (ui_path.find("select0_background.png") != std::string::npos) {
+        runtimeLog("Selector background crop: u=" + std::to_string(texture.content_u_max) +
+                   " v=" + std::to_string(texture.content_v_max) +
+                   " (blue orb excluded)");
+    }
 
     return true;
 }
@@ -113,7 +147,7 @@ void destroyUiTexture(UiTexture& texture) {
 }
 
 void drawUiTextureUv(const UiTexture& texture, float x, float y, float w, float h,
-                     float u_max, float tint = 1.0f, float alpha = 1.0f) {
+                     float u_max, float v_max, float tint = 1.0f, float alpha = 1.0f) {
     if (!texture.id) return;
     const GLfloat vertices[] = {
         x,     y,     0.0f,
@@ -124,8 +158,8 @@ void drawUiTextureUv(const UiTexture& texture, float x, float y, float w, float 
     const GLfloat texcoords[] = {
         0.0f, 0.0f,
         u_max, 0.0f,
-        u_max, 1.0f,
-        0.0f, 1.0f,
+        u_max, v_max,
+        0.0f, v_max,
     };
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
@@ -145,7 +179,7 @@ void drawUiTextureUv(const UiTexture& texture, float x, float y, float w, float 
 
 void drawUiTexture(const UiTexture& texture, float x, float y, float w, float h,
                    float tint = 1.0f, float alpha = 1.0f) {
-    drawUiTextureUv(texture, x, y, w, h, 1.0f, tint, alpha);
+    drawUiTextureUv(texture, x, y, w, h, 1.0f, 1.0f, tint, alpha);
 }
 
 void destroySelectorTheme(UiTexture& background, UiTexture& header,
@@ -263,7 +297,7 @@ void drawProfileOpening(const std::string& profile, bool theme_ready,
 
     if (theme_ready) {
         drawUiTextureUv(background, 0.0f, 0.0f, 960.0f, 544.0f,
-                        background.content_u_max, 0.92f);
+                        background.content_u_max, background.content_v_max, 0.92f);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         rect(0.0f, 0.0f, 960.0f, 544.0f, 0.015f, 0.055f, 0.12f, 0.26f);
@@ -365,7 +399,8 @@ bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choic
             begin2D();
 
             drawUiTextureUv(theme_background, 0.0f, 0.0f, 960.0f, 544.0f,
-                            theme_background.content_u_max, 0.92f);
+                            theme_background.content_u_max,
+                            theme_background.content_v_max, 0.92f);
             // Dark translucent wash keeps arbitrary mod names legible while
             // preserving the cyan grid/energy artwork.
             glEnable(GL_BLEND);
