@@ -1,7 +1,7 @@
 # PS Vita test — 00.34 unified profiles + selector UX
 
-> **Status:** complete playable VPK generated; physical Vita result pending.
-> **Gameplay baseline:** 00.33 remains the latest hardware-confirmed checkpoint.
+> **Status:** HARDWARE CONFIRMED — stable and functional on physical PS Vita.
+> **Gameplay baseline:** 00.34 is the latest hardware-confirmed checkpoint.
 
 ## Exact user-test artifact
 
@@ -162,8 +162,30 @@ These establish build/tool correctness, not physical Vita rendering/gameplay.
 
 ## Acceptance
 
-Do not promote 00.34 to HARDWARE CONFIRMED until this exact VPK hash has been
-observed on a physical Vita through selector + profile launch + basic gameplay.
+00.34 has passed this acceptance gate and is now HARDWARE CONFIRMED. 00.33
+remains the historical proof for the protected-PAC repeated-fight repair.
 
-If it passes, 00.34 becomes the new presentation/data-layout checkpoint while
-00.33 remains the historical proof for the protected-PAC repeated-fight repair.
+
+## Hardware result — PASS
+
+The user tested the exact VPK documented above on a physical PS Vita and reports
+it as **stable and functional**, with no issue found so far in the exercised
+paths.
+
+Confirmed by the reported session:
+
+- fullscreen selector background renders correctly without the unwanted blue orb;
+- themed profile buttons are centered;
+- profile labels are centered inside the cyan/blue interior and do not overlap
+  the silver bevels;
+- unified `profiles/` selector behavior works;
+- profile startup/loading transition works;
+- the port remains functional after entering the game;
+- no crash, regression or new functional problem was observed in the reported
+  test session.
+
+Result: **00.34 is promoted to HARDWARE CONFIRMED / current stable checkpoint.**
+
+This is still an empirical hardware result for the exercised session, not a claim
+that every theoretical mod, profile combination or arbitrarily long session has
+been exhaustively tested.
