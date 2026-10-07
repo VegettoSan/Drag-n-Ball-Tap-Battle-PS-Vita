@@ -1,9 +1,12 @@
-# Audit status — 2026-10-05
+# Audit status — 2026-10-07
 
 The 2026-10-04 bootstrap audit was followed by full original-core AOT integration
-and physical Vita testing. This page replaces its obsolete current-state table;
-chronological details remain in [ATTEMPTS](ATTEMPTS.md). The current hardware checkpoint
-is 00.23: the reported physical-Vita session preserves clean audio and responsive selection, enters a battle and plays without the 00.22 memory crash. See [CURRENT_STATUS](CURRENT_STATUS.md).
+and successive physical Vita tests. This page replaces its obsolete current-state
+table; chronological details remain in [ATTEMPTS](ATTEMPTS.md). The current
+hardware checkpoint is **00.33**: Loading is fixed, dynamic rosters work on device,
+and the reproduced Invasion Saitama -> Freezer repeated-fight `std::bad_alloc` no
+longer occurs after the protected-PAC ownership-transfer fix. See
+[CURRENT_STATUS](CURRENT_STATUS.md).
 
 | Area | Present conclusion | Evidence / boundary |
 |---|---|---|
@@ -18,7 +21,7 @@ is 00.23: the reported physical-Vita session preserves clean audio and responsiv
 | Saves | Profile-local save.bin with atomic publication path | Implementation/host tests; exhaustive compatibility pending |
 | Frame rate | 00.18 steady combat reaches logged 59.9/user-observed 60 FPS | Not a universal all-version/all-mode guarantee |
 | Online/multiplayer | Local dataset checks, HTTP rejection, disconnected Bluetooth | Remote services and synchronized multiplayer unimplemented |
-| Packaging | 00.23 hardware-tested VPK from source `0e17b0ba`; prior normal-build 00.22 evidence retained | 00.23 test package used split generated-C compilation; release-quality reproducible packaging remains open |
+| Packaging | 00.33 hardware-tested VPK with exact VPK/eboot/ELF hashes and device evidence | Functional test build uses documented split TeaVM compilation; release-quality reproducible/performance packaging remains open |
 
 ## Completed corrections from the bootstrap audit
 
@@ -37,14 +40,17 @@ rectangle usage. Current audio setup logs distinguish actual failed syscalls.
 - Imported Community14 assets do not reproduce altered Java mechanics.
 - PAC LE fields do not imply CNV/text/save fields are LE.
 - Format and build success do not establish audible fidelity or stable gameplay.
-- 00.20's broad host pass missed platform thread setup rejection; 00.21 recovered the worker/menu. 00.21 then exposed the filter-mask guard, fixed in 00.22. 00.22 finally exposed the whole-PAC managed allocation at battle start; 00.23 replaces that bridge with the original streaming parser and passes the reproduced hardware path.
+- Historical blocker chain: 00.20 thread setup -> 00.21 filter mask -> 00.22 whole-PAC managed allocation -> 00.23 streaming repair -> 00.31 Loading polarity regression -> 00.32 protected-PAC repeated-fight bad_alloc. 00.33 closes the latest reproduced allocation failure on hardware.
 - Save interoperability, return/suspend lifecycle, arbitrary mods, all secondary
   modes, complete font coverage and physical controls lack a full device matrix.
 - mod.json/selector Unicode labels, remembered choice and log rotation are open.
 - Verify full-engine notices/attribution and relink materials before public
   distribution; [THIRD_PARTY](THIRD_PARTY.md) records actual delivered scope.
 
-Next: extend [00.23 testing](TEST_VITA_00_23.md) to repeated battles, more characters/datasets, long sessions, lifecycle/save coverage and a release-quality normal build. [PORTING_PLAN](PORTING_PLAN.md) tracks that work rather than reopening resolved 00.20–00.22 blockers.
+Next: broaden 00.33 regression coverage to Shop return, return-to-menu,
+suspend/resume, saves across more profiles, secondary modes, additional mods and
+longer sessions. [PORTING_PLAN](PORTING_PLAN.md) tracks that work; resolved
+loading/allocation blockers should not be reopened without new evidence.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
 > **Current hardware checkpoint — 00.24 (2026-10-05, America/Bogota):** the user
