@@ -141,6 +141,18 @@ Boot selector opening profile: <Profile>
 Selected profile: <Profile>
 ```
 
+## Build/CI evidence
+
+- Selector/runtime source `63bc0f9`: Vita engine native smoke
+  run `37679405794` — **PASS**.
+- Same source checkpoint: private build-tool export run `37679405502` —
+  **PASS**.
+- Windows extractor 1.5 `profiles-v1` regression run `37688246446` —
+  **PASS**.
+- Extractor implementation-only run `37688218032` — **PASS**.
+
+These establish build/tool correctness, not physical Vita rendering/gameplay.
+
 ## Acceptance
 
 Do not promote 00.34 to HARDWARE CONFIRMED until this exact VPK hash has been
