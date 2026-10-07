@@ -36,7 +36,7 @@ extractBtn.addEventListener('click',async()=>{
     const out=await extractApks(files,{onProgress:p=>setStatus((p.message||'WORKING').toUpperCase(),p.apk?`${p.apk}${p.file?` • ${p.file}`:''}`:'',p.percent||0)});
     if(outputUrl)URL.revokeObjectURL(outputUrl);outputFile=new File([out.blob],out.filename,{type:'application/zip'});outputUrl=URL.createObjectURL(outputFile);
     downloadBtn.href=outputUrl;downloadBtn.download=out.filename;
-    const chars=out.reports.map(r=>`${r.apk}: ${r.character_count} characters${r.character_runtime_compatible?'':' ⚠'}`).join(' • ');
+    const chars=out.reports.map(r=>r.layout==='raw'?`${r.apk}: original raw layout`:`${r.apk}: ${r.character_count} characters${r.character_runtime_compatible?'':' ⚠'}`).join(' • ');
     resultInfo.textContent=`${out.filename} • ${human(out.packageSize)} • ${out.files} files • ${chars}`;
     shareBtn.hidden=!(navigator.share&&navigator.canShare&&navigator.canShare({files:[outputFile]}));result.hidden=false;setStatus('DATA READY FOR PS VITA','Download the ZIP, extract it, then copy its data folder to ux0:.',100);
     result.scrollIntoView({behavior:'smooth',block:'nearest'});
