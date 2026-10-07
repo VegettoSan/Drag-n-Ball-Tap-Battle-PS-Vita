@@ -12,14 +12,14 @@
 
 const char* GameVfs::kBasePath = "ux0:data/DBTapBattle";
 
-GameVfs::GameVfs(const std::string& base) : base_(base), game_(base + "/game"), mods_(base + "/mods") {}
+GameVfs::GameVfs(const std::string& base) : base_(base), profiles_(base + "/profiles") {}
 
 bool GameVfs::prepareDirectories() {
     error_.clear();
 #ifdef __vita__
     sceIoMkdir("ux0:data", 0777);
 #endif
-    for (const auto& path : {base_, game_, mods_, base_ + "/config", base_ + "/logs", base_ + "/saves"}) {
+    for (const auto& path : {base_, profiles_, base_ + "/config", base_ + "/logs"}) {
 #ifdef __vita__
         sceIoMkdir(path.c_str(), 0777);
 #else
@@ -33,53 +33,51 @@ bool GameVfs::prepareDirectories() {
     return true;
 }
 
-std::vector<std::string> GameVfs::listMods() const {
-    std::vector<std::string> mods;
+std::vector<std::string> GameVfs::listProfiles() const {
+    std::vector<std::string> profiles;
     error_.clear();
 #ifdef __vita__
-    const SceUID dfd = sceIoDopen(mods_.c_str());
-    if (dfd < 0) { error_ = "could not scan mods directory"; return mods; }
+    const SceUID dfd = sceIoDopen(profiles_.c_str());
+    if (dfd < 0) { error_ = "could not scan profiles directory"; return profiles; }
     for (;;) {
         SceIoDirent entry{};
         const int result = sceIoDread(dfd, &entry);
         if (result <= 0) {
-            if (result < 0) error_ = "mods directory read failed";
+            if (result < 0) error_ = "profiles directory read failed";
             break;
         }
         const std::string name(entry.d_name);
 #else
-    DIR* dir = opendir(mods_.c_str());
-    if (!dir) { error_ = "could not scan mods directory"; return mods; }
+    DIR* dir = opendir(profiles_.c_str());
+    if (!dir) { error_ = "could not scan profiles directory"; return profiles; }
     for (;;) {
         errno = 0;
         dirent* entry = readdir(dir);
         if (!entry) {
-            if (errno) error_ = "mods directory read failed";
+            if (errno) error_ = "profiles directory read failed";
             break;
         }
         const std::string name(entry->d_name);
 #endif
-        if (safeRelativePath(name) && name.find('/') == std::string::npos && isDirectory(mods_ + "/" + name))
-            mods.push_back(name);
+        if (safeRelativePath(name) && name.find('/') == std::string::npos && isDirectory(profiles_ + "/" + name))
+            profiles.push_back(name);
     }
 #ifdef __vita__
     sceIoDclose(dfd);
 #else
     closedir(dir);
 #endif
-    std::sort(mods.begin(), mods.end());
-    return mods;
+    std::sort(profiles.begin(), profiles.end());
+    return profiles;
 }
 
-void GameVfs::selectOriginal() { active_mod_.clear(); error_.clear(); }
-
-bool GameVfs::selectMod(const std::string& name) {
+bool GameVfs::selectProfile(const std::string& name) {
     error_.clear();
-    if (!safeRelativePath(name) || name.find('/') != std::string::npos || !isDirectory(mods_ + "/" + name)) {
-        error_ = "invalid or missing mod directory";
+    if (!safeRelativePath(name) || name.find('/') != std::string::npos || !isDirectory(profiles_ + "/" + name)) {
+        error_ = "invalid or missing profile directory";
         return false;
     }
-    active_mod_ = name;
+    active_profile_ = name;
     return true;
 }
 
@@ -87,29 +85,13 @@ bool GameVfs::resolve(const std::string& relative, std::string& resolved) const 
     resolved.clear();
     error_.clear();
     if (!safeRelativePath(relative)) { error_ = "unsafe resource path"; return false; }
+    if (active_profile_.empty()) { error_ = "no active data profile"; return false; }
 
-    // Every selectable APK/data set is autonomous. A selected profile must
-    // resolve only from its own directory; silently borrowing game/ bytes can
-    // hide an incomplete Vita adaptation and makes a mod impossible to install
-    // without the base dataset. This mirrors Android, where each audited APK
-    // runs independently.
-    if (!active_mod_.empty()) {
-        const std::string candidate = mods_ + "/" + active_mod_ + "/" + relative;
-        if (isRegularFile(candidate)) { resolved = candidate; return true; }
-        if (exists(candidate)) { error_ = "profile resource is not a regular file: " + candidate; return false; }
-        error_ = "missing selected profile resource: " + relative;
-        return false;
-    }
-
-    const std::string candidate = game_ + "/" + relative;
+    const std::string candidate = profiles_ + "/" + active_profile_ + "/" + relative;
     if (isRegularFile(candidate)) { resolved = candidate; return true; }
-    error_ = "missing original resource: " + relative;
+    if (exists(candidate)) { error_ = "profile resource is not a regular file: " + candidate; return false; }
+    error_ = "missing selected profile resource: " + relative;
     return false;
-}
-
-bool GameVfs::originalDataPresent() const {
-    // Bootstrap indicator only. Does not prove a complete playable installation.
-    return isRegularFile(game_ + "/common.pac");
 }
 
 bool GameVfs::safeRelativePath(const std::string& path) {
