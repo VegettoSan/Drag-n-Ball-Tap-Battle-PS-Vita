@@ -214,3 +214,28 @@ fixed load succeeds. Its fixed C++ peak is 5,454,432 bytes; this measurement
 excludes Vorbis C allocations and other live owners. The user confirms 00.24
 works on physical Vita. Keep artifact identity and limited hardware scope with
 that result; new rebuilds still require device testing.
+
+## Reusable lesson from 00.32 → 00.33: verify the generated ownership handoff
+
+Large-resource correctness is not finished when the normalized bytes are right.
+The final C++ ownership transfer can create a second transient peak if the compiler
+lowers a seemingly moving expression into copy assignment.
+
+In 00.32, Invasion `char15.pac` normalized to roughly 4.64 MiB. The source used
+`output = changed ? std::move(out) : input`; the matching Vita coredump and ELF
+showed execution through `std::vector<unsigned char>::operator=` before
+`std::bad_alloc`. The cache policy was not enough because the final handoff itself
+asked for another large contiguous allocation.
+
+The 00.33 fix uses an explicit branch: `output.swap(out)` for transformed data and
+ordinary copy only for unchanged input. Physical testing then completed several
+Invasion fights without reproducing the Saitama -> Freezer crash.
+
+For future Vita ports:
+
+- inspect allocation **shape**, not only final size and retained-cache budgets;
+- symbolize the exact coredump against the exact ELF before changing gameplay;
+- prefer explicit swap/move ownership for multi-MiB transformed buffers;
+- add source/compiler regressions around allocation-sensitive handoffs;
+- keep transformed source bytes immutable on disk and fix the platform adapter
+  rather than repacking game data to hide memory bugs.
