@@ -61,7 +61,7 @@ static bool corpus(const std::string& installation, const std::string& temp) {
     GameVfs real(installation); GameDatabase original, community, mixed;
     CHECK(original.load(real));
     CHECK(original.game.records().size()==271 && original.text.records().size()==1);
-    CHECK(real.selectMod("Android14") && community.load(real));
+    CHECK(real.selectProfile("Android14") && community.load(real));
     CHECK(community.game.records().size()==271 && community.text.records().size()==1);
     CHECK(original.game.encoding()==PacEncoding::Original);
     CHECK(community.game.encoding()==PacEncoding::Community14);
@@ -76,16 +76,16 @@ static bool corpus(const std::string& installation, const std::string& temp) {
     }
     // Reproduce the actual mixed-codec route: converted override + ordinary fallback.
     GameVfs overlay(temp); CHECK(overlay.prepareDirectories());
-    CHECK(copy(installation+"/game/gamedata.pac",temp+"/game/gamedata.pac"));
-    CHECK(copy(installation+"/game/text00.pac",temp+"/game/text00.pac"));
-    CHECK(mkdir((temp+"/mods/Mixed").c_str(),0700)==0);
-    CHECK(copy(installation+"/mods/Android14/gamedata.pac",temp+"/mods/Mixed/gamedata.pac"));
-    CHECK(overlay.selectMod("Mixed") && mixed.load(overlay));
+    CHECK(copy(installation+"/profiles/Original/gamedata.pac",temp+"/profiles/Original/gamedata.pac"));
+    CHECK(copy(installation+"/profiles/Original/text00.pac",temp+"/profiles/Original/text00.pac"));
+    CHECK(mkdir((temp+"/profiles/Mixed").c_str(),0700)==0);
+    CHECK(copy(installation+"/profiles/Android14/gamedata.pac",temp+"/profiles/Mixed/gamedata.pac"));
+    CHECK(overlay.selectProfile("Mixed") && mixed.load(overlay));
     CHECK(mixed.game.encoding()==PacEncoding::Community14 && mixed.text.encoding()==PacEncoding::Original);
-    CHECK(mixed.game.sourcePath()==temp+"/mods/Mixed/gamedata.pac");
-    CHECK(mixed.text.sourcePath()==temp+"/game/text00.pac");
+    CHECK(mixed.game.sourcePath()==temp+"/profiles/Mixed/gamedata.pac");
+    CHECK(mixed.text.sourcePath()==temp+"/profiles/Original/text00.pac");
     // Broken override fails visibly instead of quietly reading the base file.
-    { std::ofstream broken(temp+"/mods/Mixed/gamedata.pac"); broken << "broken"; }
+    { std::ofstream broken(temp+"/profiles/Mixed/gamedata.pac"); broken << "broken"; }
     CHECK(!mixed.load(overlay) && !mixed.error.empty());
     CHECK(mixed.game.records().empty() && mixed.text.records().empty());
     std::cout << "GAME TABLE CORPUS PASS: 271+1 records per APK; " << changed << '/' << compared
