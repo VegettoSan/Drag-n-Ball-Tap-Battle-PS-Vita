@@ -69,6 +69,72 @@ public final class PatchResourceInit implements Opcodes {
                 " read/close=" + reads[0] + "/" + closes[0]);
     }
 
+    // Extend only the character-selection storage/loop boundaries that the
+    // pinned Gen core hardcodes to 90. The Vita VFS already audits the actual
+    // contiguous profile roster (00..99); use that count at runtime instead of
+    // inventing characters. Card/Bluetooth/UI constants that also happen to be
+    // 90 are deliberately left untouched.
+    static byte[] adaptCharacterCapacity(byte[] bytes) throws Exception {
+        ClassNode node = new ClassNode(ASM9);
+        new ClassReader(bytes).accept(node, ClassReader.SKIP_FRAMES);
+
+        int arrays = 0;
+        int loops = 0;
+        Set<String> charArrays = new HashSet<>(Arrays.asList(
+            "bCharIndex", "bCharVersionSv", "bCharNoSv"
+        ));
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<clinit>") && method.desc.equals("()V")) {
+                for (AbstractInsnNode insn : method.instructions.toArray()) {
+                    if (!(insn instanceof FieldInsnNode)) continue;
+                    FieldInsnNode field = (FieldInsnNode) insn;
+                    if (field.getOpcode() != PUTSTATIC || !field.owner.equals(PKG + "TCBManajer") ||
+                        !charArrays.contains(field.name)) continue;
+                    AbstractInsnNode newArray = field.getPrevious();
+                    while (newArray != null && newArray.getOpcode() < 0) newArray = newArray.getPrevious();
+                    AbstractInsnNode count = newArray == null ? null : newArray.getPrevious();
+                    while (count != null && count.getOpcode() < 0) count = count.getPrevious();
+                    if (newArray == null || newArray.getOpcode() != NEWARRAY ||
+                        !(count instanceof IntInsnNode) || count.getOpcode() != BIPUSH ||
+                        ((IntInsnNode) count).operand != 90)
+                        throw new IOException("Unexpected " + field.name + " allocation shape");
+                    ((IntInsnNode) count).operand = 100;
+                    arrays++;
+                }
+            }
+
+            boolean rosterLoop =
+                (method.name.equals("CharVisibleInit") && method.desc.equals("(" + GW + ")V")) ||
+                (method.name.equals("ClearCharDLALL") && method.desc.equals("(" + GW + ")V"));
+            if (!rosterLoop) continue;
+
+            int replaced = 0;
+            for (AbstractInsnNode insn : method.instructions.toArray()) {
+                if (!(insn instanceof IntInsnNode) || insn.getOpcode() != BIPUSH ||
+                    ((IntInsnNode) insn).operand != 90) continue;
+                InsnList count = new InsnList();
+                count.add(new MethodInsnNode(INVOKESTATIC, PKG + "NativePlatform",
+                    "installedCharacters", "()I", false));
+                method.instructions.insertBefore(insn, count);
+                method.instructions.remove(insn);
+                replaced++;
+                loops++;
+            }
+            if (replaced != 1)
+                throw new IOException("Expected one character-count boundary in " +
+                    method.name + ", got " + replaced);
+        }
+
+        if (arrays != 3 || loops != 2)
+            throw new IOException("Unexpected character-capacity patch shape: arrays=" +
+                arrays + " loops=" + loops);
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
     // Retain the original GetString table traversal and String constructor;
     // replace only its platform encoding token, selected per resolved table.
     static byte[] adaptText(byte[] bytes) throws Exception {
@@ -181,13 +247,14 @@ public final class PatchResourceInit implements Opcodes {
         if (original == null) throw new IOException("Original GameData absent");
         verifyByteDefault(entries.get(PKG + "TCBManajer.class"));
         entries.put(CLASS + ".class", adapt(original));
-        entries.put(PKG+"TCBManajer.class",adaptText(entries.get(PKG+"TCBManajer.class")));
+        byte[] tcb = adaptText(entries.get(PKG+"TCBManajer.class"));
+        entries.put(PKG+"TCBManajer.class", adaptCharacterCapacity(tcb));
         try (JarOutputStream jar = new JarOutputStream(Files.newOutputStream(out, StandardOpenOption.CREATE_NEW))) {
             for (Map.Entry<String, byte[]> e : entries.entrySet()) {
                 JarEntry entry = new JarEntry(e.getKey()); entry.setTime(0);
                 jar.putNextEntry(entry); jar.write(e.getValue()); jar.closeEntry();
             }
         }
-        System.out.println("Adapted verified Android resource I/O and text encoding boundaries; all other class payloads retained");
+        System.out.println("Adapted verified Android resource I/O, text encoding and audited 00..99 character-capacity boundaries; all other class payloads retained");
     }
 }
