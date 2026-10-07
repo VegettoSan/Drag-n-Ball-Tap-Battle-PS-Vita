@@ -52,6 +52,25 @@ See [TEST_VITA_00_33](TEST_VITA_00_33.md),
 [build evidence](evidence/vita_build_00.33.json) and
 [hardware evidence](evidence/vita_hardware_00.33.json).
 
+
+### Documentation reconciliation — 00.33
+
+After the hardware confirmation, the repository documentation was swept end to
+end. All **59 Markdown files** now contain either the current 00.33 checkpoint or
+an explicit status banner pointing back to this file. Historical test reports keep
+their original observations/build identity, but stale statements that incorrectly
+presented 00.21/00.22/00.24/00.30 as the current checkpoint were corrected.
+
+The active documentation contract is therefore:
+
+- 00.33 is the current hardware-confirmed development checkpoint for the tested paths;
+- the Invasion Saitama -> Freezer repeated-fight crash is RESOLVED in the tested scope;
+- Samu's 92-character dynamic roster is hardware-confirmed;
+- the Loading loop regression is resolved;
+- profile resources and mutable saves remain isolated;
+- old test documents are historical evidence, not current blockers.
+
+
 ## 00.32 candidate — fix 00.31 infinite Loading
 
 Physical 00.31 logs from both Invasion and Zuper/Samu show the engine alive at
