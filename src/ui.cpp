@@ -357,8 +357,8 @@ bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choic
             if (pointer.phase != PointerPhase::Begin) continue;
             for (int row = 0; row < visible && first + row < total; ++row) {
                 const float y = theme_ready ? (132.0f + row * 58.0f) : (120.0f + row * 44.0f);
-                const float x0 = theme_ready ? 176.0f : 44.0f;
-                const float x1 = theme_ready ? 918.0f : 916.0f;
+                const float x0 = theme_ready ? 78.0f : 44.0f;
+                const float x1 = theme_ready ? 820.0f : 916.0f;
                 const float y0 = theme_ready ? y - 5.0f : y - 7.0f;
                 const float y1 = theme_ready ? y + 50.0f : y + 31.0f;
                 if (pointer.x >= x0 && pointer.x <= x1 &&
@@ -423,24 +423,44 @@ bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choic
                 const bool active = index == selected;
                 const float tint = active ? 1.0f : 0.70f;
 
+                // Center the complete Gen button on the Vita screen. The source
+                // button is 260 px wide and its cyan/blue interior spans roughly
+                // x=19..241; at 664 px this puts the usable text center at ~480.
+                constexpr float kButtonX = 148.0f;
+                constexpr float kButtonW = 664.0f;
+                constexpr float kButtonH = 46.0f;
+                constexpr float kBlueCenterX = 480.0f;
+                constexpr float kBlueTextWidth = 530.0f;
+                constexpr float kBallX = 84.0f;
+
                 if (active) {
                     glEnable(GL_BLEND);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    rect(248.0f, y - 3.0f, 664.0f, 52.0f, 0.10f, 0.60f, 1.0f, 0.22f);
+                    rect(kButtonX, y - 3.0f, kButtonW, 52.0f,
+                         0.10f, 0.60f, 1.0f, 0.22f);
                 }
-                drawUiTexture(theme_ball, 184.0f, y - 3.0f, 52.0f, 52.0f, active ? 1.0f : 0.66f);
-                drawUiTexture(theme_button, 248.0f, y, 664.0f, 46.0f, tint);
+                drawUiTexture(theme_ball, kBallX, y - 3.0f, 52.0f, 52.0f,
+                              active ? 1.0f : 0.66f);
+                drawUiTexture(theme_button, kButtonX, y, kButtonW, kButtonH, tint);
 
                 char number[16];
                 std::snprintf(number, sizeof(number), "%02d - ", index + 1);
                 const std::string label = std::string(number) +
                     clipped(profiles[static_cast<size_t>(index)], 39);
 
-                const float scale = label.size() > 34 ? 1.75f : (label.size() > 27 ? 2.0f : 2.25f);
-                shadowText(282.0f, y + 13.0f, scale, label,
-                           active ? 1.0f : 0.86f,
-                           active ? 0.98f : 0.90f,
-                           active ? 0.78f : 0.94f);
+                // Fit and center the label strictly inside the cyan/blue interior,
+                // never over the silver bevels. Long folder names shrink instead
+                // of drifting into either metallic edge.
+                const float natural_units =
+                    label.empty() ? 1.0f :
+                    (static_cast<float>(label.size()) * 6.0f - 1.0f);
+                const float scale =
+                    std::max(1.35f, std::min(2.25f, kBlueTextWidth / natural_units));
+                const float text_y = y + (kButtonH - 7.0f * scale) * 0.5f;
+                centeredShadowText(kBlueCenterX, text_y, scale, label,
+                                   active ? 1.0f : 0.86f,
+                                   active ? 0.98f : 0.90f,
+                                   active ? 0.78f : 0.94f);
             }
 
             drawUiTexture(theme_header, 72.0f, 489.0f, 816.0f, 39.0f, 0.88f);
