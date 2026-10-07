@@ -1,0 +1,90 @@
+{
+  "schema": "dbtb-web-extractor-validation-v1",
+  "date": "2026-10-07",
+  "tool": "DBTapBattle Web Extractor 1.0",
+  "runtime_contract": "profiles-v1",
+  "title_id": "DBTB01178",
+  "pages": {
+    "workflow": "Deploy Web APK Extractor",
+    "run_id": 37703911061,
+    "conclusion": "success",
+    "url": "https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/"
+  },
+  "checks": {
+    "javascript_syntax": "pass",
+    "unit_core": "pass",
+    "selector_materialization": "pass",
+    "output_zip_crc": "pass for explicitly reopened generated packages"
+  },
+  "real_apk_tests": [
+    {
+      "apk": "DBTapBattle.apk",
+      "sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+      "layout": "raw",
+      "pac_codec": "original-or-unknown",
+      "file_count": 57,
+      "result": "pass"
+    },
+    {
+      "apk": "gen.apk",
+      "sha256": "d52cbd7ef248d995ad17ba6ec8ec6fa08590a344ac2a9786e5ac839bf7715f28",
+      "layout": "assets",
+      "pac_codec": "original-or-unknown",
+      "file_count": 146,
+      "character_count": 13,
+      "character_indices": "00..12",
+      "bundled_save": true,
+      "result": "pass"
+    },
+    {
+      "apk": "tap battle android 14.apk",
+      "sha256": "a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4",
+      "layout": "community14",
+      "pac_codec": "community14-a210795b",
+      "file_count": 144,
+      "character_count": 13,
+      "character_indices": "00..12",
+      "result": "pass"
+    },
+    {
+      "apk": "DBTB en español para Android 14.apk",
+      "sha256": "b38cc2c4ae3f20d1b1c6c1419a7b6b62ab57ea8954468874f6c5f8c40b39a098",
+      "layout": "community14",
+      "pac_codec": "community14-es-d594affc",
+      "file_count": 144,
+      "character_count": 13,
+      "character_indices": "00..12",
+      "generated_zip_entries": 148,
+      "result": "pass"
+    },
+    {
+      "apk": "TAP BATTLE INVASION BETA 3.apk",
+      "sha256": "caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d",
+      "layout": "community14",
+      "pac_codec": "community14-invasion-05aa0c5e",
+      "file_count": 177,
+      "character_count": 22,
+      "character_indices": "00..21",
+      "result": "pass"
+    },
+    {
+      "apk": "DragonBallZuperSamuGamerYT.apk",
+      "sha256": "1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d",
+      "layout": "assets",
+      "pac_codec": "original-or-unknown",
+      "file_count": 383,
+      "character_count": 92,
+      "character_indices": "00..91",
+      "bundled_save": true,
+      "profile_save_installed": false,
+      "generated_zip_size_bytes": 405409508,
+      "generated_zip_entries": 387,
+      "result": "pass"
+    }
+  ],
+  "notes": [
+    "APK bytes and generated commercial payloads are not committed.",
+    "The web tool processes APK data locally in the browser.",
+    "Real-APK validation is host/browser-core evidence, not a guarantee for every browser memory ceiling or arbitrary mod."
+  ]
+}
