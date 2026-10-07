@@ -13,7 +13,7 @@ Los niveles de evidencia deben mantenerse separados:
 - **OBSERVADO EN APK:** bytes, hashes, estructura ZIP, manifiesto, DEX, PAC, audio y librerías comprobados directamente.
 - **NORMALIZADO/DECODIFICADO:** contenido comparado después de quitar únicamente protecciones/metadatos cuyo contrato está confirmado.
 - **INFERENCIA:** relación probable entre mods o intención de un cambio; nunca tratar como hecho si no hay evidencia directa.
-- **HARDWARE CONFIRMED:** solo lo probado en PS Vita real. La referencia estable sigue siendo 00.24 hasta que 00.25 sea probado físicamente.
+- **HARDWARE CONFIRMED:** solo lo probado en PS Vita real. La referencia de desarrollo actual es 00.33: Loading y roster dinámico están confirmados en hardware, y el crash reproducible de Invasion Saitama→Freezer queda resuelto tras varias peleas consecutivas sin fallo.
 
 No se debe reconstruir ni modificar lógica original del motor a partir de estos documentos. El motor original AOT sigue siendo la autoridad; Vita debe adaptar sus servicios al contrato del motor.
 
@@ -773,6 +773,24 @@ El sexto APK auditado es [DragonBallZuperSamuGamerYT](DRAGONBALL_ZUPER_SAMUGAMER
 - anomalías observadas: type `u` con URLs de metadata en char35/54, type `.pn` con payload PNG real en char42, y `charf20/21` PAC vacíos count=0;
 - 15/17 BGM no son Vorbis pese a terminar en `.ogg` (MP3/AAC).
 
-Este APK es evidencia fuerte de una expansión de roster **data-driven** sobre Gen, pero no certifica que Vita pueda usar 92 personajes sin cambios. El gate actual solo audita índices 0..30 y cualquier ampliación debe basarse en evidencia del core, pruebas de regresión y hardware. No modificar el motor por inferencia.
+Este APK es evidencia fuerte de una expansión de roster **data-driven** sobre Gen. La ruta Vita actual audita el namespace de dos dígitos 00..99 y la prueba física 00.32 confirmó que Samu expone sus 92 personajes. La cobertura completa de todas las peleas/recursos de esos 92 sigue siendo una matriz distinta; no modificar lógica de juego por inferencia.
 
 Evidencia machine-readable: [dragonball_zuper_samugameryt_2026-10-06.json](evidence/dragonball_zuper_samugameryt_2026-10-06.json).
+
+## 19. Estado Vita 00.33 de perfiles modificados
+
+La evidencia de hardware más reciente cambia dos conclusiones de compatibilidad:
+
+- **Samu/Gen-derived:** el roster completo de 92 personajes se muestra en Vita;
+  el límite de 13 era una combinación de flags del save y límites internos del
+  core, no un límite del formato PAC.
+- **Invasion:** el perfil protegido funciona de forma standalone en el recorrido
+  probado, con audio mixto directo y texto corregido. El crash reproducible al
+  avanzar Saitama a su segunda pelea contra Freezer fue simbolizado como un
+  `std::bad_alloc` nativo en la entrega del buffer PAC normalizado. 00.33 elimina
+  la copia duplicada con `output.swap(out)`, y el usuario completó varias peleas
+  sin reproducir el fallo.
+
+Estas confirmaciones no convierten automáticamente toda diferencia de
+`classes.dex` de Invasion en comportamiento soportado; las adaptaciones Tier-C
+siguen requiriendo evidencia concreta.
