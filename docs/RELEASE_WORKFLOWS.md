@@ -1,7 +1,8 @@
 # Compilar y publicar VPK desde GitHub Actions
 
 <!-- DBTB_DOC_STATUS:START -->
-> **Project checkpoint:** 00.34 is the latest hardware-confirmed stable checkpoint.
+> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
+> Gameplay/runtime baseline: 00.34 hardware-confirmed.
 > See [CURRENT_STATUS](CURRENT_STATUS.md) and
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 <!-- DBTB_DOC_STATUS:END -->
@@ -11,8 +12,8 @@ Hay dos botones manuales en **Actions**:
 
 | Workflow | Etiqueta automatica (version actual) | Publicacion |
 |---|---|---|
-| [Publicar VPK - Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml) | `v00.34` con el CMake actual | Release normal, marcada Latest |
-| [Publicar VPK - Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml) | `v00.34-pre.<run_id>` con el CMake actual | Prerelease para pruebas, no reemplaza Latest |
+| [Publicar VPK - Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml) | `v01.00` con el CMake actual | Release normal, marcada Latest |
+| [Publicar VPK - Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml) | `v01.00-pre.<run_id>` con el CMake actual | Prerelease para pruebas, no reemplaza Latest |
 
 Ambos usan la version de `tools/aot/engine/vita/CMakeLists.txt`, el commit exacto
 seleccionado al ejecutar el workflow y el mismo compilador compartido. No usan
@@ -22,7 +23,7 @@ nativos, con el mismo pipeline completo; la referencia física actual es 00.33.
 
 ## Contrato de datos del VPK
 
-El VPK 00.34 espera datos externos exclusivamente en:
+El VPK v1.0 (APP_VER `01.00`, TITLE_ID `DBTB01178`) espera datos externos exclusivamente en:
 
 ```text
 ux0:data/DBTapBattle/profiles/<Profile>/
@@ -84,7 +85,7 @@ fuera del checkout, en un directorio temporal borrado incluso al fallar el job.
 La entrada privada en un runner efimero es parte de estos workflows manuales
 autorizados; los workflows automaticos siguen usando solo codigo/herramientas
 publicas. No se distribuyen datasets de personajes/musica dentro del VPK. Desde
-00.34 se empaquetan unicamente cuatro PNG de interfaz derivados de Gen/select0.pac
+v1.0 se empaquetan unicamente cuatro PNG de interfaz derivados de Gen/select0.pac
 para vestir el selector inicial; sus hashes son parte de la validacion de release.
 
 La publicacion empieza como borrador con todos los archivos. Solo se hace
@@ -116,3 +117,11 @@ Referencias de implementacion: [workflows reutilizables](https://docs.github.com
 [sintaxis y permisos](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax),
 [gh release create](https://cli.github.com/manual/gh_release_create) y
 [gh release edit](https://cli.github.com/manual/gh_release_edit).
+
+
+## Identidad de la primera release estable
+
+La release **v1.0** usa APP_VER `01.00` y TITLE_ID `DBTB01178`. Hereda el
+runtime/juego del checkpoint 00.34 confirmado en Vita física. Los documentos de
+prueba 00.34 conservan `DBTB00001` porque describen el artefacto histórico exacto
+que fue probado; no deben reescribirse como si ese VPK hubiera usado el nuevo ID.
