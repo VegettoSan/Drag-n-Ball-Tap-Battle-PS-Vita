@@ -98,6 +98,16 @@ class WindowsExtractorTests(unittest.TestCase):
                                  ('res/raw/save.bin', b'progress'), ('classes.dex', b'NOT EXTRACTED')])
         package, = self.run_tool(source)
         m = self.manifest(package)
+        report = json.loads((package / 'RESULTADO.json').read_text('utf-8'))
+        self.assertEqual(report['tool_version'], '1.5')
+        self.assertEqual(report['runtime_contract'], 'profiles-v1')
+        self.assertEqual(report['runtime_root'], 'ux0:data/DBTapBattle/profiles/')
+        self.assertEqual(m['runtime_contract'], 'profiles-v1')
+        self.assertFalse((package / 'data/DBTapBattle/game').exists())
+        self.assertFalse((package / 'data/DBTapBattle/mods').exists())
+        guide = (package / 'LEEME_COPIAR_A_VITA.txt').read_text('utf-8')
+        self.assertIn('There is no built-in Original row.', guide)
+        self.assertIn('ux0:data/DBTapBattle/profiles/<Profile>/', guide)
         self.assertEqual(m['file_count'], 2)
         self.assertEqual(m['unknown_files'], ['nested/new.xyz'])
         self.assertTrue(m['bundled_save'])
@@ -193,6 +203,21 @@ class WindowsExtractorTests(unittest.TestCase):
         self.assertTrue(m['standalone_profile'])
         self.assertEqual(m['vita_profile'], 'profiles/rawmod')
         self.assertFalse((package / 'data/DBTapBattle/game').exists())
+
+    def test_profile_name_always_comes_from_apk_filename(self):
+        data = encoded_pac()
+        source = self.apk('My Custom Android14 Build', [
+            ('assets/2752.pac', data),
+            ('assets/E03B00.pac', data),
+            ('assets/8AC100.pac', data),
+            ('assets/FAFD0000.pac', data),
+        ])
+        package, = self.run_tool(source)
+        report = json.loads((package / 'RESULTADO.json').read_text('utf-8'))
+        self.assertEqual(report['profiles'][0]['profile'],
+                         'profiles/My_Custom_Android14_Build')
+        self.assertTrue((package / 'data/DBTapBattle/profiles/My_Custom_Android14_Build/common.pac').is_file())
+        self.assertFalse((package / 'data/DBTapBattle/profiles/Android14').exists())
 
     def rejected(self, files):
         source = self.apk(files=files)
