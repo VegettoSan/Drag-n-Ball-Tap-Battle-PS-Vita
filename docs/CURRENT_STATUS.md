@@ -35,6 +35,11 @@ original engine begins loading the selected dataset.
 Windows extractor 1.5 targets the same `profiles-v1` contract and always derives
 the visible profile folder from the APK filename.
 
+Build/tool evidence for the current candidate:
+- Vita engine native smoke on selector/runtime checkpoint: `37679405794` PASS.
+- Private build-tool export on the same checkpoint: `37679405502` PASS.
+- Windows extractor 1.5 `profiles-v1` regression: `37688246446` PASS.
+
 00.33 remains the latest **HARDWARE CONFIRMED** gameplay checkpoint until the user
 finishes the 00.34 physical test.
 
