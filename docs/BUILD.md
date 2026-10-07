@@ -1,4 +1,37 @@
-# Build and install — full engine
+# Build and packaging
+
+## 00.29 physical-test build — Samu / Invasion / shared save
+
+A complete original-engine 00.29 VPK was generated from the pinned original APK
+SHA-256 `b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b`
+using TeaVM 0.12.3 and VitaSDK 2026.08.
+
+Artifact:
+
+- `DBTapBattle-Vita-00.29-Samu-Invasion-SharedSave-Test.vpk`
+- size: 2,653,396 bytes
+- VPK SHA-256: `fc2a4ced375212eeb32609c199b95e0c58b55dfc6ccf07c0ce6da95f9a093e75`
+- eboot SHA-256: `4f5f911adc27de89dea996670fdfd6d64b6a29b340f2f0826c1638eddfa6f06a`
+- ELF SHA-256: `a3574f8777eb2d12a1db08af6a96bde509bff6787ee1d0af293d65b19e755f58`
+- APP_VER: `00.29`
+- TITLE_ID: `DBTB00001`
+- LiveArea validation: PASS
+- runtime source checkpoint: `1fe6e2dbff77b456846f7c4b6203c01383a5a549`
+
+The VPK contains the exact approved 12,906-byte `save.bin` seed at its root,
+SHA-256 `64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb`.
+Runtime copies it to `ux0:data/DBTapBattle/save.bin` only when the global save is
+absent.
+
+Because the interactive build container terminates long compiler invocations, this
+functional hardware-test package uses the already documented split technique:
+24 private TeaVM remainder units at `-O1`, the very large `TCBManajer.c` at
+`-O0`, and native adapters at `-O2`. This affects build optimization layout,
+not the original gameplay/data logic. Final performance/release claims still
+require the standard reproducible build workflow.
+
+See [00.29 device test](TEST_VITA_00_29.md) and
+[evidence](evidence/vita_build_00.29.json).
 
 For manual GitHub compilation/publication, use the separate
 [release/prerelease workflows](RELEASE_WORKFLOWS.md). They consume the pinned
