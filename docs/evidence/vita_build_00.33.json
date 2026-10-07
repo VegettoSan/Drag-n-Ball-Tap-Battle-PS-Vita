@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "date": "2026-10-07",
+  "version": "00.33",
+  "purpose": "Fix the reproducible Invasion Saitama char15 -> Freezer char05 second-fight native bad_alloc seen on 00.32.",
+  "hardware_00_32": {
+    "loading_loop": "fixed",
+    "dynamic_rosters": "hardware confirmed by user; all characters of tested mods load",
+    "invasion_text": "no further issue observed in the tested path",
+    "failure": "Invasion crashes advancing Saitama to second fight vs Freezer",
+    "runtime_log": "terminates with uncaught std::bad_alloc",
+    "coredump": "psp2core-1791349821-0x00006c26c1-eboot.bin.psp2dmp"
+  },
+  "coredump_symbolication": {
+    "runtime_module": "dbtb_original_engine",
+    "runtime_text_base": "0x81067000",
+    "fault_pc": "0x81323f46",
+    "rebased_fault_pc": "0x812bcf46",
+    "normalise_return_runtime": "0x81252947",
+    "normalise_return_rebased": "0x811eb946",
+    "allocation_path": [
+      "operator new(unsigned int)",
+      "std::vector<unsigned char>::operator=(const std::vector<unsigned char>&)",
+      "normalise(...)",
+      "normaliseEnginePac(...)",
+      "readEngineResource(...)",
+      "EngineResourceCache::read(...)",
+      "dbtb_resourceFiltered",
+      "dbtb_openResourceStream",
+      "NativePlatform.openGameData",
+      "ResourceAdapter.open",
+      "GameData.Init"
+    ]
+  },
+  "invasion_resources": {
+    "saitama": "char15.pac",
+    "saitama_source_bytes": 4054165,
+    "saitama_normalized_bytes": 4638744,
+    "saitama_entries": 101,
+    "freezer": "char05.pac",
+    "freezer_source_bytes": 2865768
+  },
+  "root_cause": "The final conditional expression 'output = changed ? std::move(out) : input' was lowered by GCC 15 to vector copy assignment on the changed/protected-PAC path. The normalized PAC already existed in out, so battle reload requested a second ~4.6 MiB contiguous allocation and failed after heap fragmentation.",
+  "fix": {
+    "source": "src/engine_resources.cpp",
+    "changed_path": "if (changed) output.swap(out);",
+    "unchanged_path": "else output = input;",
+    "gameplay_logic_changed": false,
+    "pac_source_bytes_changed": false,
+    "dex_changed": false
+  },
+  "artifact": {
+    "name": "DBTapBattle-Vita-00.33-Invasion-Saitama-Freezer-Fix.vpk",
+    "bytes": 2650664,
+    "sha256": "d241499a356ac11c523909a84b0c383910ef7a387efcfdc2c05d3581be86fd77",
+    "eboot_sha256": "bc0a0d4293e5b416084d02050dd6b3c17529cc63fab00bfe7a48d0310303d43b",
+    "elf_sha256": "6c55a58f59277bee0d2632dbefca8c1a938d577457b867489d3605a11cee7dbe",
+    "app_ver": "00.33",
+    "title_id": "DBTB00001",
+    "livearea": "PASS",
+    "runtime_source_checkpoint": "71b95d54ad6eef0ebd2043eb96269f6e7a4e1370"
+  },
+  "save_seed_sha256": "64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb",
+  "validation": {
+    "runtime_fix_native_smoke_run": 37576167796,
+    "runtime_fix_native_smoke": "PASS",
+    "community_profiles_run": 37576153732,
+    "community_profiles": "PASS",
+    "private_export_run": 37576167813,
+    "private_export": "PASS",
+    "complete_private_build": "PASS",
+    "livearea": "PASS",
+    "hardware_00_33": "PENDING"
+  }
+}
