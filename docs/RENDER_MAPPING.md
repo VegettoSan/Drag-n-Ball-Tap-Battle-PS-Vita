@@ -3,12 +3,7 @@
 Source: supplied DEX, disassembled with androguard and decompiled locally with
 jadx 1.5.6. API availability checked against vitaGL commit
 `cdbba4232cb93a741ba190be9a32143dfed12d8d`. Availability is source-level evidence,
-**not a GPU fidelity or hardware test**. The adapter is now implemented in the
-full AOT engine: earlier Vita menu/selection/battle are confirmed, and 00.19
-restores text. 00.21 starts/reaches the menu but fails character loading; 00.22 repairs its
-mask contract. Physical selection recovery and exhaustive pixel/state parity
-remain pending.
-Current checkpoint: [CURRENT_STATUS](CURRENT_STATUS.md).
+**not by itself a GPU-fidelity or hardware test**. The adapter is implemented in the full AOT engine. Later physical checkpoints confirm menu/selection/battle rendering, text recovery, dynamic rosters and repeated Invasion fight transitions. Exhaustive pixel/state parity across every scene remains open. Current checkpoint: [CURRENT_STATUS](CURRENT_STATUS.md).
 
 | Original API | Vita equivalent | Classification / adaptation |
 |---|---|---|
