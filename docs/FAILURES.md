@@ -432,3 +432,18 @@ command line, with quoted environment paths expanded once. Run 37390881454
 passes all 13 tests, including the actual BAT. The extraction implementation was
 unchanged by this harness correction.
 See [evidence](evidence/windows_extractor_2026-10-05.json).
+
+## Resolved in 00.33 — Invasion repeated-fight protected-PAC bad_alloc
+
+00.32 could reproducibly crash when Invasion advanced Saitama to his second fight
+against Freezer. The Vita dump resolved the failure through native
+`std::vector<unsigned char>::operator=` inside protected-PAC normalization. The
+changed PAC already existed as a ~4.64 MiB normalized vector; a compiler-generated
+copy requested another large contiguous allocation and eventually threw
+`std::bad_alloc` after battle-memory fragmentation.
+
+00.33 replaces the ambiguous conditional move with explicit ownership transfer:
+`if (changed) output.swap(out); else output = input;`. Physical Vita testing then
+completed several fights without reproducing the crash. Status: **RESOLVED in the
+tested hardware scope**. The regression test must remain because restoring the
+conditional assignment can silently reintroduce the extra allocation.

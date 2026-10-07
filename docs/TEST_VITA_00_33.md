@@ -1,5 +1,18 @@
 # PS Vita physical test — 00.33 Invasion Saitama -> Freezer
 
+## Hardware result — PASS (2026-10-07)
+
+The user retested 00.33 on a physical PS Vita and reports **several consecutive
+fights without a crash**. The reproduced 00.32 Saitama -> second fight vs Freezer
+failure did not recur, so the protected-PAC duplicate-allocation bug is considered
+**resolved in the tested hardware scope**.
+
+This confirms the 00.33 ownership-transfer fix on device. It does not claim that
+every possible mod, mode, character pairing or arbitrarily long session has been
+exhaustively tested. Machine-readable evidence:
+[evidence/vita_hardware_00.33.json](evidence/vita_hardware_00.33.json).
+
+
 ## Purpose
 
 Retest the exact 00.32 hardware crash with the smallest evidenced fix.

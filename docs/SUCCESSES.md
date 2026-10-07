@@ -539,3 +539,18 @@ inside protected-PAC `normalise()`, not through character gameplay logic or a
 corrupt Freezer/Saitama asset. 00.33 removes that duplicate protected-PAC
 allocation with ownership swap. Full build/packaging passes; physical 00.33
 confirmation remains pending.
+
+## 2026-10-07 — 00.33 repeated Invasion fights pass on physical Vita
+
+**HARDWARE CONFIRMED.** The user reports several consecutive Invasion fights on
+00.33 without a crash after the exact 00.32 `std::bad_alloc` was isolated to a
+duplicate protected-PAC vector assignment. This validates the explicit
+`output.swap(out)` ownership handoff on the affected real-device path.
+
+The same testing session also preserves the already confirmed 00.32 fixes: the
+startup Loading loop is gone and complete mod rosters are visible, including the
+extended Samu roster. Invasion text remained correct in the tested path.
+
+Scope remains bounded: this closes the reproduced Saitama/Freezer repeated-fight
+crash, not every possible long-session/mod/mode combination. See
+`evidence/vita_hardware_00.33.json`.

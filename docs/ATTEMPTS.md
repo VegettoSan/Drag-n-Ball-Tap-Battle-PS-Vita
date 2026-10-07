@@ -1169,3 +1169,12 @@ conditional assignment.
 
 **Status:** full 00.33 VPK builds and LiveArea validates. Hardware retest of the
 exact Saitama -> Freezer path is pending.
+
+### Attempt 036 hardware follow-up — RESOLVED
+
+00.33 was tested on a physical Vita after the coredump-driven ownership fix. The
+user reports several fights completed without a crash, including continued
+Invasion play after the previously reproducible transition. The 00.32
+`std::bad_alloc`/protected-PAC duplicate-allocation issue is therefore closed in
+the tested scope. Keep the explicit `output.swap(out)` ownership transfer and its
+regression test; do not restore the conditional vector assignment.
