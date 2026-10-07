@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'assets/livearea/**'
+      - 'assets/selector/**'
       - 'cmake/LiveArea.cmake'
       - 'tools/decode_livearea_assets.py'
       - 'tools/validate_livearea_vpk.py'
@@ -17,6 +18,8 @@ on:
       - 'tools/aot/engine/java/com/namcobandaigames/dragonballtap/apk/Downloader.java'
       - 'assets/default_save.bin.zlib.b64'
       - 'tools/materialize_default_save.py'
+      - 'tools/materialize_selector_theme.py'
+      - 'tests/test_selector_theme.py'
       - 'tools/aot/engine/native/**'
       - 'tools/aot/engine/vita/**'
       - 'tools/aot/vita/utf16.c'
@@ -41,6 +44,7 @@ jobs:
           python3 -m unittest discover -s tests -p test_shared_save_seed.py -v
           python3 -m unittest discover -s tests -p test_offline_startup_contract.py -v
           python3 -m unittest discover -s tests -p test_protected_pac_ownership.py -v
+          python3 -m unittest discover -s tests -p test_selector_theme.py -v
           rm -rf /tmp/dbtb-livearea-check
           python3 tools/decode_livearea_assets.py \
             --source assets/livearea \
@@ -62,7 +66,9 @@ jobs:
             tools/validate_livearea_vpk.py \
             tools/normalize_livearea_palette.py \
             tools/repack_livearea_vpk.py \
+            tools/materialize_selector_theme.py \
             assets/livearea \
+            assets/selector \
             cmake \
             docs/THIRD_PARTY.md \
             licenses
