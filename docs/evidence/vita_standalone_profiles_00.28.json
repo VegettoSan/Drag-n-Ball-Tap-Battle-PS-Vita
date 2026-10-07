@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "date": "2026-10-06",
+  "status": "BUILD_HOST_AND_CI_VALIDATED_HARDWARE_PENDING",
+  "candidate": {
+    "version": "00.28",
+    "title_id": "DBTB00001",
+    "runtime_source_marker": "fa9d7b6",
+    "vpk_name": "DBTapBattle-Vita-00.28-Standalone-Profiles.vpk",
+    "vpk_bytes": 2648911,
+    "vpk_sha256": "4411302f1b7e673fe49c98bb9ce0b7fe47ed086a34e1ad03025735411d07cab2",
+    "eboot_bytes": 2313770,
+    "eboot_sha256": "5473e2fd7e1ea04cd9c207af61a440ef88d265b2338a093b9a616e1762b37f12",
+    "elf_bytes": 7364760,
+    "elf_sha256": "595052aec345e8b08f29cc650e0cfa085c2d37d9103769b778c73778808e9bf6",
+    "livearea_validation": "PASS"
+  },
+  "runtime_contract": {
+    "original_root": "ux0:data/DBTapBattle/game/",
+    "profile_root": "ux0:data/DBTapBattle/mods/<Profile>/",
+    "selected_profile_fallback_to_game": false,
+    "profile_local_save": true,
+    "empty_game_supported_when_at_least_one_profile_is_installed": true,
+    "selector_behavior": "when Original data is absent, initial selection is the first installed profile and confirming Original is rejected"
+  },
+  "real_apk_host_matrix": {
+    "game_file_count": 0,
+    "profiles": [
+      {"name":"Gen","characters":13,"audit_ready":true},
+      {"name":"Android14","characters":13,"audit_ready":true},
+      {"name":"Espanol","characters":13,"audit_ready":true},
+      {"name":"Invasion","characters":22,"audit_ready":true},
+      {"name":"ZuperSamu","characters":92,"audit_ready":true}
+    ],
+    "invasion_bobj00": {
+      "present": false,
+      "resolved_from_game": false,
+      "expected_error": "missing selected profile resource: bobj00.pac"
+    }
+  },
+  "scope": {
+    "proven": "VFS isolation, installation audit, protected PAC parsing at audit time, profile-local selection/save paths, full Vita build/package",
+    "pending": "physical Vita gameplay paths and any original-core request that differs from a modified APK classes.dex"
+  },
+  "ci": {
+    "standalone_selected_profile_test": {"run_id": 37551313841, "conclusion": "success"},
+    "standalone_vfs_triggered_profile_suite": {"run_id": 37551340654, "conclusion": "success"},
+    "selector_native_smoke": {"run_id": 37551281462, "conclusion": "success"},
+    "version_00_28_native_smoke": {"run_id": 37551372432, "conclusion": "success"}
+  }
+}
