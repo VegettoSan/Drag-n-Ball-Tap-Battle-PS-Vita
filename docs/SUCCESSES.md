@@ -8,9 +8,36 @@
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
+## 2026-10-07 — 00.34 HARDWARE CONFIRMED — stable unified profiles and selector
+
+The user tested `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` on a
+physical PS Vita and reports it **stable and functional**, with no issue found so
+far in the exercised session.
+
+Exact artifact:
+
+- SHA-256:
+  `24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03`
+- source:
+  `0da8684805d1510caf93130a22eed523a854c1d6`
+
+Hardware-confirmed in the reported test:
+
+- unified `profiles/` data selection;
+- no artificial Original/missing row;
+- fullscreen background without the blue orb;
+- centered themed buttons;
+- labels centered inside the cyan/blue button area;
+- profile-opening/loading transition;
+- successful transition into the game;
+- no crash or new functional regression observed so far.
+
+00.34 is now the current stable hardware checkpoint. 00.33 remains historical
+evidence for the protected-PAC repeated-fight allocation repair.
+
 ## 2026-10-07 — 00.34 build/tool success — unified profiles and selector UX
 
-**Scope:** BUILD/CI confirmed only; physical Vita result pending.
+**Scope:** superseded by the HARDWARE CONFIRMED 00.34 result above.
 
 - Runtime source uses only `profiles/<Profile>/` for current datasets and saves.
 - Selector no longer synthesizes Original/missing rows.
