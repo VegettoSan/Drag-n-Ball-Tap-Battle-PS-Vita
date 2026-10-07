@@ -313,7 +313,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         $UsedProfiles.Add($profile.ToLowerInvariant(), $true)
         $target = Join-Path (Join-Path $Package 'data/DBTapBattle') $profile
         $items = New-Object 'System.Collections.Generic.List[object]'
-        $names = @{}; [long]$total = 0
+        $names = @{}; $bundledSave = $false; [long]$total = 0
         for ($index = 0; $index -lt $archive.Entries.Count; $index++) {
             $entry = $archive.Entries[$index]
             if (-not $entry.FullName.StartsWith($prefix,[StringComparison]::Ordinal)) { continue }
@@ -323,12 +323,17 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             if ($layout -eq 'community14') { $name = Get-CanonicalName $name $communityCodec }
             $key = $name.ToLowerInvariant()
             if ($names.ContainsKey($key)) { throw "Nombre duplicado tras normalizar: $name" }
-            $names.Add($key,$true)
             $record = $records[$index]
             $mode = ($record.Attributes -shr 16) -band 61440
             if ($mode -ne 0 -and $mode -ne 32768) { throw "Entrada ZIP no regular: $name" }
             if (($record.Flags -band 1) -ne 0 -or $record.Method -notin @(0,8)) { throw "Entrada cifrada o compresion no soportada: $name" }
             if ($entry.Length -ne $record.Size) { throw "Tamano ZIP inconsistente: $name" }
+            if ($key -eq 'save.bin') {
+                if ($bundledSave) { throw 'El APK contiene mas de un save.bin en el layout seleccionado.' }
+                $bundledSave = $true
+                continue
+            }
+            $names.Add($key,$true)
             $total += $entry.Length
             if ($entry.Length -gt 64MB -or $total -gt 512MB) { throw 'Datos exceden limites: 64 MiB por archivo / 512 MiB por APK.' }
             $items.Add([pscustomobject]@{ Entry=$entry; Name=$name; Record=$record })
@@ -375,19 +380,20 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             incomplete_character_indices=@($roster.Incomplete);
             character_indices_after_gap=@($roster.LaterAfterGap);
             unsupported_character_files=@($roster.Unsupported);
-            bundled_save=$names.ContainsKey('save.bin') }
+            save_policy='global-vpk-seed-ux0-root';
+            bundled_save=$bundledSave; profile_save_installed=$false }
         Write-Json (Join-Path $target 'dbtb_manifest.json') $manifest
         Write-Host ("OK: {0} -> {1} ({2} archivos, {3} renombrados, {4} personajes)" -f [IO.Path]::GetFileName($Apk),$profile,$files.Count,$renamed.Count,$roster.Count)
         if (-not $roster.RuntimeCompatible) {
-            Write-Host 'AVISO: el roster no cumple completamente el contrato Vita 00.28 (13..100 slots continuos, sin tripletas parciales).' -ForegroundColor Yellow
+            Write-Host 'AVISO: el roster no cumple completamente el contrato Vita 00.29 (13..100 slots continuos, sin tripletas parciales).' -ForegroundColor Yellow
         }
         if ($roster.Unsupported.Count) {
-            Write-Host 'AVISO: se encontraron IDs de personaje de 3+ digitos; 00.28 solo soporta indices 00..99.' -ForegroundColor Yellow
+            Write-Host 'AVISO: se encontraron IDs de personaje de 3+ digitos; 00.29 solo soporta indices 00..99.' -ForegroundColor Yellow
         }
-        if ($names.ContainsKey('save.bin')) { Write-Host 'AVISO: contiene save.bin. Conserva tu partida de Vita al copiar los datos.' -ForegroundColor Yellow }
+        if ($bundledSave) { Write-Host 'INFO: el APK trae save.bin, pero 00.29 no lo instala; el VPK usa un unico save global.' -ForegroundColor Yellow }
         return [pscustomobject]@{ apk=[IO.Path]::GetFileName($Apk); profile=$profile; files=$files.Count;
             source_sha256=$apkHash; character_count=$roster.Count; character_indices=$roster.CompleteIndices;
-            character_runtime_compatible=$roster.RuntimeCompatible; bundled_save=$names.ContainsKey('save.bin') }
+            character_runtime_compatible=$roster.RuntimeCompatible; bundled_save=$bundledSave }
     }
     finally {
         if ($archive) { $archive.Dispose() }
@@ -441,7 +447,7 @@ try {
         $lines += ('- {0}: ux0:data/DBTapBattle/{1}/ -> elige {2} en el VPK.' -f $report.apk,$report.profile,$label)
         $lines += ('  Personajes detectados: {0} {1}' -f $report.character_count,$report.character_indices)
         if (-not $report.character_runtime_compatible) { $lines += '  AVISO: el roster no cumple por completo el contrato 00.28; revisa dbtb_manifest.json.' }
-        if ($report.bundled_save) { $lines += '  Incluye save.bin del APK: NO reemplaces tu partida existente. Usa Omitir para ese archivo.' }
+        if ($report.bundled_save) { $lines += '  El APK incluia save.bin, pero no se instala: 00.29 usa el save global del VPK.' }
     }
     $lines += @('',
         'Cada APK/mod se guarda como perfil independiente dentro de mods/, salvo el APK Original exacto.',
@@ -450,9 +456,9 @@ try {
         'Para usar Gen como base Original, copia el CONTENIDO de mods/Gen/ a game/ deliberadamente.',
         'Gen en mods/Gen/ funciona como perfil independiente; no necesita moverlo para seleccionarlo.', '',
         'IMPORTANTE AL ACTUALIZAR UNA INSTALACION:',
-        'Haz copia de seguridad de tu save.bin de cada perfil antes de copiar.',
-        'En VitaShell omite save.bin si ya tienes una partida. Para reemplazar datos y conservarla,',
-        'haz backup, reemplaza los recursos y restaura tu save.bin en la MISMA carpeta.',
+        'El unico save jugable es ux0:data/DBTapBattle/save.bin.',
+        'El VPK 00.29 lo crea desde su semilla incluida solo cuando ese archivo no existe.',
+        'Los save.bin incluidos por APKs/mods no se copian a sus perfiles.',
         'No compartas partidas entre Original, Gen y Android14.',
         'Cada uso de la herramienta crea un paquete nuevo; no borra ni mezcla salidas anteriores.', '',
         'Los PAC y OGG se conservan byte por byte. Los perfiles Android14 solo cambian nombres confirmados.',
