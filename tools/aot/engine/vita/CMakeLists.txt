@@ -24,7 +24,7 @@ get_filename_component(TEAVM_C_DIR "${TEAVM_C_DIR}" ABSOLUTE)
 
 set(VITA_APP_NAME "Dragon Ball Tap Battle Vita")
 set(VITA_TITLEID "DBTB00001")
-set(VITA_VERSION "00.31")
+set(VITA_VERSION "00.32")
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 set(DBTB_DEFAULT_SAVE "${CMAKE_CURRENT_BINARY_DIR}/default_save.bin")
