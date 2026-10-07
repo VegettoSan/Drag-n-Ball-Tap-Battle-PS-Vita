@@ -1,5 +1,12 @@
 # PS Vita physical test — 00.30 Samu / Invasion / independent seeded saves
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 00.30 keeps the Samu compressed-BGM handoff fix and Invasion UTF-8 character-text
 fallback from 00.29. The only intentional architecture change from 00.29 is save
 ownership.
