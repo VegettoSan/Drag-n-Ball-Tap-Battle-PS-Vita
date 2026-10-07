@@ -4,9 +4,9 @@ These rules are part of the technical contract of the port.
 
 1. **The original game is the behavioral source of truth.** Reconstruct or adapt its systems; do not replace them with arbitrary hardcoded approximations when the original behavior can be understood.
 2. **Keep original data formats whenever practical.** `.pac` and the formats contained inside them should be read directly by the Vita port when possible.
-3. **Every installed APK data set is independent of the VPK and of other data sets.** `game/` is the optional Original profile; extracted Gen/community APKs live under `mods/<Profile>/` and must be able to run without `game/` being populated.
-4. **Profiles never overwrite or borrow gameplay resources or mutable saves from one another.** Selecting `mods/<Profile>/` resolves PAC/audio/data and its writable `save.bin` only from that profile. 00.30 uses the VPK's `app0:/save.bin` only as a first-use seed, copied independently into each profile.
-5. **No silent cross-profile fallback.** A missing resource in a selected profile is a compatibility error to diagnose. Do not hide missing Vita behavior by borrowing a file from `game/`; adapt the port to the selected APK contract with evidence.
+3. **Every installed APK data set is an independent first-level profile.** Current runtime root is `ux0:data/DBTapBattle/profiles/<Profile>/`; there is no special `game/` root and no separate `mods/` root.
+4. **Profiles never overwrite or borrow gameplay resources or mutable saves from one another.** Selecting a profile resolves PAC/audio/data and its writable `save.bin` only from that same `profiles/<Profile>/` directory. The VPK's `app0:/save.bin` is only a first-use seed.
+5. **No silent cross-profile fallback.** A missing resource in a selected profile is a compatibility error to diagnose. Do not hide missing Vita behavior by borrowing a file from another profile; adapt the port to the selected APK contract with evidence.
 6. **No silent destructive conversion.** If a format must be converted for Vita, document the limitation, source format, output format and reproducible conversion process.
 7. **Small, reviewable commits.** Keep changes focused so working states can be recovered easily.
 8. **Record experiments.** Every meaningful test belongs in `ATTEMPTS.md`; confirmed wins in `SUCCESSES.md`; dead ends in `FAILURES.md`.
@@ -36,12 +36,12 @@ These rules are part of the technical contract of the port.
 
 The port should eventually accept ordinary community asset/data mods without requiring a Vita-specific repack whenever those mods only replace formats already understood by the original game.
 
-Current checkpoint: full engine **00.33** is user-confirmed on Vita for the
-reproduced Invasion repeated-fight crash. Loading recovery and dynamic installed
+Current hardware checkpoint: full engine **00.33** is user-confirmed on Vita for the
+reproduced Invasion repeated-fight crash. **00.34** is the current user-test candidate for the unified `profiles/` layout and selector UX; it is not hardware-confirmed yet. Loading recovery and dynamic installed
 rosters are also hardware-confirmed in the recent test sequence. Original masks
 187/251, PAC streaming, direct audio, independent saves and approved LiveArea are
 retained. The 00.33 protected-PAC ownership fix must remain allocation-free.
-See [CURRENT_STATUS](CURRENT_STATUS.md) and [PORTING_GUIDE](PORTING_GUIDE.md).
+See [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md) and [CURRENT_STATUS](CURRENT_STATUS.md) and [PORTING_GUIDE](PORTING_GUIDE.md).
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
 > **Current hardware checkpoint — 00.33 (2026-10-07):** physical Vita testing
