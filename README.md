@@ -1,5 +1,21 @@
 # Dragon Ball Tap Battle PS Vita
 
+Development candidate **00.31** is the direct response to the 00.30
+physical-Vita report. 00.30 proved Samu now boots, its direct compressed audio
+works, and Invasion's earlier text corruption was not reproduced; it also exposed
+four remaining issues: only the first 13 Samu characters were visible, Invasion
+hit `std::bad_alloc` when starting a later fight, Shop threw the unsupported
+Android-marketplace exception, and the obsolete online-check state waited around
+10–25 seconds.
+
+00.31 keeps standalone datasets, direct MP3/AAC/Vorbis, the Invasion text fix and
+independent per-profile saves. It additionally derives character availability from
+the audited profile roster (Samu = 92), extends only the verified character arrays
+and loops needed for IDs 00..99, reduces multi-MiB PAC cache peaks between
+battles, returns cleanly from the unavailable Android Shop service, and matches
+the original Gen offline Downloader stub so the catalog/update state can finish
+immediately.
+
 Current hardware checkpoint: **DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk** fixes
 native PCM allocation growth at Android14 battle start and preserves the now
 hardware-confirmed LiveArea. Full build, host tests and the user’s Vita retest pass. See [00.24 result](docs/TEST_VITA_00_24.md).
