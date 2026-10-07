@@ -1,5 +1,39 @@
 # Build and packaging
 
+## 00.33 physical-test build — Invasion Saitama -> Freezer allocation fix
+
+00.33 is built from the exact 00.32 coredump diagnosis. The protected-PAC
+normalizer no longer duplicates the fully rebuilt PAC at the final ownership
+handoff.
+
+Artifact:
+
+- `DBTapBattle-Vita-00.33-Invasion-Saitama-Freezer-Fix.vpk`
+- size: 2,650,664 bytes
+- VPK SHA-256: `d241499a356ac11c523909a84b0c383910ef7a387efcfdc2c05d3581be86fd77`
+- eboot SHA-256: `bc0a0d4293e5b416084d02050dd6b3c17529cc63fab00bfe7a48d0310303d43b`
+- ELF SHA-256: `6c55a58f59277bee0d2632dbefca8c1a938d577457b867489d3605a11cee7dbe`
+- APP_VER: `00.33`
+- TITLE_ID: `DBTB00001`
+- runtime source checkpoint: `71b95d54ad6eef0ebd2043eb96269f6e7a4e1370`
+- LiveArea validation: PASS
+- VPK save seed remains exact:
+  `64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb`.
+
+The matching 00.32 coredump/ELF resolves the failing allocation through
+`std::vector<unsigned char>::operator=` inside `normalise()`. For protected
+Invasion `char15.pac`, the normalized buffer is about 4.64 MiB. 00.33 uses
+`output.swap(out)` on the changed path, so that already-built allocation is
+transferred rather than copied into a second contiguous vector.
+
+The interactive full-engine package uses the same documented split TeaVM
+compilation technique as recent hardware candidates. Runtime native smoke,
+Community profile tests, private tool export, complete private link/SELF/VPK and
+LiveArea validation pass. Physical Saitama -> Freezer retest remains pending.
+
+See [TEST_VITA_00_33](TEST_VITA_00_33.md) and
+[evidence](evidence/vita_build_00.33.json).
+
 ## 00.32 physical-test build — Loading loop regression fix
 
 00.32 retains the 00.31 roster/Shop/memory work but corrects the offline
