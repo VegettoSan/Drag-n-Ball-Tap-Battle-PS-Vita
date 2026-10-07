@@ -1,5 +1,12 @@
 # Community mod codec profiles
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 This page records the protected resource profiles that have been audited for the
 Vita port. It documents interoperability metadata only; no APK, DEX, native
 library or commercial game payload is stored in this repository.
