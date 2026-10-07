@@ -15,6 +15,8 @@ on:
       - 'src/engine_resources.hpp'
       - 'src/installed_data.cpp'
       - 'src/installed_data.hpp'
+      - 'src/vfs.cpp'
+      - 'src/vfs.hpp'
       - 'tools/community14.py'
       - 'tools/extract_apk_data.py'
       - 'tools/prepare_samu_mod.py'
