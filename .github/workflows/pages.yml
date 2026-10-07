@@ -1,0 +1,64 @@
+name: Deploy Web APK Extractor
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'assets/selector/**'
+      - 'tools/materialize_selector_theme.py'
+      - 'tests/web_extractor_core.mjs'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Validate web extractor
+        run: |
+          set -euo pipefail
+          node --check web/extractor-core.mjs
+          node --check web/app.mjs
+          node tests/web_extractor_core.mjs
+
+      - name: Materialize validated selector theme
+        run: |
+          set -euo pipefail
+          rm -rf web/selector
+          python3 tools/materialize_selector_theme.py assets/selector web/selector
+          test -f web/selector/select0_background.png
+          test -f web/selector/select0_header.png
+          test -f web/selector/select0_button.png
+          test -f web/selector/select0_ball_1.png
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
