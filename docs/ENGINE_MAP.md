@@ -21,7 +21,7 @@ reference, not a drop-in engine. Its licensing/completeness is not established.
 | Downloader / Smap | HTTP, catalog/device/news data and marketplace downloads/billing | Local installed-data path; HTTP rejected, offline catalog boundary |
 | BluetoothManajer / BluetoothSearch | RFCOMM discovery/transport; game receives/sends battle data | Transport adapter, not a generic input remap; multiplayer PENDING |
 
-## Current checkpoint — 00.33
+## Current release — v1.0 / 00.34 hardware baseline
 
 The original core is privately AOT-compiled with TeaVM rather than manually
 reconstructed. The current 00.33 hardware checkpoint preserves the original task,
