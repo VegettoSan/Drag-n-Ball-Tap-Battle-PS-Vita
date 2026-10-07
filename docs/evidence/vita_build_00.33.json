@@ -70,8 +70,10 @@
     "private_export": "PASS",
     "complete_private_build": "PASS",
     "livearea": "PASS",
-    "hardware_00_33": "PENDING",
+    "hardware_00_33": "PASS",
     "pac_ownership_regression_run": 37576489894,
-    "pac_ownership_regression": "PASS"
-  }
+    "pac_ownership_regression": "PASS",
+    "hardware_scope": "User reports several consecutive Invasion fights on physical Vita with no crash after 00.33; reproduced Saitama -> second fight vs Freezer issue considered resolved in tested scope."
+  },
+  "hardware_result_evidence": "docs/evidence/vita_hardware_00.33.json"
 }
