@@ -1,6 +1,64 @@
-# Current status — 2026-10-06 (America/Bogota), 00.24 hardware / 00.27 candidate
+# Current status — 2026-10-06 (America/Bogota), 00.24 hardware / 00.28 candidate
 
-## 00.27 candidate — Samu + Invasion source audio unchanged / direct MP3-AAC decoding
+## 00.28 candidate — standalone APK-derived profiles
+
+00.28 changes the runtime data contract so every selected APK-derived profile is
+autonomous. `game/` is now only the optional Original profile. When
+`mods/<Profile>/` is selected, `GameVfs` resolves PAC/data/audio **only** from
+that directory and reports `missing selected profile resource: ...` rather than
+borrowing from Original. Saves remain profile-local.
+
+This is deliberate: Android14, Español and Invasion are independently runnable
+APKs even though their inventories differ from Original/Gen. If the preserved
+original TeaVM core asks for a resource that a modified APK does not need, 00.28
+exposes that as a compatibility gap to adapt from APK/DEX evidence instead of
+masking it with cross-profile fallback.
+
+Selector behavior also supports a mod-only installation. When
+`game/common.pac` is absent and one or more profiles exist, the first profile is
+initially selected; `ORIGINAL - DATA MISSING` cannot be launched.
+
+The standalone contract has two levels of non-hardware evidence:
+
+- synthetic CI proves a missing file in the selected profile is **not** satisfied
+  by an identically named file still present in `game/`;
+- a real-APK host matrix with an empty `game/` accepts Gen (13 characters),
+  Android14 (13), Español (13), Invasion (22) and ZuperSamu (92). Invasion also
+  explicitly fails resolution of absent `bobj00.pac` inside its own profile
+  rather than falling back, while its installation audit remains valid because
+  that omission is part of the audited APK contract.
+
+00.28 retains all 00.27 direct-audio work: Vorbis remains on libvorbisfile,
+MP3/AAC-M4A are detected by content and decoded directly with Vita
+`SceAudiodec`, and source assets are not transcoded or renamed.
+
+Full physical-test artifact:
+
+- `DBTapBattle-Vita-00.28-Standalone-Profiles.vpk`
+- 2,648,911 bytes
+- VPK SHA-256:
+  `4411302f1b7e673fe49c98bb9ce0b7fe47ed086a34e1ad03025735411d07cab2`
+- eboot SHA-256:
+  `5473e2fd7e1ea04cd9c207af61a440ef88d265b2338a093b9a616e1762b37f12`
+- ELF SHA-256:
+  `595052aec345e8b08f29cc650e0cfa085c2d37d9103769b778c73778808e9bf6`
+- runtime source marker: `fa9d7b6`
+- APP_VER `00.28`, TITLE_ID `DBTB00001`
+- LiveArea validation: PASS.
+
+This build is host/build validated, not yet hardware-confirmed. The critical
+device test is to leave `game/` empty and run a profile all the way through
+menu, selection, battle, audio and save. Any selected-profile missing-resource
+message should be investigated in the port, not fixed by copying a file from
+Original.
+
+Evidence:
+[vita_standalone_profiles_00.28.json](evidence/vita_standalone_profiles_00.28.json).
+Physical test:
+[TEST_VITA_00_28](TEST_VITA_00_28.md).
+
+## Historical 00.27 candidate — Samu + Invasion direct source audio
+
 
 00.27 supersedes the 00.26 Samu import-time audio conversion approach. The user
 explicitly requires the mod to work with the files **exactly as they are stored
@@ -37,7 +95,7 @@ conversion is required.
 `tools/prepare_invasion_mod.py` is pinned to the audited APK/DEX hashes, uses
 the existing Community14 canonical alias extraction, validates all 22 triplets
 and the 5 MP3 + 2 AAC/M4A + 10 Vorbis BGM matrix, and requires
-`payloads_unchanged: true`. Invasion omits `bobj00.pac` and `font00.pac` by design; the supplied protected APKs are autonomous with that inventory. The Vita overlay may still use base fallback when the unchanged original core requests an omitted logical resource, but the installation audit no longer treats `bobj00.pac` as mandatory.
+`payloads_unchanged: true`. Invasion omits `bobj00.pac` and `font00.pac` by design; the supplied protected APKs are autonomous with that inventory. In 00.28 these omissions are no longer hidden by cross-profile fallback; a differing original-core request is treated as an explicit compatibility issue.
 
 The exact same 00.27 VPK binary is therefore the physical-test candidate for
 both Samu and Invasion. Resource compatibility for Invasion does not imply that
