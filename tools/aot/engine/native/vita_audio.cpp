@@ -645,6 +645,23 @@ void dbtb_voiceStop(void) {
 int32_t dbtb_bgmPlay(void* raw_name, float gain, int32_t loop) {
     if (!raw_name || !ensureAudio()) return -1;
     const std::string name = audioName(static_cast<const char*>(raw_name));
+
+    // SceAudiodec was intentionally initialized with one hardware stream per
+    // codec. Release the currently active BGM decoder before creating the next
+    // compressed track. 00.28 created the replacement first and only deleted
+    // the old decoder afterwards; Samu switches bgm_16 -> bgm_00 during title
+    // flow and the second sceAudiodecCreateDecoder consequently fails with
+    // 0x807f0007 even though both MP3 payloads are valid (and in this APK are
+    // byte-identical). Keep this transition serialized with the mixer so the
+    // audio thread can never dereference a decoder while it is being deleted.
+    {
+        AudioLockGuard lock;
+        bgm = Voice{};
+        bgm_stream.reset();
+        dbtb_closeCompressedBgm(bgm_compressed);
+        bgm_compressed = nullptr;
+    }
+
     bool stream_required = false;
     auto clip = decodeOgg(name, &stream_required);
     std::shared_ptr<BgmStream> stream;
@@ -656,10 +673,10 @@ int32_t dbtb_bgmPlay(void* raw_name, float gain, int32_t loop) {
         if (!compressed_error.empty()) runtimeLog("Compressed BGM rejected: " + name + ": " + compressed_error);
         return -1;
     }
+
     AudioLockGuard lock;
     bgm = clip ? makeVoice(std::move(clip), gain, loop != 0) : Voice{};
     bgm_stream = std::move(stream);
-    dbtb_closeCompressedBgm(bgm_compressed);
     bgm_compressed = compressed;
     return 0;
 }
