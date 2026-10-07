@@ -1,4 +1,4 @@
-# Original core integration — full engine 00.33
+# Original core integration — 00.33 hardware / 00.34 candidate
 
 This directory contains the handwritten platform layer for the original APK's
 Java core. The full private engine can now be generated with TeaVM and built for
@@ -8,10 +8,12 @@ outside Git; a successful build is not by itself hardware-playability evidence.
 
 ## Current checkpoint
 
-Latest full-engine hardware checkpoint is 00.33. The recent physical sequence
-confirms Loading recovery, dynamic installed rosters (including Samu 92) and the
-protected-PAC repeated-fight fix for Invasion. The original core remains preserved;
+Latest full-engine hardware checkpoint is 00.33. The current 00.34 user-test
+candidate retains those gameplay fixes while replacing the old game/mod directory
+split with the unified `profiles/<Profile>/` runtime contract and the Gen-styled
+selector/opening transition. 00.34 physical confirmation is pending. The original core remains preserved;
 recent private generation reaches 467 classes / 4086 methods. Read
+[CURRENT_RUNTIME_CONTRACT](../../../docs/CURRENT_RUNTIME_CONTRACT.md),
 [CURRENT_STATUS](../../../docs/CURRENT_STATUS.md),
 [BUILD](../../../docs/BUILD.md) and [VALIDATION](../../../docs/VALIDATION.md).
 
@@ -96,7 +98,7 @@ cmake -S tools/aot/engine/vita -B /private/build-vita \
 cmake --build /private/build-vita -j2
 ```
 
-The current private output is versioned from CMake; at this checkpoint it is `DBTapBattle-Vita-00.33.vpk` before any descriptive test-artifact rename. The work directories must be
+The current CMake version is 00.34. The exact current user-test package is documented in `docs/TEST_VITA_00_34.md`; 00.33 remains the latest hardware-confirmed gameplay package. The work directories must be
 outside the repository. Generated C, original/adapted JARs, classes, APKs and
 commercial payloads must not be committed. The source repository contains only
 the adapters, reproducible generation/build tooling and non-commercial evidence.
