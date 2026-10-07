@@ -475,8 +475,25 @@ Direct audit of the supplied Android14, Spanish and Invasion APKs confirmed that
 all three standalone protected builds omit `font00.pac` and begin their protected
 `bobj` family at index 01. Therefore `bobj00.pac` is not a universal mod-profile
 requirement. Commit `7fec715` removes the artificial `bobj00` requirement from
-the Vita installed-data gate while preserving ordinary VFS fallback if the
-unchanged original core requests an omitted logical resource. Community-profile
+the Vita installed-data gate. The later 00.28 contract removes cross-profile VFS
+fallback entirely; omitted resources stay visible as profile compatibility gaps. Community-profile
 CI, installed-data regression CI and Vita native smoke all pass. The corrected
 00.27 physical-test VPK has SHA-256
 `311a820f948e337b0626b7b46e6dcb2ca0628b81364941b11d4c837867ee1b96`.
+
+## 2026-10-06 — 00.28 real APK profiles pass with Original completely absent
+
+**Scope: HOST/BUILD CONFIRMED; physical Vita pending.**
+
+The selected-profile VFS is now isolated from `game/`. Regression coverage proves
+that a missing selected-profile character PAC is rejected even when an identically
+named file still exists under Original. With `game/` containing zero files, the
+real extracted datasets pass the installation audit independently: Gen 13,
+Android14 13, Español 13, Invasion 22 and ZuperSamu 92 characters.
+
+A full 00.28 Vita VPK builds with direct Vorbis/MP3/AAC support retained:
+`DBTapBattle-Vita-00.28-Standalone-Profiles.vpk`, SHA-256
+`4411302f1b7e673fe49c98bb9ce0b7fe47ed086a34e1ad03025735411d07cab2`,
+runtime marker `fa9d7b6`, LiveArea PASS. CI passes the profile suite and Vita
+native smoke. This establishes the standalone filesystem/import contract, not
+physical gameplay for every modified APK. See `TEST_VITA_00_28.md`.
