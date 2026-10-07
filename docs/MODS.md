@@ -1,7 +1,9 @@
 # Mod compatibility model — current v1.0 contract
 
 > Historical test documents may use older `game/` and `mods/` paths. The
-> current runtime contract is [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).\n> v1.0 uses APP_VER `01.00` and TITLE_ID `DBTB01178`; mod compatibility behavior\n> is inherited from the hardware-confirmed 00.34 runtime.
+> current runtime contract is [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+> v1.0 uses APP_VER `01.00` and TITLE_ID `DBTB01178`; mod compatibility behavior
+> is inherited from the hardware-confirmed 00.34 runtime.
 
 ## Selection model
 
