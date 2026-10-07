@@ -1,5 +1,13 @@
 # APK audit — 2026-10-04
 
+> **Historical document notice — current 00.34 contract:** this file preserves
+> evidence/instructions for the build or investigation named here. The current
+> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
+> current `game/` or `mods/` profile roots and no built-in Original selector
+> row. Do not reuse historical install paths for 00.34. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 Historical audit baseline: main `1e3699b`. Current engine status is maintained
 in [CURRENT_STATUS](CURRENT_STATUS.md); baseline findings below describe that
 source and early bootstrap, not the present implementation. Source: supplied `DBTapBattle.apk` version 1.4,
