@@ -79,11 +79,12 @@ Status: **FORMAT CONFIRMED + HOST COMPATIBILITY CONFIRMED**. Later physical Vita
 The mixed charset is handled at normalized payload boundaries; ordinary PAC headers do not imply Shift_JIS text00. Historical 00.20/00.22 notes remain useful for the origin of selective reads and selection fixes; the current runtime checkpoint is 00.33. Save publication is profile-local and atomic, while complete Android save-field interoperability remains broader validation work. See [CURRENT_STATUS](CURRENT_STATUS.md) and [VALIDATION](VALIDATION.md).
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.33 (2026-10-07):** physical Vita testing
-> confirms the reproduced Invasion repeated-fight/Saitama→Freezer crash is fixed
-> after the protected-PAC ownership-transfer repair. The recent hardware sequence
-> also confirms Loading recovery and dynamic installed rosters, including Samu's
-> 92 characters. Scope is limited to tested paths; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
+> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
+> and functional on physical PS Vita for the exercised selector, profile-loading
+> and gameplay paths, with no issue found so far. It retains the 00.33
+> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
+> See [CURRENT_STATUS](CURRENT_STATUS.md).
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## Deep offline reference — 2026-10-06
