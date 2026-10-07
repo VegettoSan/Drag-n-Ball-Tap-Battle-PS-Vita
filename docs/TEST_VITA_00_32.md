@@ -1,5 +1,12 @@
 # PS Vita physical test — 00.32 Loading regression
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 00.32 exists specifically to undo the 00.31 infinite-loading regression while
 retaining the 00.31 roster, Shop, memory and text/audio fixes.
 
