@@ -38,7 +38,7 @@ A PC-side extractor prepares this directory from a user-owned APK.
 
 ## ADR-005 — Non-destructive mod overlay
 
-**Status:** accepted — 2026-10-04
+**Status:** superseded by ADR-016 in 00.28 — historical 2026-10-04 contract
 
 Mods live under:
 
@@ -52,7 +52,7 @@ The virtual filesystem checks the active mod first and falls back to `game/` for
 
 ## ADR-006 — Original always selectable
 
-**Status:** accepted — 2026-10-04
+**Status:** refined by ADR-016 in 00.28 — Original remains visible but cannot launch when its data is missing
 
 The boot selector always exposes `Original` as entry 0 regardless of installed mods.
 
@@ -92,7 +92,8 @@ labels. Save compatibility requires a real original save fixture before approval
 **Status:** accepted — 2026-10-04. Support the supplied Android14 APK alongside
 the original with a verified metadata/image profile, not an Android .so loader.
 Normalize confirmed resource aliases during PC import and preserve every data
-byte/hash. Decode per file at runtime; keep the existing mod/original fallback.
+byte/hash. Decode per file at runtime. The earlier mod/original fallback clause
+was superseded by ADR-016; selected APK datasets are now isolated.
 Carry premultiplied-alpha state explicitly rather than double-multiplying RGB.
 Do not import arbitrary SWB changes or infer changed game mechanics from shared
 helpers. New constants/code need a fresh audit. Full native gameplay has since been demonstrated on earlier Vita builds; resource encoding alone still does not establish compatibility with code-modified APK rules.
