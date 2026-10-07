@@ -1,5 +1,12 @@
 # Matriz exhaustiva de archivos de datos — APK auditados (parte 2/3)
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](../CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 Continuación de [parte 1](APK_LOGICAL_FILE_MATRIX_2026-10-06_PART1.md).
 
 | Archivo lógico | Original | Gen | Android14 | Español | Invasion B3 |
