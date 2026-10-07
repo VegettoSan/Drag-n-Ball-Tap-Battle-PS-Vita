@@ -1,17 +1,17 @@
 # DragonBallZuperSamuGamerYT.apk — referencia técnica completa
 
-> **Historical document notice — current 00.34 contract:** this file preserves
+> **Historical document notice — current v1.0 contract:** this file preserves
 > evidence/instructions for the build or investigation named here. The current
 > Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
 > current `game/` or `mods/` profile roots and no built-in Original selector
-> row. Do not reuse historical install paths for 00.34. See
+> row. Do not reuse historical install paths for v1.0. See
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
 <!-- DBTB_DOC_STATUS:START -->
-> **Project checkpoint:** 00.33 is the current hardware-confirmed development
-> checkpoint for the tested paths. This file may document an earlier component
-> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
+> The hardware-confirmed gameplay/runtime baseline is 00.34. This file may
+> document an earlier component or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
 <!-- DBTB_DOC_STATUS:END -->
 
 
