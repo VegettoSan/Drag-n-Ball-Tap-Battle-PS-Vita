@@ -4,7 +4,7 @@ Current hardware checkpoint: **DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk** fix
 native PCM allocation growth at Android14 battle start and preserves the now
 hardware-confirmed LiveArea. Full build, host tests and the user’s Vita retest pass. See [00.24 result](docs/TEST_VITA_00_24.md).
 
-Development candidate **00.29** keeps the 00.28 standalone-data architecture and
+Development candidate **00.30** keeps the 00.28 standalone-data architecture and
 adds the fixes discovered by the user's physical Vita test. `game/` remains only
 the optional Original profile: selecting `mods/<Profile>/` resolves PAC/audio/data
 exclusively from that directory, so Gen, Android14, Español, Invasion or
@@ -15,15 +15,16 @@ its textures and direct Vorbis/MP3/AAC audio working**. Its remaining observed
 issue was corrupted post-battle/result text. Samu also proved that the 92-character
 dataset is detected standalone, but it exited after the title because the Vita
 audio backend tried to create a second MP3 decoder before releasing the previous
-one. 00.29 serializes that decoder handoff and adds a data-driven UTF-8 character
+one. 00.30 retains the 00.29 fix that serializes that decoder handoff and adds a data-driven UTF-8 character
 charset fallback for Android14/Invasion SetString slot differences. These fixes
 are build/CI validated and await the next physical retest.
 
-00.29 also changes save ownership intentionally: the VPK contains the exact
-user-provided 12,906-byte `app0:/save.bin` seed, and every profile reads/writes
-one mutable `ux0:data/DBTapBattle/save.bin`. The seed is copied only when the
-global save does not already exist. APK-local saves are no longer installed by
-the extractors.
+00.30 refines save ownership: the VPK still contains the exact
+user-provided 12,906-byte `app0:/save.bin` seed, but each selected dataset gets
+its **own writable copy**. Original uses `game/save.bin`; a mod uses
+`mods/<Profile>/save.bin`. The seed is copied only when that profile has no save
+yet, so later launches never erase its progress. APK-local saves are still not
+installed by the extractors; every profile starts from the same known VPK seed.
 
 Manual full-game publication: [Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml)
 or [Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml).
@@ -88,7 +89,8 @@ and LiveArea appearance are the remaining check for that repack.
 | 00.23 LiveArea-Fixed | User confirms presentation on physical Vita; tested 00.23 eboot unchanged | Android14 battle-start native Ogg allocation crash reported |
 | 00.24 | Full original-engine build; all 17 BGM PCM/low-allocation tests and ownership probes pass; user confirms hardware fix | Broader mode/profile and long-session coverage remains open |
 | 00.28 | Physical Vita: Invasion standalone gameplay/textures/direct audio work; Samu standalone detects 92 characters but exits during MP3 BGM transition | Invasion result text corrupt; Samu MP3 decoder handoff fails |
-| 00.29 | CI/native build: fixes compressed-BGM decoder replacement, adds character-profile charset fallback, and one VPK-seeded global save | Physical Samu + Invasion retest pending |
+| 00.29 | CI/native build: Samu decoder handoff + Invasion charset fallback + experimental global save | Superseded save model |
+| 00.30 | Same Samu/Invasion fixes; VPK seed copied independently to each selected profile on first use | Physical profile-save isolation retest pending |
 
 Use [current status and evidence](docs/CURRENT_STATUS.md) for the authoritative
 feature matrix, artifact hash and open issues. Older test reports describe their
@@ -108,20 +110,20 @@ engine requires the vitaGL shader compiler setup; see
 |---|---|
 | `ux0:data/DBTapBattle/game/` | Base dataset; the selector calls this Original |
 | `ux0:data/DBTapBattle/mods/<Profile>/` | Independent selectable APK-derived dataset |
-| `ux0:data/DBTapBattle/save.bin` | Single mutable save shared by Original and every mod/profile |
+| `game/save.bin` or `mods/<Profile>/save.bin` | Independent writable save, seeded once from the VPK for that profile |
 | `ux0:data/DBTapBattle/logs/runtime.log` | Appended boot, resource, text, audio and frame diagnostics |
 | `config/`, `saves/` | Compatibility/legacy directories; not the active gameplay save location |
 
 Resource resolution is profile-local. With a profile selected, only
 `mods/<Profile>/` is read; missing files do **not** fall back to `game/`. With
-Original selected, only `game/` is read. Gameplay resources remain profile-local, but 00.29 intentionally shares the single root `save.bin` across every profile. `mod.json` is optional and currently ignored.
+Original selected, only `game/` is read. Gameplay resources and save progress are profile-local in 00.30. Every profile starts from the same VPK seed but then modifies only its own `save.bin`. `mod.json` is optional and currently ignored.
 
 The first supplied original APK has **57 raw resources and no character
 triplets**. It is not a complete battle installation. Supplied Android14 has
 144 encoded assets and 13 indexed triplets; supplied `gen.apk` has 147 ordinary
 assets including those triplets and an optional bundled save. The audited
 `DragonBallZuperSamuGamerYT.apk` is Gen-derived with the same DEX/manifest but
-384 canonical assets and 92 character triplets. 00.29 can consume its original
+384 canonical assets and 92 character triplets. 00.30 can consume its original
 Vorbis/MP3/AAC BGM bytes directly, but the complete 92-character/audio matrix is
 not yet a hardware claim. Original in the selector means the
 base folder, not proof of which APK supplied its contents.
@@ -131,7 +133,7 @@ extract its ZIP, keep the BAT and PS1 together, and drag one or several APKs ont
 `Extraer_APK_para_Vita.bat`. It creates a new `Listo_para_Vita/Paquete_*/data/`
 ready to copy to the `ux0:` root. It keeps Original, Gen, Android14, Español and Invasion profiles separate,
 normalizes only audited protected aliases without changing source bytes, and
-records source/file hashes. No Python or 7-Zip is required. APK-local saves are reported but not installed; preserve `ux0:data/DBTapBattle/save.bin` when copying an update. See [Windows tool details and
+records source/file hashes. No Python or 7-Zip is required. APK-local saves are reported but not installed; preserve each profile's existing `save.bin` when copying an update. See [Windows tool details and
 verification](docs/WINDOWS_DATA_TOOL.md).
 
 ```sh
@@ -142,7 +144,7 @@ python3 tools/extract_apk_data.py /private/community.apk /private/install --mod 
 python3 tools/prepare_samu_mod.py /private/DragonBallZuperSamuGamerYT.apk /private/install/mods/ZuperSamu
 ```
 
-Copy the profile directories under `ux0:data/DBTapBattle/mods/`. Install `game/` only if you also want the optional Original profile. Keep a backup of the single root `ux0:data/DBTapBattle/save.bin` before destructive maintenance. The extractor preserves supplied
+Copy the profile directories under `ux0:data/DBTapBattle/mods/`. Install `game/` only if you also want the optional Original profile. Keep backups of the profile-local `game/save.bin` and `mods/<Profile>/save.bin` files before destructive maintenance. The extractor preserves supplied
 payload bytes; runtime codecs normalize only the confirmed formats in memory.
 See [data layout](docs/DATA_LAYOUT.md) and [mod compatibility](docs/MODS.md).
 
