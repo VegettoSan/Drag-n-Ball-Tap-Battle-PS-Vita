@@ -25,6 +25,17 @@ get_filename_component(TEAVM_C_DIR "${TEAVM_C_DIR}" ABSOLUTE)
 set(VITA_APP_NAME "Dragon Ball Tap Battle Vita")
 set(VITA_TITLEID "DBTB00001")
 set(VITA_VERSION "00.28")
+
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+set(DBTB_DEFAULT_SAVE "${CMAKE_CURRENT_BINARY_DIR}/default_save.bin")
+execute_process(
+  COMMAND "${Python3_EXECUTABLE}" "${REPO_ROOT}/tools/materialize_default_save.py"
+          "${REPO_ROOT}/assets/default_save.bin.zlib.b64" "${DBTB_DEFAULT_SAVE}"
+  RESULT_VARIABLE DBTB_DEFAULT_SAVE_RESULT
+)
+if(NOT DBTB_DEFAULT_SAVE_RESULT EQUAL 0 OR NOT EXISTS "${DBTB_DEFAULT_SAVE}")
+  message(FATAL_ERROR "Failed to materialize verified VPK save.bin seed")
+endif()
 execute_process(COMMAND git rev-parse --short HEAD WORKING_DIRECTORY "${REPO_ROOT}"
                 OUTPUT_VARIABLE DBTB_COMMIT OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
 if(NOT DBTB_COMMIT)
@@ -111,6 +122,7 @@ vita_create_vpk(DBTapBattle-Vita-${VITA_VERSION}.vpk ${VITA_TITLEID} eboot.bin
   FILE "${DBTB_LIVEAREA_DIR}/bg0.png" sce_sys/livearea/contents/bg0.png
   FILE "${DBTB_LIVEAREA_DIR}/startup.png" sce_sys/livearea/contents/startup.png
   FILE "${REPO_ROOT}/assets/livearea/template.xml" sce_sys/livearea/contents/template.xml
+  FILE "${DBTB_DEFAULT_SAVE}" save.bin
   FILE "${REPO_ROOT}/docs/THIRD_PARTY.md" notices/THIRD_PARTY.md
   FILE "${REPO_ROOT}/licenses/vitaGL-GPL-3.0.txt" notices/vitaGL-GPL-3.0.txt
   FILE "${REPO_ROOT}/licenses/vitaGL-LGPL-3.0.txt" notices/vitaGL-LGPL-3.0.txt
