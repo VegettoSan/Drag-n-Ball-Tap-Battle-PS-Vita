@@ -87,12 +87,20 @@ bool GameVfs::resolve(const std::string& relative, std::string& resolved) const 
     resolved.clear();
     error_.clear();
     if (!safeRelativePath(relative)) { error_ = "unsafe resource path"; return false; }
+
+    // Every selectable APK/data set is autonomous. A selected profile must
+    // resolve only from its own directory; silently borrowing game/ bytes can
+    // hide an incomplete Vita adaptation and makes a mod impossible to install
+    // without the base dataset. This mirrors Android, where each audited APK
+    // runs independently.
     if (!active_mod_.empty()) {
         const std::string candidate = mods_ + "/" + active_mod_ + "/" + relative;
         if (isRegularFile(candidate)) { resolved = candidate; return true; }
-        // An existing but invalid override is an error, not a silent fallback.
-        if (exists(candidate)) { error_ = "mod resource is not a regular file: " + candidate; return false; }
+        if (exists(candidate)) { error_ = "profile resource is not a regular file: " + candidate; return false; }
+        error_ = "missing selected profile resource: " + relative;
+        return false;
     }
+
     const std::string candidate = game_ + "/" + relative;
     if (isRegularFile(candidate)) { resolved = candidate; return true; }
     error_ = "missing original resource: " + relative;
