@@ -24,6 +24,13 @@ from decode_livearea_assets import ASSETS, validate_png
 
 NOTICES = {'notices/THIRD_PARTY.md', 'notices/vitaGL-GPL-3.0.txt', 'notices/vitaGL-LGPL-3.0.txt'}
 
+SELECTOR_ASSETS = {
+    'selector/select0_background.png': '9af2f1674a5b4fc2e84031d24a13b7f89e2da4dad239e7e02f0f4e7f330a096c',
+    'selector/select0_header.png': '809427746e13e1be27ea038ddc400de3e4452125fdab75fd9601dc7d44b95c2b',
+    'selector/select0_button.png': '792a105d8bada00e77bcd483e32417d7f9589d9bbad0db9804188665cea49287',
+    'selector/select0_ball_1.png': 'a164d97d1883919e5e3fff0bbf31e3bc70afa920de55275c4f5c601c22ee2592',
+}
+
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -125,7 +132,7 @@ def validate_engine(elf, generation_log, plan):
 def validate_vpk(vpk_path, eboot_path, version):
     with zipfile.ZipFile(vpk_path) as vpk:
         names = vpk.namelist()
-        allowed = set(EXPECTED) | {TEMPLATE_PATH, 'eboot.bin', 'sce_sys/param.sfo'} | NOTICES
+        allowed = set(EXPECTED) | {TEMPLATE_PATH, 'eboot.bin', 'sce_sys/param.sfo'} | NOTICES | set(SELECTOR_ASSETS)
         files = {n for n in names if not n.endswith('/')}
         if len(names) != len(set(names)) or files != allowed or vpk.testzip():
             raise ValueError('Invalid release VPK layout, CRC, duplicate entries or unexpected private/game-data files')
@@ -141,6 +148,9 @@ def validate_vpk(vpk_path, eboot_path, version):
                 raise ValueError('Approved LiveArea image changed')
         if vpk.read(TEMPLATE_PATH) != (REPO / 'assets/livearea/template.xml').read_bytes():
             raise ValueError('LiveArea template differs from the source being released')
+        for path, expected_sha in SELECTOR_ASSETS.items():
+            if hashlib.sha256(vpk.read(path)).hexdigest() != expected_sha:
+                raise ValueError('Gen selector theme asset changed: ' + path)
     return hashlib.sha256(eboot).hexdigest()
 
 
@@ -173,7 +183,7 @@ def package(plan, private_root, output):
     notes = (f'Dragon Ball Tap Battle Vita {plan["version"]}\n\n'
              f'Full original engine, source `{plan["source_commit"]}`.\n'
              f'TeaVM generation: {generation["classes"]} classes / {generation["methods"]} methods.\n'
-             'Includes the approved LiveArea and both battle-memory repairs: native PAC streaming and exact Ogg PCM allocation.\n\n'
+             'Includes the approved LiveArea, the validated Gen-styled data selector and both battle-memory repairs: native PAC streaming and exact Ogg PCM allocation.\n\n'
              'Install the VPK as an update; preserve `ux0:data/DBTapBattle/` and saves. Original game data is supplied separately.\n'
              '00.24 was confirmed working on a physical Vita; this newly compiled artifact needs its own device retest.\n'
              'The symbols ZIP contains compiled ELF/VELF for crash analysis, never APK/JAR/classes/generated C or game data.\n')
