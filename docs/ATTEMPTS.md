@@ -1073,3 +1073,29 @@ runtime marker `fa9d7b6`; LiveArea PASS. Direct MP3/AAC/Vorbis support from
 with `game/` empty is pending. If the original TeaVM core requests an asset a
 modified APK omits, do not restore fallback; capture the request and port the
 profile-specific loading behavior with evidence.
+
+## 2026-10-07 — Attempt 033 — 00.28 hardware findings → 00.29
+
+**Hardware input:** Invasion runs standalone with textures and external audio
+working; its result/dialog box text is corrupted. Samu, both with and without
+`game/`, detects 92 characters and exits after the title. Both Samu logs fail
+while replacing MP3 BGM with `sceAudiodecCreateDecoder 0x807f0007`.
+
+**Audio diagnosis/fix:** Samu `bgm_16.ogg` and `bgm_00.ogg` are byte-identical
+valid MP3. SceAudiodec is initialized for one MP3 stream; 00.28 opened the next
+decoder before closing the previous one. 00.29 serializes teardown under the
+audio lock before opening the replacement. No audio conversion/repacking.
+
+**Invasion text diagnosis/fix:** its Ranma character BIN contains valid UTF-8
+(`Ranma está disponible！`) and native content sniffing identifies the character
+PAC as UTF-8. Invasion's modified DEX has a substantially different SetString
+method, so the preserved Gen slot expression can miss the per-GameData charset
+map. 00.29 keeps exact mappings first and uses the detected active-character
+charset only when that lookup misses.
+
+**Save change:** exact user-provided 12,906-byte save is VPK seed; all profiles use
+`ux0:data/DBTapBattle/save.bin`. Existing root save is never overwritten.
+Extractors stop installing APK-local saves.
+
+**Evidence level:** hardware findings are confirmed for 00.28; 00.29 fixes are
+source/CI/build validated and require physical retest.
