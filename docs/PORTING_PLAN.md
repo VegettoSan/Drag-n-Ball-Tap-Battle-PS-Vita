@@ -1,4 +1,4 @@
-# Porting plan — checkpoint 00.24, 2026-10-05
+# Porting plan — checkpoint 00.33, 2026-10-07
 
 The original plan began with an atlas preview. The chosen implementation now
 preserves the original Java engine through private TeaVM AOT and replaces its
@@ -12,19 +12,19 @@ order. Completion below applies only to the stated scope/build.
 | Original core | APK-derived Init/Run/tasks/Controller/drawing/AI generated privately | Preserve method boundaries during future adaptations |
 | Vita integration | GLES/FBO/PVF/touch/Vorbis/PCM/save/time services; real menu and battle on earlier builds | Exercise every required lifecycle/mode, not only a compile |
 | Offline data | Local character/shared completeness, no dependency on dead catalog | Broader missing-data diagnostics and dataset coverage |
-| Performance | 00.16 startup/cards fixed; 00.18 steady battle 60 FPS confirmed | Retain results on latest build; cold/repeated resource timing |
+| Performance | 00.18 steady battle 60 FPS; 00.33 repeated Invasion fight transitions survive the prior native allocation crash | Re-measure FPS/memory over longer latest-build sessions and more profiles |
 | Text | 00.19 image-rectangle fix restores visible text | Size/layout/script and lifecycle matrix |
 | Audio | Decode/three channels/limiter/reconstruction; 00.21 setup repair | Clean audio/voices reported in the current hardware path; broaden character/phrase and long-session coverage |
-| Saves/mods | Profile-local save plus file overlay/per-file codec | Android save round-trip and real asset/code-mod compatibility matrix |
-| Product/distribution | 00.24 full -O1/-O2 build and user hardware confirmation, small main commits | Manual release/prerelease automation and broader compatibility coverage |
+| Saves/mods | Independent per-profile seeded save, dynamic installed roster 00..99, standalone resource isolation | Broader save semantics and code-mod compatibility matrix |
+| Product/distribution | 00.33 full functional VPK and hardware confirmation, small main commits, manual release/prerelease automation | Broader compatibility and release-quality reproducible/performance build |
 
 ## Immediate physical checks
 
-1. Repeat battle entry/exit and several consecutive fights to look for retained stream handles, cache churn or heap fragmentation.
-2. Exercise multiple characters and both supported dataset/profile paths; compare first, repeated and evicted resource loads.
-3. Reconfirm clean voices/text/FPS during those longer runs rather than assuming one successful battle proves all combinations.
-4. Test return-to-menu, repeated launches, save round-trips and suspend/resume separately.
-5. Continue using the normal full-engine compilation recipe validated by 00.24; distinguish each CI rebuild’s identity from the pinned hardware-tested artifact.
+1. Keep the now-passing Invasion repeated-fight/Saitama->Freezer path in every future regression pass.
+2. Exercise additional characters and profiles, especially large protected PACs, while watching cold/repeated/evicted resource loads.
+3. Reconfirm clean voices/text/FPS during longer runs; the 00.33 success closes the reproduced crash but is not exhaustive coverage.
+4. Explicitly test Shop return behavior, return-to-menu, repeated launches, save round-trips and suspend/resume.
+5. Continue distinguishing every rebuilt VPK/ELF hash from the pinned 00.33 hardware-tested artifact.
 
 ## Subsequent work
 
