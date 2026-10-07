@@ -166,11 +166,12 @@ hardware in the 00.23 test session.
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.33 (2026-10-07):** physical Vita testing
-> confirms the reproduced Invasion repeated-fight/Saitama→Freezer crash is fixed
-> after the protected-PAC ownership-transfer repair. The recent hardware sequence
-> also confirms Loading recovery and dynamic installed rosters, including Samu's
-> 92 characters. Scope is limited to tested paths; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
+> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
+> and functional on physical PS Vita for the exercised selector, profile-loading
+> and gameplay paths, with no issue found so far. It retains the 00.33
+> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
+> See [CURRENT_STATUS](CURRENT_STATUS.md).
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## 00.33 resource ownership checkpoint
