@@ -497,3 +497,20 @@ A full 00.28 Vita VPK builds with direct Vorbis/MP3/AAC support retained:
 runtime marker `fa9d7b6`, LiveArea PASS. CI passes the profile suite and Vita
 native smoke. This establishes the standalone filesystem/import contract, not
 physical gameplay for every modified APK. See `TEST_VITA_00_28.md`.
+
+## 2026-10-07 — 00.28 Invasion standalone hardware path works; 00.29 targeted fixes build
+
+**HARDWARE CONFIRMED for 00.28:** Invasion runs without Original/`game/`; the user
+reported textures and audio working correctly through gameplay. The remaining
+visible defect is corrupted result/dialog text.
+
+**DIAGNOSIS CONFIRMED:** Samu's standalone 92-character audit succeeds, and its
+title exit is tied to decoder replacement error `0x807f0007`, independent of
+whether `game/` exists. The adjacent Samu MP3 files involved are byte-identical,
+which isolates decoder lifetime rather than source-media damage.
+
+**BUILD/CI CONFIRMED for 00.29, hardware pending:** the compressed BGM handoff now
+releases the old SceAudiodec stream first; protected character text gets a
+content-detected charset fallback when the modified APK's SetString slot mapping
+differs; and the exact approved save seed is packaged/read once into one global
+writable save. These are not yet physical confirmation of the 00.29 fixes.
