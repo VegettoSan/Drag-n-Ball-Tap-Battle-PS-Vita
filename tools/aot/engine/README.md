@@ -1,4 +1,4 @@
-# Original core integration — 00.33 hardware / 00.34 candidate
+# Original core integration — 00.34 hardware-confirmed stable
 
 This directory contains the handwritten platform layer for the original APK's
 Java core. The full private engine can now be generated with TeaVM and built for
@@ -8,10 +8,10 @@ outside Git; a successful build is not by itself hardware-playability evidence.
 
 ## Current checkpoint
 
-Latest full-engine hardware checkpoint is 00.33. The current 00.34 user-test
-candidate retains those gameplay fixes while replacing the old game/mod directory
-split with the unified `profiles/<Profile>/` runtime contract and the Gen-styled
-selector/opening transition. 00.34 physical confirmation is pending. The original core remains preserved;
+Latest full-engine hardware checkpoint is 00.34. The exact
+`DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is reported stable and
+functional on physical Vita, retaining the 00.33 protected-PAC repair while
+adding the unified `profiles/<Profile>/` contract and final selector UX. The original core remains preserved;
 recent private generation reaches 467 classes / 4086 methods. Read
 [CURRENT_RUNTIME_CONTRACT](../../../docs/CURRENT_RUNTIME_CONTRACT.md),
 [CURRENT_STATUS](../../../docs/CURRENT_STATUS.md),
@@ -74,7 +74,7 @@ render/audio/platform code remains at `-O2`.
 
 The current native bridge retains bounded PAC/texture/voice caches, PVF glyph
 rectangles and bandlimited character-voice output. Audio worker priority is the
-restored 0x10000100, with explicit failure cleanup/diagnostics. Implementations and host probes still do not replace device testing. The current 00.33 artifact has physical confirmation for the reproduced repeated-fight path, while broader mode/lifecycle coverage remains open.
+restored 0x10000100, with explicit failure cleanup/diagnostics. Implementations and host probes still do not replace device testing. The current 00.34 artifact is hardware-confirmed stable for the exercised selector/profile/gameplay paths; 00.33 remains the historical proof of the reproduced repeated-fight repair.
 See [PLATFORM_SERVICES](../../../docs/PLATFORM_SERVICES.md) for exact contracts.
 
 ## Reproduce privately
@@ -98,7 +98,7 @@ cmake -S tools/aot/engine/vita -B /private/build-vita \
 cmake --build /private/build-vita -j2
 ```
 
-The current CMake version is 00.34. The exact current user-test package is documented in `docs/TEST_VITA_00_34.md`; 00.33 remains the latest hardware-confirmed gameplay package. The work directories must be
+The current CMake version is 00.34. The exact current user-test package is documented in `docs/TEST_VITA_00_34.md`; 00.34 is the latest hardware-confirmed gameplay package. The work directories must be
 outside the repository. Generated C, original/adapted JARs, classes, APKs and
 commercial payloads must not be committed. The source repository contains only
 the adapters, reproducible generation/build tooling and non-commercial evidence.
