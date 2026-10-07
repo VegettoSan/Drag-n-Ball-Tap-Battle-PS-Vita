@@ -22,8 +22,9 @@ is 00.23: the reported physical-Vita session preserves clean audio and responsiv
 
 ## Completed corrections from the bootstrap audit
 
-Extraction validates aliases/conflicts/CRC and preserves raw bytes. VFS rejects
-unsafe/non-regular overrides and preserves missing-file fallback. PAC reads
+Extraction validates aliases/conflicts/CRC and preserves raw bytes. The 00.28 VFS
+rejects unsafe/non-regular resources and isolates the selected APK dataset;
+missing files do not fall back across profiles. PAC reads
 validate extents and allocation budgets. Subsequent integration fixed missing
 resume initialization, direct-buffer GC ownership, charset boundaries, stable
 touch IDs, Community14 BIN/WAV normalization, card-task scheduling and PVF
