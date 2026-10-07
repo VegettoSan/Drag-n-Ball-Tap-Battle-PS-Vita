@@ -217,3 +217,20 @@ allowed the reproduced battle-start path to pass on hardware in 00.23.
 > not exhaustive character/profile/mode or long-session certification. Historical
 > records keep their original artifact and evidence scope.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
+
+## Protected-PAC ownership rule — 00.33
+
+Protected Android14-family PACs are normalized only in memory. For large changed
+containers, the final normalized vector must be transferred to the resource owner
+without another PAC-sized allocation.
+
+The 00.32 Invasion hardware crash occurred after `char15.pac` had already grown
+from about 4.05 MiB on disk to about 4.64 MiB in normalized form. The final
+conditional assignment was compiled through `std::vector<unsigned char>::operator=`,
+requesting another contiguous multi-MiB block and eventually throwing
+`std::bad_alloc` on the Saitama -> Freezer transition.
+
+00.33 uses explicit `output.swap(out)` on the changed path. Physical Vita testing
+then completed several consecutive fights without reproducing the crash. This is
+an allocation/ownership fix only: PAC bytes on disk, decoded entry semantics and
+original gameplay logic are unchanged.
