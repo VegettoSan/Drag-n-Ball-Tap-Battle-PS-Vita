@@ -1,5 +1,13 @@
 # Prueba Vita 00.19 — texto y saturación de audio
 
+> **Historical document notice — current 00.34 contract:** this file preserves
+> evidence/instructions for the build or investigation named here. The current
+> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
+> current `game/` or `mods/` profile roots and no built-in Original selector
+> row. Do not reuse historical install paths for 00.34. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 **Prueba archivada; resultado recibido.** El usuario confirma que los textos se
 vuelven a ver, pero las voces siguen mal y cambiar de personaje aún se traba.
 El log de esta sesión no registra recorte de salida, sobrecarga previa al
