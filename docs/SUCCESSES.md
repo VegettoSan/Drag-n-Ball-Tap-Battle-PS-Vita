@@ -464,11 +464,11 @@ Test VPK SHA-256: `8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b58
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.33 (2026-10-07):** physical Vita testing
-> confirms the reproduced Invasion repeated-fight/Saitama→Freezer crash is fixed
-> after the protected-PAC ownership-transfer repair. The recent hardware sequence
-> also confirms Loading recovery and dynamic installed rosters, including Samu's
-> 92 characters. Scope is limited to tested paths; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current public release — v1.0 / DBTB01178 (2026-10-07):** the 00.34
+> gameplay/runtime baseline is hardware-confirmed stable for the tested paths.
+> Earlier 00.33 hardware evidence remains valid for the protected-PAC repeated-fight
+> repair, Loading recovery and dynamic rosters. Historical artifact identities are
+> preserved; see [CURRENT_STATUS](CURRENT_STATUS.md).
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## 2026-10-05 — Corrected LiveArea packaging passes host verification
