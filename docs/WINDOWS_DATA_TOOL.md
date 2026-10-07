@@ -24,7 +24,7 @@ not change the permanent machine/user execution policy.
 Each launch creates a new `Listo_para_Vita/Paquete_<time>_<id>/` beside the tool.
 Copy that package's **data** directory to the Vita's **ux0:** root with VitaShell.
 The resulting runtime root is `ux0:data/DBTapBattle/`. Install the full engine
-VPK separately (00.30 or later); this tool does not build or bundle a VPK.
+VPK separately (00.33 current checkpoint; 00.30+ share the profile-save model); this tool does not build or bundle a VPK.
 
 | Detected source | Destination within package | VPK selector |
 |---|---|---|
@@ -52,7 +52,7 @@ Dragging the same input path twice imports it once. Non-empty resources on both
 raw and assets sides are rejected as ambiguous. Gen's empty raw stubs are ignored.
 
 Every non-Original APK is emitted as a standalone profile under `mods/`.
-00.30 does not use cross-profile fallback: `game/` may remain empty. A missing
+00.33 retains the no-fallback contract introduced earlier: `game/` may remain empty when a standalone mod profile is selected. A missing
 resource in the selected profile is a compatibility issue to investigate, not a
 reason to borrow bytes from Original. The full-APK tool requires `common.pac`
 so arbitrary partial patch ZIPs are not misrepresented as complete profiles.
@@ -61,7 +61,7 @@ is complete relative to that APK, but is not a complete battle installation.
 
 ## Preservation and validation
 
-Selected `res/raw/` or `assets/` gameplay files retain their exact bytes, including unknown extensions. If the APK contains `save.bin`, its presence/hash is recorded but that file is intentionally excluded from the installed profile in 00.30. The current tool has three separately
+Selected `res/raw/` or `assets/` gameplay files retain their exact bytes, including unknown extensions. If the APK contains `save.bin`, its presence/hash is recorded but that file is intentionally excluded from the installed profile; 00.33 continues this policy. The current tool has three separately
 audited protected profiles in `tools/community14.py`: Android14
 `community14-a210795b` (106 PAC), Spanish `community14-es-d594affc`
 (106 PAC) and Invasion `community14-invasion-05aa0c5e` (139 PAC). Each profile
@@ -84,7 +84,7 @@ only imported data; SHA256SUMS also covers generated instructions/manifests,
 excluding itself. DEX, classes, signatures and Android libraries outside the
 selected data prefix are not extracted.
 
-An APK-provided save is **not installed into its profile**. The desktop extractor does not connect to a Vita or read/replace the active save. 00.30 does not share mutable progress. Original uses `game/save.bin` and each mod uses `mods/<Profile>/save.bin`; each is seeded from the same VPK copy only when that profile save is absent. Code-changing Android mods still require
+An APK-provided save is **not installed into its profile**. The desktop extractor does not connect to a Vita or read/replace the active save. 00.33 does not share mutable progress. Original uses `game/save.bin` and each mod uses `mods/<Profile>/save.bin`; each is seeded from the same VPK copy only when that profile save is absent. Code-changing Android mods still require
 appropriate engine support; data extraction does not incorporate Android code.
 
 
@@ -115,7 +115,7 @@ is required so any future conversion remains traceable and non-destructive.
 
 Public CI uses synthetic fixtures only. Real APKs/data remain private. Host/Windows
 extraction evidence does not establish new physical Vita gameplay coverage; the
-existing 00.23 device checkpoint remains unchanged.
+the extractor itself does not alter runtime evidence; the current device checkpoint is 00.33.
 
 Windows CI run [37390881454](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37390881454) passed all 13 tests, including the actual BAT transport, under PowerShell 5.1.26100.33438 on Windows Server 2025. The first run passed the 12 extractor tests but failed to start the BAT because the Python harness used CRT quote escaping for cmd.exe. Commit `5ef4549` corrects the harness; the second run passes. The file picker and interactive Explorer opening are not automated checks.
 
