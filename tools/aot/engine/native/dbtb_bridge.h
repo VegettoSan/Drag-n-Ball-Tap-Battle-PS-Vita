@@ -14,6 +14,7 @@ int32_t dbtb_resourceStreamSize(int32_t handle);
 int32_t dbtb_readResourceStream(int32_t handle, int32_t position, void * target, int32_t size);
 void dbtb_closeResourceStream(int32_t handle);
 int32_t dbtb_installedData(void);
+int32_t dbtb_installedCharacters(void);
 int32_t dbtb_textEncoding(int32_t source);
 void dbtb_copyResource(void * target, int32_t size);
 int32_t dbtb_exists(void * name);
