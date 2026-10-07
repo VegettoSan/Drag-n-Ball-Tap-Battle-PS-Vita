@@ -233,8 +233,7 @@ Para este APK concreto se verificó además que:
 - los 19 SE permanecen Vorbis y byte-idénticos al baseline.
 
 Esto elimina el requisito técnico de convertir previamente los siete BGM. La
-compatibilidad queda **implementada como candidato**, no hardware-confirmada,
-hasta reproducir en una Vita física al menos un MP3 y un AAC/M4A de Invasion,
+compatibilidad de audio queda **hardware-confirmada en el recorrido probado** desde 00.28/00.33, incluyendo el uso directo de los formatos mezclados; la cobertura completa de todas las pistas sigue siendo una matriz aparte,
 además de una pelea con personajes agregados.
 
 `tools/prepare_invasion_mod.py` valida el hash exacto de este APK, extrae los
@@ -287,3 +286,29 @@ del perfil de personajes activo. La corrección requiere retest físico.
 
 La prueba 00.28 también confirma en hardware que los BGM MP3/AAC-M4A/Vorbis de
 Invasion pueden consumirse directamente sin conversión en el recorrido probado.
+
+## Prueba física 00.33 — crash Saitama -> Freezer resuelto
+
+La ruta reproducible restante de Invasion en 00.32 era Saitama (`char15`) al
+avanzar a su segunda pelea contra Freezer (`char05`). El `runtime.log` terminaba
+en `std::bad_alloc` y el `psp2core` correspondiente, simbolizado contra el ELF
+exacto de 00.32, resolvió la pila nativa a:
+
+`operator new -> std::vector<unsigned char>::operator= -> normalise -> normaliseEnginePac -> readEngineResource -> EngineResourceCache::read -> GameData.Init`.
+
+El fallo no estaba en los datos de Saitama/Freezer. `char15.pac` pesa 4,054,165
+bytes en disco y produce 4,638,744 bytes al normalizarse. La expresión condicional
+que parecía mover el vector fue compilada por GCC 15 como una copia adicional en
+esa ruta protegida, solicitando otro bloque contiguo multi-MiB después de que el
+PAC normalizado ya existía.
+
+00.33 cambia únicamente la entrega de ownership: `output.swap(out)` para el PAC
+transformado y copia ordinaria solo para el input sin cambios. No se modificó el
+PAC, el DEX ni la lógica de pelea. El usuario probó 00.33 en Vita real y reportó
+**varias peleas consecutivas sin crash**, por lo que este fallo se considera
+**RESUELTO en el alcance probado**.
+
+La misma secuencia reciente de pruebas también confirma que el loop de Loading
+está corregido, los rosters dinámicos funcionan y el texto de Invasion permanece
+legible en el recorrido probado. Esto no equivale a certificar toda mecánica
+Tier-C exclusiva de su `classes.dex`.
