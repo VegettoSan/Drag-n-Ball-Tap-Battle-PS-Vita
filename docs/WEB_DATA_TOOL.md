@@ -154,16 +154,25 @@ project APK inputs and generated Vita-ready ZIPs successfully:
 | `DBTapBattle.apk` | `b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b` | `raw` | original/unknown | PASS, 57 data files |
 | `gen.apk` | `d52cbd7ef248d995ad17ba6ec8ec6fa08590a344ac2a9786e5ac839bf7715f28` | `assets` | original/unknown | PASS, 146 data files, 13 characters |
 | `tap battle android 14.apk` | `a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4` | `community14` | `community14-a210795b` | PASS, 144 data files, 13 characters |
+| `DBTB en español para Android 14.apk` | `b38cc2c4ae3f20d1b1c6c1419a7b6b62ab57ea8954468874f6c5f8c40b39a098` | `community14` | `community14-es-d594affc` | PASS, 144 data files, 13 characters |
 | `TAP BATTLE INVASION BETA 3.apk` | `caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d` | `community14` | `community14-invasion-05aa0c5e` | PASS, 177 data files, 22 characters |
+| `DragonBallZuperSamuGamerYT.apk` | `1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d` | `assets` | original/unknown | PASS, 383 data files, 92 characters |
 
-The generated Invasion package was independently reopened as ZIP: CRC validation
-passed, `common.pac` was present, APK `save.bin` was absent, and its manifest
-reported `profiles-v1`, 22 characters (`00..21`) and the expected Invasion
-codec.
+The generated Invasion, Spanish and Samu packages were independently reopened
+as ZIP archives and passed full ZIP CRC validation. Invasion reported
+`profiles-v1`, 22 characters (`00..21`) and the expected protected codec.
+Spanish reported `community14-es-d594affc` and 13 characters. Samu reported
+92 characters (`00..91`) and correctly omitted its APK-bundled `save.bin`
+from the Vita profile.
 
-This establishes the extraction/package core against real inputs. Device/browser
-UI and memory behavior should still be reported separately when testing specific
-Android/iOS browsers.
+Samu is intentionally an important stress case: its generated stored ZIP is
+405,409,508 bytes. The core completes successfully on the development runner,
+but low-memory phones may still hit browser/OS memory limits. That is a device
+limit rather than permission to silently truncate the package.
+
+This establishes the extraction/package core against all six supplied project
+APK families. Device/browser UI and memory behavior should still be reported
+separately when testing specific Android/iOS browsers.
 
 ## Development validation
 
