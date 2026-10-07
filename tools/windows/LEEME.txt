@@ -1,27 +1,23 @@
-DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.3
+DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR
 
-This file is kept for compatibility with older extractor ZIPs.
-For the current English instructions, read README.txt in this same folder.
+This legacy filename is kept only for compatibility.
+For the current English instructions, read README.txt in this folder.
 
-PRIMARY LAUNCHER
+Current public data layout:
+
+  ux0:data/DBTapBattle/profiles/<Profile>/
+
+Every APK is extracted as one independent profile. The profile folder name comes
+from the APK filename. The Vita selector shows that folder name.
+
+If you want another name, rename the folder inside:
+
+  ux0:data/DBTapBattle/profiles/
+
+There is no separate game/ and mods/ split in the current layout.
+
+Primary launcher:
   Extract_APK_for_Vita.bat
 
-LEGACY LAUNCHER
+Legacy-compatible launcher:
   Extraer_APK_para_Vita.bat
-
-Both launchers use the same PowerShell extractor and produce the same Vita-ready
-data layout.
-
-Quick install:
-1. Extract the whole tool ZIP.
-2. Drag one or more APK files onto Extract_APK_for_Vita.bat.
-3. Open the generated package.
-4. Copy its data folder to the root of ux0: with VitaShell.
-5. Confirm the final path is ux0:data/DBTapBattle/.
-6. Start the Vita port and select the extracted profile.
-
-Do not copy the package folder itself inside ux0:data/.
-Do not overwrite an existing profile save.bin unless you intentionally want to
-replace that profile's progress.
-
-See README.txt for profile mapping, save behavior, validation, and troubleshooting.
