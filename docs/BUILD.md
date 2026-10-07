@@ -1,5 +1,31 @@
 # Build and packaging
 
+## 00.30 physical-test build — independent seeded profile saves
+
+00.30 retains the Samu decoder-handoff and Invasion charset fixes from 00.29,
+while changing only native save routing and package version. No original gameplay
+method was changed.
+
+Artifact:
+
+- `DBTapBattle-Vita-00.30-Independent-Profile-Saves-Test.vpk`
+- size: 2,654,057 bytes
+- VPK SHA-256: `d823b9baddd667b09b1c407575a5698cd71276e1698e9d9845fb3086b3777379`
+- eboot SHA-256: `c193a07463cbc7168bb1a5d5398f259dc4cdb0216b9d909b268df3b386faca2c`
+- ELF SHA-256: `e5b38f5c4a5409d3ead2fc42929e3cf9e6a9fc1d931c0d54e0bf23262f59a236`
+- APP_VER: `00.30`
+- TITLE_ID: `DBTB00001`
+- runtime source marker: `6d88bee`
+- LiveArea validation: PASS
+
+The root VPK `save.bin` remains the exact 12,906-byte approved seed with
+SHA-256 `64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb`.
+Runtime copies it once to the selected profile's own writable save when absent;
+existing profile progress is not overwritten.
+
+See [00.30 test](TEST_VITA_00_30.md) and
+[evidence](evidence/vita_build_00.30.json).
+
 ## 00.29 physical-test build — Samu / Invasion / shared save
 
 A complete original-engine 00.29 VPK was generated from the pinned original APK
