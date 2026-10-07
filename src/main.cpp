@@ -20,12 +20,12 @@ int main() {
     }
 
     runtimeLog(std::string("--- DB Tap Battle Vita " DBTB_VERSION " commit " DBTB_COMMIT " boot ---"));
-    runtimeLog("State: boot selector; original data indicator is common.pac only");
+    runtimeLog("State: boot selector; profiles-only data layout");
 
-    const std::vector<std::string> mods = vfs.listMods();
-    runtimeLog("Detected mods: " + std::to_string(mods.size()));
+    const std::vector<std::string> profiles = vfs.listProfiles();
+    runtimeLog("Detected profiles: " + std::to_string(profiles.size()));
 
-    if (!vfs.error().empty()) runtimeLog("Mod scan: " + vfs.error());
+    if (!vfs.error().empty()) runtimeLog("Profile scan: " + vfs.error());
     if (!vglInitExtended(0, 960, 544, 8 * 1024 * 1024, SCE_GXM_MULTISAMPLE_NONE)) {
         runtimeLog("FATAL: vitaGL initialization failed");
         return 5;
@@ -33,22 +33,17 @@ int main() {
     runtimeLog("Renderer initialized: 960x544; no gameplay/audio yet");
 
     BootChoice choice;
-    if (!runBootSelector(mods, vfs.originalDataPresent(), choice)) {
+    if (!runBootSelector(profiles, choice)) {
         runtimeLog("Boot selector cancelled by user");
         return 0;
     }
 
-    if (choice.original) {
-        vfs.selectOriginal();
-        runtimeLog("Selected data set: Original");
-    } else {
-        if (!vfs.selectMod(choice.mod_directory)) {
-            runtimeLog("Failed to activate mod: " + choice.mod_directory);
-            showPacResult(false, "COULD NOT ACTIVATE MOD: " + choice.mod_directory);
-            return 2;
-        }
-        runtimeLog("Selected mod: " + choice.mod_directory);
+    if (!vfs.selectProfile(choice.profile_directory)) {
+        runtimeLog("Failed to activate profile: " + choice.profile_directory);
+        showPacResult(false, "COULD NOT ACTIVATE PROFILE: " + choice.profile_directory);
+        return 2;
     }
+    runtimeLog("Selected profile: " + choice.profile_directory);
 
     // Start the same two converted-table loads as original InitGameData.
     // Keep both tables alive for the engine that will replace the preview.
@@ -80,7 +75,7 @@ int main() {
     }
 
     const std::string detail = "COMMON.PAC ENTRIES: " + std::to_string(pac.entries().size()) +
-                               "  SOURCE: " + (choice.original ? std::string("ORIGINAL") : choice.mod_directory);
+                               "  SOURCE: " + choice.profile_directory;
     runtimeLog(std::string("PAC codec: ") + communityEncodingName(pac.encoding()));
     runtimeLog("PAC parse OK. Entries: " + std::to_string(pac.entries().size()));
     RgbaImage image;
