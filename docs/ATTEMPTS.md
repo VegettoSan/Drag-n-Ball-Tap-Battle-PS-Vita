@@ -28,8 +28,12 @@ deploy time. CSS covers desktop plus portrait/landscape mobile layouts and
 excludes the lower blue orb by sampling only the approved background band.
 
 **Validation:** unit/syntax checks PASS. Real project APK extraction PASS for
-original, Gen, Android14 and Invasion; Invasion generated 22 contiguous
-characters and an independently CRC-valid Vita ZIP without APK `save.bin`.
+all six supplied families: original, Gen, Android14, Spanish Android14, Invasion
+and Samu. Invasion generated 22 contiguous characters; Spanish selected
+`community14-es-d594affc`; Samu generated 92 contiguous characters and a
+405,409,508-byte Vita ZIP while correctly excluding its APK-bundled `save.bin`.
+The generated Invasion, Spanish and Samu ZIPs were independently reopened and
+passed ZIP CRC validation.
 
 **Deployment result:** first deployment API call returned a transient GitHub
 HTTP 500 after a successful build/artifact. The subsequent Pages run
