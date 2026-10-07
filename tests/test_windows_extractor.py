@@ -196,7 +196,7 @@ class WindowsExtractorTests(unittest.TestCase):
         self.assertTrue((package / 'data/DBTapBattle/profiles/gen70/char69.pac').is_file())
         self.assertFalse((package / 'data/DBTapBattle/game').exists())
 
-    def test_raw_mod_is_standalone_not_game(self):
+    def test_raw_apk_is_standalone_profile(self):
         source = self.apk('rawmod', [('res/raw/common.pac', b'raw')])
         package, = self.run_tool(source)
         m = self.manifest(package, 'profiles/rawmod')
