@@ -98,10 +98,12 @@ class WindowsExtractorTests(unittest.TestCase):
                                  ('res/raw/save.bin', b'progress'), ('classes.dex', b'NOT EXTRACTED')])
         package, = self.run_tool(source)
         m = self.manifest(package)
-        self.assertEqual(m['file_count'], 3)
+        self.assertEqual(m['file_count'], 2)
         self.assertEqual(m['unknown_files'], ['nested/new.xyz'])
         self.assertTrue(m['bundled_save'])
-        self.assertEqual((package / 'data/DBTapBattle/mods/original/save.bin').read_bytes(), b'progress')
+        self.assertFalse((package / 'data/DBTapBattle/mods/original/save.bin').exists())
+        self.assertFalse(m['profile_save_installed'])
+        self.assertEqual(m['save_policy'], 'global-vpk-seed-ux0-root')
         self.assertFalse(list(package.rglob('classes.dex')))
         for line in (package / 'SHA256SUMS.txt').read_text().splitlines():
             digest, name = line.split('  ', 1)
@@ -132,11 +134,14 @@ class WindowsExtractorTests(unittest.TestCase):
                                          ('assets/' + char_alias, data)])
                 packages = self.run_tool(source)
                 package = packages[-1]
-                m = self.manifest(package, 'mods/' + stem)
+                report = json.loads((package / 'RESULTADO.json').read_text('utf-8'))
+                selected = report['profiles'][0]['profile']
+                m = self.manifest(package, selected)
                 self.assertEqual(m['source_layout'], 'community14')
                 self.assertEqual(m['pac_codec'], profile.name)
-                self.assertEqual((package / 'data/DBTapBattle/mods' / stem / 'common.pac').read_bytes(), data)
-                self.assertEqual((package / 'data/DBTapBattle/mods' / stem / 'char21.pac').read_bytes(), data)
+                root = package / 'data/DBTapBattle' / selected
+                self.assertEqual((root / 'common.pac').read_bytes(), data)
+                self.assertEqual((root / 'char21.pac').read_bytes(), data)
 
     def test_assets_with_empty_raw_stubs(self):
         source = self.apk('assets', [('res/raw/common.pac', b''), ('assets/common.pac', b'original')])
