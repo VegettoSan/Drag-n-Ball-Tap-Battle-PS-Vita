@@ -1,5 +1,12 @@
 # APK Español Android14 — referencia técnica completa
 
+> **Current Vita installation note (00.34):** regardless of the APK family
+> described here, current extracted datasets are independent profiles under
+> `ux0:data/DBTapBattle/profiles/<Profile>/`. Historical `game/` or `mods/`
+> paths in old test evidence are not current install instructions. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 <!-- DBTB_DOC_STATUS:START -->
 > **Project checkpoint:** 00.33 is the current hardware-confirmed development
 > checkpoint for the tested paths. This file may document an earlier component
