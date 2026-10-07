@@ -242,7 +242,9 @@ class WindowsExtractorTests(unittest.TestCase):
     def test_actual_bat_launcher_special_character_paths(self):
         source = self.apk('original & ! % [1]')
         package, = self.run_tool(source, bat=True)
-        self.assertEqual(self.manifest(package, 'mods/original___1')['file_count'], 1)
+        profiles = json.loads((package / 'RESULTADO.json').read_text())['profiles']
+        self.assertEqual(len(profiles), 1)
+        self.assertEqual(self.manifest(package, profiles[0]['profile'])['file_count'], 1)
 
 
 if __name__ == '__main__':
