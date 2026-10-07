@@ -8,6 +8,30 @@
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
+## 2026-10-07 — 00.34 — recenter themed buttons and labels
+
+**Observed on physical Vita:** after the no-orb background correction, profile
+labels could sit over the silver bevel instead of remaining inside the cyan
+interior.
+
+**Cause:** selector rows still used the older right-shifted button coordinates
+(`x=248`) and left-anchored text (`x=282`). Long profile names could extend
+into the metallic edge.
+
+**Fix:** center the 664 px Gen button at `x=148`; move the one-star marker with
+the row; center labels at `x=480`; fit text dynamically to a 530 px usable cyan
+region and vertically center each glyph row inside the 46 px button height.
+
+**Source:** `0da8684805d1510caf93130a22eed523a854c1d6`.
+
+**CI:** Vita native build/smoke PASS; VitaSDK/private-tool export PASS.
+
+**User-test VPK:** `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk`
+
+**SHA-256:** `24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03`
+
+Physical verification of this exact geometry is pending.
+
 ## 2026-10-07 — 00.34 — remove embedded blue orb from selector background
 
 **Observed on physical Vita:** the previous fullscreen-background attempt still
