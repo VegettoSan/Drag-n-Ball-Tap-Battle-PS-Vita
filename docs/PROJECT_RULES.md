@@ -5,7 +5,7 @@ These rules are part of the technical contract of the port.
 1. **The original game is the behavioral source of truth.** Reconstruct or adapt its systems; do not replace them with arbitrary hardcoded approximations when the original behavior can be understood.
 2. **Keep original data formats whenever practical.** `.pac` and the formats contained inside them should be read directly by the Vita port when possible.
 3. **Every installed APK data set is independent of the VPK and of other data sets.** `game/` is the optional Original profile; extracted Gen/community APKs live under `mods/<Profile>/` and must be able to run without `game/` being populated.
-4. **Profiles never overwrite or borrow from one another.** Selecting `mods/<Profile>/` resolves gameplay resources only from that directory. Saves are profile-local as well.
+4. **Profiles never overwrite or borrow gameplay resources from one another.** Selecting `mods/<Profile>/` resolves PAC/audio/data only from that directory. The sole intentional cross-profile state is the 00.29 global save at `ux0:data/DBTapBattle/save.bin`, shared by Original and every mod.
 5. **No silent cross-profile fallback.** A missing resource in a selected profile is a compatibility error to diagnose. Do not hide missing Vita behavior by borrowing a file from `game/`; adapt the port to the selected APK contract with evidence.
 6. **No silent destructive conversion.** If a format must be converted for Vita, document the limitation, source format, output format and reproducible conversion process.
 7. **Small, reviewable commits.** Keep changes focused so working states can be recovered easily.
