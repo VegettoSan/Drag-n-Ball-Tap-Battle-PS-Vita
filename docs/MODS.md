@@ -1,7 +1,7 @@
-# Mod compatibility model — current 00.34 contract
+# Mod compatibility model — current v1.0 contract
 
 > Historical test documents may use older `game/` and `mods/` paths. The
-> current runtime contract is [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+> current runtime contract is [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).\n> v1.0 uses APP_VER `01.00` and TITLE_ID `DBTB01178`; mod compatibility behavior\n> is inherited from the hardware-confirmed 00.34 runtime.
 
 ## Selection model
 
@@ -125,7 +125,7 @@ installation layout unless explicitly updated to `profiles/`.
 
 - 00.33: hardware-confirmed repeated-fight protected-PAC ownership fix.
 - Recent hardware sequence: Loading recovery, dynamic rosters including Samu 92.
-- 00.34: current user-test candidate adds unified `profiles/`, real-only
+- v1.0: current public release inherits 00.34 and uses unified `profiles/`, real-only
   selector entries, fullscreen selector background handling and themed
   profile-opening transition. Physical confirmation is pending.
 
