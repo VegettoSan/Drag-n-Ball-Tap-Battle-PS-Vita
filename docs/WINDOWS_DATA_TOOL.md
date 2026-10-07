@@ -17,7 +17,8 @@ PowerShell extractor.
 
 ## Runtime contract
 
-Extractor 1.5 targets the VPK's `profiles-v1` contract documented in
+Extractor 1.5 targets the v1.0 VPK (`APP_VER 01.00`, `TITLE_ID DBTB01178`)
+and its `profiles-v1` contract documented in
 [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md). The VPK scans only
 `ux0:data/DBTapBattle/profiles/`; it does not use `game/` or `mods/` as
 current profile roots and it does not synthesize an Original row.
