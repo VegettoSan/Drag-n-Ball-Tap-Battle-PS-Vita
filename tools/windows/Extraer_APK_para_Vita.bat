@@ -1,6 +1,6 @@
 @echo off
 setlocal DisableDelayedExpansion
-title Dragon Ball Tap Battle - Preparar datos para PS Vita
+title Dragon Ball Tap Battle - Prepare PS Vita data
 set "DBTB_TOOL=%~dp0Extraer_APK_para_Vita.ps1"
 set "DBTB_OUTPUT=%~dp0Listo_para_Vita"
 set "DBTB_ARG_COUNT=0"
@@ -16,8 +16,8 @@ if not exist "%DBTB_TOOL%" goto missing
 set "DBTB_RESULT=%errorlevel%"
 goto finish
 :missing
-echo ERROR: falta Extraer_APK_para_Vita.ps1 al lado de este BAT.
-echo Extrae primero todos los archivos del ZIP en una carpeta.
+echo ERROR: Extraer_APK_para_Vita.ps1 is missing next to this BAT.
+echo Extract all files from the ZIP into one folder first.
 set "DBTB_RESULT=2"
 :finish
 if "%DBTB_NO_PAUSE%"=="1" goto done
