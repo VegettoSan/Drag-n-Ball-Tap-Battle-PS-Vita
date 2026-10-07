@@ -1,4 +1,31 @@
-# Current status — 2026-10-07 (America/Bogota), 00.33 hardware checkpoint / 00.34 selector candidate
+# Current status — 2026-10-07 (America/Bogota), 00.33 hardware checkpoint / 00.34 unified-profile candidate
+
+## 00.34 candidate update — unified APK profiles
+
+The current 00.34 source candidate now uses a single public/runtime dataset root:
+
+`ux0:data/DBTapBattle/profiles/<Profile>/`.
+
+The previous special `game/` plus `mods/` split has been removed from the
+current source. The boot selector enumerates only directories that are actually
+present under `profiles/`; it no longer creates an unconditional Original row,
+so `ORIGINAL - DATA MISSING` is gone.
+
+If `profiles/` is empty, the selector remains on its themed/fallback screen and
+shows a no-game-data message instructing the user to prepare a Tap Battle APK with
+the extractor and copy it to `ux0:data/DBTapBattle/profiles/`.
+
+The Windows extractor 1.4 now emits every APK as an independent profile named
+from the APK filename. APK layout/codec detection remains automatic and separate
+from naming. Renaming a folder under `profiles/` changes the selector display
+name without modifying PAC files or re-extracting the APK.
+
+Profile saves now live at
+`ux0:data/DBTapBattle/profiles/<Profile>/save.bin`, still seeded once from the
+VPK master save when absent.
+
+This is a source/CI candidate change. **00.33 remains the latest physical-Vita
+gameplay checkpoint until a complete 00.34 VPK using this layout is tested.**
 
 ## 00.34 candidate — Gen-styled first-screen data selector
 
