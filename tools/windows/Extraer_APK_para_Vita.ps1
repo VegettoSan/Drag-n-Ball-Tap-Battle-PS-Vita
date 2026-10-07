@@ -380,17 +380,17 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             incomplete_character_indices=@($roster.Incomplete);
             character_indices_after_gap=@($roster.LaterAfterGap);
             unsupported_character_files=@($roster.Unsupported);
-            save_policy='global-vpk-seed-ux0-root';
+            save_policy='per-profile-vpk-seed';
             bundled_save=$bundledSave; profile_save_installed=$false }
         Write-Json (Join-Path $target 'dbtb_manifest.json') $manifest
         Write-Host ("OK: {0} -> {1} ({2} archivos, {3} renombrados, {4} personajes)" -f [IO.Path]::GetFileName($Apk),$profile,$files.Count,$renamed.Count,$roster.Count)
         if (-not $roster.RuntimeCompatible) {
-            Write-Host 'AVISO: el roster no cumple completamente el contrato Vita 00.29 (13..100 slots continuos, sin tripletas parciales).' -ForegroundColor Yellow
+            Write-Host 'AVISO: el roster no cumple completamente el contrato Vita 00.30 (13..100 slots continuos, sin tripletas parciales).' -ForegroundColor Yellow
         }
         if ($roster.Unsupported.Count) {
-            Write-Host 'AVISO: se encontraron IDs de personaje de 3+ digitos; 00.29 solo soporta indices 00..99.' -ForegroundColor Yellow
+            Write-Host 'AVISO: se encontraron IDs de personaje de 3+ digitos; 00.30 solo soporta indices 00..99.' -ForegroundColor Yellow
         }
-        if ($bundledSave) { Write-Host 'INFO: el APK trae save.bin, pero 00.29 no lo instala; el VPK usa un unico save global.' -ForegroundColor Yellow }
+        if ($bundledSave) { Write-Host 'INFO: el APK trae save.bin, pero 00.30 no lo instala; el VPK crea un save independiente dentro de cada perfil.' -ForegroundColor Yellow }
         return [pscustomobject]@{ apk=[IO.Path]::GetFileName($Apk); profile=$profile; files=$files.Count;
             source_sha256=$apkHash; character_count=$roster.Count; character_indices=$roster.CompleteIndices;
             character_runtime_compatible=$roster.RuntimeCompatible; bundled_save=$bundledSave }
@@ -440,14 +440,14 @@ try {
     $lines = @('DATOS DRAGON BALL TAP BATTLE PARA PS VITA', '',
         'Copia la carpeta data de ESTE paquete a la raiz ux0: con VitaShell.',
         'La ruta final debe quedar ux0:data/DBTapBattle/. No copies Paquete_* dentro de ux0:data.',
-        'Instala por separado el VPK 00.29 o posterior para perfiles independientes.', '', 'PERFILES EXTRAIDOS:')
+        'Instala por separado el VPK 00.30 o posterior para perfiles independientes.', '', 'PERFILES EXTRAIDOS:')
     foreach ($report in $reports) {
         $label = $report.profile.Substring($report.profile.LastIndexOf('/')+1)
         if ($report.profile -eq 'game') { $label = 'Original' }
         $lines += ('- {0}: ux0:data/DBTapBattle/{1}/ -> elige {2} en el VPK.' -f $report.apk,$report.profile,$label)
         $lines += ('  Personajes detectados: {0} {1}' -f $report.character_count,$report.character_indices)
-        if (-not $report.character_runtime_compatible) { $lines += '  AVISO: el roster no cumple por completo el contrato 00.29; revisa dbtb_manifest.json.' }
-        if ($report.bundled_save) { $lines += '  El APK incluia save.bin, pero no se instala: 00.29 usa el save global del VPK.' }
+        if (-not $report.character_runtime_compatible) { $lines += '  AVISO: el roster no cumple por completo el contrato 00.30; revisa dbtb_manifest.json.' }
+        if ($report.bundled_save) { $lines += '  El APK incluia save.bin, pero no se instala: 00.30 usa una copia propia sembrada desde el VPK.' }
     }
     $lines += @('',
         'Cada APK/mod se guarda como perfil independiente dentro de mods/, salvo el APK Original exacto.',
@@ -456,9 +456,9 @@ try {
         'Para usar Gen como base Original, copia el CONTENIDO de mods/Gen/ a game/ deliberadamente.',
         'Gen en mods/Gen/ funciona como perfil independiente; no necesita moverlo para seleccionarlo.', '',
         'IMPORTANTE AL ACTUALIZAR UNA INSTALACION:',
-        'El unico save jugable es ux0:data/DBTapBattle/save.bin.',
-        'El VPK 00.29 lo crea desde su semilla incluida solo cuando ese archivo no existe.',
-        'Los save.bin incluidos por APKs/mods no se copian a sus perfiles.',
+        'Cada perfil usa su propio save.bin dentro de game/ o mods/<Perfil>/.',
+        'El VPK 00.30 crea esa copia desde su semilla incluida solo cuando el save del perfil no existe.',
+        'Los save.bin incluidos por APKs/mods no se copian automaticamente: cada perfil parte de la misma semilla del VPK.',
         'No compartas partidas entre Original, Gen y Android14.',
         'Cada uso de la herramienta crea un paquete nuevo; no borra ni mezcla salidas anteriores.', '',
         'Los PAC y OGG se conservan byte por byte. Los perfiles Android14 solo cambian nombres confirmados.',
