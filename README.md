@@ -1,6 +1,6 @@
 # Dragon Ball Tap Battle PS Vita
 
-> **Current 00.34 data/runtime contract:** see [Current runtime contract](docs/CURRENT_RUNTIME_CONTRACT.md). Historical documents may retain older paths only as build-specific evidence.
+> **Current public release: v1.0** — Vita `APP_VER 01.00`, `TITLE_ID DBTB01178`.\n> The gameplay/runtime baseline is the hardware-confirmed 00.34 checkpoint; the\n> v1.0 package changes release identity/metadata, not game logic.\n\n> **Current 00.34 data/runtime contract:** see [Current runtime contract](docs/CURRENT_RUNTIME_CONTRACT.md). Historical documents may retain older paths only as build-specific evidence.
 
 A native PlayStation Vita port of **Dragon Ball Tap Battle** built with VitaSDK,
 vitaGL, and the original game core compiled privately for Vita.
@@ -99,11 +99,18 @@ from another profile.
 
 ## Project status
 
-The current stable hardware-confirmed checkpoint is **00.34**. The exact tested
-VPK is `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk`, SHA-256
-`24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03`.
-The user reports it stable and functional on physical Vita with no issue found
-so far in the exercised paths.
+The current public package is **v1.0**:
+
+- file: `Dragon-Ball-Tap-Battle-PS-Vita-v1.0.vpk`
+- Vita APP_VER: `01.00`
+- TITLE_ID: `DBTB01178`
+- SHA-256: `15eb056274db6f3ad561c3befb670833c348f536c3073590b9768b04f74ee594`
+
+v1.0 is a release-identity promotion of the **00.34 hardware-confirmed gameplay
+checkpoint**. The executable/game resources are unchanged by the Title ID
+migration; only the package metadata identity changed. The exact 00.34 artifact
+that was physically tested remains documented with its original
+`TITLE_ID DBTB00001` and hash as historical evidence.
 
 See [Current Status](docs/CURRENT_STATUS.md) for validation scope and history.
 
