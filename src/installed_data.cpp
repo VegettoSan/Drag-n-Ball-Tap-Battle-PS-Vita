@@ -70,9 +70,9 @@ InstalledDataAudit auditInstalledData(const GameVfs& vfs, int min_characters,
     // Protected Android14-derived APKs (including Spanish and Invasion)
     // are standalone even though their bobj family begins at 01 and they do
     // not bundle bobj00.pac. Do not impose the original dataset's bobj00
-    // inventory as a Vita installation requirement. If the unchanged game
-    // core actually requests bobj00 at runtime, the normal VFS overlay/fallback
-    // contract still decides whether a base copy is available.
+    // inventory as a Vita installation requirement. If the preserved original
+    // core later requests an omitted resource, that is a profile-adaptation
+    // issue to diagnose; selected profiles never borrow it from game/.
     for (const char* logical : {"select0.pac", "effect.pac", "back00.pac"}) {
         bool present = false;
         if (!openPac(vfs, logical, present, result.error)) return result;
