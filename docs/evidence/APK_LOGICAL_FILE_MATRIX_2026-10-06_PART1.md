@@ -1,5 +1,12 @@
 # Matriz exhaustiva de archivos de datos — APK auditados (parte 1/3)
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](../CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 Generada directamente de los cinco APK suministrados el 2026-10-06. No contiene payloads: solo nombres, tamaños, SHA-256 y metadatos estructurales. `-` = ausente. En perfiles protegidos se muestra `alias→nombre canónico`.
 
 Cada PAC muestra `bytes; sha12; N entries; secuencia de tipos`. La secuencia está comprimida como `rgbax4,wavx3`, etc.
