@@ -141,9 +141,9 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
     vfs.reset(new GameVfs(base));
     if (!vfs->prepareDirectories() || (!mod.empty() && !vfs->selectMod(mod))) return false;
 
-    installed_audit = auditInstalledData(*vfs);
+    installed_audit = scanInstalledData(*vfs);
     if (installed_audit.ready)
-        std::printf("Profile character triplets audited: %d\n", installed_audit.complete_characters);
+        std::printf("Profile character triplets scanned: %d\n", installed_audit.complete_characters);
     else
         std::fprintf(stderr, "Profile character audit: %s\n", installed_audit.error.c_str());
 
