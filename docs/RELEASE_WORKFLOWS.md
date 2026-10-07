@@ -11,14 +11,14 @@ Hay dos botones manuales en **Actions**:
 
 | Workflow | Etiqueta automatica (version actual) | Publicacion |
 |---|---|---|
-| [Publicar VPK - Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml) | `v00.24` | Release normal, marcada Latest |
-| [Publicar VPK - Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml) | `v00.24-pre.<run_id>` | Prerelease para pruebas, no reemplaza Latest |
+| [Publicar VPK - Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml) | `v00.33` con el CMake actual | Release normal, marcada Latest |
+| [Publicar VPK - Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml) | `v00.33-pre.<run_id>` con el CMake actual | Prerelease para pruebas, no reemplaza Latest |
 
 Ambos usan la version de `tools/aot/engine/vita/CMakeLists.txt`, el commit exacto
 seleccionado al ejecutar el workflow y el mismo compilador compartido. No usan
 el bootstrap de la raiz ni el ejecutable dummy del native smoke. La compilacion
 de release tambien mantiene `-O1` para todo el core TeaVM y `-O2` para servicios
-nativos, igual que la 00.24 confirmada en Vita.
+nativos, con el mismo pipeline completo; la referencia física actual es 00.33.
 
 ## Configuracion una sola vez
 
@@ -90,10 +90,7 @@ simuladas. Un fallo impide la publicacion. El ELF debe contener el motor origina
 y el log de generacion debe demostrar un core completo; un native link probe
 no puede pasar por un VPK jugable.
 
-La 00.24 entregada en este chat tiene confirmacion del usuario en Vita. Cada VPK
-nuevo tiene otro commit/hash: compilar/publicar automaticamente no equivale a
-probar ese nuevo binario en consola. Sigue [la prueba de Vita](TEST_VITA_00_24.md)
-y guarda el VPK, `build.json`, el runtime.log y el ZIP de simbolos correspondiente.
+La 00.33 es el checkpoint físico actual para los recorridos documentados. Cada VPK nuevo tiene otro commit/hash: compilar/publicar automáticamente no equivale a probar ese nuevo binario en consola. Usa [la prueba/resultados 00.33](TEST_VITA_00_33.md) como regresión actual y guarda el VPK, `build.json`, `runtime.log` y el ZIP de símbolos correspondiente.
 
 La sintaxis, pruebas unitarias y staging con el VPK real se verificaron localmente.
 La [validacion en GitHub](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37395626518)
