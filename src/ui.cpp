@@ -269,12 +269,6 @@ bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choic
         for (size_t p = 0; p < frame.pointer_count; ++p) {
             const PointerEvent& pointer = frame.pointers[p];
             if (pointer.phase != PointerPhase::Begin) continue;
-            if (total == 0) {
-                centeredShadowText(480.0f, 218.0f, 2.35f, "NO GAME DATA FOUND", 1.0f, 0.94f, 0.76f);
-                centeredShadowText(480.0f, 258.0f, 1.75f, "PREPARE A TAP BATTLE APK WITH THE EXTRACTOR", 0.90f, 0.94f, 1.0f);
-                centeredShadowText(480.0f, 288.0f, 1.75f, "THEN COPY IT TO UX0:DATA/DBTAPBATTLE/PROFILES/", 0.90f, 0.94f, 1.0f);
-            }
-
             for (int row = 0; row < visible && first + row < total; ++row) {
                 const float y = theme_ready ? (132.0f + row * 58.0f) : (120.0f + row * 44.0f);
                 const float x0 = theme_ready ? 176.0f : 44.0f;
@@ -319,6 +313,12 @@ bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choic
             drawUiTexture(theme_header, 72.0f, 26.0f, 816.0f, 58.0f);
             centeredShadowText(480.0f, 43.0f, 3.0f, "SELECT DATA SET", 1.0f, 0.86f, 0.08f);
             centeredShadowText(480.0f, 95.0f, 2.0f, "DRAGON BALL TAP BATTLE VITA", 1.0f, 0.82f, 0.07f);
+
+            if (total == 0) {
+                centeredShadowText(480.0f, 218.0f, 2.35f, "NO GAME DATA FOUND", 1.0f, 0.94f, 0.76f);
+                centeredShadowText(480.0f, 258.0f, 1.75f, "PREPARE A TAP BATTLE APK WITH THE EXTRACTOR", 0.90f, 0.94f, 1.0f);
+                centeredShadowText(480.0f, 288.0f, 1.75f, "COPY IT TO UX0:DATA/DBTAPBATTLE/PROFILES/", 0.90f, 0.94f, 1.0f);
+            }
 
             for (int row = 0; row < visible && first + row < total; ++row) {
                 const int index = first + row;
