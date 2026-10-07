@@ -1,4 +1,4 @@
-# Runtime data and mod layout — 00.29 standalone datasets + shared save
+# Runtime data and mod layout — 00.30 standalone datasets + per-profile seeded saves
 
 Current contract, checked against `src/vfs.cpp` and native `resources.cpp` on
 2026-10-05. See [CURRENT_STATUS](CURRENT_STATUS.md) for verification scope.
@@ -30,7 +30,7 @@ select0.pac
 text00.pac
 bgm_00.ogg
 se_00.ogg
-save.bin        # APK payload only; ignored by the 00.29 runtime
+save.bin        # runtime-created profile save; seeded from the VPK on first use
 ...
 ```
 
@@ -94,13 +94,15 @@ ux0:data/DBTapBattle/mods/<Profile>/save.bin
 
 Rules:
 
-- If the extracted APK already contains `save.bin`, `extract_apk_data.py` preserves it byte-for-byte in that profile directory and the Vita runtime uses it directly.
-- If the profile has no `save.bin`, the original engine starts without one and creates it in that same profile directory when it first saves successfully.
-- Resources and saves are both profile-local. A selected profile never reads a missing PAC/OGG from `game/`, and its save never falls back to another profile.
-- `saves/shared/` from build 00.14 and older `saves/<profile>/` directories are ignored by the new runtime. They may be kept manually as backups.
-- No automatic migration is performed. This avoids overwriting an APK-provided save or accidentally copying progress between unrelated mods.
+- The VPK contains one read-only master seed at `app0:/save.bin`.
+- When Original is selected and `game/save.bin` does not exist, the runtime copies that exact seed to `game/save.bin`.
+- When a mod is selected and `mods/<Profile>/save.bin` does not exist, the runtime copies the same seed to that profile's directory.
+- Once created, a profile save is never overwritten merely by launching the profile again, switching profiles or updating the VPK.
+- Extractors record an APK-bundled `save.bin` for provenance but do **not** install it as the runtime save; every profile starts from the same known VPK seed.
+- Resources and saves are both profile-local. A selected profile never reads a missing PAC/OGG or save from another profile.
+- Historical `ux0:data/DBTapBattle/save.bin`, `saves/shared/` and `saves/<profile>/` files are not 00.30 runtime inputs.
 
-This design is intentionally profile-local because different mods may reuse the same character slots for different characters or change progression semantics.
+This design is intentionally profile-local because different mods may reuse the same character slots for different characters or store progression differently, while still guaranteeing that all profiles begin from the same known initial save.
 
 ## Optional mod metadata
 
@@ -125,13 +127,13 @@ StringTexture uses PVF and a separate charset/glyph service.
 
 - Never write mod resource files into `game/`.
 - Never patch original PAC files in place during normal play.
-- Keep APK-bundled `save.bin` only as source/provenance if desired; gameplay uses the single root `save.bin`.
-- Never overwrite `ux0:data/DBTapBattle/save.bin` while copying datasets or updating the VPK.
+- APK-bundled `save.bin` is source/provenance only; the extractor must not install it as runtime progress.
+- Preserve existing `game/save.bin` and `mods/<Profile>/save.bin` files when copying dataset updates.
 - Path traversal such as `../` must not be accepted by the virtual filesystem.
 
 ## Writable paths and completeness
 
-Current VFS creates `config/`, `logs/`, `saves/`, `game/` and `mods/` for backward compatibility and diagnostics. The active gameplay save is the single root `ux0:data/DBTapBattle/save.bin`.
+Current VFS creates `config/`, `logs/`, `saves/`, `game/` and `mods/` for backward compatibility and diagnostics. The active gameplay save is the selected profile's `game/save.bin` or `mods/<Profile>/save.bin`.
 
 Log:
 
@@ -149,7 +151,7 @@ Original data presence currently means `game/common.pac` is a regular file, inde
 install/mods/Android14/
 ```
 
-with canonical names and untouched encoded PACs. If the APK supplies `save.bin`, extraction may preserve that source payload in the profile for provenance, but 00.29 gameplay ignores it and uses the root shared save.
+with canonical names and untouched encoded PACs. If the APK supplies `save.bin`, extraction records that source payload for provenance but does not install it; 00.30 creates the profile's runtime `save.bin` from the VPK seed on first use.
 
 Format-3 import manifest records profile, alias mapping and original APK content hashes. Native codec detection is per PAC, not globally per active mod. See `ANDROID14_APK.md` for the exact profile and resource/engine compatibility boundary.
 
@@ -161,7 +163,7 @@ entries/files from another dataset. The GameData exclusion
 filter is honored before reading payloads; normalization is in memory and never
 rewrites the installed PAC. The result LRU is keyed by resolved physical path,
 filter and file metadata (size/mtime/ctime) and cleared on resource reinitialization.
-The PAC-result cache does not hold save state. Cross-profile progress sharing is explicit through the single global save, not through resource fallback.
+The PAC-result cache does not hold save state. Save progress is isolated per selected profile and is never supplied by resource fallback.
 
 Resource-existence results and save reads are also cached for the session. Do not
 promise live detection of every edited file or external save while the game is
@@ -169,9 +171,7 @@ running; restart after installing/changing a dataset. Stat-based invalidation is
 not cryptographic content validation. Imported textures/voices require exact byte
 and mode checks after content hashes; see [PORTING_GUIDE](PORTING_GUIDE.md).
 
-The raw extractor and private two-source ZIP preserve a save when supplied.
-The audited original/Community14 pair has no bundled save; Gen does. Back up
-profile progress before importing that file. The two-source ZIP tool's raw-input
+The raw extractor records a bundled source save when supplied but 00.30 does not install it as runtime progress. The audited original/Community14 pair has no bundled save; Gen does. Back up profile-local runtime saves before replacing data. The two-source ZIP tool's raw-input
 contract is not a Gen importer; use the ordinary assets/auto extractor for Gen.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
@@ -192,6 +192,6 @@ The BAT/PS1 tool in `tools/windows/` emits a fresh package whose `data/` folder
 can be copied directly to the `ux0:` root. Raw original APKs use `game/`;
 Community14 uses `mods/Android14/`; the known Gen content hash uses `mods/Gen/`.
 Unknown canonical assets APKs use a sanitized filename as a separate mod profile.
-An APK-provided save may stay in its extracted profile but is not used by 00.29. Preserve the root global save when copying updates. No cross-profile gameplay-resource fallback occurs.
+An APK-provided save is not installed as the runtime save. Preserve each existing profile-local save when copying updates. No cross-profile gameplay-resource fallback occurs.
 See [Windows tool](WINDOWS_DATA_TOOL.md) for profile naming, byte preservation,
 source recognition, incomplete-original warnings and verification scope.
