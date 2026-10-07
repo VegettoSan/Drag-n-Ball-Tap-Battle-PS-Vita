@@ -1,5 +1,7 @@
 # Reusable porting guide — lessons from Tap Battle on Vita
 
+> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.\n> The hardware-confirmed gameplay baseline is 00.34; historical build metadata\n> remains unchanged where it identifies exact tested artifacts.
+
 Checkpoint: 2026-10-05 / full-engine 00.22. This guide distinguishes reusable
 methods from game-specific facts. [CURRENT_STATUS](CURRENT_STATUS.md) identifies
 what actually worked on hardware. It is not a claim that every Java/Android game
