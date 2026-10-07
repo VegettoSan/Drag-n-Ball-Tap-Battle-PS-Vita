@@ -19,7 +19,7 @@ Ambos usan la version de `tools/aot/engine/vita/CMakeLists.txt`, el commit exact
 seleccionado al ejecutar el workflow y el mismo compilador compartido. No usan
 el bootstrap de la raiz ni el ejecutable dummy del native smoke. La compilacion
 de release tambien mantiene `-O1` para todo el core TeaVM y `-O2` para servicios
-nativos, con el mismo pipeline completo; la referencia física actual es 00.33.
+nativos, con el mismo pipeline completo; la referencia física actual es 00.34.
 
 ## Contrato de datos del VPK
 
