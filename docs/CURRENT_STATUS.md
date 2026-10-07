@@ -1,5 +1,27 @@
 # Current status — 2026-10-06/07 (America/Bogota), 00.24 baseline / 00.30 hardware findings / 00.31 candidate
 
+## 00.32 candidate — fix 00.31 infinite Loading
+
+Physical 00.31 logs from both Invasion and Zuper/Samu show the engine alive at
+about 60 FPS but stuck forever immediately after the obsolete
+`device/screensize.csv` request. Direct inspection of the pinned APK proves the
+Downloader contract was inverted in 00.31: `isDownload()==true` means the
+request is still running. The Vita offline stub now returns false immediately
+with no data so the original TCB state takes its normal offline/failure path.
+
+00.31 also performed a deep PAC audit before entering the engine, producing
+roughly 13 seconds of profile-init delay for Invasion and 34 seconds for Samu.
+00.32 uses a presence/contiguity scan for the runtime roster instead. Deep PAC
+validation remains in tooling/tests rather than the boot path.
+
+Complete test VPK:
+`DBTapBattle-Vita-00.32-Loading-Loop-Fix.vpk`, SHA-256
+`07a8ab63923e4913cc1810a5658c84ef925d3eddf08ac04b81658c683956b4b9`.
+
+00.31 dynamic roster/save synchronization, Shop return behavior, large-PAC memory
+policy, Invasion text fallback and Samu direct compressed audio are retained.
+Hardware retest is pending.
+
 ## 00.31 candidate — dynamic roster, repeated-fight memory, Shop and startup
 
 The user's physical 00.30 test confirms Samu now boots and the previous Invasion
