@@ -9,8 +9,11 @@ bool openPac(const GameVfs& vfs, const char* logical, bool& present, std::string
         present = false;
         // Missing data is handled by the caller as a gap. Other VFS failures
         // (for example a non-regular override) are structural errors.
-        if (vfs.error().compare(0, 26, "missing original resource:") != 0) {
-            error = vfs.error();
+        const std::string& vfs_error = vfs.error();
+        const bool missing_original = vfs_error.compare(0, 26, "missing original resource:") == 0;
+        const bool missing_profile = vfs_error.compare(0, 34, "missing selected profile resource:") == 0;
+        if (!missing_original && !missing_profile) {
+            error = vfs_error;
             return false;
         }
         return true;
