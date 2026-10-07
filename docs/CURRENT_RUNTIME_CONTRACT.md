@@ -1,4 +1,4 @@
-# Current runtime/data contract — 00.34 candidate
+# Current runtime/data contract — 00.34 stable
 
 > This file is the source of truth for the **current** runtime and extractor
 > contract. Historical test documents may mention older `game/` and `mods/`
@@ -101,8 +101,13 @@ contiguous character-triplet namespace. It never writes a runtime `game/` or
 
 ## Evidence status
 
-00.33 remains the latest hardware-confirmed gameplay checkpoint until the user
-finishes testing the 00.34 selector/profile-layout candidate on a physical Vita.
-The latest 00.34 VPK contains the unified profile layout, fullscreen selector
-background handling and profile-opening transition, but those presentation/layout
-changes are still pending physical confirmation.
+00.34 is the current hardware-confirmed stable checkpoint. The exact tested VPK is:
+
+```text
+DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk
+SHA-256: 24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03
+source: 0da8684805d1510caf93130a22eed523a854c1d6
+```
+
+The user reports the VPK stable and functional on physical Vita, with no problem
+found so far in the exercised selector, profile-loading and gameplay paths.
