@@ -1,10 +1,10 @@
 # Original-style APK with bundled characters
 
-> **Historical document notice — current 00.34 contract:** this file preserves
+> **Historical document notice — current v1.0 contract:** this file preserves
 > evidence/instructions for the build or investigation named here. The current
 > Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
 > current `game/` or `mods/` profile roots and no built-in Original selector
-> row. Do not reuse historical install paths for 00.34. See
+> row. Do not reuse historical install paths for v1.0. See
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
@@ -18,7 +18,7 @@ original APK lacks.
 
 ## Layout
 
-The 57 `res/raw/` entries are zero-byte stubs. The actual runtime data lives in `assets/`: 147 files total, including 108 PACs, 36 OGGs, `loading.png`, `mk.bin` and an APK-bundled `save.bin`. The current port reads/writes the selected profile's save: `game/save.bin` for Original or `mods/<Profile>/save.bin` for a mod. Current extractors record the APK-bundled save for provenance but do **not** install it as runtime progress. A fresh profile is seeded from the exact VPK `app0:/save.bin` only when that profile has no save yet. Existing profile progress is never overwritten by profile selection or VPK update; there is no migration or cross-profile fallback.
+The 57 `res/raw/` entries are zero-byte stubs. The actual runtime data lives in `assets/`: 147 files total, including 108 PACs, 36 OGGs, `loading.png`, `mk.bin` and an APK-bundled `save.bin`. The current v1.0 port reads/writes only the selected profile's save at `ux0:data/DBTapBattle/profiles/<Profile>/save.bin`. Current extractors record the APK-bundled save for provenance but do **not** install it as runtime progress. A fresh profile is seeded from the exact VPK `app0:/save.bin` only when that profile has no save yet. Existing profile progress is never overwritten by profile selection or VPK update; there is no migration or cross-profile fallback.
 
 `tools/extract_apk_data.py` auto mode now recognizes this pattern: when
 `res/raw/` contains only empty stubs and `assets/` contains real payloads, it
