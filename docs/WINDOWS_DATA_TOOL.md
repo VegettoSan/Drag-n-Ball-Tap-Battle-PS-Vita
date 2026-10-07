@@ -9,6 +9,16 @@ tools/windows/Extract_APK_for_Vita.bat
 The older Spanish-named BAT remains for compatibility and launches the same
 PowerShell extractor.
 
+## No PC / phone or tablet
+
+Users without Windows can use **Web Extractor 1.0**:
+
+https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
+
+It implements the same `profiles-v1` output contract directly in a modern
+browser and does not upload the selected APK. See
+[WEB_DATA_TOOL](WEB_DATA_TOOL.md).
+
 ## Requirements
 
 - Windows 10 or Windows 11
