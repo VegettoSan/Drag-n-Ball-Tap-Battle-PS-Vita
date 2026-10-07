@@ -1,9 +1,16 @@
-DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.4
+DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.5
 
 Requirements
 - Windows 10 or Windows 11
 - Built-in Windows PowerShell 5.1
 - No Python, Java, 7-Zip, administrator rights, or Internet connection required
+
+RUNTIME CONTRACT
+The current Vita runtime contract is profiles-v1:
+  ux0:data/DBTapBattle/profiles/<Profile>/
+
+The selector shows only first-level folders that actually exist there. It has no
+built-in Original entry and never reads game/ or mods/ as current profile roots.
 
 QUICK START
 1. Extract the entire extractor ZIP into one folder.
