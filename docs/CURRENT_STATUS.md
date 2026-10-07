@@ -1,9 +1,30 @@
-# Current status — 2026-10-07 (America/Bogota), 00.34 HARDWARE CONFIRMED
+# Current status — 2026-10-07 (America/Bogota), v1.0 RELEASE / 00.34 HARDWARE BASELINE
 
 > **Authoritative current contract:** [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 > Any later section in this document that mentions `game/`, `mods/`, an
-> unconditional Original selector entry, or the old profile-save paths describes
-> the historical build named by that section; it does **not** override 00.34.
+> unconditional Original selector entry, or old profile-save paths describes
+> the historical build named by that section. The current public release is
+> **v1.0 / APP_VER 01.00 / TITLE_ID DBTB01178**; 00.34 remains the exact
+> hardware-tested gameplay baseline.
+
+## v1.0 public release identity
+
+The first stable public release is:
+
+- file: `Dragon-Ball-Tap-Battle-PS-Vita-v1.0.vpk`
+- APP_VER: `01.00`
+- TITLE_ID: `DBTB01178`
+- SHA-256:
+  `15eb056274db6f3ad561c3befb670833c348f536c3073590b9768b04f74ee594`
+- gameplay/runtime source baseline:
+  `0da8684805d1510caf93130a22eed523a854c1d6`
+
+This v1.0 package is derived from the exact 00.34 stable build. The Title ID
+migration changes `sce_sys/param.sfo` identity only; the gameplay executable
+and packaged game-facing resources are unchanged. Because the exact 00.34 VPK
+was the binary physically exercised, its historical metadata remains recorded
+below as `TITLE_ID DBTB00001`. A new physical launch/install check of the
+DBTB01178 package is still the correct final publication sanity check.
 
 ## 00.34 stable hardware-confirmed VPK
 
