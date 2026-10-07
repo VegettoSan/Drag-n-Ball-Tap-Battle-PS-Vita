@@ -1,5 +1,12 @@
 DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.5
 
+WEB EXTRACTOR ALTERNATIVE
+If you do not have a Windows PC, use Web Extractor 1.0:
+  https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
+
+It runs locally in a modern browser, does not upload the APK, and produces the
+same profiles-v1 data layout expected by the Vita port.
+
 Requirements
 - Windows 10 or Windows 11
 - Built-in Windows PowerShell 5.1
