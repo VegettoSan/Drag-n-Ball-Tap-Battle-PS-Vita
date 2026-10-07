@@ -1099,3 +1099,24 @@ Extractors stop installing APK-local saves.
 
 **Evidence level:** hardware findings are confirmed for 00.28; 00.29 fixes are
 source/CI/build validated and require physical retest.
+
+## 2026-10-07 — Attempt 034 — one VPK seed, independent save per profile
+
+**Reason:** after reviewing how community mods store character/progression data,
+the user rejected 00.29's single mutable global save. Different mods may reuse
+slots differently, so sharing mutable state can couple otherwise independent APK
+datasets.
+
+**Change:** retain the exact 12,906-byte user-provided save in the VPK as the only
+initial seed. On profile initialization, choose `game/save.bin` for Original or
+`mods/<Profile>/save.bin` for a mod. If that file is missing, copy
+`app0:/save.bin` once using the existing atomic temp/fsync/rename publication.
+If it already exists, load it unchanged. The historical root 00.29 save is no
+longer consulted.
+
+**Importer policy:** APK-bundled saves remain excluded from installed datasets;
+the manifest records their presence instead. This guarantees every fresh profile
+starts from the same known VPK seed while remaining independently writable.
+
+**Version:** 00.30. Native smoke and extractor/profile CI cover the source-policy
+change; physical isolation validation remains pending.
