@@ -9,11 +9,11 @@
 
 The latest complete user-test package is:
 
-- `DBTapBattle-Vita-00.34-No-Blue-Orb-Fix.vpk`
+- `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk`
 - SHA-256:
-  `4f0abc4aba15c766847657d152de9cff50877df3f7b13a169f06be4226d2367b`
+  `24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03`
 - runtime/selector source:
-  `18559dcea316076bb1225080bb8506dd439df6f6`
+  `0da8684805d1510caf93130a22eed523a854c1d6`
 - physical Vita result: **pending**
 
 Current runtime/data behavior:
@@ -26,6 +26,10 @@ There is no current `game/` or `mods/` split. The selector lists only real
 profile directories, has no synthetic Original row, and shows a no-data message
 when `profiles/` is empty. Profile saves live inside the selected profile and
 are seeded once from `app0:/save.bin`.
+
+The selector row buttons are now centered on the Vita viewport. Their labels
+are now centered inside the cyan interior and dynamically shrink before touching
+the silver bevels.
 
 The selector background now uses only the continuous 482×320 cyan/grid band
 from the top of the 512×512 Gen-derived source and stretches that region to
