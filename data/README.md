@@ -13,13 +13,14 @@ ux0:data/DBTapBattle/profiles/<Profile>/
 
 There is no special `game/` directory and no separate `mods/` root.
 
-Use the Windows extractor for normal user installation:
+For normal user installation, choose either:
 
-```text
-tools/windows/Extract_APK_for_Vita.bat
-```
+- Web Extractor 1.0:
+  `https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/`
+- Windows Extractor 1.5:
+  `tools/windows/Extract_APK_for_Vita.bat`
 
-It writes each APK as:
+Both write each APK as:
 
 ```text
 data/DBTapBattle/profiles/<sanitized APK filename>/
