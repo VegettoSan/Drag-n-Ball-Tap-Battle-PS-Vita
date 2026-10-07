@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-10-07",
+  "version": "00.33",
+  "title_id": "DBTB00001",
+  "artifact": {
+    "name": "DBTapBattle-Vita-00.33-Invasion-Saitama-Freezer-Fix.vpk",
+    "sha256": "d241499a356ac11c523909a84b0c383910ef7a387efcfdc2c05d3581be86fd77",
+    "eboot_sha256": "bc0a0d4293e5b416084d02050dd6b3c17529cc63fab00bfe7a48d0310303d43b",
+    "elf_sha256": "6c55a58f59277bee0d2632dbefca8c1a938d577457b867489d3605a11cee7dbe"
+  },
+  "physical_vita_result": {
+    "reported_by_user": true,
+    "loading_loop": "fixed",
+    "dynamic_mod_rosters": "confirmed; all characters of tested mods load",
+    "invasion_text": "reported correct in tested path",
+    "invasion_repeated_fights": "several consecutive fights completed without crash on 00.33",
+    "previous_repro": "Invasion Saitama -> second fight vs Freezer crashed on 00.32",
+    "previous_failure": "native std::bad_alloc during protected char15.pac normalization",
+    "resolution": "00.33 explicit output.swap(out) ownership transfer removes the duplicate multi-MiB vector allocation",
+    "status": "RESOLVED in tested hardware scope"
+  },
+  "scope_note": "This closes the reproduced Invasion repeated-fight/Saitama->Freezer crash. It is not a claim that every mod, mode, character combination or arbitrarily long session has been exhaustively tested."
+}
