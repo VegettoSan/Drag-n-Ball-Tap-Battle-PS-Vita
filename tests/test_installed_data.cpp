@@ -56,12 +56,23 @@ int main() {
     audit = auditInstalledData(vfs);
     assert(audit.ready && audit.complete_characters == 13 && audit.error.empty());
 
-    // A mod may extend the canonical sequence while using the original dataset
-    // as fallback for 00..12 and shared assets.
-    for (int i = 13; i < 22; ++i) writeTriplet(mods, i);
+    // A selected APK profile is a standalone dataset. It carries its own
+    // complete roster/shared resources and must never borrow missing files from
+    // game/, even when a matching base file happens to exist there.
+    for (int i = 0; i < 22; ++i) writeTriplet(mods, i);
+    for (const char* name : {"select0.pac", "effect.pac", "back00.pac"})
+        writePac(mods + "/" + name);
     assert(vfs.selectMod("Invasion"));
     audit = auditInstalledData(vfs);
     assert(audit.ready && audit.complete_characters == 22 && audit.error.empty());
+
+    // Prove no hidden game/ fallback: game/ still has charf0000.pac, but a
+    // missing selected-profile copy must fail the selected dataset audit.
+    assert(unlink((mods + "/charf0000.pac").c_str()) == 0);
+    audit = auditInstalledData(vfs);
+    assert(!audit.ready && audit.complete_characters == 0 &&
+           audit.error == "character triplet is incomplete");
+    writePac(mods + "/charf0000.pac");
 
     // One missing member of a triplet is rejected.
     assert(unlink((mods + "/charf0017.pac").c_str()) == 0);
@@ -104,6 +115,6 @@ int main() {
     audit = auditInstalledData(vfs, 13, 101);
     assert(!audit.ready && audit.error == "invalid character audit bounds");
 
-    std::puts("INSTALLED DATA PASS: protected bobj00 omission, 13 baseline, 22 Invasion, 92 Samu, 00..99 namespace, partial/gap/corrupt rejection");
+    std::puts("INSTALLED DATA PASS: standalone selected profile, no game fallback, protected bobj00 omission, 13 baseline, 22 Invasion, 92 Samu, 00..99 namespace");
     return 0;
 }
