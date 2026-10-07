@@ -41,7 +41,7 @@ no entry-level PAC merge.
 
 ## Profile names
 
-The Windows extractor derives the profile folder from the APK filename.
+Both the Web Extractor 1.0 and Windows Extractor 1.5 derive the profile folder from the APK filename.
 Codec/layout detection does not rename it.
 
 Users may rename the final profile directory to change the label shown in the
@@ -101,23 +101,23 @@ media content. Ordinary Vorbis uses libvorbisfile; supported MP3/AAC paths use
 Vita decoding. This is required for the mislabeled BGM found in Invasion and
 Samu.
 
-## Windows import route
+## User extraction routes
 
-For normal users, use:
+For normal users, use either:
 
-```text
-tools/windows/Extract_APK_for_Vita.bat
-```
+- Web Extractor 1.0: https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
+- Windows Extractor 1.5: `tools/windows/Extract_APK_for_Vita.bat`
 
-Extractor 1.5 outputs:
+The web version processes the APK locally in the browser and downloads a
+Vita-ready ZIP; the APK is not uploaded. Both extractors output:
 
 ```text
 data/DBTapBattle/profiles/<sanitized APK filename>/
 ```
 
-It validates the APK/ZIP, CRCs, safe paths, collisions, `common.pac`,
-protected PAC structure where applicable, hashes and roster structure. It does
-not install DEX/native Android code as Vita runtime code.
+Both validate the APK/ZIP, CRCs, safe paths, collisions, `common.pac`,
+protected PAC structure where applicable, hashes and roster structure. Neither
+installs DEX/native Android code as Vita runtime code.
 
 The older Python tools remain engineering/forensic helpers for pinned historical
 tests. Their old `--mod`/fixture examples are not the current user-facing Vita
@@ -148,5 +148,6 @@ Record:
 
 See [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md),
 [COMMUNITY_MOD_PROFILES](COMMUNITY_MOD_PROFILES.md),
+[WEB_DATA_TOOL](WEB_DATA_TOOL.md),
 [WINDOWS_DATA_TOOL](WINDOWS_DATA_TOOL.md) and
 [CURRENT_STATUS](CURRENT_STATUS.md).
