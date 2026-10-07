@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "date": "2026-10-06/07",
+  "build_under_test_previous": "00.28",
+  "next_candidate": "00.29",
+  "hardware_observations": {
+    "invasion": {
+      "standalone_without_game": true,
+      "textures": "user reported correct",
+      "external_audio": "user reported correct",
+      "result_text": "corrupted in blue result/dialog box",
+      "screenshot_observation": "surrounding UI such as GANADOR/name/EXP readable"
+    },
+    "samu": {
+      "standalone_without_game": "reaches title then exits",
+      "with_game": "same failure",
+      "detected_character_triplets": 92,
+      "error": "sceAudiodecCreateDecoder failed 0x807f0007 while loading bgm_00.ogg",
+      "isolation": "failure independent of game/ presence"
+    }
+  },
+  "source_evidence": {
+    "samu_bgm_16_equals_bgm_00": true,
+    "implication": "decoder lifetime/one-stream conflict, not damaged MP3 payload",
+    "invasion_char20_text_encoding": "UTF-8",
+    "invasion_char20_example": "Ranma está disponible！",
+    "invasion_dex_setstring": "substantially differs from preserved Gen-equivalent path"
+  },
+  "candidate_changes": {
+    "bgm": "close active compressed decoder before creating replacement under audio lock",
+    "text": "prefer exact GameData charset; if modified SetString slot misses, use content-detected active character-profile charset",
+    "save": {
+      "mutable_path": "ux0:data/DBTapBattle/save.bin",
+      "vpk_seed_path": "app0:/save.bin",
+      "seed_size": 12906,
+      "seed_sha256": "64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb",
+      "overwrite_existing": false,
+      "apk_local_saves_installed": false
+    }
+  },
+  "evidence_scope": {
+    "00.28_hardware": "confirmed by user-provided logs/screenshot/report",
+    "00.29_fixes": "source/CI/build validation pending physical retest"
+  }
+}
