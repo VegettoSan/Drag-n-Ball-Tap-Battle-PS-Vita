@@ -1,61 +1,37 @@
 # Dragon Ball Tap Battle PS Vita
 
-Development candidate **00.31** is the direct response to the 00.30
-physical-Vita report. 00.30 proved Samu now boots, its direct compressed audio
-works, and Invasion's earlier text corruption was not reproduced; it also exposed
-four remaining issues: only the first 13 Samu characters were visible, Invasion
-hit `std::bad_alloc` when starting a later fight, Shop threw the unsupported
-Android-marketplace exception, and the obsolete online-check state waited around
-10–25 seconds.
+## Current hardware checkpoint — 00.33 (2026-10-07)
 
-00.31 keeps standalone datasets, direct MP3/AAC/Vorbis, the Invasion text fix and
-independent per-profile saves. It additionally derives character availability from
-the audited profile roster (Samu = 92), extends only the verified character arrays
-and loops needed for IDs 00..99, reduces multi-MiB PAC cache peaks between
-battles, returns cleanly from the unavailable Android Shop service, and matches
-the original Gen offline Downloader stub so the catalog/update state can finish
-immediately.
+**DBTapBattle-Vita-00.33-Invasion-Saitama-Freezer-Fix.vpk** is the current
+hardware-confirmed development checkpoint.
 
-Current hardware checkpoint: **DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk** fixes
-native PCM allocation growth at Android14 battle start and preserves the now
-hardware-confirmed LiveArea. Full build, host tests and the user’s Vita retest pass. See [00.24 result](docs/TEST_VITA_00_24.md).
+Physical Vita testing confirms, in the tested paths, that the Loading regression
+is fixed, mod rosters expand to the installed dataset (including Samu's 92
+characters), Invasion text remains readable, Samu's direct compressed audio
+survives the title/menu transition, and the reproduced Invasion Saitama ->
+second fight vs Freezer crash no longer occurs after several consecutive fights.
 
-Development candidate **00.33** keeps the standalone-profile and
-independent-save model while targeting the last reproduced Invasion battle
-crash. Physical 00.32 testing confirms the Loading loop is fixed and extended
-mod rosters now show correctly, including Samu's full roster. The remaining
-repro is Invasion Saitama -> second fight vs Freezer.
+The final Invasion failure was a native protected-PAC allocation bug in the Vita
+adapter, not corrupt character data. 00.33 explicitly transfers the normalized
+PAC buffer with `output.swap(out)`, eliminating a duplicate ~4.6 MiB allocation
+identified by symbolizing the 00.32 coredump against its exact ELF.
 
-The supplied 00.32 Vita coredump, symbolicated against its exact ELF, resolves
-the native `std::bad_alloc` through `std::vector<unsigned char>::operator=`
-inside protected-PAC normalization. Invasion `char15.pac` expands from about
-4.05 MiB to 4.64 MiB; GCC 15 turned the previous conditional move expression
-into another vector copy. 00.33 explicitly transfers the changed buffer with
-`output.swap(out)`, eliminating that duplicate PAC-sized allocation without
-altering source PAC bytes, DEX or gameplay logic. Physical confirmation remains
-pending; see [00.33 test](docs/TEST_VITA_00_33.md).
+Resource resolution remains profile-local with no fallback to `game/`. Each
+profile keeps its own writable `save.bin`, seeded once from the VPK master save.
+The runtime supports audited character IDs 00..99 and exposes only characters
+actually present in the selected dataset.
 
-Development candidate **00.30** keeps the 00.28 standalone-data architecture and
-adds the fixes discovered by the user's physical Vita test. `game/` remains only
-the optional Original profile: selecting `mods/<Profile>/` resolves PAC/audio/data
-exclusively from that directory, so Gen, Android14, Español, Invasion or
-Zuper/Samu can be installed without Original.
+Current artifact:
 
-The 00.28 hardware test established that **Invasion runs standalone on Vita with
-its textures and direct Vorbis/MP3/AAC audio working**. Its remaining observed
-issue was corrupted post-battle/result text. Samu also proved that the 92-character
-dataset is detected standalone, but it exited after the title because the Vita
-audio backend tried to create a second MP3 decoder before releasing the previous
-one. 00.30 retains the 00.29 fix that serializes that decoder handoff and adds a data-driven UTF-8 character
-charset fallback for Android14/Invasion SetString slot differences. These fixes
-are build/CI validated and await the next physical retest.
+- VPK SHA-256: `d241499a356ac11c523909a84b0c383910ef7a387efcfdc2c05d3581be86fd77`
+- eboot SHA-256: `bc0a0d4293e5b416084d02050dd6b3c17529cc63fab00bfe7a48d0310303d43b`
+- ELF SHA-256: `6c55a58f59277bee0d2632dbefca8c1a938d577457b867489d3605a11cee7dbe`
+- APP_VER `00.33`, TITLE_ID `DBTB00001`
+- LiveArea: PASS
 
-00.30 refines save ownership: the VPK still contains the exact
-user-provided 12,906-byte `app0:/save.bin` seed, but each selected dataset gets
-its **own writable copy**. Original uses `game/save.bin`; a mod uses
-`mods/<Profile>/save.bin`. The seed is copied only when that profile has no save
-yet, so later launches never erase its progress. APK-local saves are still not
-installed by the extractors; every profile starts from the same known VPK seed.
+See [current status](docs/CURRENT_STATUS.md),
+[00.33 device result](docs/TEST_VITA_00_33.md) and
+[hardware evidence](docs/evidence/vita_hardware_00.33.json).
 
 Manual full-game publication: [Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml)
 or [Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml).
@@ -124,7 +100,7 @@ and LiveArea appearance are the remaining check for that repack.
 | 00.30 | Same Samu/Invasion fixes; VPK seed copied independently to each selected profile on first use | Superseded by later hardware candidates |
 | 00.31 | Dynamic roster, Shop return and memory/startup experiments | Introduced infinite Loading regression |
 | 00.32 | Physical Vita: Loading fixed and complete mod rosters visible | Invasion Saitama second fight vs Freezer crashes with native `std::bad_alloc` |
-| 00.33 | Coredump-driven protected-PAC ownership fix removes duplicate ~4.6 MiB copy | Physical Saitama -> Freezer retest pending |
+| 00.33 | Physical Vita: repeated Invasion fights pass after protected-PAC ownership fix; Loading and dynamic rosters also remain fixed | Broader modes/mods/very-long-session coverage still open |
 
 Use [current status and evidence](docs/CURRENT_STATUS.md) for the authoritative
 feature matrix, artifact hash and open issues. Older test reports describe their
@@ -132,13 +108,11 @@ own builds; a host or CI result does not establish physical Vita behavior.
 
 ## Install and data
 
-For the current runtime retest, install
-`DBTapBattle-Vita-00.24-Battle-Audio-Fix.vpk` over the existing application with
-VitaShell, preserving `ux0:data/DBTapBattle/` and saves. Follow the
-[00.24 device test](docs/TEST_VITA_00_24.md). The package has the corrected full
-engine and the exact LiveArea files confirmed by the user in 00.23. The full
-engine requires the vitaGL shader compiler setup; see
-[build/setup](docs/BUILD.md).
+For the current runtime checkpoint, install
+`DBTapBattle-Vita-00.33-Invasion-Saitama-Freezer-Fix.vpk` over the existing
+application with VitaShell while preserving `ux0:data/DBTapBattle/` and all
+profile saves. The full engine still requires the VitaGL shader compiler setup;
+see [build/setup](docs/BUILD.md).
 
 | Runtime path | Purpose |
 |---|---|
@@ -157,9 +131,7 @@ triplets**. It is not a complete battle installation. Supplied Android14 has
 144 encoded assets and 13 indexed triplets; supplied `gen.apk` has 147 ordinary
 assets including those triplets and an optional bundled save. The audited
 `DragonBallZuperSamuGamerYT.apk` is Gen-derived with the same DEX/manifest but
-384 canonical assets and 92 character triplets. 00.33 can consume its original
-Vorbis/MP3/AAC BGM bytes directly, but the complete 92-character/audio matrix is
-not yet a hardware claim. Original in the selector means the
+384 canonical assets and 92 character triplets. 00.33 consumes its original Vorbis/MP3/AAC BGM bytes directly. Hardware testing confirms the full Samu roster is exposed; exhaustive audio/character combinations remain broader coverage rather than a blocker. Original in the selector means the
 base folder, not proof of which APK supplied its contents.
 
 For Windows 10/11, use the [portable drag-and-drop tool](tools/windows/LEEME.txt):
