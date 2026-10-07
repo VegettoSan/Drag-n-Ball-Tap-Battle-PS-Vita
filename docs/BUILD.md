@@ -4,18 +4,23 @@
 
 Current complete user-test artifact:
 
-- `DBTapBattle-Vita-00.34-No-Blue-Orb-Fix.vpk`
+- `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk`
 - APP_VER: `00.34`
 - TITLE_ID: `DBTB00001`
 - VPK SHA-256:
-  `4f0abc4aba15c766847657d152de9cff50877df3f7b13a169f06be4226d2367b`
+  `24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03`
 - runtime/selector checkpoint:
-  `18559dcea316076bb1225080bb8506dd439df6f6`
+  `0da8684805d1510caf93130a22eed523a854c1d6`
 - physical result: pending
 
 00.34 retains the 00.33 gameplay fixes and changes the external dataset contract
 to `ux0:data/DBTapBattle/profiles/<Profile>/`. The VPK no longer distinguishes
 `game/` from `mods/` at runtime and no longer synthesizes an Original row.
+
+The current 00.34 rebuild changes only selector button/text geometry after the
+no-orb fix: the 664 px-wide themed button is centered at x=148, the one-star
+marker is shifted with it, and labels are fitted to a 530 px cyan text region
+centered at x=480. Original game/core behavior is unchanged.
 
 The Gen-derived selector background now crops to the continuous 482×320
 cyan/grid band at the top of the 512×512 source before stretching to 960×544,
