@@ -18,41 +18,32 @@ int main(int argc, char** argv) {
     CHECK(root);
     GameVfs vfs(root);
     CHECK(vfs.prepareDirectories());
-    CHECK(!vfs.originalDataPresent());
-    const std::string base(root), mod = base + "/mods/Mod ñ .. test";
-    CHECK(mkdir(mod.c_str(), 0777) == 0);
-    write(mod + "/common.pac", {1});
-    CHECK(vfs.selectMod("Mod ñ .. test"));
-    CHECK(!vfs.originalDataPresent());
+    const std::string base(root), profile = base + "/profiles/Mod ñ .. test";
+    CHECK(mkdir(profile.c_str(), 0777) == 0);
+    write(profile + "/common.pac", {1});
+    CHECK(vfs.selectProfile("Mod ñ .. test"));
     std::string resolved;
-    CHECK(vfs.resolve("common.pac", resolved) && resolved == mod + "/common.pac");
-    write(base + "/game/common.pac", {2});
-    CHECK(vfs.originalDataPresent());
-    write(base + "/game/other.dat", {3});
-    CHECK(vfs.resolve("other.dat", resolved) && resolved == base + "/game/other.dat");
-    CHECK(vfs.listMods().size() == 1);
+    CHECK(vfs.resolve("common.pac", resolved) && resolved == profile + "/common.pac");
+    CHECK(vfs.listProfiles().size() == 1);
     for (const std::string bad : {"../x", "x/../y", "ux0:x", "/x", "x\\y", "x//y", "./x", "x/./y", "x/", ""})
         CHECK(!vfs.resolve(bad, resolved) && resolved.empty());
     CHECK(!vfs.resolve(std::string("common.pac\0evil", 15), resolved));
-    CHECK(!vfs.selectMod("../game"));
-    CHECK(vfs.activeMod() == "Mod ñ .. test");
-    CHECK(mkdir((mod + "/nested").c_str(), 0777) == 0);
-    write(mod + "/nested/a", {4});
+    CHECK(!vfs.selectProfile("../profiles"));
+    CHECK(vfs.activeProfile() == "Mod ñ .. test");
+    CHECK(mkdir((profile + "/nested").c_str(), 0777) == 0);
+    write(profile + "/nested/a", {4});
     CHECK(vfs.resolve("nested/a", resolved));
-    CHECK(mkdir((mod + "/other.dat").c_str(), 0777) == 0);
-    CHECK(!vfs.resolve("other.dat", resolved)); // invalid override cannot hide behind fallback
-    CHECK(symlink((base + "/game/common.pac").c_str(), (mod + "/escape").c_str()) == 0);
+    CHECK(mkdir((profile + "/other.dat").c_str(), 0777) == 0);
+    CHECK(!vfs.resolve("other.dat", resolved));
+    CHECK(symlink((profile + "/common.pac").c_str(), (profile + "/escape").c_str()) == 0);
     CHECK(!vfs.resolve("escape", resolved));
-    for (int n=0;n<256;++n) {
-        CHECK(mkdir((base + "/mods/Folder " + std::to_string(n)).c_str(),0777)==0);
-    }
-    CHECK(vfs.listMods().size()==257);
+    for (int n=0;n<256;++n)
+        CHECK(mkdir((base + "/profiles/Folder " + std::to_string(n)).c_str(),0777)==0);
+    CHECK(vfs.listProfiles().size()==257);
     const std::string long_name(255,'L');
-    CHECK(mkdir((base + "/mods/" + long_name).c_str(),0777)==0);
-    CHECK(vfs.selectMod(long_name));
-    CHECK(vfs.listMods().size()==258);
-    vfs.selectOriginal();
-    CHECK(vfs.resolve("common.pac", resolved) && resolved == base + "/game/common.pac");
+    CHECK(mkdir((base + "/profiles/" + long_name).c_str(),0777)==0);
+    CHECK(vfs.selectProfile(long_name));
+    CHECK(vfs.listProfiles().size()==258);
 
     const std::string file = base + "/test.pac";
     // Synthetic container with non-NUL-terminated tag; no commercial fixture.
@@ -80,6 +71,6 @@ int main(int argc, char** argv) {
         for (size_t n=0;n<pac.entries().size();++n) CHECK(pac.readEntry(n,out));
         std::cout << "PAC PASS " << argv[i] << " entries=" << pac.entries().size() << '\n';
     }
-    std::cout << "CORE PASS: VFS safety/overlay and PAC corrupt/memory/reopen tests\n";
+    std::cout << "CORE PASS: unified profile VFS safety and PAC corrupt/memory/reopen tests\n";
     return 0;
 }
