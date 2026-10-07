@@ -11,7 +11,7 @@ struct CachedEngineResource {
     size_t io_bytes = 0;
 };
 
-// Main-thread, profile-scoped LRU. Physical paths isolate overrides/fallback;
+// Main-thread, profile-scoped LRU. Physical paths isolate independent datasets;
 // file size/time changes invalidate a hit. Saves never enter this cache.
 class EngineResourceCache {
     struct Entry {
