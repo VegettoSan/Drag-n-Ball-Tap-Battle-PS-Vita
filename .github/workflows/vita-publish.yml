@@ -64,6 +64,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends maven libvorbis-dev libpng-dev zlib1g-dev
           python3 -m unittest discover -s tests -p test_livearea.py -v
           python3 -m unittest discover -s tests -p test_release_workflows.py -v
+          python3 -m unittest discover -s tests -p test_selector_theme.py -v
           python3 tools/releases/extract_music_fixture.py "$RUNNER_TEMP/dbtb-private/original.apk" "$RUNNER_TEMP/dbtb-private/music"
           g++ -std=c++14 -O2 -Itests/audio_stubs -Itools/aot/engine/native -Isrc \
             tests/test_vita_ogg.cpp src/vfs.cpp -lvorbisfile -lvorbis -logg \
