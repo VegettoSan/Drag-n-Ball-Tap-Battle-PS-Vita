@@ -17,7 +17,7 @@ not change the permanent machine/user execution policy.
 Each launch creates a new `Listo_para_Vita/Paquete_<time>_<id>/` beside the tool.
 Copy that package's **data** directory to the Vita's **ux0:** root with VitaShell.
 The resulting runtime root is `ux0:data/DBTapBattle/`. Install the full engine
-VPK separately (00.29 or later); this tool does not build or bundle a VPK.
+VPK separately (00.30 or later); this tool does not build or bundle a VPK.
 
 | Detected source | Destination within package | VPK selector |
 |---|---|---|
@@ -45,7 +45,7 @@ Dragging the same input path twice imports it once. Non-empty resources on both
 raw and assets sides are rejected as ambiguous. Gen's empty raw stubs are ignored.
 
 Every non-Original APK is emitted as a standalone profile under `mods/`.
-00.29 does not use cross-profile fallback: `game/` may remain empty. A missing
+00.30 does not use cross-profile fallback: `game/` may remain empty. A missing
 resource in the selected profile is a compatibility issue to investigate, not a
 reason to borrow bytes from Original. The full-APK tool requires `common.pac`
 so arbitrary partial patch ZIPs are not misrepresented as complete profiles.
@@ -54,7 +54,7 @@ is complete relative to that APK, but is not a complete battle installation.
 
 ## Preservation and validation
 
-Selected `res/raw/` or `assets/` gameplay files retain their exact bytes, including unknown extensions. If the APK contains `save.bin`, its presence/hash is recorded but that file is intentionally excluded from the installed profile in 00.29. The current tool has three separately
+Selected `res/raw/` or `assets/` gameplay files retain their exact bytes, including unknown extensions. If the APK contains `save.bin`, its presence/hash is recorded but that file is intentionally excluded from the installed profile in 00.30. The current tool has three separately
 audited protected profiles in `tools/community14.py`: Android14
 `community14-a210795b` (106 PAC), Spanish `community14-es-d594affc`
 (106 PAC) and Invasion `community14-invasion-05aa0c5e` (139 PAC). Each profile
@@ -71,13 +71,13 @@ points. A whole multi-APK operation is staged privately in the output directory;
 only successful completion publishes the folder with a same-filesystem rename.
 A failure removes its own staging directory and leaves previous output intact.
 
-Each profile includes format-4 `dbtb_manifest.json`, with standalone-profile, dynamic-roster, tool/profile and source-save metadata. APK-local `save.bin` is recorded but not installed; the runtime uses the VPK-seeded global save. The package contains
+Each profile includes format-4 `dbtb_manifest.json`, with standalone-profile, dynamic-roster, tool/profile and source-save metadata. APK-local `save.bin` is recorded but not installed; the runtime creates an independent profile save from the VPK seed on first use. The package contains
 `LEEME_COPIAR_A_VITA.txt`, `RESULTADO.json` and `SHA256SUMS.txt`. The manifest covers
 only imported data; SHA256SUMS also covers generated instructions/manifests,
 excluding itself. DEX, classes, signatures and Android libraries outside the
 selected data prefix are not extracted.
 
-An APK-provided save is **not installed into its profile**. The desktop extractor does not connect to a Vita or read/replace the active save. 00.29 shares progress intentionally through `ux0:data/DBTapBattle/save.bin`, seeded by the VPK only when absent. Code-changing Android mods still require
+An APK-provided save is **not installed into its profile**. The desktop extractor does not connect to a Vita or read/replace the active save. 00.30 does not share mutable progress. Original uses `game/save.bin` and each mod uses `mods/<Profile>/save.bin`; each is seeded from the same VPK copy only when that profile save is absent. Code-changing Android mods still require
 appropriate engine support; data extraction does not incorporate Android code.
 
 
