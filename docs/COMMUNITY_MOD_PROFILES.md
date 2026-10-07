@@ -19,7 +19,7 @@ Unknown or mixed private codecs fail instead of being guessed.
 |---|---|---|---:|---|
 | `community14-a210795b` | `a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4` | `f4e52c47fac7f1f6288c4bf7e4d31bc819ebb6ec2d2a6afac2c0275602995184` | 106/106 | format + hardware path previously confirmed |
 | `community14-es-d594affc` | `b38cc2c4ae3f20d1b1c6c1419a7b6b62ab57ea8954468874f6c5f8c40b39a098` | `d594affc14328decc5a9d898ab8fed52f83c54e2795cf06973454d9f5385a81c` | 106/106 | format confirmed; Vita gameplay pending |
-| `community14-invasion-05aa0c5e` | `caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d` | `05aa0c5ec839161e59b93eccd8657925380c56b46f1a4a452c662b1f115212d1` | 139/139 | format confirmed; Vita gameplay pending |
+| `community14-invasion-05aa0c5e` | `caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d` | `05aa0c5ec839161e59b93eccd8657925380c56b46f1a4a452c662b1f115212d1` | 139/139 | format + standalone Vita gameplay/audio + repeated-fight crash fix hardware-confirmed in tested paths |
 
 The three supplied protected APKs use byte-identical `libabc.so` helper builds
 for each corresponding ABI. That establishes common loader lineage, not identical
@@ -115,11 +115,7 @@ The supplied Invasion AAC tracks were checked against that contract: both are
 respectively, below Vita's 1536-byte AAC ES limit. Its MP3 tracks are valid
 MPEG Layer III at 44.1 or 48 kHz and also fit the native decoder limits.
 
-Therefore Invasion's seven non-Vorbis BGM are now **implemented as a 00.28
-candidate path with source bytes unchanged**. Hardware confirmation remains
-pending. Do not modify the original engine or pre-convert the BGM for the 00.28
-test; a successful device log should show `Compressed BGM direct:` for the
-MP3/AAC cases.
+Therefore Invasion's seven non-Vorbis BGM are implemented with source bytes unchanged. Physical Vita testing has exercised Invasion's direct mixed-codec path successfully; this is hardware evidence for the tested route, not an exhaustive audible check of every track. Do not pre-convert the BGM or rewrite the original engine.
 
 ## Validation rules for future profiles
 
@@ -135,3 +131,16 @@ and add only synthetic regression fixtures.
 - [Spanish Android14 audit](SPANISH_ANDROID14_APK.md)
 - [Invasion Beta 3 audit](INVASION_BETA3_APK.md)
 - [Machine-readable audit evidence](evidence/apk_deep_structure_2026-10-06.json)
+
+## 00.33 protected PAC runtime result
+
+Invasion's remaining 00.32 repeated-fight failure was traced with a Vita coredump
+to a duplicate native vector allocation after protected PAC normalization. The
+changed `char15.pac` already occupied ~4.64 MiB normalized; the final conditional
+assignment created another PAC-sized allocation and could throw `std::bad_alloc`
+after heap fragmentation.
+
+00.33 transfers the transformed vector with `output.swap(out)`. The user then
+completed several fights on physical Vita without reproducing the Saitama ->
+Freezer crash. The fix is generic to protected-PAC ownership and does not special-
+case Invasion filenames or characters.
