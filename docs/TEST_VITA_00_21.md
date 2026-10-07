@@ -1,5 +1,13 @@
 # Prueba Vita 00.21 — cierre antes del menú
 
+> **Historical document notice — current 00.34 contract:** this file preserves
+> evidence/instructions for the build or investigation named here. The current
+> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
+> current `game/` or `mods/` profile roots and no built-in Original selector
+> row. Do not reuse historical install paths for 00.34. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 **Prueba archivada; resultado físico recibido al 2026-10-05.** VPK probado:
 `DBTapBattle-Vita-00.21-audio-startup-fix.vpk`, fuente
 `07222bb42f20ab2bac953531e42b8cf3796940ca`. Esta actualización documental no
