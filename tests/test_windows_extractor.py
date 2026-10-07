@@ -90,7 +90,7 @@ class WindowsExtractorTests(unittest.TestCase):
     def apk(self, name='original', files=None):
         return make_apk(self.root / (name + '.apk'), files or [('res/raw/common.pac', b'original')])
 
-    def manifest(self, package, profile='mods/original'):
+    def manifest(self, package, profile='profiles/original'):
         return json.loads((package / 'data/DBTapBattle' / profile / 'dbtb_manifest.json').read_text('utf-8'))
 
     def test_original_bytes_unknown_nested_save_and_checksums(self):
@@ -101,7 +101,7 @@ class WindowsExtractorTests(unittest.TestCase):
         self.assertEqual(m['file_count'], 2)
         self.assertEqual(m['unknown_files'], ['nested/new.xyz'])
         self.assertTrue(m['bundled_save'])
-        self.assertFalse((package / 'data/DBTapBattle/mods/original/save.bin').exists())
+        self.assertFalse((package / 'data/DBTapBattle/profiles/original/save.bin').exists())
         self.assertFalse(m['profile_save_installed'])
         self.assertEqual(m['save_policy'], 'per-profile-vpk-seed')
         self.assertFalse(list(package.rglob('classes.dex')))
@@ -110,17 +110,17 @@ class WindowsExtractorTests(unittest.TestCase):
             self.assertEqual(hashlib.sha256((package / name).read_bytes()).hexdigest(), digest)
         with zipfile.ZipFile(source) as z:
             for file in m['files']:
-                self.assertEqual((package / 'data/DBTapBattle/mods/original' / file['name']).read_bytes(), z.read(file['apk_path']))
+                self.assertEqual((package / 'data/DBTapBattle/profiles/original' / file['name']).read_bytes(), z.read(file['apk_path']))
 
     def test_android14_aliases_preserve_encoded_pac(self):
         data = encoded_pac()
         source = self.apk('android14', [('assets/2752.pac', data), ('assets/E03B00.pac', data), ('assets/FAFD0000.pac', data)])
         package, = self.run_tool(source)
-        m = self.manifest(package, 'mods/Android14')
+        m = self.manifest(package, 'profiles/android14')
         self.assertEqual(m['source_layout'], 'community14')
         self.assertEqual(m['pac_codec'], 'community14-a210795b')
         self.assertEqual(len(m['renamed_files']), 3)
-        self.assertEqual((package / 'data/DBTapBattle/mods/Android14/char00.pac').read_bytes(), data)
+        self.assertEqual((package / 'data/DBTapBattle/profiles/android14/char00.pac').read_bytes(), data)
 
     def test_spanish_and_invasion_alias_profiles(self):
         cases = [
@@ -146,7 +146,7 @@ class WindowsExtractorTests(unittest.TestCase):
     def test_assets_with_empty_raw_stubs(self):
         source = self.apk('assets', [('res/raw/common.pac', b''), ('assets/common.pac', b'original')])
         package, = self.run_tool(source)
-        m = self.manifest(package, 'mods/assets')
+        m = self.manifest(package, 'profiles/assets')
         self.assertEqual(m['source_layout'], 'assets')
 
     def test_multi_apk_profile_collisions_and_duplicate_input(self):
@@ -156,7 +156,7 @@ class WindowsExtractorTests(unittest.TestCase):
         mod2 = self.apk('mod!one', [('assets/common.pac', b'b')])
         package, = self.run_tool(first, second, mod1, mod2, first)
         profiles = json.loads((package / 'RESULTADO.json').read_text())['profiles']
-        self.assertEqual([p['profile'] for p in profiles], ['mods/first', 'mods/second', 'mods/mod_one', 'mods/mod_one_2'])
+        self.assertEqual([p['profile'] for p in profiles], ['profiles/first', 'profiles/second', 'profiles/mod_one', 'profiles/mod_one_2'])
 
     def test_repeated_import_preserves_previous_package(self):
         source = self.apk()
@@ -176,22 +176,22 @@ class WindowsExtractorTests(unittest.TestCase):
             ]
         source = self.apk('gen70', files)
         package, = self.run_tool(source)
-        m = self.manifest(package, 'mods/gen70')
+        m = self.manifest(package, 'profiles/gen70')
         self.assertEqual(m['format'], 4)
         self.assertEqual(m['character_count'], 70)
         self.assertEqual(m['character_indices'], '00..69')
         self.assertTrue(m['character_runtime_compatible'])
         self.assertTrue(m['standalone_profile'])
         self.assertFalse(m['requires_game_directory'])
-        self.assertTrue((package / 'data/DBTapBattle/mods/gen70/char69.pac').is_file())
+        self.assertTrue((package / 'data/DBTapBattle/profiles/gen70/char69.pac').is_file())
         self.assertFalse((package / 'data/DBTapBattle/game').exists())
 
     def test_raw_mod_is_standalone_not_game(self):
         source = self.apk('rawmod', [('res/raw/common.pac', b'raw')])
         package, = self.run_tool(source)
-        m = self.manifest(package, 'mods/rawmod')
+        m = self.manifest(package, 'profiles/rawmod')
         self.assertTrue(m['standalone_profile'])
-        self.assertEqual(m['vita_profile'], 'mods/rawmod')
+        self.assertEqual(m['vita_profile'], 'profiles/rawmod')
         self.assertFalse((package / 'data/DBTapBattle/game').exists())
 
     def rejected(self, files):
