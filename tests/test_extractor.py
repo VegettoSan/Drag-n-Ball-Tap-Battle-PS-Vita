@@ -40,12 +40,25 @@ class ExtractorTest(unittest.TestCase):
 
     def test_unsafe_collision_and_duplicates_publish_nothing(self):
         for names in [['good.pac', '../escape'], ['A.pac', 'a.pac'], ['a', 'a/b'], ['C:evil'],
-                      ['bad\\x'], ['dbtb_manifest.json'], ['x/./bad'], ['x//bad']]:
+                      ['dbtb_manifest.json'], ['x/./bad'], ['x//bad']]:
             with self.subTest(names=names):
                 self.archive([('res/raw/' + n, b'data') for n in names])
                 with self.assertRaises(ValueError):
                     e.extract(self.apk, self.output)
                 self.assertFalse(self.output.exists())
+
+    def test_raw_backslash_separator_rejected_from_actual_zip_bytes(self):
+        # On Windows, zipfile normalizes a Python filename containing "\\" to
+        # "/" before writing it. Create a safe same-length name, then patch both
+        # local and central directory filename bytes so the APK really contains
+        # a backslash separator on every host.
+        self.archive([('res/raw/bad/x', b'data')])
+        raw = self.apk.read_bytes()
+        self.assertGreaterEqual(raw.count(b'res/raw/bad/x'), 2)
+        self.apk.write_bytes(raw.replace(b'res/raw/bad/x', b'res/raw/bad\\x'))
+        with self.assertRaises(ValueError):
+            e.extract(self.apk, self.output)
+        self.assertFalse(self.output.exists())
 
     def test_manifest_and_late_conflicts_preserve_output(self):
         self.output.mkdir()
