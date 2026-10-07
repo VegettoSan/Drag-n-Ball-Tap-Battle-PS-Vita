@@ -29,9 +29,7 @@ dimensions, indexed PNG format, palette/transparency requirements and size limit
 CMake fails closed if any check fails.
 
 The supplied Ready ZIP and failed Final VPK had a 192-entry `pic0.png` palette.
-The corrected source pads that PLTE to 256 entries; every decoded RGBA pixel and
-every IDAT byte is unchanged. This repairs a documented Vita splash requirement
-that the earlier hash/header checks missed. Hardware installation remains pending.
+The corrected source pads that PLTE to 256 entries; every decoded RGBA pixel and every IDAT byte is unchanged. This repairs a documented Vita splash requirement that the earlier hash/header checks missed. The corrected LiveArea was subsequently installed and accepted on physical Vita and remains packaged in the 00.33 checkpoint.
 Reproduce the lossless correction with:
 
 ```sh
