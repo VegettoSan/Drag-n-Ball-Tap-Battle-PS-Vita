@@ -3,7 +3,7 @@
 
 Protected PAC filenames are canonicalized by the existing Community14 extractor,
 but payload bytes are never transcoded or rewritten. BGM files keep their
-original bytes even when the .ogg name contains MP3 or AAC/M4A; the 00.28 Vita
+original bytes even when the .ogg name contains MP3 or AAC/M4A; the 00.29 Vita
 runtime detects the actual codec from content and decodes it directly.
 """
 from __future__ import annotations
@@ -117,6 +117,10 @@ def update_manifest(root: Path, audio: list[dict]) -> None:
         "character_indices": "00..21",
         "character_count": INVASION_CHARACTER_COUNT,
         "valid_omissions": ["bobj00.pac", "font00.pac"],
+    }
+    manifest["shared_save_runtime"] = {
+        "policy": "use-vpk-global-save",
+        "global_path": "ux0:data/DBTapBattle/save.bin",
     }
     manifest["audio_runtime"] = {
         "policy": "preserve-source-bytes-and-detect-by-content",
