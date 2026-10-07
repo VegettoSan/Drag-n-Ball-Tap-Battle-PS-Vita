@@ -37,7 +37,7 @@ offer a fake or disabled Original entry.
 
 ## Profile naming
 
-The Windows extractor derives the folder name from the APK filename.
+The Web Extractor 1.0 and Windows Extractor 1.5 both derive the folder name from the APK filename.
 
 Examples:
 
@@ -95,7 +95,7 @@ Rules:
 
 ## Extractor contract
 
-The public Windows extractor writes:
+The public Web and Windows extractors write:
 
 \`\`\`text
 data/DBTapBattle/profiles/<APK filename>/
@@ -105,6 +105,23 @@ The extractor may internally detect a Gen-style, Android14, Spanish, Invasion,
 or other supported layout/codec. That detection affects extraction and protected
 PAC alias normalization only; it does not replace the APK filename with a
 hardcoded profile name.
+
+## Web-generated ZIP
+
+The Web Extractor downloads a ZIP whose root contains the same `data/` tree
+expected for Vita:
+
+\`\`\`text
+data/DBTapBattle/profiles/<Profile>/
+LEEME_COPIAR_A_VITA.txt
+RESULTADO.json
+SHA256SUMS.txt
+\`\`\`
+
+Extract the ZIP first, then copy its `data` directory to the root of `ux0:`.
+The web tool runs locally in the browser; APK bytes are not uploaded.
+
+See [WEB_DATA_TOOL](WEB_DATA_TOOL.md).
 
 ## Dynamic roster
 
