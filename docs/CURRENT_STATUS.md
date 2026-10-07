@@ -1,6 +1,32 @@
-# Current status — 2026-10-06/07 (America/Bogota), 00.24 baseline / 00.28 hardware findings / 00.29 candidate
+# Current status — 2026-10-06/07 (America/Bogota), 00.24 baseline / 00.28 hardware findings / 00.30 candidate
 
-## 00.29 candidate — Samu BGM handoff, Invasion text fallback, one global save
+## 00.30 candidate — same Samu/Invasion fixes, independent seeded saves
+
+00.30 keeps the targeted Samu decoder-handoff and Invasion UTF-8 fallback from
+00.29, but supersedes the experimental global mutable save model.
+
+The VPK still ships the exact user-provided 12,906-byte `app0:/save.bin` seed,
+SHA-256 `64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb`.
+When a profile is selected, the runtime checks only that profile's writable save:
+
+- Original: `ux0:data/DBTapBattle/game/save.bin`
+- Mod: `ux0:data/DBTapBattle/mods/<Profile>/save.bin`
+
+If absent, it copies the VPK seed there once. If present, it loads the existing
+profile save and never overwrites it. Thus every fresh dataset starts from the
+same seed but can diverge independently afterward. The old 00.29 root
+`ux0:data/DBTapBattle/save.bin` is ignored by 00.30.
+
+Python and Windows extractors continue to exclude APK-bundled `save.bin` from
+the installed data profile, while recording its presence/metadata. This prevents
+a mod's packaged save from silently replacing the known VPK seed.
+
+Physical acceptance still requires Samu past the title, Invasion result-text
+readability, and confirmation that progress diverges independently between at
+least two profiles.
+
+## Historical 00.29 candidate — Samu BGM handoff, Invasion text fallback, one global save
+
 
 00.29 is built directly from the user's 00.28 physical Vita results.
 
@@ -514,7 +540,7 @@ See [corrected package evidence](evidence/vita_livearea_fixed_00.23.json) and
 | Voice samples | Original PCM16 mono 22050 Hz or decoded Community14 wrapper; 3 voice channels | Format/host decoding verified; later physical tests report clean voices/audio |
 | Voice output | 16-tap/256-phase Q14 reconstruction to 48000 Hz, peak limiter, PCM cache | Clean audible result reported on the physical 00.22/00.23 path; broader character/phrase matrix remains open |
 | Audio startup | Restored `0x10000100`; exact open/create/start diagnostics, failure cleanup/latch | 00.21 worker/menu recovery confirmed and no audio regression reported in 00.23 |
-| Saves | 00.29: one `ux0:data/DBTapBattle/save.bin`, seeded once from exact VPK `app0:/save.bin`; cached reads and temp/fsync/rename writes | Seed/hash + native build confirmed; multi-profile physical progression retest pending |
+| Saves | 00.30: selected profile's `game/save.bin` or `mods/<Profile>/save.bin`, seeded once from exact VPK `app0:/save.bin`; cached reads and atomic writes retained | Seed/hash + native build pending latest smoke; physical profile isolation retest pending |
 | Input | Stable slots mapped from Vita touch IDs; original coordinate transform and Controller | Touch gameplay confirmed; physical buttons serve selector, are neutral during game |
 | Online / Bluetooth | Offline installed-data boundary; HTTP rejected; Bluetooth disconnected | Current local single-player path; multiplayer/billing/remote downloads unsupported |
 
