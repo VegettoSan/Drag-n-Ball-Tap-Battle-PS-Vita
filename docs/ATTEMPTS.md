@@ -1,5 +1,30 @@
 # Attempts Log
 
+## 2026-10-07 — 00.34 — Restyle the native data selector from Gen/select0.pac
+
+**Goal:** make the Vita-only profile chooser look like it belongs to Dragon Ball
+Tap Battle without using character art or changing the original engine.
+
+**Baseline:** 00.33 is hardware-confirmed for Loading recovery, dynamic rosters
+and the reproduced Invasion repeated-fight crash fix.
+
+**Changes:** extracted/cropped only background/header/button/one-star-ball visuals
+from the supplied Gen `assets/select0.pac`; stored them as a hash-pinned split
+Base64 ZIP; materialize four PNGs at build time; package them under
+`app0:/selector/`; render the first screen with client-array vitaGL drawing.
+The previous flat selector is preserved as runtime fallback. No gameplay Java,
+PAC parser, profile resolution or save logic was changed.
+
+**Observed:** native VitaSDK smoke CI compiles, links and packages the 00.34
+selector successfully (run 37622687132). Publication/actionlint/theme regressions
+also pass (run 37622780686).
+
+**Result:** BUILD CONFIRMED / hardware appearance pending.
+
+**Next action:** install the full 00.34 VPK on a physical Vita, photograph the
+first selector, verify D-pad/stick/X/touch/Circle, then enter at least one normal
+gameplay path to ensure 00.33 behavior is unchanged. See `TEST_VITA_00_34.md`.
+
 ## 2026-10-05 — manual full-engine release/prerelease automation
 
 User requested separate manual workflows after confirming 00.24 on Vita. Added
