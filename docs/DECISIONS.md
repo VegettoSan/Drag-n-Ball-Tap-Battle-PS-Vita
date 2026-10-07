@@ -182,7 +182,7 @@ incompatibility requires a narrower adaptation.
 
 ## ADR-017 — One shared mutable save seeded by the VPK
 
-**Status:** accepted and implemented — 2026-10-07, candidate 00.29.
+**Status:** superseded by ADR-019 in 00.30 — historical 00.29 candidate.
 
 Original and every selectable APK-derived profile use exactly one writable save:
 `ux0:data/DBTapBattle/save.bin`. The VPK carries the exact user-provided 12,906-byte
@@ -203,3 +203,24 @@ For protected character strings, retain exact GameData-object charset mapping fi
 when modified APK SetString slot conventions miss that map, fall back only to the
 charset content-detected from the active character PAC. Do not rewrite strings,
 PACs or wholesale-port modified DEX methods without a concrete behavioral need.
+
+## ADR-019 — One VPK seed, independent mutable save per profile
+
+**Status:** accepted and implemented — 2026-10-07, candidate 00.30.
+
+Keep the exact user-provided 12,906-byte `save.bin` inside the VPK at read-only
+`app0:/save.bin`, but never use one shared mutable save. On first selection of a
+profile, copy that seed only if the profile has no save yet:
+
+- Original → `ux0:data/DBTapBattle/game/save.bin`
+- Mod → `ux0:data/DBTapBattle/mods/<Profile>/save.bin`
+
+After creation, each profile modifies only its own copy. Re-launching a profile,
+switching profiles or updating the VPK must not overwrite an existing profile
+save. APK-bundled saves remain evidence/provenance and are not installed as the
+runtime copy. The historical 00.29 root `ux0:data/DBTapBattle/save.bin` is not an
+00.30 runtime input.
+
+**Reason:** mods can map character slots/progression differently. Sharing one
+mutable save can couple otherwise independent datasets, while using one common
+VPK seed still gives every fresh profile the same deterministic starting state.
