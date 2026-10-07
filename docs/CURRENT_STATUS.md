@@ -21,9 +21,23 @@ Python and Windows extractors continue to exclude APK-bundled `save.bin` from
 the installed data profile, while recording its presence/metadata. This prevents
 a mod's packaged save from silently replacing the known VPK seed.
 
+A complete 00.30 physical-test VPK is available:
+
+- `DBTapBattle-Vita-00.30-Independent-Profile-Saves-Test.vpk`
+- 2,654,057 bytes
+- VPK SHA-256:
+  `d823b9baddd667b09b1c407575a5698cd71276e1698e9d9845fb3086b3777379`
+- eboot SHA-256:
+  `c193a07463cbc7168bb1a5d5398f259dc4cdb0216b9d909b268df3b386faca2c`
+- ELF SHA-256:
+  `e5b38f5c4a5409d3ead2fc42929e3cf9e6a9fc1d931c0d54e0bf23262f59a236`
+- runtime marker: `6d88bee`
+- LiveArea: PASS.
+
 Physical acceptance still requires Samu past the title, Invasion result-text
 readability, and confirmation that progress diverges independently between at
-least two profiles.
+least two profiles. See [TEST_VITA_00_30](TEST_VITA_00_30.md) and
+[evidence](evidence/vita_build_00.30.json).
 
 ## Historical 00.29 candidate — Samu BGM handoff, Invasion text fallback, one global save
 
