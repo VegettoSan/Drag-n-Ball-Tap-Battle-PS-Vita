@@ -1,9 +1,11 @@
 # Local game data — current profile contract
 
+Current public VPK identity: **v1.0**, APP_VER `01.00`, TITLE_ID `DBTB01178`.
+
 No Dragon Ball Tap Battle asset dataset is stored in Git. Prepare data from a
 user-owned APK outside tracked source, then copy the resulting package to Vita.
 
-The current 00.34 runtime contract is:
+The current v1.0 runtime contract (inherited from 00.34) is:
 
 ```text
 ux0:data/DBTapBattle/profiles/<Profile>/
