@@ -70,10 +70,10 @@ The runtime therefore continues to request canonical names.
 The supplied Android14, Spanish and Invasion protected APKs do not bundle
 `font00.pac`, and their protected bobj families begin at index 01 rather than
 00. These APKs run independently on Android, so the omissions are valid profile
-behavior, not evidence of an incomplete package. The Vita VFS may still fall
-back to the original base when the unchanged original core asks for a resource
-the selected mod does not provide, but the installation audit must not require
-`bobj00.pac` merely because the original dataset contains it.
+behavior, not evidence of an incomplete package. Starting with 00.28, a selected
+profile never borrows those files from Original. If the preserved original TeaVM
+core requests an omitted resource on Vita, that is an explicit profile-adaptation
+gap to resolve from APK/DEX evidence, not a reason for cross-profile fallback.
 
 ## Invasion extended-data audit
 
@@ -104,7 +104,7 @@ Invasion preserves 29/36 of those files, but changes exactly
 `bgm_03/04/05/06/07/14/15`. Despite retaining the `.ogg` filenames,
 `03/06/07/14/15` are MP3 and `04/05` are AAC-LC inside M4A/ISO-BMFF.
 
-00.27 no converts or renames them. The BGM adapter first retains the already
+00.28 retains the direct-audio rule and does not convert or rename them. The BGM adapter first retains the already
 hardware-proven Vorbis path and, when that fails, sniffs the selected VFS file
 by content. MP3 is sent to the Vita hardware MP3 decoder and AAC/M4A is demuxed
 to its original AAC access units and sent to the Vita AAC decoder through
@@ -115,9 +115,9 @@ The supplied Invasion AAC tracks were checked against that contract: both are
 respectively, below Vita's 1536-byte AAC ES limit. Its MP3 tracks are valid
 MPEG Layer III at 44.1 or 48 kHz and also fit the native decoder limits.
 
-Therefore Invasion's seven non-Vorbis BGM are now **implemented as a 00.27
+Therefore Invasion's seven non-Vorbis BGM are now **implemented as a 00.28
 candidate path with source bytes unchanged**. Hardware confirmation remains
-pending. Do not modify the original engine or pre-convert the BGM for the 00.27
+pending. Do not modify the original engine or pre-convert the BGM for the 00.28
 test; a successful device log should show `Compressed BGM direct:` for the
 MP3/AAC cases.
 
