@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#031b43">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' blob: data:; script-src 'self'; style-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="description" content="Prepare Dragon Ball Tap Battle APK data for the PS Vita port entirely in your browser. APK files never leave your device.">
+  <title>Dragon Ball Tap Battle Vita — APK Data Extractor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <section class="vita-screen" aria-labelledby="page-title">
+      <svg class="selector-bg" viewBox="0 0 482 320" preserveAspectRatio="none" aria-hidden="true">
+        <image href="selector/select0_background.png" x="0" y="0" width="512" height="512"></image>
+      </svg>
+      <div class="screen-shade" aria-hidden="true"></div>
+
+      <header class="hero">
+        <div class="title-bar"><h1 id="page-title">APK DATA EXTRACTOR</h1></div>
+        <p class="subtitle">DRAGON BALL TAP BATTLE • PS VITA</p>
+        <div class="privacy-pill"><span class="privacy-dot"></span> LOCAL ONLY — YOUR APK NEVER LEAVES THIS DEVICE</div>
+      </header>
+
+      <div class="content-grid">
+        <section class="panel selector-panel" aria-labelledby="select-heading">
+          <h2 id="select-heading" class="sr-only">Select APK files</h2>
+          <input id="apk-input" type="file" accept=".apk,application/vnd.android.package-archive,application/zip" multiple hidden>
+          <div id="drop-zone" class="drop-zone" role="button" tabindex="0" aria-describedby="drop-help">
+            <img class="dragon-ball" src="selector/select0_ball_1.png" alt="">
+            <div class="button-skin"><span>SELECT APK</span></div>
+            <p id="drop-help">Tap to choose an APK<br><span>or drop files here on desktop</span></p>
+          </div>
+
+          <div id="selected-list" class="selected-list" aria-live="polite"></div>
+
+          <div class="action-row">
+            <button id="extract-btn" class="game-button" type="button" disabled><span>EXTRACT DATA FOR PS VITA</span></button>
+            <button id="reset-btn" class="game-button secondary" type="button"><span>RESET</span></button>
+          </div>
+        </section>
+
+        <section class="panel status-panel" aria-labelledby="status-text">
+          <div class="status-head">
+            <div>
+              <p class="eyebrow">STATUS</p>
+              <h2 id="status-text">SELECT APK</h2>
+              <p id="status-detail">Everything runs locally on this device.</p>
+            </div>
+            <span id="progress-label" class="percent">0%</span>
+          </div>
+          <div class="progress-track" aria-hidden="true"><div id="progress-fill" class="progress-fill"></div></div>
+          <div id="warning-box" class="warning" role="alert" hidden></div>
+
+          <div id="result" class="result" hidden>
+            <p class="ready-title">DATA READY FOR PS VITA</p>
+            <p id="result-info" class="result-info"></p>
+            <div class="action-row download-row">
+              <a id="download-btn" class="game-button link-button" href="#" download><span>DOWNLOAD ZIP</span></a>
+              <button id="share-btn" class="game-button secondary" type="button" hidden><span>SHARE ZIP</span></button>
+            </div>
+          </div>
+
+          <div class="mini-guide">
+            <p class="eyebrow">COPY TO VITA</p>
+            <ol>
+              <li>Download and extract the generated ZIP.</li>
+              <li>Copy its <strong>data</strong> folder to the root of <strong>ux0:</strong>.</li>
+              <li>Launch Dragon Ball Tap Battle Vita and select the profile.</li>
+            </ol>
+            <p class="path">ux0:data/DBTapBattle/profiles/&lt;Profile&gt;/</p>
+          </div>
+        </section>
+      </div>
+
+      <footer class="screen-footer">
+        <span>WEB EXTRACTOR 1.0</span>
+        <span>VPK v1.0 • DBTB01178</span>
+        <a href="https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita" target="_blank" rel="noopener noreferrer">PROJECT ON GITHUB</a>
+      </footer>
+    </section>
+
+    <section class="below-fold" aria-labelledby="about-title">
+      <h2 id="about-title">What this extractor does</h2>
+      <p>It reads a Dragon Ball Tap Battle APK directly in your browser, validates the APK ZIP structure and CRCs, detects supported <code>res/raw</code>, Gen-style <code>assets</code>, and audited Android14-family layouts, preserves gameplay payload bytes, applies only known protected PAC aliases, and creates the same <code>profiles-v1</code> layout expected by the PS Vita port.</p>
+      <p>It does not upload the APK, execute Android code, or copy DEX/classes/native Android libraries into the Vita package. Mods that change Android code may still require Vita-side compatibility work.</p>
+      <details>
+        <summary>Compatibility and limits</summary>
+        <p>One APK can contain up to 512 MiB of extracted game data, with a 64 MiB per-file safety limit and APK size up to 1 GiB. The browser must support native ZIP deflate decompression. Current Chrome, Edge, Firefox and Safari versions are recommended. Very large mods can use significant memory on mobile devices.</p>
+      </details>
+    </section>
+  </main>
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>
