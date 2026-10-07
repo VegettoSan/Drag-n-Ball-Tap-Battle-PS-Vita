@@ -1037,3 +1037,39 @@ not final release-performance evidence.
 **Result:** BUILD/HOST DIRECT-AUDIO SUPPORT CONFIRMED. Audible MP3/AAC playback,
 looping, transitions and high-roster gameplay remain pending on a physical Vita.
 See `TEST_VITA_00_27.md`.
+
+## 2026-10-06 — Attempt 032 — perfiles APK completamente independientes
+
+**Goal:** allow a user to install only one extracted APK profile under
+`mods/<Profile>/` and play without installing/populating `game/`.
+
+**Reason:** Android14, Español and Invasion are standalone Android APKs despite
+omitting resources present in Original/Gen. The previous overlay fallback could
+silently borrow Original files, masking a Vita compatibility gap and violating
+the intended installation model.
+
+**Changes:** selected `GameVfs` profiles now resolve resources exclusively from
+their own directory. Missing files report `missing selected profile resource`
+and never fall back to `game/`. The installed-data gate understands that error,
+no longer requires `bobj00`, and still enforces complete contiguous character
+triplets plus shared select/effect/back data. If Original is absent, the selector
+starts on the first installed profile and refuses to launch the empty Original
+entry. Candidate version is 00.28.
+
+**Regression proof:** a synthetic test leaves a matching `game/charf0000.pac`
+in place, deletes only the selected profile's copy, and requires the audit to
+fail. CI runs `37551313841` and `37551340654` pass; Vita native smoke
+`37551372432` passes. A real-APK host matrix with an empty `game/` accepts Gen
+13, Android14 13, Español 13, Invasion 22 and ZuperSamu 92. Invasion explicitly
+cannot resolve `bobj00.pac` from anywhere else.
+
+**Full candidate:** `DBTapBattle-Vita-00.28-Standalone-Profiles.vpk`, 2,648,911
+bytes, SHA-256
+`4411302f1b7e673fe49c98bb9ce0b7fe47ed086a34e1ad03025735411d07cab2`;
+runtime marker `fa9d7b6`; LiveArea PASS. Direct MP3/AAC/Vorbis support from
+00.27 is retained.
+
+**Result:** HOST/BUILD STANDALONE CONTRACT CONFIRMED. Physical Vita validation
+with `game/` empty is pending. If the original TeaVM core requests an asset a
+modified APK omits, do not restore fallback; capture the request and port the
+profile-specific loading behavior with evidence.
