@@ -181,7 +181,7 @@ def extract(apk, output, overwrite=False, layout='auto'):
                     'apk_path': info.filename,
                     'size': info.file_size,
                     'sha256': zip_member_hash(archive, info),
-                    'runtime_policy': 'ignored-profile-save-use-vpk-global-save',
+                    'runtime_policy': 'ignored-apk-save-use-vpk-profile-seed',
                 }
                 continue
             total += info.file_size
@@ -223,7 +223,7 @@ def extract(apk, output, overwrite=False, layout='auto'):
             manifest = {'format': 4, 'source_layout': layout,
                         'pac_codec': profile.name if profile else 'original-or-unknown',
                         'payloads_unchanged': True,
-                        'save_policy': 'global-vpk-seed-ux0-root',
+                        'save_policy': 'per-profile-vpk-seed',
                         'ignored_profile_save': ignored_profile_save,
                         'renamed_files': [{'apk_path': f['apk_path'], 'name': f['name']} for f in files
                                           if f['apk_path'][len(prefix):] != f['name']], 'source_apk': apk.name, 'source_apk_sha256': file_hash(apk),
