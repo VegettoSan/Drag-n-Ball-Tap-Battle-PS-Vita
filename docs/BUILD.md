@@ -1,5 +1,23 @@
 # Build and packaging
 
+## v1.0 public release — DBTB01178
+
+Current public package identity:
+
+- file: `Dragon-Ball-Tap-Battle-PS-Vita-v1.0.vpk`
+- APP_VER: `01.00`
+- TITLE_ID: `DBTB01178`
+- VPK SHA-256:
+  `15eb056274db6f3ad561c3befb670833c348f536c3073590b9768b04f74ee594`
+- gameplay/runtime checkpoint:
+  `0da8684805d1510caf93130a22eed523a854c1d6`
+
+v1.0 promotes the hardware-confirmed 00.34 implementation to the first stable
+public release. The package identity changed from the historical test ID
+`DBTB00001` to `DBTB01178`; the gameplay executable/resources are otherwise
+the 00.34 stable content. Historical build sections below retain the exact
+APP_VER/TITLE_ID/hash values of the artifacts that were actually tested.
+
 ## 00.34 stable hardware-confirmed build — unified profiles + selector UX
 
 Current complete user-test artifact:
