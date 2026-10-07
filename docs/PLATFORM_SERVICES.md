@@ -80,8 +80,10 @@ contracts. All return/suspend/restart combinations still need a device matrix.
 
 ## Files, resources and saves
 
-Resources resolve through `GameVfs`: mod first, then base; an existing malformed
-or non-regular override is an error. Native ResourceAdapter applies original
+Resources resolve through `GameVfs` inside exactly one active dataset. Original
+uses `game/`; a selected profile uses only `mods/<Profile>/`. Missing, malformed
+or non-regular selected-profile resources are explicit errors; there is no
+cross-profile fallback. Native ResourceAdapter applies original
 GameData exclusion bits before disk reads and normalizes only selected verified
 payload schemas in memory. Directory slots/order/reserved fields stay stable.
 See [PAC_FORMAT](PAC_FORMAT.md) and [DATA_LAYOUT](DATA_LAYOUT.md).
@@ -109,11 +111,11 @@ identity and billing SQLite are not the main gameplay save.
 
 ## Offline installed data
 
-The first original APK has no charNN/chardemoNN/charf00NN triplets. The current
-installed-data service validates 13 complete indexed triplets plus select0,
-effect, back00 and bobj00 through the active VFS/PAC reader. This matches the
-supplied datasets, not a generic all-character validator. Some profiles require
-base fallback for missing shared files. Gen's populated assets and empty raw
+The first original APK has no charNN/chardemoNN/charf00NN triplets. The current installed-data service validates contiguous complete character
+triplets (up to the two-digit 00..99 namespace) plus select0, effect and back00
+through the active VFS/PAC reader. `bobj00` is not a universal requirement:
+protected Android14-derived APKs are standalone without it. Selected profiles do
+not require or consult a base dataset. Gen's populated assets and empty raw
 stubs require assets extraction, not installing placeholders.
 
 Original downloaded wrappers name entries charNN/chardemoNN/charf00NN; card
