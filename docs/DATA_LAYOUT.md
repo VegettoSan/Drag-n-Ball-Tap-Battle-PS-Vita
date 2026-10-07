@@ -1,4 +1,4 @@
-# Runtime data and mod layout — 00.21
+# Runtime data and mod layout — 00.28 standalone datasets
 
 Current contract, checked against `src/vfs.cpp` and native `resources.cpp` on
 2026-10-05. See [CURRENT_STATUS](CURRENT_STATUS.md) for verification scope.
@@ -56,21 +56,25 @@ ux0:data/DBTapBattle/mods/
     └── effect.pac
 ```
 
-A mod is not required to duplicate the entire game. Missing resource files may fall back to `game/`, but save data never falls back across profiles.
+Each selectable profile is a complete APK-derived data set for the Vita port. A selected profile does **not** borrow missing PAC/audio/data files from `game/`. This lets a user install only one profile (for example Gen, Android14, Invasion or ZuperSamu) and run it without installing Original.
 
 ## Virtual file resolution
 
-For a request such as `select0.pac` with mod `FighterZ` active:
+For a request such as `select0.pac` with profile `FighterZ` active:
 
 ```text
 1. ux0:data/DBTapBattle/mods/FighterZ/select0.pac
-2. ux0:data/DBTapBattle/game/select0.pac
-3. Missing-resource error
+2. Missing selected-profile resource error
 ```
 
-With `Original` selected, only the `game/` resource path is considered.
+With `Original` selected:
 
-Nested relative paths use the same rule.
+```text
+1. ux0:data/DBTapBattle/game/select0.pac
+2. Missing original resource error
+```
+
+There is no cross-profile resource fallback. Nested relative paths use the same rule.
 
 ## Save ownership
 
@@ -92,7 +96,7 @@ Rules:
 
 - If the extracted APK already contains `save.bin`, `extract_apk_data.py` preserves it byte-for-byte in that profile directory and the Vita runtime uses it directly.
 - If the profile has no `save.bin`, the original engine starts without one and creates it in that same profile directory when it first saves successfully.
-- Resource fallback does **not** imply save fallback. A mod may use `game/` for missing PAC/OGG resources while still keeping its own independent `save.bin`.
+- Resources and saves are both profile-local. A selected profile never reads a missing PAC/OGG from `game/`, and its save never falls back to another profile.
 - `saves/shared/` from build 00.14 and older `saves/<profile>/` directories are ignored by the new runtime. They may be kept manually as backups.
 - No automatic migration is performed. This avoids overwriting an APK-provided save or accidentally copying progress between unrelated mods.
 
@@ -151,8 +155,9 @@ Format-3 import manifest records profile, alias mapping and original APK content
 
 ## Resource cache and editing behavior
 
-Resource fallback is file-level, not a merge of entries from two PACs. A corrupt
-existing override reports its own parse/decode error. The GameData exclusion
+Resource resolution is profile-local. A corrupt or missing file in the selected
+profile reports that profile's own error; the runtime does not merge or borrow
+entries/files from another dataset. The GameData exclusion
 filter is honored before reading payloads; normalization is in memory and never
 rewrites the installed PAC. The result LRU is keyed by resolved physical path,
 filter and file metadata (size/mtime/ctime) and cleared on resource reinitialization.
@@ -188,6 +193,6 @@ can be copied directly to the `ux0:` root. Raw original APKs use `game/`;
 Community14 uses `mods/Android14/`; the known Gen content hash uses `mods/Gen/`.
 Unknown canonical assets APKs use a sanitized filename as a separate mod profile.
 An APK-provided save stays in its profile. Skip it when copying over existing
-Vita progress. No runtime paths or save fallback rules change.
+Vita progress. No cross-profile resource or save fallback occurs.
 See [Windows tool](WINDOWS_DATA_TOOL.md) for profile naming, byte preservation,
 source recognition, incomplete-original warnings and verification scope.
