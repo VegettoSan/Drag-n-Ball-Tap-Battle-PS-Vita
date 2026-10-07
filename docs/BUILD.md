@@ -4,21 +4,22 @@
 
 Current complete user-test artifact:
 
-- `DBTapBattle-Vita-00.34-Selector-UX-Fix.vpk`
+- `DBTapBattle-Vita-00.34-No-Blue-Orb-Fix.vpk`
 - APP_VER: `00.34`
 - TITLE_ID: `DBTB00001`
 - VPK SHA-256:
-  `e06ded147eead1c7ee8e5a558552d5129a98b5916395c59780125782c8d55c92`
+  `4f0abc4aba15c766847657d152de9cff50877df3f7b13a169f06be4226d2367b`
 - runtime/selector checkpoint:
-  `63bc0f90d33d4a5d8d90c4816ff0f0ae07272751`
+  `18559dcea316076bb1225080bb8506dd439df6f6`
 - physical result: pending
 
 00.34 retains the 00.33 gameplay fixes and changes the external dataset contract
 to `ux0:data/DBTapBattle/profiles/<Profile>/`. The VPK no longer distinguishes
 `game/` from `mods/` at runtime and no longer synthesizes an Original row.
 
-The Gen-derived selector background uses its non-transparent content bounds to
-fill 960×544. Confirming a profile presents **OPENING PROFILE /
+The Gen-derived selector background now crops to the continuous 482×320
+cyan/grid band at the top of the 512×512 source before stretching to 960×544,
+so the embedded lower blue energy orb is never rendered. Confirming a profile presents **OPENING PROFILE /
 LOADING GAME DATA...** before the original engine loads that selected directory.
 
 The interactive full-engine build uses the documented split TeaVM compilation
