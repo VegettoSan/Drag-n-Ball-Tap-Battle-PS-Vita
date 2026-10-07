@@ -21,9 +21,16 @@ also pass (run 37622780686).
 
 **Result:** BUILD CONFIRMED / hardware appearance pending.
 
-**Next action:** install the full 00.34 VPK on a physical Vita, photograph the
-first selector, verify D-pad/stick/X/touch/Circle, then enter at least one normal
-gameplay path to ensure 00.33 behavior is unchanged. See `TEST_VITA_00_34.md`.
+**Full publication attempt:** run 37623204195 intentionally tried to build a
+00.34 prerelease through the existing private-source workflow. It stopped at the
+source gate because `DBTB_ORIGINAL_APK_URL` is empty. No TeaVM generation,
+compilation or publication ran, so this is an infrastructure/input blocker rather
+than a code regression.
+
+**Next action:** configure the existing private original-APK URL secret, build the
+full 00.34 VPK, then test it on a physical Vita: photograph the first selector,
+verify D-pad/stick/X/touch/Circle, and enter at least one normal gameplay path to
+ensure 00.33 behavior is unchanged. See `TEST_VITA_00_34.md`.
 
 ## 2026-10-05 — manual full-engine release/prerelease automation
 
