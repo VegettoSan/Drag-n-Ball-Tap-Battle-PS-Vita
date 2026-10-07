@@ -1,5 +1,13 @@
 # Prueba Vita 00.20 — carga PAC y voces
 
+> **Historical document notice — current 00.34 contract:** this file preserves
+> evidence/instructions for the build or investigation named here. The current
+> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
+> current `game/` or `mods/` profile roots and no built-in Original selector
+> row. Do not reuse historical install paths for 00.34. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 **Prueba archivada con regresión de arranque. No usar como instalación actual.**
 En Vita el worker de audio falla 20 veces y el motor sale antes del menú con
 `BGM load failed: bgm_16` (frame 570, estado 693). El log no permite distinguir
