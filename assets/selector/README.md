@@ -25,9 +25,12 @@ contract for the exact theme tested by the port.
 
 ## 00.34 runtime use
 
-The 00.34 selector draws the background from its non-transparent content bounds
-(the source PNG has transparent padding on its right edge) and stretches that
-visible region across the complete 960×544 Vita viewport. The header/button/ball
+The 00.34 selector must not draw the whole 512×512 background PNG. That source
+contains two separate visual regions: the desired cyan/grid background occupies
+the continuous top band (detected as 482×320 px), while a blue energy orb exists
+later in the transparent lower section. Runtime sampling therefore crops to the
+top band in both U and V and stretches only that band across the complete
+960×544 Vita viewport. The header/button/ball
 textures retain their independent placement and sizing.
 
 The same background, header and button assets are reused for the
