@@ -50,20 +50,23 @@ Public validation passes:
 - Vita engine native smoke run `37544588962` — PASS with
   `SceAudiodec_stub` linked.
 
-A complete private TeaVM test VPK was generated for physical validation:
+The first 00.27 Samu-named VPK was superseded after direct APK review showed
+that the protected Android14/Spanish/Invasion datasets are valid without
+`bobj00.pac`. The corrected physical-test candidate is:
 
-- `DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`
-- 2,647,595 bytes
+- `DBTapBattle-Vita-00.27-Samu-Invasion-Corrected.vpk`
+- 2,647,984 bytes
 - VPK SHA-256:
-  `bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030`
+  `311a820f948e337b0626b7b46e6dcb2ca0628b81364941b11d4c837867ee1b96`
 - eboot SHA-256:
-  `447324fcd3c0c6400f7a3c3cea92bc3a105f64c240831e376f289a535341a5a3`
+  `12106a98ecb2c6f0f4401e0879705edf57f4d7fcbee495351df07f24fdd241ec`
 - ELF SHA-256:
-  `ecb70e9686b70a330dad4b85e1d0448791ff67a2d1b238c24d1610d1c46704f3`
-- runtime marker: `926eb6`
+  `aaae0778d094d17ac51bab175ce79ce350dfce49b990b10e490fe20db66cb3a6`
+- runtime marker: `7fec715`
 - APP_VER `00.27`, TITLE_ID `DBTB00001`
 - TeaVM: 467 classes / 4086 methods
 - LiveArea validation: PASS.
+- installed-data gate: no longer requires `bobj00.pac`; VFS fallback remains optional compatibility when requested at runtime.
 
 Because the interactive runner could not finish the monolithic generated C unit
 at normal optimization within the command window, the private test build splits
@@ -73,7 +76,7 @@ and leaves native Vita adapters including direct audio at `-O2`. Use this
 artifact for functional roster/audio validation; final release performance still
 requires the standard reproducible build recipe.
 
-Evidence: [00.27 direct-audio build](evidence/vita_samu_direct_audio_00.27.json).
+Evidence: [corrected 00.27 mod-compat build](evidence/vita_mod_compat_00.27_corrected.json).
 Physical test protocol: [TEST_VITA_00_27](TEST_VITA_00_27.md).
 
 ## Historical 00.26 candidate — Samu roster + rejected conversion import path
