@@ -117,21 +117,21 @@ int main(int argc,char** argv){
     if(argc==1){std::puts("ENGINE RESOURCE PROFILE PASS: Android14 + Spanish + Invasion normalisation");return 0;}
     assert(argc==2);GameVfs vfs(argv[1]);std::string path,error;std::vector<uint8_t> output;
     size_t files=0,converted_bins=0,decoded_wavs=0; long long wav_energy=0;
-    for(const std::string& folder:{std::string("game"),std::string("mods/Android14")}){
-        if(folder=="game")vfs.selectOriginal();else assert(vfs.selectMod("Android14"));
-        DIR* dir=opendir((std::string(argv[1])+"/"+folder).c_str());assert(dir);
+    for(const std::string& profile:{std::string("Original"),std::string("Android14")}){
+        assert(vfs.selectProfile(profile));
+        DIR* dir=opendir((std::string(argv[1])+"/profiles/"+profile).c_str());assert(dir);
         while(dirent* e=readdir(dir)){std::string name=e->d_name;if(name.size()<4||name.substr(name.size()-4)!=".pac")continue;
             assert(readEngineResource(vfs,name,output,path,error));validate(output);++files;
-            const auto original=fileBytes(path);if(folder=="game")assert(output==original);
+            const auto original=fileBytes(path);if(profile=="Original")assert(output==original);
             PacFile source;assert(source.open(path));assert(source.entries().size()==u16(output,0));
             for(size_t i=0;i<source.entries().size();++i){
                 assert(source.entries()[i].reserved==u32(output,14+i*16));
-                if(folder=="mods/Android14"&&source.typeString(i)=="bin"){
+                if(profile=="Android14"&&source.typeString(i)=="bin"){
                     std::vector<uint8_t> raw;assert(source.readEntry(i,raw));
                     GameDataTable a,b;assert(a.decode(raw,PacEncoding::Community14));
                     assert(b.decode(entry(output,i),PacEncoding::Original));sameTable(a,b);++converted_bins;
                 }
-                if(folder=="mods/Android14"&&source.typeString(i)=="wav"){
+                if(profile=="Android14"&&source.typeString(i)=="wav"){
                     std::vector<uint8_t> raw;assert(source.readEntry(i,raw));assert(raw.size()>=5);
                     const uint32_t decoded_size=u32(raw,0)^42802u^uint32_t(i);
                     const std::vector<uint8_t> pcm=entry(output,i);
@@ -159,7 +159,7 @@ int main(int argc,char** argv){
     for(size_t n=0;n<18;++n){std::vector<uint8_t> b(n,0xFF);assert(!normaliseEnginePac(b,"common.pac",output,error));assert(output.empty());}
     std::vector<uint8_t> bad(18,0);bad[0]=1;bad[2]=0xFF;bad[3]=0xFF;bad[4]=0xFF;bad[5]=0xFF;
     assert(!normaliseEnginePac(bad,"common.pac",output,error));assert(output.empty());
-    assert(!readEngineResource(vfs,"../game/common.pac",output,path,error));assert(output.empty());
+    assert(!readEngineResource(vfs,"../profiles/Original/common.pac",output,path,error));assert(output.empty());
     assert(readEngineResource(vfs,"loading",output,path,error));assert(output==fileBytes(path));
     assert(readEngineResource(vfs,"mk",output,path,error));assert(output==fileBytes(path));
     assert(readEngineResource(vfs,"se_00",output,path,error));assert(output==fileBytes(path));
