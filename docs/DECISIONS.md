@@ -224,3 +224,25 @@ runtime copy. The historical 00.29 root `ux0:data/DBTapBattle/save.bin` is not a
 **Reason:** mods can map character slots/progression differently. Sharing one
 mutable save can couple otherwise independent datasets, while using one common
 VPK seed still gives every fresh profile the same deterministic starting state.
+
+## ADR-020 — Protected PAC ownership transfer must be allocation-free
+
+**Status:** accepted and hardware-confirmed — 2026-10-07, 00.33.
+
+When a protected/community PAC has already been rebuilt into its final normalized
+buffer, the final handoff to the resource owner must transfer ownership without
+allocating another PAC-sized vector. Use an explicit branch and `swap`/move form
+whose generated code is verified; do not rely on a conditional expression such as
+`output = changed ? std::move(out) : input` for multi-MiB transformed resources.
+
+The 00.32 Invasion Saitama -> Freezer crash proved why: GCC 15 lowered that
+conditional to `std::vector<unsigned char>::operator=` on the changed path,
+requesting another ~4.6 MiB contiguous allocation after `char15.pac` had already
+been normalized. The resulting native `std::bad_alloc` was symbolicated from the
+matching Vita coredump. 00.33 uses `if (changed) output.swap(out); else output =
+input;` and the user subsequently completed several fights on hardware without
+reproducing the crash.
+
+**Consequence:** memory correctness includes allocation topology, not only final
+byte equality or cache budgets. Preserve the regression that rejects a return to
+the conditional assignment.
