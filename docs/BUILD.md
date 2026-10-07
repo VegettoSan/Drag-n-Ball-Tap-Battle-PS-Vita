@@ -1,5 +1,32 @@
 # Build and packaging
 
+## 00.34 current user-test build — unified profiles + selector UX
+
+Current complete user-test artifact:
+
+- `DBTapBattle-Vita-00.34-Selector-UX-Fix.vpk`
+- APP_VER: `00.34`
+- TITLE_ID: `DBTB00001`
+- VPK SHA-256:
+  `e06ded147eead1c7ee8e5a558552d5129a98b5916395c59780125782c8d55c92`
+- runtime/selector checkpoint:
+  `63bc0f90d33d4a5d8d90c4816ff0f0ae07272751`
+- physical result: pending
+
+00.34 retains the 00.33 gameplay fixes and changes the external dataset contract
+to `ux0:data/DBTapBattle/profiles/<Profile>/`. The VPK no longer distinguishes
+`game/` from `mods/` at runtime and no longer synthesizes an Original row.
+
+The Gen-derived selector background uses its non-transparent content bounds to
+fill 960×544. Confirming a profile presents **OPENING PROFILE /
+LOADING GAME DATA...** before the original engine loads that selected directory.
+
+The interactive full-engine build uses the documented split TeaVM compilation
+technique only as a compilation strategy; original game behavior is not replaced.
+See [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md) and
+[TEST_VITA_00_34](TEST_VITA_00_34.md).
+
+
 ## 00.33 physical-test build — Invasion Saitama -> Freezer allocation fix
 
 00.33 is built from the exact 00.32 coredump diagnosis. The protected-PAC
