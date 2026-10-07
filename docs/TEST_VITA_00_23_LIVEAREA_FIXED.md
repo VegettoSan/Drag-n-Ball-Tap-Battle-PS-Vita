@@ -1,5 +1,12 @@
 # Corrected 00.23 LiveArea device test
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 Package: `DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk`
 SHA-256: `19fae90627b1ddf4f42902ec228b0c50d992cb7c3cce6d3fbb6d8a8843d9edee`
 Title ID/version: `DBTB00001` / `00.23`
