@@ -130,7 +130,7 @@ compatibility work; extracting its files alone cannot reproduce code changes.
 ## CI evidence
 
 Windows extractor 1.5 with the explicit `profiles-v1` assertions passes GitHub
-Actions run `37688246446`. The suite exercises PowerShell 5.1/BAT transport,
+Actions run `37689580096` (latest cleanup/test run; contract regression run `37688246446` also passed). The suite exercises PowerShell 5.1/BAT transport,
 unsafe ZIP paths, CRC failure rollback, protected aliases/codecs, filename-based
 profile naming, collisions, independent saves and the absence of current
 `game/` / `mods/` output roots.
