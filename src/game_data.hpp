@@ -30,7 +30,7 @@ private:
 };
 
 // The two data sets loaded by the original InitGameData; each PAC selects
-// its own codec after VFS resolution, including mixed-format mod fallback.
+// its own codec after resolution inside the active standalone profile.
 struct GameDatabase {
     GameDataTable game, text;
     std::string error;
