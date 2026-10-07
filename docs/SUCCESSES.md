@@ -23,10 +23,12 @@ Confirmed before publication:
 - original DBTapBattle APK extraction PASS;
 - Gen APK extraction PASS, 13-character roster;
 - Android14 protected extraction PASS using `community14-a210795b`;
+- Spanish Android14 extraction PASS using `community14-es-d594affc`;
 - Invasion Beta 3 extraction PASS using
   `community14-invasion-05aa0c5e`, 22 characters `00..21`;
-- generated Vita ZIP reopened with CRC validation PASS;
-- APK-bundled `save.bin` remains excluded.
+- Samu extraction PASS, 92 characters `00..91`, 383 gameplay/data files;
+- generated Invasion, Spanish and Samu Vita ZIPs reopened with CRC validation PASS;
+- APK-bundled `save.bin` remains excluded; Samu explicitly exercised this path.
 
 GitHub Pages deployment run `37703911061` completed successfully after build,
 tests, selector materialization and artifact upload all passed. GitHub reports
