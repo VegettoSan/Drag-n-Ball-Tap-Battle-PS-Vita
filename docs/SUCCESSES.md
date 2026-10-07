@@ -514,3 +514,13 @@ releases the old SceAudiodec stream first; protected character text gets a
 content-detected charset fallback when the modified APK's SetString slot mapping
 differs; and the exact approved save seed is packaged/read once into one global
 writable save. These are not yet physical confirmation of the 00.29 fixes.
+
+## 2026-10-07 — 00.30 VPK seed is profile-local
+
+**HOST/CI CONFIRMED; physical save-isolation test pending.** The runtime now maps
+Original to `game/save.bin` and a selected mod to `mods/<Profile>/save.bin`, while
+keeping the approved `app0:/save.bin` only as a first-use seed. The seed hash and
+VPK packaging regression remain unchanged. Existing per-profile saves are loaded
+instead of re-seeded. Python/community profile suites pass with APK-local saves
+excluded from installed datasets, and the Windows extractor regression passes the
+new per-profile policy.
