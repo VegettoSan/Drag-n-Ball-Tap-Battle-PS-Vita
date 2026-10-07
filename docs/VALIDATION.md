@@ -1,4 +1,8 @@
-# Validation and diagnostic reference — 00.33 hardware checkpoint
+# Validation and diagnostic reference — 00.33 hardware / 00.34 candidate
+
+> Current data/selector contract: [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+> Historical fixtures keep their build identity; current VFS/runtime validation uses
+> first-level `profiles/` directories only.
 
 Commands run from the repository root. Use private game data and temporary output
 outside tracked source. This page describes reproducible probes; it does not claim
@@ -51,7 +55,7 @@ g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/audio_stubs \
   -lvorbisfile -lvorbis -logg -o /private/probes/audio
 ASAN_OPTIONS=detect_leaks=0 /private/probes/audio
 
-# Private fixture/game/ contains all 17 user-provided bgm_XX.ogg tracks.
+# Private fixture/profiles/Original/ contains all 17 user-provided bgm_XX.ogg tracks.
 # Tracks C++ allocations; reproduces legacy bgm_03 bad_alloc with a 6 MiB
 # single-request ceiling and verifies exact PCM plus lower fixed-load peaks.
 g++ -std=c++14 -O2 -Itests/audio_stubs -Itools/aot/engine/native -Isrc \
@@ -81,9 +85,10 @@ g++ -std=c++14 -O2 -fsanitize=address,undefined -Isrc \
 ASAN_OPTIONS=detect_leaks=0 /private/probes/engine-resources /private/install
 ```
 
-Required fixture layout: `install/game/` holds original b84f98a3 resources,
-`install/mods/Android14/` holds the encoded dataset; `gen-root/game/` holds Gen
-assets. Extraction into `gen-root` without game/ is the wrong VFS fixture.
+Required current VFS fixture layout: `install/profiles/Original/` holds original
+b84f98a3 resources, `install/profiles/Android14/` holds the encoded dataset and
+`gen-root/profiles/Gen/` holds Gen assets. Each fixture must explicitly select
+the intended profile; there is no `game/` fallback.
 Host VFS rejects symlink components, so use real directories. No private fixture
 is added to Git. Basic core/image/community/game-table/UTF16 probes remain in
 `tests/`; format documents give their specialized commands.
@@ -138,7 +143,7 @@ Source commit is captured by CMake configuration, not inferred from current main
 
 | Field / marker | Meaning / units | Limit |
 |---|---|---|
-| `Selected profile` | Original base or mod folder | Folder label is not dataset hash |
+| `Selected profile` | First-level folder under `profiles/` | Folder label is not dataset hash |
 | `ORIGINAL ENGINE INIT PASS` | Original Init returned successfully | Does not mean menu/battle reached |
 | `ORIGINAL ENGINE RUN FRAMES` | Main loop ended, reports frame count | May be caught exception/normal exit without native crash |
 | `Run: md=... ERROR=...` | Original caught Java exception/state | Use stack/last resources before assuming corrupt data |
@@ -164,7 +169,7 @@ unsupported diagnostics must not be treated as reliable numbers.
 
 ## Physical test protocol
 
-Use [00.33 instructions/result](TEST_VITA_00_33.md) as the current gameplay regression checkpoint. Historical 00.23 instructions remain useful for the original baseline. For the current
+Use [00.33 instructions/result](TEST_VITA_00_33.md) as the hardware-confirmed gameplay regression checkpoint and [00.34](TEST_VITA_00_34.md) for the current unified-profile/selector candidate. Historical 00.23 instructions remain useful for the original baseline. For the current
 LiveArea-only derivative, follow
 [TEST_VITA_00_23_LIVEAREA](TEST_VITA_00_23_LIVEAREA.md): verify VitaShell
 installation, bubble icon, LiveArea background and startup gate first, then perform
