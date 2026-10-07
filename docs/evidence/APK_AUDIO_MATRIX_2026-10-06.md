@@ -1,5 +1,12 @@
 # Matriz de audio exterior — cinco APK
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Project checkpoint:** 00.33 is the current hardware-confirmed development
+> checkpoint for the tested paths. This file may document an earlier component
+> or build; see [CURRENT_STATUS](../CURRENT_STATUS.md) for authoritative status.
+<!-- DBTB_DOC_STATUS:END -->
+
+
 | Archivo | Original | Gen | Android14 | Español | Invasion |
 |---|---|---|---|---|---|
 | `bgm_00.ogg` | vorbis 44100Hz 2ch 12.144240s; 201590 B `815a71712b3a` | vorbis 44100Hz 2ch 12.144240s; 201590 B `815a71712b3a` | vorbis 44100Hz 2ch 12.144240s; 201590 B `815a71712b3a` | vorbis 44100Hz 2ch 12.144240s; 201590 B `815a71712b3a` | vorbis 44100Hz 2ch 12.144240s; 201590 B `815a71712b3a` |
