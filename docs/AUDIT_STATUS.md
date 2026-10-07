@@ -3,7 +3,8 @@
 The 2026-10-04 bootstrap audit was followed by full original-core AOT integration
 and successive physical Vita tests. This page replaces its obsolete current-state
 table; chronological details remain in [ATTEMPTS](ATTEMPTS.md). The current
-hardware checkpoint is **00.33**: Loading is fixed, dynamic rosters work on device,
+public release is **v1.0** (APP_VER `01.00`, TITLE_ID `DBTB01178`), with
+the **00.34** build as the hardware-confirmed gameplay/runtime baseline: Loading is fixed, dynamic rosters work on device,
 and the reproduced Invasion Saitama -> Freezer repeated-fight `std::bad_alloc` no
 longer occurs after the protected-PAC ownership-transfer fix. See
 [CURRENT_STATUS](CURRENT_STATUS.md).
@@ -21,7 +22,7 @@ longer occurs after the protected-PAC ownership-transfer fix. See
 | Saves | Profile-local save.bin with atomic publication path | Implementation/host tests; exhaustive compatibility pending |
 | Frame rate | 00.18 steady combat reaches logged 59.9/user-observed 60 FPS | Not a universal all-version/all-mode guarantee |
 | Online/multiplayer | Local dataset checks, HTTP rejection, disconnected Bluetooth | Remote services and synchronized multiplayer unimplemented |
-| Packaging | 00.33 hardware-tested VPK with exact VPK/eboot/ELF hashes and device evidence | Functional test build uses documented split TeaVM compilation; release-quality reproducible/performance packaging remains open |
+| Packaging | v1.0 public VPK identity with DBTB01178; 00.34 remains the exact hardware-tested gameplay baseline with preserved historical hashes | Freshly rebuilt v1.0 artifacts still need their own install/launch sanity check; broader release-performance validation remains open |
 
 ## Completed corrections from the bootstrap audit
 
