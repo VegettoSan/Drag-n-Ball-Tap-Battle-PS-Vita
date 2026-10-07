@@ -4,7 +4,7 @@
 > The gameplay/runtime baseline is the hardware-confirmed 00.34 checkpoint; the
 > v1.0 package changes release identity/metadata, not game logic.
 
-> **Current 00.34 data/runtime contract:** see [Current runtime contract](docs/CURRENT_RUNTIME_CONTRACT.md). Historical documents may retain older paths only as build-specific evidence.
+> **Current v1.0 data/runtime contract (00.34 runtime baseline):** see [Current runtime contract](docs/CURRENT_RUNTIME_CONTRACT.md). Historical documents may retain older paths only as build-specific evidence.
 
 A native PlayStation Vita port of **Dragon Ball Tap Battle** built with VitaSDK,
 vitaGL, and the original game core compiled privately for Vita.
