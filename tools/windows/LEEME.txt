@@ -1,4 +1,4 @@
-DRAGON BALL TAP BATTLE - EXTRACTOR PARA WINDOWS 1.1
+DRAGON BALL TAP BATTLE - EXTRACTOR PARA WINDOWS 1.2
 
 Windows 10 / 11, con Windows PowerShell 5.1 integrado.
 No necesita instalar Python, 7-Zip, Java ni ejecutar como administrador.
@@ -12,7 +12,7 @@ USO
 3. Espera a que aparezca LISTO. Se abrira la carpeta del paquete generado.
 4. Copia su carpeta data a la raiz ux0: de la Vita con VitaShell.
    Debe quedar ux0:data/DBTapBattle/; NO ux0:data/data/DBTapBattle/.
-5. Abre el VPK del port 00.28 o posterior y selecciona el perfil indicado.
+5. Abre el VPK del port 00.29 o posterior y selecciona el perfil indicado.
 
 SALIDA
 Junto al BAT se crea Listo_para_Vita/Paquete_fecha_hora_identificador/.
@@ -30,7 +30,7 @@ PERFILES AUTOMATICOS
 - Mods Android14 protegidos que reutilicen uno de los perfiles ya auditados se extraen
   como perfil independiente y sus aliases se renombran automaticamente.
 
-Cada APK/mod es independiente en 00.28. No necesita una carpeta game/ poblada y
+Cada APK/mod es independiente en 00.29. No necesita una carpeta game/ poblada y
 nunca toma archivos de otro perfil por fallback.
 
 La herramienta detecta dinamicamente la cantidad de personajes por tripletas
@@ -42,11 +42,13 @@ El primer APK original suministrado NO contiene todos los personajes descargados
 Se extrae exactamente lo que trae, pero la herramienta no inventa datos faltantes.
 
 PARTIDAS GUARDADAS
-Si un APK trae save.bin, se conserva exactamente en su perfil.
-Gen suministrado trae uno. Al copiar a una Vita donde ya tienes progreso,
-haz backup y omite save.bin; no reemplaces tu partida sin querer.
-El resultado incluye instrucciones para conservarla en la misma carpeta.
-No compartas partidas entre perfiles.
+00.29 usa UN solo save para Original y todos los mods:
+ux0:data/DBTapBattle/save.bin
+
+El VPK incluye la semilla inicial. Si el save global ya existe, no lo reemplaza.
+Si un APK trae su propio save.bin, la herramienta detecta ese hecho pero NO lo
+instala dentro del perfil. Asi no puede pisar ni dividir tu progreso.
+Haz backup del save global antes de mantenimiento destructivo.
 
 VERIFICACION
 Se comprueban rutas seguras, duplicados, limites de tamano y CRC de cada dato ZIP.
