@@ -80,14 +80,12 @@ The initial selector intentionally works without JSON and uses the folder name. 
 
 The port must never require a mod installer to rewrite `game/`. Mod activation is a runtime decision only.
 
-## Current compatibility checkpoint — 00.24 hardware baseline + 00.28 standalone-profile candidate
+## Current compatibility checkpoint — 00.24 baseline + 00.28 hardware findings + 00.29 candidate
 
 The physical-Vita baseline is 00.24: the supplied legacy Android14 profile
 reaches selection/battle with the later text, audio, selection, PAC-streaming
 and battle-audio fixes retained. Ordinary Gen assets are also host-validated.
-Spanish and Invasion Beta 3 protected layouts now have separately audited codec
-profiles and synthetic/runtime-normalisation coverage, but those two datasets
-still need a physical-Vita test before being called hardware-confirmed. See
+Spanish and Invasion Beta 3 protected layouts have separately audited codec profiles. Invasion is now hardware-confirmed standalone on 00.28 for gameplay/textures/audio; its result text is the remaining observed defect and 00.29 contains the targeted charset-boundary fix. See
 [COMMUNITY_MOD_PROFILES](COMMUNITY_MOD_PROFILES.md) and
 [CURRENT_STATUS](CURRENT_STATUS.md).
 
@@ -101,8 +99,7 @@ still need a physical-Vita test before being called hardware-confirmed. See
   behavior adaptation and separate evidence.
 - Names/spaces/UTF-8 remain in paths. Folder name labels the selector; its font
   is ASCII-limited. mod.json, metadata icons and previews remain unimplemented.
-- Save is only the selected `game/save.bin` or `mods/<Profile>/save.bin`, never
-  a shared fallback. Bundled saves are preserved; choose imports intentionally.
+- 00.29 intentionally uses one `ux0:data/DBTapBattle/save.bin` for Original and every mod. The exact VPK seed is copied only when that file is absent; APK-local saves are not installed. This is the sole cross-profile state exception and does not re-enable resource fallback.
 - Format-valid data may still depend on APK/Dalvik code changes. The local-data
   gate keeps the 13-character baseline and now audits the complete two-digit
   character namespace 00..99 (up to 100 contiguous complete triplets). It
@@ -112,7 +109,7 @@ still need a physical-Vita test before being called hardware-confirmed. See
 - Invasion is also a Tier-C code mod: compared with Android14, 372 of 595 common
   code-method signatures have different DEX instructions. Do not port those
   changes wholesale; investigate only a concrete missing mechanic with evidence.
-- Audio compatibility is independent of PAC compatibility. 00.28 detects the
+- Audio compatibility is independent of PAC compatibility. 00.29 retains content detection of the
   actual BGM codec from file content: ordinary Vorbis keeps the existing
   libvorbisfile path, while MP3 and AAC/M4A are decoded directly with Vita
   `SceAudiodec`. The logical `.ogg` filename is not treated as codec proof.
@@ -141,7 +138,7 @@ python3 tools/extract_apk_data.py community.apk /private/install --mod Android14
 python3 tools/extract_apk_data.py spanish.apk /private/install --mod Espanol
 python3 tools/extract_apk_data.py invasion.apk /private/install --mod Invasion
 # Gen-derived 92-character Samu mod: validates the pinned APK and preserves
-# every source asset byte-for-byte. 00.28 decodes MP3/AAC/Vorbis by content.
+# every source asset byte-for-byte. 00.29 decodes MP3/AAC/Vorbis by content.
 python3 tools/prepare_samu_mod.py DragonBallZuperSamuGamerYT.apk /private/install/mods/ZuperSamu
 # Other mods only when their layout/names/format contracts are supported.
 python3 tools/extract_apk_data.py mod.apk /private/install --mod MyMod
@@ -172,7 +169,7 @@ Gen's ordinary text00 is UTF-8 while its game/character tables use Shift_JIS.
 Record source hash/profile, complete triplets/standalone completeness, file codec and
 counts, character/card table bounds, charset, save expectations and whether
 Java logic differs. Test first/repeated selection, multiple voice events, text,
-actual battle/results and independent saves on the target build. Promote only
+actual battle/results and shared-save continuity across profiles on the target build. Promote only
 those observed features. Shared helper-library bytes establish lineage but not
 publisher identity or a universal installed-mod loader.
 
