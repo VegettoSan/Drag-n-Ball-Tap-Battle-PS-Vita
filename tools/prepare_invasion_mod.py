@@ -3,7 +3,7 @@
 
 Protected PAC filenames are canonicalized by the existing Community14 extractor,
 but payload bytes are never transcoded or rewritten. BGM files keep their
-original bytes even when the .ogg name contains MP3 or AAC/M4A; the 00.27 Vita
+original bytes even when the .ogg name contains MP3 or AAC/M4A; the 00.28 Vita
 runtime detects the actual codec from content and decodes it directly.
 """
 from __future__ import annotations
@@ -159,7 +159,7 @@ def main() -> int:
     print(f"Prepared Invasion Vita mod: {args.output}")
     print("Roster: 22 characters (00..21), protected PAC profile validated.")
     print("Audio: source bytes preserved (5 MP3, 2 AAC/M4A, 10 Vorbis); Vita decodes by content.")
-    print("Invasion is valid without bobj00.pac/font00.pac; keep game/ only for the normal optional VFS fallback contract.")
+    print("Standalone profile: no game/ dataset is required; missing profile resources never fall back across datasets.")
     return 0
 
 
