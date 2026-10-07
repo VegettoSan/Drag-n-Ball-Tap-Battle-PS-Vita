@@ -69,7 +69,9 @@ Build/tool evidence for the current candidate:
 - Private build-tool export on the same checkpoint: `37679405502` PASS.
 - Windows extractor 1.5 `profiles-v1` regression: `37689580096` PASS (latest cleanup/test run; earlier contract run `37688246446` also passed).
 - Web Extractor 1.0 core: syntax/unit validation PASS; real APK package tests
-  PASS for original, Gen, Android14 and Invasion Beta 3.
+  PASS for original, Gen, Android14, Spanish Android14, Invasion Beta 3 and Samu.
+  The Samu stress case generated a 405,409,508-byte ZIP with 92 characters and
+  passed independent ZIP CRC validation.
 - GitHub Pages deployment: run `37703911061` PASS. GitHub reports the live URL:
   https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
   (an earlier deployment request hit a transient GitHub HTTP 500; the subsequent
