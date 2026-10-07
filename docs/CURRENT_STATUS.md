@@ -1,11 +1,11 @@
-# Current status — 2026-10-07 (America/Bogota), 00.33 hardware / 00.34 user-test candidate
+# Current status — 2026-10-07 (America/Bogota), 00.34 HARDWARE CONFIRMED
 
 > **Authoritative current contract:** [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 > Any later section in this document that mentions `game/`, `mods/`, an
 > unconditional Original selector entry, or the old profile-save paths describes
 > the historical build named by that section; it does **not** override 00.34.
 
-## 00.34 latest user-test VPK
+## 00.34 stable hardware-confirmed VPK
 
 The latest complete user-test package is:
 
@@ -14,7 +14,7 @@ The latest complete user-test package is:
   `24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03`
 - runtime/selector source:
   `0da8684805d1510caf93130a22eed523a854c1d6`
-- physical Vita result: **pending**
+- physical Vita result: **HARDWARE CONFIRMED — stable and functional**
 
 Current runtime/data behavior:
 
@@ -46,8 +46,11 @@ Build/tool evidence for the current candidate:
 - Private build-tool export on the same checkpoint: `37679405502` PASS.
 - Windows extractor 1.5 `profiles-v1` regression: `37689580096` PASS (latest cleanup/test run; earlier contract run `37688246446` also passed).
 
-00.33 remains the latest **HARDWARE CONFIRMED** gameplay checkpoint until the user
-finishes the 00.34 physical test.
+**00.34 is now the latest HARDWARE CONFIRMED checkpoint.** The user reports
+the exact VPK above is stable and functional in the tested real-Vita session,
+with no problem found so far across the exercised selector, profile loading and
+gameplay paths. 00.33 remains historical evidence for the protected-PAC
+repeated-fight repair.
 
 ## 00.34 candidate update — unified APK profiles
 
@@ -73,8 +76,8 @@ Profile saves now live at
 `ux0:data/DBTapBattle/profiles/<Profile>/save.bin`, still seeded once from the
 VPK master save when absent.
 
-This is a source/CI candidate change. **00.33 remains the latest physical-Vita
-gameplay checkpoint until a complete 00.34 VPK using this layout is tested.**
+This layout is now **HARDWARE CONFIRMED in 00.34** using the exact stable VPK
+recorded at the top of this file.
 
 ## 00.34 candidate — Gen-styled first-screen data selector
 
@@ -100,9 +103,8 @@ published silently.
 
 **BUILD CONFIRMED for the native Vita smoke target:** the 00.34 CMake packaging and
 the new `src/ui.cpp` selector renderer both compile/link/package successfully in
-VitaSDK CI. This does not promote 00.34 to a physical gameplay checkpoint; the
-current real-Vita gameplay baseline remains **00.33** until the full 00.34 VPK is
-built and tested on hardware.
+VitaSDK CI. The full 00.34 VPK has now been tested on physical Vita and is the current
+hardware-confirmed stable checkpoint.
 
 A one-shot full-prerelease attempt (Actions run
 [37623204195](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37623204195))
