@@ -5,13 +5,13 @@
 
 ## Exact user-test artifact
 
-- File: `DBTapBattle-Vita-00.34-No-Blue-Orb-Fix.vpk`
+- File: `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk`
 - APP_VER: `00.34`
 - TITLE_ID: `DBTB00001`
 - VPK SHA-256:
-  `4f0abc4aba15c766847657d152de9cff50877df3f7b13a169f06be4226d2367b`
+  `24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03`
 - Runtime/selector source checkpoint:
-  `18559dcea316076bb1225080bb8506dd439df6f6`
+  `0da8684805d1510caf93130a22eed523a854c1d6`
 
 Documentation/extractor commits may be newer than this source checkpoint without
 changing the VPK executable.
@@ -55,7 +55,11 @@ Expected behavior:
    stretches that region to the complete 960×544 Vita viewport.
 9. The separate blue energy orb embedded in the lower transparent portion of
    that PNG must never be sampled or shown.
-10. Long profile names reduce text scale rather than escaping the button.
+10. The complete profile button is centered horizontally on the 960 px Vita viewport.
+11. Each label is centered horizontally and vertically inside the button's cyan
+    interior, not over the silver bevels.
+12. Long profile names automatically reduce text scale before reaching the cyan
+    area's left/right padding.
 
 The packaged theme remains optional at runtime: if one of the selector PNGs is
 missing/corrupt or cannot upload, the safe flat selector fallback remains
