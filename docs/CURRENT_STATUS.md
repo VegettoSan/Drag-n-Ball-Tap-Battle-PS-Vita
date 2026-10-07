@@ -59,19 +59,41 @@ is explicitly excluded. After profile confirmation, a themed
 **OPENING PROFILE / LOADING GAME DATA...** screen is presented before the
 original engine begins loading the selected dataset.
 
-Windows extractor 1.5 targets the same `profiles-v1` contract and always derives
-the visible profile folder from the APK filename.
+Web Extractor 1.0 and Windows Extractor 1.5 target the same `profiles-v1`
+contract and always derive the visible profile folder from the APK filename.
+The web version runs entirely in the browser and downloads a Vita-ready ZIP;
+the selected APK is not uploaded.
 
 Build/tool evidence for the current candidate:
 - Vita engine native smoke on selector/runtime checkpoint: `37679405794` PASS.
 - Private build-tool export on the same checkpoint: `37679405502` PASS.
 - Windows extractor 1.5 `profiles-v1` regression: `37689580096` PASS (latest cleanup/test run; earlier contract run `37688246446` also passed).
+- Web Extractor 1.0 core: syntax/unit validation PASS; real APK package tests
+  PASS for original, Gen, Android14 and Invasion Beta 3.
+- GitHub Pages build job: PASS. The first deploy request returned a GitHub-side
+  HTTP 500 and was re-run; deployment status is tracked separately from extractor correctness.
 
 **00.34 is now the latest HARDWARE CONFIRMED checkpoint.** The user reports
 the exact VPK above is stable and functional in the tested real-Vita session,
 with no problem found so far across the exercised selector, profile loading and
 gameplay paths. 00.33 remains historical evidence for the protected-PAC
 repeated-fight repair.
+
+## Web Extractor 1.0 / GitHub Pages
+
+A static browser extractor now lives under `web/` and is deployed with
+`.github/workflows/pages.yml` to:
+
+https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
+
+It processes APK bytes locally, validates ZIP/CRC/SHA-256, applies the same
+audited protected PAC aliases as Windows Extractor 1.5, checks roster structure,
+excludes APK-local `save.bin`, writes manifests/checksums and produces a
+downloadable `data/DBTapBattle/profiles/<Profile>/` ZIP.
+
+The web UI reuses the exact validated Gen selector theme and has dedicated
+desktop, portrait-mobile and landscape-mobile layouts. See
+[WEB_DATA_TOOL](WEB_DATA_TOOL.md) for implementation, limits and validation.
 
 ## 00.34 candidate update — unified APK profiles
 
@@ -88,8 +110,8 @@ If `profiles/` is empty, the selector remains on its themed/fallback screen and
 shows a no-game-data message instructing the user to prepare a Tap Battle APK with
 the extractor and copy it to `ux0:data/DBTapBattle/profiles/`.
 
-The Windows extractor 1.4 now emits every APK as an independent profile named
-from the APK filename. APK layout/codec detection remains automatic and separate
+The current Web Extractor 1.0 and Windows Extractor 1.5 emit every APK as an
+independent profile named from the APK filename. APK layout/codec detection remains automatic and separate
 from naming. Renaming a folder under `profiles/` changes the selector display
 name without modifying PAC files or re-extracting the APK.
 
