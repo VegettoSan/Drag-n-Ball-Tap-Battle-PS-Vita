@@ -1,46 +1,56 @@
-# Current status — 2026-10-07 (America/Bogota), 00.32 hardware findings / 00.33 candidate
+# Current status — 2026-10-07 (America/Bogota), 00.33 hardware-confirmed checkpoint
 
-## 00.33 candidate — Invasion Saitama -> Freezer protected-PAC ownership
+## 00.33 hardware-confirmed — Invasion repeated-fight allocation fix
 
-The physical 00.32 retest closes two important items: the Loading loop is fixed
-and extended mod rosters now load correctly on Vita. Invasion still crashes on a
-specific story transition: Saitama (char15) advances to his second fight against
-Freezer (char05).
+00.33 is now the current physical-Vita development checkpoint.
 
-The supplied 00.32 `psp2core` was symbolicated against the exact matching
-unstripped ELF. The native call chain reaches
-`std::vector<unsigned char>::operator=` inside protected-PAC `normalise()`,
-then `normaliseEnginePac -> readEngineResource -> EngineResourceCache::read ->`
-the native GameData stream. This is a native allocation failure, not a TeaVM
-managed OOM and not evidence that either character PAC is corrupt.
+The 00.32 retest had already confirmed that the Loading loop was fixed and that
+extended mod rosters load correctly, including Samu's full 92-character roster.
+Its remaining reproducible failure was Invasion: Saitama (char15) advancing to
+his second fight against Freezer (char05) terminated with native
+`std::bad_alloc`.
 
-Invasion `char15.pac` is 4,054,165 bytes on disk and normalizes to 4,638,744
-bytes. GCC 15 lowered the old final conditional move expression into a vector
-copy on the changed path, asking for a second ~4.6 MiB contiguous allocation.
-00.33 replaces that path with `output.swap(out)` and therefore transfers the
-already-built normalized buffer without allocating another PAC-sized copy.
+The supplied 00.32 `psp2core`, symbolicated against the exact matching ELF,
+resolved the allocation through `std::vector<unsigned char>::operator=` inside
+protected-PAC `normalise()`. Invasion `char15.pac` is 4,054,165 bytes on disk
+and normalizes to 4,638,744 bytes. GCC 15 lowered the previous conditional move
+expression to another vector copy on the changed path, requesting a second
+multi-MiB contiguous allocation after the normalized PAC already existed.
 
-Complete test artifact:
+00.33 replaces that ambiguous assignment with explicit ownership transfer:
+`if (changed) output.swap(out); else output = input;`. No source PAC bytes,
+DEX behavior or original gameplay logic are modified.
+
+**Physical result:** the user reports several consecutive Invasion fights on
+00.33 with no crash. The reproduced Saitama -> Freezer failure did not recur and
+is considered **resolved in the tested hardware scope**.
+
+Current artifact:
 
 - `DBTapBattle-Vita-00.33-Invasion-Saitama-Freezer-Fix.vpk`
-- size 2,650,664 bytes
-- VPK SHA-256:
-  `d241499a356ac11c523909a84b0c383910ef7a387efcfdc2c05d3581be86fd77`
-- eboot SHA-256:
-  `bc0a0d4293e5b416084d02050dd6b3c17529cc63fab00bfe7a48d0310303d43b`
-- ELF SHA-256:
-  `6c55a58f59277bee0d2632dbefca8c1a938d577457b867489d3605a11cee7dbe`
-- APP_VER 00.33 / TITLE_ID DBTB00001
+- size: 2,650,664 bytes
+- VPK SHA-256: `d241499a356ac11c523909a84b0c383910ef7a387efcfdc2c05d3581be86fd77`
+- eboot SHA-256: `bc0a0d4293e5b416084d02050dd6b3c17529cc63fab00bfe7a48d0310303d43b`
+- ELF SHA-256: `6c55a58f59277bee0d2632dbefca8c1a938d577457b867489d3605a11cee7dbe`
+- APP_VER `00.33`, TITLE_ID `DBTB00001`
 - runtime checkpoint `71b95d54ad6eef0ebd2043eb96269f6e7a4e1370`
-- LiveArea PASS.
+- LiveArea: PASS.
 
-00.32's dynamic roster, independent saves, Loading fix, Shop return path, Samu
-direct audio and Invasion text handling are retained. Hardware acceptance is the
-exact Saitama -> Freezer second-fight transition followed by several additional
-fight transitions.
+Confirmed in the recent hardware sequence:
 
-See [TEST_VITA_00_33](TEST_VITA_00_33.md) and
-[evidence](evidence/vita_build_00.33.json).
+- Loading loop fixed;
+- dynamic per-profile rosters working, including Samu 92;
+- Invasion text appears correct in the tested path;
+- Samu direct compressed BGM transition works;
+- repeated Invasion fights no longer reproduce the protected-PAC bad_alloc.
+
+Open coverage is now broader regression work: Shop return behavior still needs a
+clean explicit hardware report, along with return-to-menu/suspend-resume,
+additional modes/mods and longer sessions.
+
+See [TEST_VITA_00_33](TEST_VITA_00_33.md),
+[build evidence](evidence/vita_build_00.33.json) and
+[hardware evidence](evidence/vita_hardware_00.33.json).
 
 ## 00.32 candidate — fix 00.31 infinite Loading
 
@@ -62,7 +72,7 @@ Complete test VPK:
 
 00.31 dynamic roster/save synchronization, Shop return behavior, large-PAC memory
 policy, Invasion text fallback and Samu direct compressed audio are retained.
-Hardware retest is pending.
+Hardware retest subsequently passed on 00.33; this 00.32 section remains historical.
 
 ## 00.31 candidate — dynamic roster, repeated-fight memory, Shop and startup
 
