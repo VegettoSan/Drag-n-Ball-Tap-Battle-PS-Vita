@@ -8,6 +8,44 @@
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
+## 2026-10-07 — 00.34 — unified profiles + fullscreen selector + opening-profile transition
+
+**Goal:** remove the artificial Original/mod split, make extractor output identical
+to the Vita runtime namespace, fill the selector viewport with the existing Gen
+background and show visible feedback while a selected profile begins loading.
+
+**Runtime changes:**
+
+- one current data root: `ux0:data/DBTapBattle/profiles/`;
+- selector enumerates only real first-level profile folders;
+- no unconditional Original or Original-missing row;
+- empty `profiles/` shows **NO GAME DATA FOUND**;
+- selected resources and mutable save stay inside the same profile;
+- background samples only its non-transparent horizontal content and stretches
+  that region to 960×544;
+- confirmation presents **OPENING PROFILE / LOADING GAME DATA...** before the
+  selector textures are released and control passes to the original engine.
+
+**Extractor changes:** Windows extractor 1.5 emits only
+`data/DBTapBattle/profiles/<sanitized APK filename>/`, records
+`runtime_contract: profiles-v1`, does not use known APK hashes for visible
+profile naming, and writes the exact runtime root into `RESULTADO.json`.
+
+**Evidence:**
+
+- runtime/selector source checkpoint `63bc0f90d33d4a5d8d90c4816ff0f0ae07272751`;
+- Vita engine native smoke run `37679405794`: PASS;
+- private tool export run `37679405502`: PASS;
+- Windows extractor 1.5 regression run `37688246446`: PASS;
+- complete user-test VPK:
+  `DBTapBattle-Vita-00.34-Selector-UX-Fix.vpk`;
+- VPK SHA-256:
+  `e06ded147eead1c7ee8e5a558552d5129a98b5916395c59780125782c8d55c92`.
+
+**Observed:** build/tool evidence only. Physical Vita result is pending; do not
+promote 00.34 over the 00.33 hardware checkpoint until the user reports the
+selector, profile-opening transition and gameplay regression result.
+
 ## 2026-10-07 — 00.34 — Restyle the native data selector from Gen/select0.pac
 
 **Goal:** make the Vita-only profile chooser look like it belongs to Dragon Ball
