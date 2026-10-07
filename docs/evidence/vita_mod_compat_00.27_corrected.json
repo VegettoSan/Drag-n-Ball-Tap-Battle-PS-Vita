@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "date": "2026-10-06",
+  "status": "BUILD_HOST_AND_CI_VALIDATED_HARDWARE_PENDING",
+  "source_head": "7fec715f6b78782101a18fe66a9aa6f40b76434f",
+  "hardware_baseline": "00.24",
+  "candidate": {
+    "version": "00.27",
+    "title_id": "DBTB00001",
+    "vpk_name": "DBTapBattle-Vita-00.27-Samu-Invasion-Corrected.vpk",
+    "vpk_bytes": 2647984,
+    "vpk_sha256": "311a820f948e337b0626b7b46e6dcb2ca0628b81364941b11d4c837867ee1b96",
+    "eboot_sha256": "12106a98ecb2c6f0f4401e0879705edf57f4d7fcbee495351df07f24fdd241ec",
+    "elf_sha256": "aaae0778d094d17ac51bab175ce79ce350dfce49b990b10e490fe20db66cb3a6",
+    "runtime_marker": "7fec715",
+    "livearea_validation": "PASS",
+    "interactive_compile": {
+      "teavm_remainder": "-O1 split private compilation units",
+      "TCBManajer": "-O0",
+      "native_adapters": "-O2",
+      "purpose": "functional hardware validation"
+    }
+  },
+  "protected_inventory_correction": {
+    "finding": "Android14, Spanish and Invasion protected APKs are standalone while omitting bobj00.pac and font00.pac; their protected bobj families start at index 01.",
+    "vita_change": "installed-data audit no longer requires bobj00.pac",
+    "vfs_fallback": "still available if the unchanged original core requests an omitted logical resource, but no longer treated as an APK dependency"
+  },
+  "profiles": {
+    "samu": {
+      "characters": 92,
+      "indices": "00..91",
+      "bgm": {"mp3": 12, "aac_m4a": 3, "vorbis": 2}
+    },
+    "invasion": {
+      "characters": 22,
+      "indices": "00..21",
+      "pac_profile": "community14-invasion-05aa0c5e",
+      "bgm": {"mp3": 5, "aac_m4a": 2, "vorbis": 10}
+    }
+  },
+  "ci": {
+    "community_mod_profiles_runtime_gate": {
+      "run_id": 37549095347,
+      "conclusion": "success",
+      "head": "7fec715f"
+    },
+    "vita_engine_native_smoke": {
+      "run_id": 37549095408,
+      "conclusion": "success",
+      "head": "7fec715f"
+    },
+    "installed_data_followup": {
+      "run_id": 37549115397,
+      "conclusion": "success",
+      "head": "15808118"
+    }
+  },
+  "physical_test": "pending"
+}
