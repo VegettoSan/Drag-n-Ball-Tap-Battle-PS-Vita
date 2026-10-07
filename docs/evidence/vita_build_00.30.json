@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "date": "2026-10-07",
+  "version": "00.30",
+  "purpose": "Physical retest candidate retaining 00.29 Samu/Invasion fixes while replacing the global mutable save with independent per-profile saves seeded from one VPK master.",
+  "runtime_source_checkpoint": "6d88bee5fd0aae73e9c02d35ff2ca0f739040296",
+  "artifact": {
+    "name": "DBTapBattle-Vita-00.30-Independent-Profile-Saves-Test.vpk",
+    "bytes": 2654057,
+    "sha256": "d823b9baddd667b09b1c407575a5698cd71276e1698e9d9845fb3086b3777379",
+    "eboot_sha256": "c193a07463cbc7168bb1a5d5398f259dc4cdb0216b9d909b268df3b386faca2c",
+    "elf_sha256": "e5b38f5c4a5409d3ead2fc42929e3cf9e6a9fc1d931c0d54e0bf23262f59a236",
+    "livearea": "PASS",
+    "app_ver": "00.30",
+    "title_id": "DBTB00001"
+  },
+  "save_seed": {
+    "vpk_path": "app0:/save.bin",
+    "bytes": 12906,
+    "sha256": "64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb"
+  },
+  "runtime_save_policy": {
+    "original": "ux0:data/DBTapBattle/game/save.bin",
+    "mod": "ux0:data/DBTapBattle/mods/<Profile>/save.bin",
+    "seed_condition": "copy app0:/save.bin only when selected profile save is absent",
+    "overwrite_existing": false,
+    "old_global_path_used": false,
+    "old_global_path": "ux0:data/DBTapBattle/save.bin",
+    "apk_local_save_policy": "source APK save recorded by extractor but not installed"
+  },
+  "retained_fixes": [
+    "Samu compressed BGM decoder handoff from 00.29",
+    "Invasion active-character UTF-8 charset fallback from 00.29",
+    "standalone selected-profile resource isolation from 00.28"
+  ],
+  "validation": {
+    "vita_native_smoke_run": 37565902841,
+    "vita_native_smoke": "PASS",
+    "windows_extractor_run": 37565976590,
+    "windows_extractor": "PASS",
+    "community_profile_runs": "PASS after per-profile metadata updates",
+    "physical_vita": "PENDING"
+  },
+  "build_note": "Interactive full-engine build reused the same private TeaVM generated core as 00.29 because no Java gameplay/adapter code changed after that build; only native save routing and version packaging changed. Split TeaVM compilation remains the documented functional-test technique."
+}
