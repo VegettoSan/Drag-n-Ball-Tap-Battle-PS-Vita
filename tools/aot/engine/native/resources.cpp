@@ -116,11 +116,11 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
     vfs.reset(new GameVfs(base));
     if (!vfs->prepareDirectories() || (!mod.empty() && !vfs->selectMod(mod))) return false;
 
-    // Save progress is intentionally global across every APK/data profile.
-    // app0: is read-only, so the VPK-bundled save.bin is only a seed: on the
-    // first boot copy it byte-for-byte to ux0:data/DBTapBattle/save.bin. Never
-    // overwrite an existing mutable save when switching Original/mod profiles.
-    save_path = base + "/save.bin";
+    // Each selected APK/data profile owns an independent mutable save, but every
+    // profile starts from the same exact VPK-bundled seed. app0: is read-only:
+    // copy app0:/save.bin only when this profile has no save yet. Never overwrite
+    // existing profile progress on launch, profile switches or VPK updates.
+    save_path = mod.empty() ? base + "/game/save.bin" : base + "/mods/" + mod + "/save.bin";
     save_cache.clear();
     resource_exists_cache.clear();
     resource_streams.clear();
@@ -133,17 +133,17 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
             if (publishSave(seed)) {
                 save_cache.swap(seed);
                 save_cache_exists = true;
-                std::printf("Shared save seeded from app0:/save.bin: %s (%zu bytes)\n",
+                std::printf("Profile save seeded from app0:/save.bin: %s (%zu bytes)\n",
                             save_path.c_str(), save_cache.size());
             } else {
-                std::fprintf(stderr, "Shared save seed publication failed: %s\n", save_path.c_str());
+                std::fprintf(stderr, "Profile save seed publication failed: %s\n", save_path.c_str());
             }
         } else {
-            std::fprintf(stderr, "Shared save seed missing or invalid: app0:/save.bin\n");
+            std::fprintf(stderr, "Profile save seed missing or invalid: app0:/save.bin\n");
         }
     }
     save_cache_known = true;
-    std::printf("Shared save: %s (%s, %zu bytes)\n", save_path.c_str(),
+    std::printf("Profile save: %s (%s, %zu bytes)\n", save_path.c_str(),
                 save_cache_exists ? "cached" : "not present", save_cache.size());
     return true;
 }
