@@ -17,21 +17,19 @@ seleccionado.
 
 - APP_VER: `00.27`
 - TITLE_ID: `DBTB00001`
-- Runtime source marker: `926eb6`
-- VPK binario probado: `DBTapBattle-Vita-00.27-Samu-DirectAudio-Test.vpk`
+- Runtime source marker: `7fec715`
+- VPK binario probado: `DBTapBattle-Vita-00.27-Samu-Invasion-Corrected.vpk`
 - VPK SHA-256:
-  `bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030`
+  `311a820f948e337b0626b7b46e6dcb2ca0628b81364941b11d4c837867ee1b96`
 - eboot SHA-256:
-  `447324fcd3c0c6400f7a3c3cea92bc3a105f64c240831e376f289a535341a5a3`
+  `12106a98ecb2c6f0f4401e0879705edf57f4d7fcbee495351df07f24fdd241ec`
 - ELF SHA-256:
-  `ecb70e9686b70a330dad4b85e1d0448791ff67a2d1b238c24d1610d1c46704f3`
+  `aaae0778d094d17ac51bab175ce79ce350dfce49b990b10e490fe20db66cb3a6`
 - TeaVM: 467 clases / 4086 métodos
 - LiveArea: PASS
 - Build funcional interactivo: generated TeaVM `-O0`, adaptadores nativos `-O2`.
 
-El nombre histórico del VPK contiene “Samu”, pero el ejecutable no codifica un
-perfil Samu específico: la ruta MP3/AAC es genérica por contenido y el mismo
-binario debe usarse para Invasion. 00.24 sigue siendo el último checkpoint
+Este VPK corregido sustituye al primer 00.27 con nombre Samu. La ruta MP3/AAC es genérica por contenido y el mismo binario se usa para Samu e Invasion. Además elimina la exigencia artificial de `bobj00.pac` en el gate de instalación de perfiles protegidos. 00.24 sigue siendo el último checkpoint
 confirmado físicamente; 00.27 es candidato hasta completar estas matrices.
 
 ## Preparar Samu sin modificar assets
@@ -238,4 +236,4 @@ Si un personaje/recurso carga pero una mecánica concreta difiere de Android, es
 caso debe aislarse y compararse con el DEX de Invasion antes de tocar el core.
 
 Evidencia de build/host:
-[evidence/vita_samu_direct_audio_00.27.json](evidence/vita_samu_direct_audio_00.27.json).
+[evidence/vita_mod_compat_00.27_corrected.json](evidence/vita_mod_compat_00.27_corrected.json).
