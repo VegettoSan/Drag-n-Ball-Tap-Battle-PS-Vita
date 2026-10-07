@@ -2,7 +2,7 @@
 """Prepare the audited SamuGamerYT/Gen-derived APK as a Vita mod dataset.
 
 All game payloads are preserved byte-for-byte, including BGM files whose `.ogg`
-name hides MP3 or AAC/M4A content. The Vita runtime detects the real codec from
+name hides MP3 or AAC/M4A content. The Vita 00.28 runtime detects the real codec from
 content and decodes it directly; this helper only validates the known profile,
 extracts it safely, and records metadata.
 """
@@ -156,7 +156,7 @@ def main() -> int:
     print(f"Prepared Samu Vita mod: {args.output}")
     print("Roster: 92 characters (00..91); runtime namespace supported: 00..99.")
     print("Audio: source bytes preserved (12 MP3, 3 AAC/M4A, 2 Vorbis); Vita decodes by content.")
-    print("Copy this directory under ux0:data/DBTapBattle/mods/ and select it at boot.")
+    print("Copy this directory under ux0:data/DBTapBattle/mods/ and select it at boot; game/ may remain empty.")
     return 0
 
 
