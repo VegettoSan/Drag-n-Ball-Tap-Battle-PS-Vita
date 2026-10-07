@@ -127,9 +127,12 @@ installation layout unless explicitly updated to `profiles/`.
 
 - 00.33: hardware-confirmed repeated-fight protected-PAC ownership fix.
 - Recent hardware sequence: Loading recovery, dynamic rosters including Samu 92.
-- v1.0: current public release inherits 00.34 and uses unified `profiles/`, real-only
-  selector entries, fullscreen selector background handling and themed
-  profile-opening transition. Physical confirmation is pending.
+- v1.0: current public release inherits the hardware-confirmed 00.34 runtime and
+  uses unified `profiles/`, real-only selector entries, fullscreen selector
+  background handling and the themed profile-opening transition. The exact
+  00.34 gameplay/runtime baseline was confirmed on physical Vita; a freshly
+  repackaged DBTB01178 v1.0 binary should still receive its own install/launch
+  sanity check.
 
 ## New-mod evidence checklist
 
