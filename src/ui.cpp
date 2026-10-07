@@ -116,7 +116,7 @@ void begin2D() {
 
 bool runBootSelector(const std::vector<std::string>& mods, bool original_data_present, BootChoice& choice) {
     const int total = static_cast<int>(mods.size()) + 1;
-    int selected = 0;
+    int selected = (!original_data_present && !mods.empty()) ? 1 : 0;
     VitaInput input;
     runtimeLog("Boot selector entered: " + std::to_string(total) + " choices");
 
@@ -139,6 +139,12 @@ bool runBootSelector(const std::vector<std::string>& mods, bool original_data_pr
 
         if (confirm) {
             if (selected == 0) {
+                // Do not start a known-empty Original profile. A user may
+                // install only one standalone APK dataset under mods/.
+                if (!original_data_present) {
+                    runtimeLog("Original selection ignored: data missing");
+                    continue;
+                }
                 choice.original = true;
                 choice.mod_directory.clear();
             } else {
