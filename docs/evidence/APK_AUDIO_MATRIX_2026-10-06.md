@@ -1,9 +1,9 @@
 # Matriz de audio exterior — cinco APK
 
 <!-- DBTB_DOC_STATUS:START -->
-> **Project checkpoint:** 00.33 is the current hardware-confirmed development
-> checkpoint for the tested paths. This file may document an earlier component
-> or build; see [CURRENT_STATUS](../CURRENT_STATUS.md) for authoritative status.
+> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
+> The hardware-confirmed gameplay/runtime baseline is 00.34. This file may
+> document an earlier component or build; see [CURRENT_STATUS](../CURRENT_STATUS.md) for authoritative status.
 <!-- DBTB_DOC_STATUS:END -->
 
 
