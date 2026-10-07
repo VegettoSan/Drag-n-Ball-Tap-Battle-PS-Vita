@@ -39,7 +39,7 @@ Both compile the original engine and publish validated VPK/symbols/hashes to
 Releases. Configure the private `DBTB_ORIGINAL_APK_URL` secret once; see
 [setup and usage](docs/RELEASE_WORKFLOWS.md).
 
-Latest LiveArea test: **DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk**. It preserves
+Historical LiveArea-specific test: **DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk**. It preserves
 the hardware-tested 00.23 engine and fixes the splash palette. The previous
 LiveArea-Final VPK contained a non-playable CI probe and must be discarded.
 See [current status](docs/CURRENT_STATUS.md) and
@@ -67,7 +67,7 @@ original Java game core generated privately to C with TeaVM. The port replaces
 Android services while preserving the original task, drawing and combat logic.
 APK-derived JAR/classes/C and original game assets are not committed to Git.
 
-## Current state — 2026-10-06
+## Historical progression through 00.33
 
 Earlier hardware gameplay checkpoint: **00.23** from source `0e17b0ba`. On a real
 PS Vita the reported test path preserves visible text, clean audio/voices and
