@@ -26,9 +26,9 @@ Read original `.pac` files directly at runtime.
 
 ## ADR-004 — External original data
 
-**Status:** accepted — 2026-10-04
+**Status:** superseded by ADR-021 in 00.34 — historical 2026-10-04 contract
 
-Original copyrighted resources are not stored in the VPK/repository. They live under:
+Original copyrighted resources are not stored in the VPK/repository. In this historical design they lived under:
 
 ```text
 ux0:data/DBTapBattle/game/
@@ -52,7 +52,7 @@ The virtual filesystem checks the active mod first and falls back to `game/` for
 
 ## ADR-006 — Original always selectable
 
-**Status:** refined by ADR-016 in 00.28 — Original remains visible but cannot launch when its data is missing
+**Status:** superseded by ADR-021 in 00.34 — historical selector behavior
 
 The boot selector always exposes `Original` as entry 0 regardless of installed mods.
 
@@ -202,7 +202,7 @@ PACs or wholesale-port modified DEX methods without a concrete behavioral need.
 
 ## ADR-019 — One VPK seed, independent mutable save per profile
 
-**Status:** accepted and implemented — 2026-10-07, candidate 00.30.
+**Status:** save-seeding principle retained, paths superseded by ADR-021 in 00.34.
 
 Keep the exact user-provided 12,906-byte `save.bin` inside the VPK at read-only
 `app0:/save.bin`, but never use one shared mutable save. On first selection of a
@@ -242,3 +242,40 @@ reproducing the crash.
 **Consequence:** memory correctness includes allocation topology, not only final
 byte equality or cache budgets. Preserve the regression that rejects a return to
 the conditional assignment.
+
+
+## ADR-021 — Unified first-level profiles and real-only selector
+
+**Status:** accepted and implemented — 2026-10-07, candidate 00.34.
+
+All playable APK-derived datasets use one runtime namespace:
+
+```text
+ux0:data/DBTapBattle/profiles/<Profile>/
+```
+
+There is no special current `game/` directory and no separate `mods/` root.
+The selector enumerates only real first-level profile directories. It does not
+synthesize an Original row and therefore cannot display an Original-missing row.
+If no profiles exist, it presents a no-game-data state.
+
+The Windows extractor derives every profile folder from the APK filename.
+Layout/codec recognition remains an extraction concern and cannot rename the
+visible profile. Users may rename the resulting folder to change the selector
+label without touching PAC contents.
+
+Resource isolation remains strict: a selected profile resolves only its own
+files. Each profile's mutable save is
+`profiles/<Profile>/save.bin`, created from the read-only VPK seed only when
+missing.
+
+00.34 also makes profile startup explicit to the user: after confirmation, the
+selector presents a themed **OPENING PROFILE / LOADING GAME DATA...** frame
+before transferring control to the original engine. The Gen-derived background
+uses its non-transparent bounds and fills the 960×544 viewport.
+
+**Reason:** one namespace removes the artificial distinction between Original and
+mods, eliminates misleading missing entries and makes extractor output identical
+to the runtime's actual directory contract.
+
+See [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
