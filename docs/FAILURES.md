@@ -1,5 +1,13 @@
 # Failures and Dead Ends
 
+> **Historical document notice — current 00.34 contract:** this file preserves
+> evidence/instructions for the build or investigation named here. The current
+> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
+> current `game/` or `mods/` profile roots and no built-in Original selector
+> row. Do not reuse historical install paths for 00.34. See
+> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+
 ## 2026-10-05 — prevention after confirmed 00.24 recovery
 
 The 00.23 native Ogg failure recorded below has a user-confirmed repair in the
