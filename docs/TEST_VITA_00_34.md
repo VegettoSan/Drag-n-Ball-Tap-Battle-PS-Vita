@@ -80,6 +80,7 @@ Relevant log lines:
 
 - Native smoke run: https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37622687132
 - Workflow/publication validation: https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37622780686
+- Full prerelease attempt 37623204195: stopped before build because `DBTB_ORIGINAL_APK_URL` is not configured; no playable VPK was produced.
 - `VITA_VERSION`: `00.34`
 - Theme ZIP SHA-256:
   `90418a27c6681ee644d5cc383e31fc73248a5c412527839d216b61bcc2516c12`
