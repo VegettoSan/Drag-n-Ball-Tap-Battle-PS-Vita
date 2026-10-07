@@ -1,9 +1,10 @@
 # Dragon Ball Tap Battle LiveArea
 
 <!-- DBTB_DOC_STATUS:START -->
-> **Project checkpoint:** 00.33 is the current hardware-confirmed development
-> checkpoint for the tested paths. This file may document an earlier component
-> or build; see [CURRENT_STATUS](../../docs/CURRENT_STATUS.md) for authoritative status.
+> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
+> Gameplay/presentation baseline: hardware-confirmed 00.34. This file may also
+> describe earlier component validation; see
+> [CURRENT_STATUS](../../docs/CURRENT_STATUS.md) for authoritative status.
 <!-- DBTB_DOC_STATUS:END -->
 
 
@@ -29,7 +30,7 @@ dimensions, indexed PNG format, palette/transparency requirements and size limit
 CMake fails closed if any check fails.
 
 The supplied Ready ZIP and failed Final VPK had a 192-entry `pic0.png` palette.
-The corrected source pads that PLTE to 256 entries; every decoded RGBA pixel and every IDAT byte is unchanged. This repairs a documented Vita splash requirement that the earlier hash/header checks missed. The corrected LiveArea was subsequently installed and accepted on physical Vita and remains packaged in the 00.33 checkpoint.
+The corrected source pads that PLTE to 256 entries; every decoded RGBA pixel and every IDAT byte is unchanged. This repairs a documented Vita splash requirement that the earlier hash/header checks missed. The corrected LiveArea was subsequently installed and accepted on physical Vita and remains packaged in the 00.34 hardware baseline and v1.0 release.
 Reproduce the lossless correction with:
 
 ```sh
