@@ -33,6 +33,7 @@ struct UiTexture {
     GLuint id = 0;
     uint32_t width = 0;
     uint32_t height = 0;
+    float content_u_max = 1.0f;
 };
 
 bool readUiFile(const char* path, std::vector<uint8_t>& bytes) {
@@ -89,6 +90,20 @@ bool loadUiTexture(const char* path, UiTexture& texture) {
     }
     texture.width = image.width;
     texture.height = image.height;
+
+    uint32_t rightmost = 0;
+    bool visible = false;
+    for (uint32_t y = 0; y < image.height; ++y) {
+        for (uint32_t x = 0; x < image.width; ++x) {
+            if (image.pixels[(static_cast<size_t>(y) * image.width + x) * 4 + 3] != 0) {
+                rightmost = std::max(rightmost, x);
+                visible = true;
+            }
+        }
+    }
+    if (visible && rightmost + 1 < image.width)
+        texture.content_u_max = static_cast<float>(rightmost + 1) / static_cast<float>(image.width);
+
     return true;
 }
 
@@ -97,8 +112,8 @@ void destroyUiTexture(UiTexture& texture) {
     texture = UiTexture{};
 }
 
-void drawUiTexture(const UiTexture& texture, float x, float y, float w, float h,
-                   float tint = 1.0f, float alpha = 1.0f) {
+void drawUiTextureUv(const UiTexture& texture, float x, float y, float w, float h,
+                     float u_max, float tint = 1.0f, float alpha = 1.0f) {
     if (!texture.id) return;
     const GLfloat vertices[] = {
         x,     y,     0.0f,
@@ -108,8 +123,8 @@ void drawUiTexture(const UiTexture& texture, float x, float y, float w, float h,
     };
     const GLfloat texcoords[] = {
         0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
+        u_max, 0.0f,
+        u_max, 1.0f,
         0.0f, 1.0f,
     };
     glEnable(GL_TEXTURE_2D);
@@ -126,6 +141,11 @@ void drawUiTexture(const UiTexture& texture, float x, float y, float w, float h,
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisable(GL_TEXTURE_2D);
+}
+
+void drawUiTexture(const UiTexture& texture, float x, float y, float w, float h,
+                   float tint = 1.0f, float alpha = 1.0f) {
+    drawUiTextureUv(texture, x, y, w, h, 1.0f, tint, alpha);
 }
 
 void destroySelectorTheme(UiTexture& background, UiTexture& header,
@@ -234,6 +254,38 @@ void begin2D() {
     glDisableClientState(GL_COLOR_ARRAY);
 }
 
+void drawProfileOpening(const std::string& profile, bool theme_ready,
+                        const UiTexture& background, const UiTexture& header,
+                        const UiTexture& button) {
+    glClearColor(0.005f, 0.035f, 0.10f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    begin2D();
+
+    if (theme_ready) {
+        drawUiTextureUv(background, 0.0f, 0.0f, 960.0f, 544.0f,
+                        background.content_u_max, 0.92f);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        rect(0.0f, 0.0f, 960.0f, 544.0f, 0.015f, 0.055f, 0.12f, 0.26f);
+
+        drawUiTexture(header, 72.0f, 80.0f, 816.0f, 58.0f);
+        centeredShadowText(480.0f, 97.0f, 3.0f, "OPENING PROFILE", 1.0f, 0.86f, 0.08f);
+
+        drawUiTexture(button, 178.0f, 220.0f, 604.0f, 58.0f, 1.0f);
+        const std::string shown = clipped(profile, 34);
+        const float scale = shown.size() > 28 ? 2.0f : 2.5f;
+        centeredShadowText(480.0f, 238.0f, scale, shown, 1.0f, 0.98f, 0.82f);
+
+        centeredShadowText(480.0f, 318.0f, 2.0f, "LOADING GAME DATA...", 0.90f, 0.94f, 1.0f);
+    } else {
+        text(48, 76, 4, "OPENING PROFILE", 1.0f, 0.85f, 0.15f);
+        text(54, 170, 3, clipped(profile, 42), 0.86f, 0.92f, 1.0f);
+        text(54, 242, 2, "LOADING GAME DATA...", 0.75f, 0.82f, 1.0f);
+    }
+
+    vglSwapBuffers(GL_FALSE);
+}
+
 } // namespace
 
 bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choice) {
@@ -286,6 +338,15 @@ bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choic
 
         if (confirm) {
             choice.profile_directory = profiles[static_cast<size_t>(selected)];
+            runtimeLog("Boot selector opening profile: " + choice.profile_directory);
+            drawProfileOpening(choice.profile_directory, theme_ready,
+                               theme_background, theme_header, theme_button);
+            // Keep the completed frame on screen while the runtime starts loading
+            // the selected profile. A short second present makes the transition
+            // visible on real hardware without introducing a long artificial delay.
+            sceKernelDelayThread(33000);
+            drawProfileOpening(choice.profile_directory, theme_ready,
+                               theme_background, theme_header, theme_button);
             destroySelectorTheme(theme_background, theme_header, theme_button, theme_ball);
             return true;
         }
@@ -303,7 +364,8 @@ bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choic
             glClear(GL_COLOR_BUFFER_BIT);
             begin2D();
 
-            drawUiTexture(theme_background, 0.0f, 0.0f, 960.0f, 544.0f, 0.92f);
+            drawUiTextureUv(theme_background, 0.0f, 0.0f, 960.0f, 544.0f,
+                            theme_background.content_u_max, 0.92f);
             // Dark translucent wash keeps arbitrary mod names legible while
             // preserving the cyan grid/energy artwork.
             glEnable(GL_BLEND);
