@@ -58,7 +58,8 @@ public:
         // Drop old cache ownership before a large source read, and do not retain
         // multi-MiB normalized results in the LRU afterwards. Active streams keep
         // their own shared_ptr and therefore remain valid.
-        const bool large_source = uint64_t(info.st_size) > uint64_t(budget_ / 4);
+        constexpr uint64_t kLargeResourceThreshold = 2u * 1024u * 1024u;
+        const bool large_source = uint64_t(info.st_size) > kLargeResourceThreshold;
         if (large_source) clear();
 
         auto resource = std::make_shared<CachedEngineResource>();
@@ -67,7 +68,7 @@ public:
                                 &container_encoding, filter, &resource->io_bytes)) return false;
         resource->encoding = detectEngineTextEncoding(resource->bytes, container_encoding);
         const size_t cost = resource->bytes.capacity();
-        if (!large_source && cost <= budget_ / 4) {
+        if (!large_source && cost <= budget_) {
             while (used_ + cost > budget_) {
                 used_ -= entries_.back().resource->bytes.capacity(); entries_.pop_back();
             }
