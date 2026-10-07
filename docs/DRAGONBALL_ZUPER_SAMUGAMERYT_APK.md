@@ -755,3 +755,25 @@ Artefacto físico candidato:
 `bb13580e6092076d5acca9e9de9cac4b7081e09aeecfcf2761217f3344ebc030`.
 Ver [evidencia 00.27](evidence/vita_samu_direct_audio_00.27.json) y
 [protocolo físico](TEST_VITA_00_27.md).
+
+## 20. Prueba física 00.28 y corrección 00.29
+
+El usuario probó Samu con `game/` ausente y también con Original instalado. En
+ambos casos el runtime reconoce los 92 tripletes y llega al flujo de título, pero
+se cierra durante el cambio de BGM. Por tanto el fallo no depende de recursos
+prestados desde `game/`.
+
+Los dos logs fallan al crear el decoder de `bgm_00.ogg` con
+`sceAudiodecCreateDecoder failed 0x807f0007`. La auditoría directa demuestra que
+`bgm_16.ogg` y `bgm_00.ogg` son MP3 válidos y byte-idénticos: no hay evidencia de
+un archivo de audio roto. La causa está en el lifetime del adapter Vita: la librería
+se inicializa con un único stream MP3 y 00.28 intentaba crear el nuevo decoder antes
+de destruir el activo.
+
+00.29 cierra/limpia Voice, stream Vorbis y decoder comprimido bajo el lock de audio
+antes de abrir la nueva pista. Los bytes del APK permanecen intactos; no se
+transcodifica ningún BGM. Retest físico pendiente.
+
+Desde 00.29 el `save.bin` incluido por este APK ya no se instala como partida del
+perfil. Su presencia puede registrarse como evidencia, pero Original/Samu/resto de
+mods usan el único `ux0:data/DBTapBattle/save.bin` sembrado por el VPK.
