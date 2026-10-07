@@ -189,14 +189,15 @@ See [TEST_VITA_00_33](TEST_VITA_00_33.md),
 ### Documentation reconciliation — 00.33
 
 After the hardware confirmation, the repository documentation was swept end to
-end. All **59 Markdown files** now contain either the current 00.33 checkpoint or
-an explicit status banner pointing back to this file. Historical test reports keep
-their original observations/build identity, but stale statements that incorrectly
-presented 00.21/00.22/00.24/00.30 as the current checkpoint were corrected.
+end. All Markdown documentation is now aligned around **v1.0 / APP_VER 01.00 /
+TITLE_ID DBTB01178** as the current public identity, with **00.34** retained as
+the exact hardware-confirmed gameplay/runtime baseline. Historical test reports
+keep their original observations, hashes, APP_VER and Title IDs; only stale
+"current status" banners and obsolete install-path claims are corrected.
 
 The active documentation contract is therefore:
 
-- 00.33 is the current hardware-confirmed development checkpoint for the tested paths;
+- v1.0 / DBTB01178 is the current public release identity; 00.34 is the exact hardware-confirmed gameplay/runtime baseline;
 - the Invasion Saitama -> Freezer repeated-fight crash is RESOLVED in the tested scope;
 - Samu's 92-character dynamic roster is hardware-confirmed;
 - the Loading loop regression is resolved;
@@ -870,9 +871,9 @@ No currently reproduced crash is open in the 00.23 tested path. New failures sho
 [Porting guide](PORTING_GUIDE.md) explains reusable techniques and failures.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.33 (2026-10-07):** physical Vita testing
-> confirms the reproduced Invasion repeated-fight/Saitama→Freezer crash is fixed
-> after the protected-PAC ownership-transfer repair. The recent hardware sequence
-> also confirms Loading recovery and dynamic installed rosters, including Samu's
-> 92 characters. Scope is limited to tested paths; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current public release — v1.0 / DBTB01178 (2026-10-07):** the 00.34
+> gameplay/runtime baseline is hardware-confirmed stable for the tested paths.
+> Earlier 00.33 hardware evidence remains valid for the protected-PAC repeated-fight
+> repair, Loading recovery and dynamic rosters. Historical artifact identities are
+> preserved; see the v1.0 identity section at the top of this file.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
