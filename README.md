@@ -99,9 +99,11 @@ from another profile.
 
 ## Project status
 
-The latest hardware-confirmed gameplay checkpoint before the unified-profile
-layout work is **00.33**. The current source contains the next selector/data-layout
-changes and requires a new real-hardware test before promotion.
+The current stable hardware-confirmed checkpoint is **00.34**. The exact tested
+VPK is `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk`, SHA-256
+`24a723504a121e804d0ae6cae31fb0bf464b97e4c8f1bd7c7a96f239d0e55e03`.
+The user reports it stable and functional on physical Vita with no issue found
+so far in the exercised paths.
 
 See [Current Status](docs/CURRENT_STATUS.md) for validation scope and history.
 
