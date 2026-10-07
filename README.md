@@ -1,5 +1,7 @@
 # Dragon Ball Tap Battle PS Vita
 
+> **Current 00.34 data/runtime contract:** see [Current runtime contract](docs/CURRENT_RUNTIME_CONTRACT.md). Historical documents may retain older paths only as build-specific evidence.
+
 A native PlayStation Vita port of **Dragon Ball Tap Battle** built with VitaSDK,
 vitaGL, and the original game core compiled privately for Vita.
 
@@ -105,6 +107,7 @@ See [Current Status](docs/CURRENT_STATUS.md) for validation scope and history.
 
 ## Technical documentation
 
+- [Current Runtime Contract](docs/CURRENT_RUNTIME_CONTRACT.md)
 - [Data Layout](docs/DATA_LAYOUT.md)
 - [Windows APK Data Extractor](docs/WINDOWS_DATA_TOOL.md)
 - [APK Technical Reference](docs/APK_TECHNICAL_REFERENCE.md)
