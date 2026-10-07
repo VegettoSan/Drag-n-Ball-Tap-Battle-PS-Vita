@@ -22,6 +22,7 @@ These rules are part of the technical contract of the port.
 16. **Keep both battle-memory repairs.** Preserve native-backed streaming `GameData.Init`; never bridge a whole PAC into Java. Decode seekable Ogg using the exact bounded frame count, never incremental PCM vector doubling. Test PCM byte equality, transient allocation peaks and active-owner survival after cache reclamation.
 
 17. **Manual publication keeps private inputs ephemeral.** Explicitly dispatched full-engine release/prerelease workflows may consume the pinned original APK and generate JAR/classes/C in a temporary runner directory outside Git. Never commit/cache/upload those inputs, generated sources or private logs. Publish only validated compiled VPK/ELF/VELF and provenance/checksum manifests. Automatic validation/native-smoke jobs remain public-source-only. Publishing a new binary is not a hardware-test result.
+18. **Large transformed resources must finish with ownership transfer, not a hidden copy.** After building a multi-MiB normalized PAC, hand its buffer to the final owner with an explicit `swap`/verified move path. Do not use ambiguous conditional vector assignment. 00.32's Invasion coredump proved that an extra ~4.6 MiB copy can fail after battle-memory fragmentation even when cache budgets are respected.
 
 ## Target stack
 
@@ -35,9 +36,11 @@ These rules are part of the technical contract of the port.
 
 The port should eventually accept ordinary community asset/data mods without requiring a Vita-specific repack whenever those mods only replace formats already understood by the original game.
 
-Current checkpoint: full engine 00.24 is user-confirmed on Vita. Original masks
-187/251, PAC streaming, audio-worker fixes and approved LiveArea are retained.
-Both managed PAC and native Ogg battle-start memory failures have recorded fixes.
+Current checkpoint: full engine **00.33** is user-confirmed on Vita for the
+reproduced Invasion repeated-fight crash. Loading recovery and dynamic installed
+rosters are also hardware-confirmed in the recent test sequence. Original masks
+187/251, PAC streaming, direct audio, independent saves and approved LiveArea are
+retained. The 00.33 protected-PAC ownership fix must remain allocation-free.
 See [CURRENT_STATUS](CURRENT_STATUS.md) and [PORTING_GUIDE](PORTING_GUIDE.md).
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
