@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 import community14
 TOOL = ROOT / 'tools/windows/Extraer_APK_para_Vita.ps1'
-BAT = ROOT / 'tools/windows/Extraer_APK_para_Vita.bat'
+BAT = ROOT / 'tools/windows/Extract_APK_for_Vita.bat'
 PS = os.environ.get('DBTB_POWERSHELL') or shutil.which('powershell') or shutil.which('pwsh')
 
 
