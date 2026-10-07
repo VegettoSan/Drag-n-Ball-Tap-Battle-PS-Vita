@@ -1,6 +1,10 @@
 # Dragon Ball Tap Battle PS Vita
 
-> **Current public release: v1.0** — Vita `APP_VER 01.00`, `TITLE_ID DBTB01178`.\n> The gameplay/runtime baseline is the hardware-confirmed 00.34 checkpoint; the\n> v1.0 package changes release identity/metadata, not game logic.\n\n> **Current 00.34 data/runtime contract:** see [Current runtime contract](docs/CURRENT_RUNTIME_CONTRACT.md). Historical documents may retain older paths only as build-specific evidence.
+> **Current public release: v1.0** — Vita `APP_VER 01.00`, `TITLE_ID DBTB01178`.
+> The gameplay/runtime baseline is the hardware-confirmed 00.34 checkpoint; the
+> v1.0 package changes release identity/metadata, not game logic.
+
+> **Current 00.34 data/runtime contract:** see [Current runtime contract](docs/CURRENT_RUNTIME_CONTRACT.md). Historical documents may retain older paths only as build-specific evidence.
 
 A native PlayStation Vita port of **Dragon Ball Tap Battle** built with VitaSDK,
 vitaGL, and the original game core compiled privately for Vita.
