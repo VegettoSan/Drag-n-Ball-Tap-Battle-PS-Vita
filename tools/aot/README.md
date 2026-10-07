@@ -102,10 +102,7 @@ and documented reproducible build. Only handwritten probes/adapters are committe
 
 The unadapted EngineProbe result above remains a baseline. The handwritten
 platform layer in [engine/README.md](engine/README.md) first generated the complete
-reachable original Init/Run path with 456 classes/3989 methods. That historical
-count is superseded by 00.21 generation (465 classes/4059 methods), full Vita
-link/package checks and earlier physical menu/selection/battle. 00.21 startup
-recovery/voice quality remain pending; see [CURRENT_STATUS](../../docs/CURRENT_STATUS.md).
+reachable original Init/Run path with 456 classes/3989 methods. That historical count is superseded by later complete-core generation and full Vita link/package checks. The current 00.33 hardware checkpoint confirms the modern platform path through Loading, dynamic rosters and repeated Invasion fights; the 00.21 startup/voice issues are historical, not current blockers. See [CURRENT_STATUS](../../docs/CURRENT_STATUS.md).
 The original byte-array decoder and gameplay classes are preserved. Do not use
 the input-only runtime patch unchanged for this full engine.
 
