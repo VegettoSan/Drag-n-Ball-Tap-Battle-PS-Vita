@@ -1,6 +1,51 @@
-# Current status — 2026-10-06/07 (America/Bogota), 00.24 baseline / 00.28 hardware findings / 00.30 candidate
+# Current status — 2026-10-06/07 (America/Bogota), 00.24 baseline / 00.30 hardware findings / 00.31 candidate
 
-## 00.30 candidate — same Samu/Invasion fixes, independent seeded saves
+## 00.31 candidate — dynamic roster, repeated-fight memory, Shop and startup
+
+The user's physical 00.30 test confirms Samu now boots and the previous Invasion
+text defect was not seen in the tested path. It also supplied four concrete new
+failures/limits:
+
+- Samu audits 92 complete characters but the seed exposes only 00..12.
+- Invasion crashes on a later fight with `std::bad_alloc` after loading a
+  multi-MiB character PAC.
+- Shop exits through the Vita adapter's intentional Android-marketplace
+  `UnsupportedOperationException`.
+- The obsolete catalog/update state pauses roughly 10–25 seconds.
+
+00.31 addresses each at the narrowest evidenced boundary:
+
+1. The selected profile save synchronizes original ConfigData character flags
+   +1/+2/+85 for every audited installed character. The verified Gen core's
+   character-only arrays `bCharIndex`, `bCharVersionSv`, `bCharNoSv` are
+   extended 90→100, and only `CharVisibleInit` / `ClearCharDLALL` replace
+   their 90 bound with the audited installed count. Unrelated constants remain
+   untouched.
+2. Character PAC source files over 2 MiB clear stale resource-LRU ownership
+   before normalization and are not retained afterwards, reducing the repeated
+   battle allocation peak that ended 00.30 with `std::bad_alloc`.
+3. Vita Shop completes the Android Smap lifecycle edge synchronously and returns
+   to the game instead of throwing. Android purchasing is still not implemented.
+4. Vita Downloader now matches the original Gen offline stub semantics:
+   empty data, size 0, SetURL false, isDownload true.
+
+Complete physical-test artifact:
+
+- `DBTapBattle-Vita-00.31-Roster-Shop-Memory-Startup-Test.vpk`
+- size 2,653,793 bytes
+- SHA-256 `85b28d7a080c2bc5806ca3c269a7fe15b2be84565c60ddca243dd3fad0e6e699`
+- eboot SHA-256 `be043461ae79f0ce789a7389f8d4ba315f8121172ae138f505a8ea33728134a6`
+- source checkpoint `bf283ae5c5e1d0e7c19b540dd89b0105edfa3a4b`
+- native smoke and private export: PASS
+- LiveArea: PASS
+
+Physical acceptance remains pending. See
+[TEST_VITA_00_31](TEST_VITA_00_31.md) and
+[evidence](evidence/vita_build_00.31.json).
+
+## Historical 00.30 candidate — same Samu/Invasion fixes, independent seeded saves
+
+
 
 00.30 keeps the targeted Samu decoder-handoff and Invasion UTF-8 fallback from
 00.29, but supersedes the experimental global mutable save model.
