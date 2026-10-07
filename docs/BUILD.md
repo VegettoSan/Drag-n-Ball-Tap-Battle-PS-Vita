@@ -1,5 +1,36 @@
 # Build and packaging
 
+## 00.31 physical-test build — roster / Shop / memory / startup
+
+Built privately from the pinned original APK after the 00.30 physical report.
+
+Artifact:
+
+- `DBTapBattle-Vita-00.31-Roster-Shop-Memory-Startup-Test.vpk`
+- size: 2,653,793 bytes
+- VPK SHA-256: `85b28d7a080c2bc5806ca3c269a7fe15b2be84565c60ddca243dd3fad0e6e699`
+- eboot SHA-256: `be043461ae79f0ce789a7389f8d4ba315f8121172ae138f505a8ea33728134a6`
+- ELF SHA-256: `d8ab0ca42d07228d100d225b8803f95275be055dbf12cf35ff8699c22ba20127`
+- APP_VER: `00.31`
+- TITLE_ID: `DBTB00001`
+- source checkpoint: `bf283ae5c5e1d0e7c19b540dd89b0105edfa3a4b`
+- LiveArea validation: PASS
+- native smoke run `37569189645`: PASS
+- private-tool export run `37569189747`: PASS
+
+The exact VPK save seed remains 12,906 bytes with SHA-256
+`64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb`.
+00.31 synchronizes only installed-character visibility/download/open flags in the
+selected profile's independent save.
+
+The interactive functional package uses 24 balanced TeaVM remainder units at
+`-O1`, the large `TCBManajer.c` unit at `-O0`, and native adapters at
+`-O2`. This is for functional hardware validation; release performance claims
+still require the normal reproducible build.
+
+See [TEST_VITA_00_31](TEST_VITA_00_31.md) and
+[evidence](evidence/vita_build_00.31.json).
+
 ## 00.30 physical-test build — independent seeded profile saves
 
 00.30 retains the Samu decoder-handoff and Invasion charset fixes from 00.29,
