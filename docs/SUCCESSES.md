@@ -8,6 +8,24 @@
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
+## 2026-10-07 — 00.34 build/tool success — unified profiles and selector UX
+
+**Scope:** BUILD/CI confirmed only; physical Vita result pending.
+
+- Runtime source uses only `profiles/<Profile>/` for current datasets and saves.
+- Selector no longer synthesizes Original/missing rows.
+- Empty profile root has an explicit no-data state.
+- Gen background visible bounds fill the 960×544 selector viewport.
+- Confirming a profile presents a themed opening/loading indication.
+- Vita engine native smoke `37679405794` passed for source checkpoint
+  `63bc0f90d33d4a5d8d90c4816ff0f0ae07272751`.
+- Windows extractor 1.5 `profiles-v1` regression `37688246446` passed.
+- Complete user-test VPK SHA-256:
+  `e06ded147eead1c7ee8e5a558552d5129a98b5916395c59780125782c8d55c92`.
+
+This success does **not** replace the 00.33 HARDWARE CONFIRMED checkpoint until
+the exact 00.34 VPK is tested on a real Vita.
+
 ## 2026-10-07 — 00.34 Gen-styled selector builds and packages in VitaSDK CI
 
 **Scope: BUILD CONFIRMED; physical Vita pending.** The native first-screen data
