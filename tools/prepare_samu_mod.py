@@ -2,7 +2,7 @@
 """Prepare the audited SamuGamerYT/Gen-derived APK as a Vita mod dataset.
 
 All game payloads are preserved byte-for-byte, including BGM files whose `.ogg`
-name hides MP3 or AAC/M4A content. The Vita 00.28 runtime detects the real codec from
+name hides MP3 or AAC/M4A content. The Vita 00.29 runtime detects the real codec from
 content and decodes it directly; this helper only validates the known profile,
 extracts it safely, and records metadata.
 """
@@ -115,6 +115,10 @@ def update_manifest(root: Path, audio: list[dict]) -> None:
         "character_count": SAMU_CHARACTER_COUNT,
         "vita_two_digit_namespace": "00..99",
     }
+    manifest["shared_save_runtime"] = {
+        "policy": "ignore-apk-local-save-use-vpk-global-save",
+        "global_path": "ux0:data/DBTapBattle/save.bin",
+    }
     manifest["audio_runtime"] = {
         "policy": "preserve-source-bytes-and-detect-by-content",
         "bgm_count": len(audio),
@@ -134,8 +138,8 @@ def prepare(apk: Path, output: Path) -> None:
     with tempfile.TemporaryDirectory(prefix=".dbtb-samu-", dir=output.parent) as temporary:
         stage = Path(temporary) / "Samu"
         manifest = extract(apk, stage, overwrite=False, layout="auto")
-        if manifest["source_layout"] != "assets" or manifest["file_count"] != 384:
-            raise ValueError("unexpected Samu APK asset layout")
+        if manifest["source_layout"] != "assets" or manifest["file_count"] != 383:
+            raise ValueError("unexpected Samu APK asset layout after excluding APK-local save.bin")
         validate_roster(stage)
         audio = validate_audio(stage)
         update_manifest(stage, audio)
