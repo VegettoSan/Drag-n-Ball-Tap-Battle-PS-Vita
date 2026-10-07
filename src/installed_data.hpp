@@ -13,3 +13,11 @@ struct InstalledDataAudit {
 // sequence across the complete two-digit character namespace (00..99).
 InstalledDataAudit auditInstalledData(const GameVfs& vfs, int min_characters = 13,
                                       int max_characters = 100);
+
+// Fast startup scan: validate only presence/contiguity of the profile's character
+// triplets and shared combat files. It intentionally does not parse every PAC;
+// deep structural PAC validation remains available through auditInstalledData()
+// and is already performed by extraction/tests. This avoids hundreds of PAC
+// opens on Vita before the original engine starts.
+InstalledDataAudit scanInstalledData(const GameVfs& vfs, int min_characters = 13,
+                                     int max_characters = 100);
