@@ -18,7 +18,7 @@ see [CURRENT_STATUS](CURRENT_STATUS.md) for device/host scope.
 | BIN | Original loader data[2] or selected binCnv table; SPR BIN drives composed quads in DrawSprite | Multiple BIN schemas. SPR draws positions/UVs and blend flags from metadata, not guessed rectangles. Original consumers retained; verified top-level community BIN normalization, nested SPR BIN untouched |
 | GDT | Present in scenarios/card/gamedata/text resources | Not explicitly dispatched by observed GameData branches. Do not confuse tag 'gdt' with gameplay DAC converted to piGameData. Meaning/consumers UNCONFIRMED |
 | BMP/DAT/PLT/DB | Found in common/select/card-preview/background-object PACs | Container/hash/type confirmed. No matching branch in the audited original GameData loader; possible authoring/legacy metadata remains UNCONFIRMED. Preserve bytes; do not claim needed runtime decoders |
-| OGG / exterior audio | Original/Gen/Android14/Spanish: 17 stereo BGM + 19 mono SE, all real Vorbis 44.1 kHz. Invasion keeps the `.ogg` names but changes 7 BGM to 5 MP3 + 2 AAC/M4A; two MP3 are 48 kHz | Native Vorbis services cover the baseline files only. Never infer codec from extension; Invasion's seven changed BGM require adapter/import codec support and hardware evidence |
+| OGG / exterior audio | Original/Gen/Android14/Spanish: 17 stereo BGM + 19 mono SE, all real Vorbis 44.1 kHz. Invasion changes 7 `.ogg`-named BGM to 5 MP3 + 2 AAC/M4A; Samu has 12 MP3 + 3 AAC/M4A + 2 Vorbis | Runtime sniffs content: Vorbis uses libvorbisfile, MP3/AAC use Vita SceAudiodec without source conversion. 00.28 hardware confirmed Invasion audio in the tested path; 00.29 fixes one-stream compressed-BGM replacement exposed by Samu |
 | WAV | Original GameData loader has WAV slot support (max 20 original, not 30) | 198 Gen RIFF mono PCM16/22050 streams and 198 community wrapped streams host-checked; audible quality pending |
 | mk.bin | 392-byte raw resource read by Game9 | Present; complete command/schema meaning PENDING |
 | loading.png | 4233-byte standalone raw resource | Present and loader reference confirmed |
@@ -167,3 +167,12 @@ future ports: format conversion and bridge allocation strategy are separate conc
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 Deep machine-readable evidence: [apk_deep_structure_2026-10-06.json](evidence/apk_deep_structure_2026-10-06.json).
+
+### 00.29 character-string boundary
+
+Protected Android14-family character BIN tables can contain UTF-8 even when the
+preserved Gen core's SetString slot arithmetic would otherwise fall back to
+Shift_JIS. Invasion char20 provides concrete evidence. The adapter records the
+charset of each loaded GameData object and uses the content-detected active
+character charset only when the exact slot lookup misses. This changes no PAC
+payload or string contents.
