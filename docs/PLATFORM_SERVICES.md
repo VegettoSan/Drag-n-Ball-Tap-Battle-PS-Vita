@@ -1,6 +1,8 @@
 # Platform services — original contracts and current Vita adapters
 
-Checkpoint 00.22 / 2026-10-05. Original-code facts refer to the pinned original
+> Current filesystem/selector contract: [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+
+Current hardware gameplay checkpoint 00.33; current selector/data-layout candidate 00.34. Original-code facts refer to the pinned original
 APK, not the community archive. The full original core executes through private
 AOT; this is no longer an atlas-only bootstrap. [CURRENT_STATUS](CURRENT_STATUS.md)
 and [VALIDATION](VALIDATION.md) qualify the hardware/host evidence.
@@ -97,8 +99,7 @@ Starting with 00.30, the VPK still contains the exact user-approved
 but each selected profile owns a separate writable copy:
 
 ```text
-Original: ux0:data/DBTapBattle/game/save.bin
-Mod:      ux0:data/DBTapBattle/mods/<Profile>/save.bin
+Every profile: ux0:data/DBTapBattle/profiles/<Profile>/save.bin
 ```
 
 If the selected profile has no save yet, boot copies the VPK seed into that
