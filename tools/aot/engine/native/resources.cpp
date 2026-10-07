@@ -40,6 +40,7 @@ std::string save_path;
 std::vector<uint8_t> save_cache;
 bool save_cache_known = false;
 bool save_cache_exists = false;
+InstalledDataAudit installed_audit;
 struct Size { int w, h; };
 std::unordered_map<unsigned, Size> textures;
 std::unordered_map<std::string, bool> resource_exists_cache;
@@ -97,6 +98,30 @@ bool publishSave(const std::vector<uint8_t>& out) {
     if (!ok) unlink(temporary.c_str());
     return ok;
 }
+
+bool synchronizeInstalledCharacters(std::vector<uint8_t>& save, int characters) {
+    if (save.size() != kSaveSize || characters < 1) return false;
+    characters = std::min(characters, 100);
+    bool changed = false;
+    // The pinned original core stores each character in a 100-byte ConfigData
+    // record beginning at offset 30. Hardware testing with the approved seed
+    // showed 00..12 have these three bytes set and 13+ clear:
+    // +1 GetCharctorBuy/SetCharVisible, +2 GetCharDL, +85 CharOpen.
+    // A complete APK-derived profile already contains the character resources,
+    // so expose every audited contiguous triplet as locally installed/unlocked.
+    for (int i = 0; i < characters; ++i) {
+        const size_t record = size_t(i) * 100u + 30u;
+        for (size_t offset : {size_t(1), size_t(2), size_t(85)}) {
+            const size_t pos = record + offset;
+            if (pos >= save.size()) break;
+            if (save[pos] != 1) {
+                save[pos] = 1;
+                changed = true;
+            }
+        }
+    }
+    return changed;
+}
 int upload(const RgbaImage& image, bool linear) {
     GLint old = 0; glGetIntegerv(GL_TEXTURE_BINDING_2D, &old);
     GLuint id = 0; glGenTextures(1, &id); glBindTexture(GL_TEXTURE_2D, id);
@@ -115,6 +140,12 @@ int upload(const RgbaImage& image, bool linear) {
 bool dbtb_initResources(const std::string& base, const std::string& mod) {
     vfs.reset(new GameVfs(base));
     if (!vfs->prepareDirectories() || (!mod.empty() && !vfs->selectMod(mod))) return false;
+
+    installed_audit = auditInstalledData(*vfs);
+    if (installed_audit.ready)
+        std::printf("Profile character triplets audited: %d\n", installed_audit.complete_characters);
+    else
+        std::fprintf(stderr, "Profile character audit: %s\n", installed_audit.error.c_str());
 
     // Each selected APK/data profile owns an independent mutable save, but every
     // profile starts from the same exact VPK-bundled seed. app0: is read-only:
@@ -141,6 +172,13 @@ bool dbtb_initResources(const std::string& base, const std::string& mod) {
         } else {
             std::fprintf(stderr, "Profile save seed missing or invalid: app0:/save.bin\n");
         }
+    }
+    if (save_cache_exists && installed_audit.ready &&
+        synchronizeInstalledCharacters(save_cache, installed_audit.complete_characters)) {
+        if (publishSave(save_cache))
+            std::printf("Profile save character flags synchronized: %d\n", installed_audit.complete_characters);
+        else
+            std::fprintf(stderr, "Profile save character synchronization failed: %s\n", save_path.c_str());
     }
     save_cache_known = true;
     std::printf("Profile save: %s (%s, %zu bytes)\n", save_path.c_str(),
@@ -226,13 +264,15 @@ void dbtb_closeResourceStream(int32_t handle) {
     resource_streams.erase(stream);
 }
 int32_t dbtb_installedData() {
-    const InstalledDataAudit audit = auditInstalledData(dbtb_vfs());
-    if (!audit.ready) {
-        std::fprintf(stderr, "Offline data audit: %s\n", audit.error.c_str());
+    if (!installed_audit.ready) {
+        std::fprintf(stderr, "Offline data audit: %s\n", installed_audit.error.c_str());
         return 0;
     }
-    std::fprintf(stderr, "Offline character triplets: %d\n", audit.complete_characters);
+    std::fprintf(stderr, "Offline character triplets: %d\n", installed_audit.complete_characters);
     return 1;
+}
+int32_t dbtb_installedCharacters() {
+    return installed_audit.ready ? installed_audit.complete_characters : 0;
 }
 int32_t dbtb_textEncoding(int32_t source) { return source>=0 && source<2?text_encodings[source]:-1; }
 void dbtb_copyResource(void* data, int32_t size) {
