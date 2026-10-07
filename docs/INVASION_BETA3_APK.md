@@ -215,9 +215,9 @@ Esto, junto al texto español y al mismo helper nativo, indica una base de conte
 
 Todos los 19 `se_XX` permanecen baseline Vorbis y byte-idénticos.
 
-### Implicación Vita — candidato 00.27
+### Implicación Vita — candidato 00.28
 
-00.27 conserva el camino Vorbis existente y añade una frontera nativa genérica
+00.28 conserva el camino Vorbis existente y añade una frontera nativa genérica
 por contenido para MP3 y AAC/M4A. El motor continúa solicitando exactamente
 `bgm_XX.ogg`; no se cambia el nombre ni se transforma el archivo instalado.
 
@@ -263,7 +263,7 @@ El parser no debe fijar un count esperado por nombre de PAC.
 
 1. no tocar el motor original para acomodar 22 personajes.
 2. aceptar datos 00..21 solo mediante los contratos ya verificados y límites del adapter.
-3. no exigir `bobj00` ni `font00` como parte del perfil protegido: su ausencia está observada en APKs autónomos; el VFS puede ofrecer fallback si el core original lo solicita, pero eso es una compatibilidad del port, no una dependencia del APK.
+3. no exigir ni importar `bobj00`/`font00` desde Original: su ausencia está observada en APKs autónomos. Si el core original TeaVM los solicita en Vita, adaptar esa ruta con evidencia del APK/DEX; no mezclar datasets.
 4. no asumir Vorbis por extensión.
 5. no aumentar límites de memoria “a ciegas” para bgm_05; resolver primero codec y estrategia de streaming.
 6. si una mecánica de personaje adicional falla, comparar la ruta concreta con los métodos DEX modificados; no portar 372 métodos indiscriminadamente.
