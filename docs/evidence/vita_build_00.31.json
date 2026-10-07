@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "date": "2026-10-07",
+  "version": "00.31",
+  "purpose": "Physical regression candidate for 00.30 hardware findings: Samu dynamic roster, Invasion repeated-fight memory, Shop return path, startup offline wait.",
+  "runtime_source_checkpoint": "bf283ae5c5e1d0e7c19b540dd89b0105edfa3a4b",
+  "original_apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+  "artifact": {
+    "name": "DBTapBattle-Vita-00.31-Roster-Shop-Memory-Startup-Test.vpk",
+    "bytes": 2653793,
+    "sha256": "85b28d7a080c2bc5806ca3c269a7fe15b2be84565c60ddca243dd3fad0e6e699",
+    "eboot_sha256": "be043461ae79f0ce789a7389f8d4ba315f8121172ae138f505a8ea33728134a6",
+    "elf_sha256": "d8ab0ca42d07228d100d225b8803f95275be055dbf12cf35ff8699c22ba20127",
+    "app_ver": "00.31",
+    "title_id": "DBTB00001",
+    "livearea": "PASS"
+  },
+  "save_seed": {
+    "bytes": 12906,
+    "sha256": "64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb",
+    "policy": "independent per-profile copy, synchronized only for audited installed-character flags"
+  },
+  "hardware_00_30_findings": {
+    "samu_boots": true,
+    "samu_detected_triplets": 92,
+    "samu_visible_characters": 13,
+    "invasion_text_issue": "not reproduced in short test",
+    "invasion_next_fight_crash": "std::bad_alloc after large char15.pac materialization",
+    "shop": "UnsupportedOperationException from Android marketplace adapter",
+    "startup_wait_seconds": "approximately 10-25"
+  },
+  "fixes": {
+    "roster": [
+      "Synchronize ConfigData character flags +1/+2/+85 for every audited contiguous installed character.",
+      "Expand only bCharIndex/bCharVersionSv/bCharNoSv arrays from 90 to 100.",
+      "Replace only CharVisibleInit/ClearCharDLALL character loop bounds with installedCharacters()."
+    ],
+    "memory": "Pre-clear resource LRU before source PACs over 2 MiB and do not retain those large normalized resources.",
+    "shop": "Complete Android shop lifecycle edge synchronously instead of throwing; purchasing remains unavailable.",
+    "startup": "Match original Gen offline Downloader stub: empty data, size 0, SetURL false, isDownload true."
+  },
+  "validation": {
+    "vita_native_smoke_run": 37569189645,
+    "vita_native_smoke": "PASS",
+    "private_export_run": 37569189747,
+    "private_export": "PASS",
+    "full_private_engine_build": "PASS",
+    "livearea": "PASS",
+    "physical_vita": "PENDING"
+  },
+  "build_note": "Interactive private build used 24 balanced TeaVM remainder units at -O1, TCBManajer at -O0, native adapters at -O2. This is a functional hardware-test build, not final performance certification."
+}
