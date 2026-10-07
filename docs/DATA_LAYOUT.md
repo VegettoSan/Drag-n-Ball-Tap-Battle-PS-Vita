@@ -1,4 +1,4 @@
-# Runtime data and mod layout — 00.28 standalone datasets
+# Runtime data and mod layout — 00.29 standalone datasets + shared save
 
 Current contract, checked against `src/vfs.cpp` and native `resources.cpp` on
 2026-10-05. See [CURRENT_STATUS](CURRENT_STATUS.md) for verification scope.
@@ -30,7 +30,7 @@ select0.pac
 text00.pac
 bgm_00.ogg
 se_00.ogg
-save.bin        # only when the extracted APK provides it, or after the game creates it
+save.bin        # APK payload only; ignored by the 00.29 runtime
 ...
 ```
 
@@ -125,13 +125,13 @@ StringTexture uses PVF and a separate charset/glyph service.
 
 - Never write mod resource files into `game/`.
 - Never patch original PAC files in place during normal play.
-- Keep each profile's `save.bin` in its own data directory.
-- Never copy a save automatically from another profile.
+- Keep APK-bundled `save.bin` only as source/provenance if desired; gameplay uses the single root `save.bin`.
+- Never overwrite `ux0:data/DBTapBattle/save.bin` while copying datasets or updating the VPK.
 - Path traversal such as `../` must not be accepted by the virtual filesystem.
 
 ## Writable paths and completeness
 
-Current VFS creates `config/`, `logs/`, `saves/`, `game/` and `mods/` for backward compatibility and diagnostics. The active save location, however, is now the selected data-set directory described above.
+Current VFS creates `config/`, `logs/`, `saves/`, `game/` and `mods/` for backward compatibility and diagnostics. The active gameplay save is the single root `ux0:data/DBTapBattle/save.bin`.
 
 Log:
 
@@ -149,7 +149,7 @@ Original data presence currently means `game/common.pac` is a regular file, inde
 install/mods/Android14/
 ```
 
-with canonical names and untouched encoded PACs. If the APK supplies `save.bin`, that file is preserved in the same directory. Otherwise the Vita runtime creates one there when needed.
+with canonical names and untouched encoded PACs. If the APK supplies `save.bin`, extraction may preserve that source payload in the profile for provenance, but 00.29 gameplay ignores it and uses the root shared save.
 
 Format-3 import manifest records profile, alias mapping and original APK content hashes. Native codec detection is per PAC, not globally per active mod. See `ANDROID14_APK.md` for the exact profile and resource/engine compatibility boundary.
 
@@ -161,7 +161,7 @@ entries/files from another dataset. The GameData exclusion
 filter is honored before reading payloads; normalization is in memory and never
 rewrites the installed PAC. The result LRU is keyed by resolved physical path,
 filter and file metadata (size/mtime/ctime) and cleared on resource reinitialization.
-The PAC-result cache does not hold save state or imply cross-profile progress sharing.
+The PAC-result cache does not hold save state. Cross-profile progress sharing is explicit through the single global save, not through resource fallback.
 
 Resource-existence results and save reads are also cached for the session. Do not
 promise live detection of every edited file or external save while the game is
@@ -192,7 +192,6 @@ The BAT/PS1 tool in `tools/windows/` emits a fresh package whose `data/` folder
 can be copied directly to the `ux0:` root. Raw original APKs use `game/`;
 Community14 uses `mods/Android14/`; the known Gen content hash uses `mods/Gen/`.
 Unknown canonical assets APKs use a sanitized filename as a separate mod profile.
-An APK-provided save stays in its profile. Skip it when copying over existing
-Vita progress. No cross-profile resource or save fallback occurs.
+An APK-provided save may stay in its extracted profile but is not used by 00.29. Preserve the root global save when copying updates. No cross-profile gameplay-resource fallback occurs.
 See [Windows tool](WINDOWS_DATA_TOOL.md) for profile naming, byte preservation,
 source recognition, incomplete-original warnings and verification scope.
