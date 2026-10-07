@@ -29,7 +29,7 @@ to prepare a Tap Battle APK with the extractor.
 
 ## Profile names
 
-The Windows extractor always derives the Vita profile folder from the APK filename.
+Both the Web Extractor 1.0 and Windows Extractor 1.5 derive the Vita profile folder from the APK filename.
 
 Examples:
 
@@ -55,12 +55,20 @@ No PAC files need to be edited and the APK does not need to be extracted again.
 ## Quick installation
 
 1. Install the Dragon Ball Tap Battle Vita VPK with VitaShell.
-2. Extract the Windows extractor ZIP.
-3. Run \`Extract_APK_for_Vita.bat\` and select or drag one or more APK files.
-4. Copy the generated package's **data** folder to the root of \`ux0:\`.
+2. Prepare your APK data with either:
+   - **Web Extractor 1.0:** https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
+   - **Windows Extractor 1.5:** \`tools/windows/Extract_APK_for_Vita.bat\`
+3. With the web version, select the APK and download the generated ZIP; with
+   Windows, run/drag the APK onto the BAT.
+4. Extract the generated ZIP/package when necessary, then copy its **data**
+   folder to the root of \`ux0:\`.
 5. Confirm profiles end up under:
    \`ux0:data/DBTapBattle/profiles/<Profile>/\`
 6. Launch the game and choose the installed profile.
+
+The Web Extractor runs entirely in the browser: the selected APK is **not
+uploaded**. It is intended especially for Android/phone/tablet users who do not
+have a PC.
 
 Do not create:
 
@@ -69,7 +77,9 @@ ux0:data/data/DBTapBattle/
 \`\`\`
 
 Detailed extractor instructions:
-[tools/windows/README.txt](tools/windows/README.txt)
+
+- [Web APK Data Extractor](docs/WEB_DATA_TOOL.md)
+- [Windows extractor](tools/windows/README.txt)
 
 ## Save data
 
@@ -122,6 +132,7 @@ See [Current Status](docs/CURRENT_STATUS.md) for validation scope and history.
 
 - [Current Runtime Contract](docs/CURRENT_RUNTIME_CONTRACT.md)
 - [Data Layout](docs/DATA_LAYOUT.md)
+- [Web APK Data Extractor](docs/WEB_DATA_TOOL.md)
 - [Windows APK Data Extractor](docs/WINDOWS_DATA_TOOL.md)
 - [APK Technical Reference](docs/APK_TECHNICAL_REFERENCE.md)
 - [Mod Compatibility](docs/MODS.md)
