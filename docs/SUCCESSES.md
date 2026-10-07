@@ -524,3 +524,18 @@ VPK packaging regression remain unchanged. Existing per-profile saves are loaded
 instead of re-seeded. Python/community profile suites pass with APK-local saves
 excluded from installed datasets, and the Windows extractor regression passes the
 new per-profile policy.
+
+## 2026-10-07 — 00.32 dynamic rosters confirmed; 00.33 native crash path isolated
+
+**HARDWARE CONFIRMED for 00.32:** the Loading regression is fixed and the user
+reports all characters of the tested mods are now visible/loaded, including the
+extended Samu roster. The earlier Invasion text issue was not observed in this
+short test.
+
+**COREDUMP/SYMBOL CONFIRMED for the remaining Invasion crash:** Saitama's second
+fight against Freezer terminates with native `std::bad_alloc`; the matching
+00.32 ELF resolves the allocation through `std::vector<unsigned char>::operator=`
+inside protected-PAC `normalise()`, not through character gameplay logic or a
+corrupt Freezer/Saitama asset. 00.33 removes that duplicate protected-PAC
+allocation with ownership swap. Full build/packaging passes; physical 00.33
+confirmation remains pending.
