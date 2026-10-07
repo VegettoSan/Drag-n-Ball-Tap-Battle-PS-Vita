@@ -176,3 +176,17 @@ Shift_JIS. Invasion char20 provides concrete evidence. The adapter records the
 charset of each loaded GameData object and uses the content-detected active
 character charset only when the exact slot lookup misses. This changes no PAC
 payload or string contents.
+
+### 00.33 protected-PAC ownership handoff
+
+The protected PAC format itself did not change. The hardware issue was the native
+buffer handoff after successful normalization. Invasion `char15.pac` normalizes
+to roughly 4.64 MiB; 00.32's conditional assignment caused an additional vector
+copy before publishing the resource, and the matching Vita coredump ended in
+native `std::bad_alloc` on a later fight transition.
+
+00.33 publishes changed PACs with explicit `output.swap(out)`, transferring the
+already-normalized vector without a second PAC-sized allocation. The unchanged
+ordinary path still copies the original input intentionally. Several consecutive
+Invasion fights then passed on physical Vita, closing the reproduced crash path.
+This is a transport/ownership rule, not a new PAC codec or data conversion.
