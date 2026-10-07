@@ -9,11 +9,11 @@
 
 The latest complete user-test package is:
 
-- `DBTapBattle-Vita-00.34-Selector-UX-Fix.vpk`
+- `DBTapBattle-Vita-00.34-No-Blue-Orb-Fix.vpk`
 - SHA-256:
-  `e06ded147eead1c7ee8e5a558552d5129a98b5916395c59780125782c8d55c92`
+  `4f0abc4aba15c766847657d152de9cff50877df3f7b13a169f06be4226d2367b`
 - runtime/selector source:
-  `63bc0f90d33d4a5d8d90c4816ff0f0ae07272751`
+  `18559dcea316076bb1225080bb8506dd439df6f6`
 - physical Vita result: **pending**
 
 Current runtime/data behavior:
@@ -27,8 +27,10 @@ profile directories, has no synthetic Original row, and shows a no-data message
 when `profiles/` is empty. Profile saves live inside the selected profile and
 are seeded once from `app0:/save.bin`.
 
-The selector background now uses the non-transparent content bounds of the
-Gen-derived background and fills 960×544. After profile confirmation, a themed
+The selector background now uses only the continuous 482×320 cyan/grid band
+from the top of the 512×512 Gen-derived source and stretches that region to
+960×544. The separate blue energy orb stored in the lower transparent portion
+is explicitly excluded. After profile confirmation, a themed
 **OPENING PROFILE / LOADING GAME DATA...** screen is presented before the
 original engine begins loading the selected dataset.
 
