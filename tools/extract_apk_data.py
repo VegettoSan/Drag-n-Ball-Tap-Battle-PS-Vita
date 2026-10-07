@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import shutil
 import stat
+import struct
 import sys
 import tempfile
 import zipfile
@@ -38,6 +39,29 @@ def safe_name(name):
             and not any(c in name for c in ':\\')
             and all(p not in {'', '.', '..'} and len(p.encode('utf-8')) <= 255 for p in parts)
             and len(name.encode('utf-8')) <= 900)
+
+
+def local_header_name(apk_path, info):
+    """Read the raw ZIP local-header filename.
+
+    Python's zipfile may normalize backslashes on Windows before exposing
+    ZipInfo.filename/orig_filename. The local header preserves the archive's
+    actual separator bytes, so validate those directly before path handling.
+    """
+    with apk_path.open('rb') as stream:
+        stream.seek(info.header_offset)
+        header = stream.read(30)
+        if len(header) != 30 or struct.unpack_from('<I', header, 0)[0] != 0x04034B50:
+            raise ValueError(f'invalid ZIP local header for {info.filename!r}')
+        name_len, extra_len = struct.unpack_from('<HH', header, 26)
+        raw = stream.read(name_len)
+        if len(raw) != name_len:
+            raise ValueError(f'truncated ZIP local name for {info.filename!r}')
+        encoding = 'utf-8' if (info.flag_bits & 0x800) else 'cp437'
+        try:
+            return raw.decode(encoding)
+        except UnicodeDecodeError as exc:
+            raise ValueError(f'invalid ZIP filename encoding for {info.filename!r}') from exc
 
 
 def check_destination(path, overwrite, directory=False):
@@ -116,9 +140,12 @@ def extract(apk, output, overwrite=False, layout='auto'):
             # ZipInfo.filename. Validate the original central-directory name too,
             # otherwise an APK entry such as res/raw/bad\\x can masquerade as a
             # nested safe path only on Windows.
-            original_name = getattr(info, 'orig_filename', info.filename)
-            if original_name != info.filename and (original_name.startswith(prefix) or info.filename.startswith(prefix)):
+            original_name = local_header_name(apk, info)
+            if '\\' in original_name and (original_name.startswith(prefix) or info.filename.startswith(prefix)):
                 raise ValueError(f'unsafe ZIP path separator: {original_name!r}')
+            exposed_original = getattr(info, 'orig_filename', info.filename)
+            if exposed_original != info.filename and (exposed_original.startswith(prefix) or info.filename.startswith(prefix)):
+                raise ValueError(f'unsafe ZIP path separator: {exposed_original!r}')
             if not info.filename.startswith(prefix):
                 continue
             name = info.filename[len(prefix):]
