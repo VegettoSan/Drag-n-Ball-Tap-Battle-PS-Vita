@@ -23,21 +23,17 @@ Original
 
 `Original` is always available as the first logical entry.
 
-## Overlay behavior
+## Standalone profile behavior
 
-If `MyMod` is selected and the game requests `effect.pac`:
+If `MyMod` is selected and the game requests `effect.pac`, the only valid runtime source is:
 
 ```text
 ux0:data/DBTapBattle/mods/MyMod/effect.pac
 ```
 
-is tried first. If absent, the port falls back to:
+If it is absent, that selected dataset reports a missing-resource error. It is **not** replaced with `game/effect.pac`.
 
-```text
-ux0:data/DBTapBattle/game/effect.pac
-```
-
-A mod can therefore contain only changed files.
+The runtime treats each extracted APK/profile as an independent installation, matching the user's requirement that Gen/Android14/community datasets work even when `game/` is empty.
 
 ## Compatibility tiers
 
@@ -95,8 +91,7 @@ still need a physical-Vita test before being called hardware-confirmed. See
 [COMMUNITY_MOD_PROFILES](COMMUNITY_MOD_PROFILES.md) and
 [CURRENT_STATUS](CURRENT_STATUS.md).
 
-- Missing file → original fallback. Existing malformed/non-regular override →
-  explicit error; a full PAC replaces the entire file, not individual entries.
+- Missing file in the selected profile → explicit selected-profile error. There is no automatic `game/` fallback. A full PAC remains a complete file, not an entry-level merge.
 - Original PACs plus the audited protected Android14, Spanish and Invasion
   profiles support per-file outer PAC decoding, converted GameData tables,
   PNG/private RGBA and protected WAV wrappers. Unknown constants/aliases still
@@ -156,9 +151,7 @@ The generic extractor preserves data bytes, records hashes/aliases and refuses a
 or conflicting imports. Android .so/DEX are omitted. Unknown extensions can be
 preserved without claiming a runtime decoder. The Samu helper follows the same
 non-destructive rule: it records codec/hash metadata but does not transform any
-BGM or PAC payload. Do not install an encoded
-Community14 dataset over the only base copy just to fix a missing resource;
-its absent bobj00/font00 need base fallback. See
+BGM or PAC payload. Do not install a protected profile over another dataset. `bobj00`/`font00` omissions observed in standalone protected APKs are not repaired by borrowing Original files; if the preserved original TeaVM core requests one on Vita, that is a port-compatibility gap to adapt explicitly from APK evidence. See
 [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md),
 [ANDROID14_APK](ANDROID14_APK.md), [SPANISH_ANDROID14_APK](SPANISH_ANDROID14_APK.md),
 [INVASION_BETA3_APK](INVASION_BETA3_APK.md),
@@ -176,7 +169,7 @@ Gen's ordinary text00 is UTF-8 while its game/character tables use Shift_JIS.
 
 ## Compatibility evidence for a new mod
 
-Record source hash/profile, complete triplets/shared fallback, file codec and
+Record source hash/profile, complete triplets/standalone completeness, file codec and
 counts, character/card table bounds, charset, save expectations and whether
 Java logic differs. Test first/repeated selection, multiple voice events, text,
 actual battle/results and independent saves on the target build. Promote only
