@@ -51,13 +51,23 @@ public:
             entries_.splice(entries_.begin(), entries_, it);
             return true;
         }
+        // Full combat character PACs can expand to several MiB in memory. On
+        // repeated fights the previous LRU contents used to stay resident until
+        // after the replacement resource had already been materialized, creating
+        // the exact peak that the 00.30 Invasion log ended with as std::bad_alloc.
+        // Drop old cache ownership before a large source read, and do not retain
+        // multi-MiB normalized results in the LRU afterwards. Active streams keep
+        // their own shared_ptr and therefore remain valid.
+        const bool large_source = uint64_t(info.st_size) > uint64_t(budget_ / 4);
+        if (large_source) clear();
+
         auto resource = std::make_shared<CachedEngineResource>();
         int container_encoding = 0;
         if (!readEngineResource(vfs, name, resource->bytes, resource->path, error,
                                 &container_encoding, filter, &resource->io_bytes)) return false;
         resource->encoding = detectEngineTextEncoding(resource->bytes, container_encoding);
         const size_t cost = resource->bytes.capacity();
-        if (cost <= budget_) {
+        if (!large_source && cost <= budget_ / 4) {
             while (used_ + cost > budget_) {
                 used_ -= entries_.back().resource->bytes.capacity(); entries_.pop_back();
             }
