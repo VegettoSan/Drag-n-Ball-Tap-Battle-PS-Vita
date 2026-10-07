@@ -1,4 +1,4 @@
-# Windows APK data extractor
+# Windows APK data extractor 1.5
 
 The public launcher is:
 
@@ -14,6 +14,13 @@ PowerShell extractor.
 - Windows 10 or Windows 11
 - built-in Windows PowerShell 5.1
 - no Python, Java, 7-Zip, administrator rights, or network access required
+
+## Runtime contract
+
+Extractor 1.5 targets the VPK's `profiles-v1` contract documented in
+[CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md). The VPK scans only
+`ux0:data/DBTapBattle/profiles/`; it does not use `game/` or `mods/` as
+current profile roots and it does not synthesize an Original row.
 
 ## Output contract
 
