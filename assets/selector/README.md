@@ -23,9 +23,9 @@ Do not replace these parts casually: the hashes are an integrity/provenance
 contract for the exact theme tested by the port.
 
 
-## 00.34 runtime use
+## v1.0 runtime use (00.34 implementation)
 
-The 00.34 selector must not draw the whole 512×512 background PNG. That source
+The v1.0 selector, inherited unchanged from 00.34, must not draw the whole 512×512 background PNG. That source
 contains two separate visual regions: the desired cyan/grid background occupies
 the continuous top band (detected as 482×320 px), while a blue energy orb exists
 later in the transparent lower section. Runtime sampling therefore crops to the
