@@ -580,7 +580,7 @@ inválido >100. No se modificó `Utility.InttoString()`, `TCBManajer`, Game3,
 la selección ni el combate. El límite de dos dígitos se conserva: un futuro
 índice 100 requiere evidencia separada y no forma parte de este soporte.
 
-Esto es **HOST/ADAPTER CONFIRMED**, todavía no certificación física de los 92
+Esto fue inicialmente **HOST/ADAPTER CONFIRMED**; desde la prueba física 00.32 el runtime muestra el roster completo de 92 personajes en Vita. La compatibilidad de cada personaje/pelea individual sigue siendo una matriz más amplia
 personajes.
 
 ## 13. Compatibilidad esperada del extractor
@@ -624,7 +624,7 @@ Propuesta documental:
 - **Audio especial:** 12 BGM MP3 + 3 AAC/M4A con nombres `.ogg`; 00.27 los
   reproduce directamente desde sus bytes originales mediante `SceAudiodec`.
   Los dos Vorbis mantienen el camino libvorbisfile existente.
-- **Vita hardware:** pendiente.
+- **Vita hardware:** roster completo de 92 personajes confirmado en la prueba 00.32; cobertura exhaustiva de todos los personajes/peleas sigue pendiente.
 
 La diferencia entre "data-driven en Android" y "confirmado en Vita" debe
 mantenerse explícita.
@@ -777,3 +777,16 @@ transcodifica ningún BGM. Retest físico pendiente.
 Desde 00.29 el `save.bin` incluido por este APK ya no se instala como partida del
 perfil. Su presencia puede registrarse como evidencia, pero Original/Samu/resto de
 mods usan el único `ux0:data/DBTapBattle/save.bin` sembrado por el VPK.
+
+## 21. Confirmación física del roster dinámico — 00.32/00.33
+
+La prueba real posterior a 00.31 confirmó que el bloqueo de Loading desapareció y
+que Samu ya muestra **todos sus 92 personajes**. Esto valida en hardware la ruta
+dinámica que detecta los tripletes presentes y sincroniza los flags de personaje
+del save del perfil, junto con la ampliación verificada de las estructuras del
+core necesarias para IDs de dos dígitos 00..99.
+
+00.33 no cambia ese contrato y la prueba de regresión posterior conserva el roster
+completo. Esta confirmación no implica que las 92 combinaciones de voces, ataques,
+charf y peleas hayan sido probadas una por una; sí cierra el problema específico de
+que solo aparecieran los primeros 13 personajes.
