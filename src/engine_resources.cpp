@@ -34,6 +34,7 @@ const char* imageMarker(PacEncoding encoding) {
         case PacEncoding::Community14Spanish: return "C14S";
         case PacEncoding::Community14Invasion: return "C14I";
         case PacEncoding::Community14Dbfz: return "C14D";
+        case PacEncoding::Community14Dynamic: return "C14U";
         case PacEncoding::Community14: return "C14R";
         default: return nullptr;
     }
@@ -209,7 +210,7 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
             const char* decoded = communityType(*profile, communityReadBe32(row + 8) ^ uint32_t(i));
             type = decoded ? decoded : "unk";
             // Some DBFZ palettes retain an unprotected literal `plt\0` tag.
-            if (encoding == PacEncoding::Community14Dbfz && !std::memcmp(row + 8, "plt", 4)) type = "plt";
+            if (!std::memcmp(row + 8, "plt", 4)) type = "plt";
         } else {
             size_t length = 0; while (length < 4 && row[8 + length]) ++length;
             type.assign(reinterpret_cast<const char*>(row + 8), length);
