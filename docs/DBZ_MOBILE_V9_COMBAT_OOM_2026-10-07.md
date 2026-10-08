@@ -198,3 +198,12 @@ The repaired pack was evaluated against independently decoded real `char37.pac` 
 Build `DBTapBattle-Vita-Universal-VisualQuality-Experimental-01.00.vpk` directly with VitaSDK 2026.08 and original TeaVM core. Offline original+Android14/Spanish/Invasion/DBFZ resource regression passed; real 712x712 protected DEFLATE pixel streams validated byte-for-byte; actual original pixels versus RGBA4444 output compared, max quantization error 15; LiveArea/ZIP validation passed. The only VPK member changed compared with the previous hardware-proven GPUCompact experiment is `eboot.bin`.
 
 **Status: experimental.** Ask the user to verify restored color/transparency, first fight, next fight and at least one previously working original/legacy mod. Avoid claiming the enhanced quality tier is hardware-safe until measured.
+
+
+### Artifact metadata and current acceptance status
+
+- Direct compiled VPK file: `DBTapBattle-Vita-Universal-VisualQuality-Experimental-01.00.vpk`; **2,741,413 bytes**, SHA-256 **`479fb4e4b2fc50d7dc7dec08c08101bb83ecb6b414328cf467d85e9e9b09d71a`**.
+- Verified 15 ZIP members; `eboot.bin` is the only member changed relative to the hardware-tested GPUCompact VPK. Icon, startup image, LiveArea background/template, installed app metadata and bundled resources remain unchanged.
+- Direct VitaSDK ELF -> VELF -> SELF -> VPK build and `validate_livearea_vpk.py` **PASS**.
+- Native host image/PAC regressions **PASS** for Android14, Spanish, Invasion and DBFZ. Two actual 712x712 PRIVATE protected image streams **PASS** exact RGBA decompression. New CPU-side nibble ordering agrees with real source images within 4-bit quantization (per-channel max error <= 15).
+- **Experimental on Vita** until visual color and alpha, quality, first battle, next battle and previously working profiles are confirmed by hardware testing. Do not label it as stable 1.0 yet.
