@@ -35,6 +35,7 @@ void validate(const std::vector<uint8_t>& b) {
         else if(payload.size()>=8&&!std::memcmp(payload.data(),"C14S",4))marked=PacEncoding::Community14Spanish;
         else if(payload.size()>=8&&!std::memcmp(payload.data(),"C14I",4))marked=PacEncoding::Community14Invasion;
         else if(payload.size()>=8&&!std::memcmp(payload.data(),"C14D",4))marked=PacEncoding::Community14Dbfz;
+        else if(payload.size()>=8&&!std::memcmp(payload.data(),"C14U",4))marked=PacEncoding::Community14Dynamic;
         if(marked!=PacEncoding::Auto){
             size_t original_index=u32(payload,4);assert(original_index==i);
             payload.erase(payload.begin(),payload.begin()+8);
