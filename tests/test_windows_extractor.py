@@ -157,7 +157,7 @@ class WindowsExtractorTests(unittest.TestCase):
         profile = community14.DBFZ
         data = encoded_pac_profile(profile)
         source = self.apk('Dbfz v22', [
-            ('assets/2B98.pac', data),
+            ('assets/46C3.pac', data),
             ('assets/128B57.pac', data),
             ('assets/CD4A57.pac', data),
             ('assets/4BD80057.pac', data),
