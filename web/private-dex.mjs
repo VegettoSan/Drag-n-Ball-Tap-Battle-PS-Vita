@@ -61,7 +61,7 @@ function initializer(w,strings){
     table_width_xor:v[15],table_height_xor:v[16],wav_size_xor:v[11],type_keys};
   const allNames=[...FIXED,...NUMBERED.keys()].map(j=>aliases[j]);
   if(new Set(allNames).size!==allNames.length||out.count_xor>65535||out.image_width_xor>65535||out.image_height_xor>65535||
-     out.table_count_xor>65535||out.table_width_xor>65535||out.table_height_xor>65535||!new Set(Object.values(type_keys)).size)return null;
+     out.table_count_xor>65535||out.table_width_xor>65535||out.table_height_xor>65535||new Set(Object.values(type_keys)).size!==7)return null;
   return out;
 }
 export function discoverPrivateCodec(dexBytes){return readDex(dexBytes);}
