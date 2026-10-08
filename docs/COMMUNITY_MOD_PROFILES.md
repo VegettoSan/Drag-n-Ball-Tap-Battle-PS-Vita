@@ -20,10 +20,11 @@ library or commercial game payload is stored in this repository.
 
 ## Compatibility baseline
 
-The physical-Vita baseline remains **00.24**, source `f5672d4d`. Its original
-and legacy Android14 path is hardware-confirmed. The profile work below is layered
-on that baseline and must not be described as hardware-confirmed until a new VPK
-is tested on a real Vita.
+The current physical-Vita gameplay baseline is **00.34**, inherited by public
+v1.0; the earlier 00.24 build was a historical protected-resource milestone.
+The original and tested mod gameplay routes are hardware-confirmed in the
+reported sessions, but newly added DBFZ codec support is a **source-only** change
+until a new VPK is built and exercised on a real Vita.
 
 All protected PACs are detected **per file**. A profile is accepted only when the
 decoded directory is fully in bounds and exactly one audited profile matches.
