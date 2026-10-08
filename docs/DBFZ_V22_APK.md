@@ -55,16 +55,20 @@ Protected table layout follows `count = le16(source[0:2]) XOR count_xor`, `base 
 
 Packed textures use BE16 width and height XOR the two image keys and entry index, followed by raw DEFLATE RGBA data. A normalized texture is tagged with Vita bridge marker `C14D` so the native image bridge invokes the DBFZ decoder. Converted BIN/DAC records use the table keys above and existing validated GameData contracts. Protected WAV uses the decoded-size key; no engine-side audio format invention is necessary.
 
+> **2026-10-07 DEX correction:** the `Lext/o;.<clinit>` resource alias array, independently identified across four protected APKs, proves DBFZ maps `46C3.pac → common.pac` and `2B98.pac → demo_00.pac`. An earlier guess reversed these two; that guess has been corrected in the Web, Windows and Python extractors and regression tests. Source-file presence alone would not have caught the semantic mapping error.
+>
+> This initializer also stores the per-APK offsets, sizes, texture dimensions and GameData XOR constants. It is feasible to read these parameters programmatically from `classes.dex` and emit per-profile metadata instead of maintaining hard-coded mod families. See `docs/DRAGONTAP_PRIVATE_UNIVERSAL.md` for the proposed universal compatibility layer.
+
 ## Filenames — canonical mappings
 
 The Windows and Web extractors must rename only these verified top-level `assets/*.pac` aliases. All file payload bytes and source mappings remain in `dbtb_manifest.json`.
 
 | Logical Vita filename | APK name |
 |---|---|
-| `common.pac` | `2B98.pac` |
+| `common.pac` | `46C3.pac` |
 | `select0.pac` | `CC4B.pac` |
 | `effect.pac` | `7D98.pac` |
-| `demo_00.pac` | `46C3.pac` |
+| `demo_00.pac` | `2B98.pac` |
 | `demo_08.pac` | `D6E1.pac` |
 | `card_preview.pac` | `B727.pac` |
 | `gamedata.pac` | `AC9E.pac` |
