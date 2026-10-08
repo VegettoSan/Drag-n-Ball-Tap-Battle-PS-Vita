@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-08",
+  "repository_base_commit": "b295b29e7f276cac75471d80ac7d41ede6160431",
+  "tools": {
+    "dex2jar": "2.4",
+    "jadx": "1.5.6",
+    "androguard": "4.1.4",
+    "ecj": "3.37.0"
+  },
+  "source_apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+  "platform": "host JVM; APK-derived Controller/KeyData; no Vita execution or new AOT comparison",
+  "status": "PASS",
+  "outputs": {
+    "input-probe": [
+      "press:16:0:16:1",
+      "move:0:0:16:2",
+      "release:0:16:0:0",
+      "UTF16: ñ 日本 🐉",
+      "ORIGINAL INPUT AOT PASS"
+    ],
+    "virtual-pad-probe": [
+      "DIRECTIONS: eight directions, press/hold/release PASS",
+      "BUTTONS: six safe points, masks and press/hold/release PASS",
+      "RANGES: actual half-widths 115/24/54; rage center isolation PASS",
+      "MULTITOUCH: IDs 0..4, simultaneous input and full release PASS",
+      "DIRECTION CHANGE: held mask changes; type-1 press edge stays zero PASS",
+      "ORIGINAL VIRTUAL PAD JVM PASS (not a Vita/AOT/gameplay test)"
+    ]
+  },
+  "limits": [
+    "Does not exercise native Vita controller polling, pointer allocator, actual gameplay or selector integration.",
+    "Does not revalidate new probe through TeaVM; prior InputProbe AOT equivalence is historical evidence only.",
+    "Does not certify all mod combat behavior."
+  ],
+  "corrected_hypothesis": "Initial suspicion of rage/stick center overlap was rejected: original AddPad halves type-1/type-4 ranges. Probe was corrected to assert actual 115/24/54 ranges and center isolation."
+}

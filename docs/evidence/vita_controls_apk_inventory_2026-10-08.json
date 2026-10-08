@@ -1,0 +1,1762 @@
+{
+  "schema": "dbtb-control-research-v1",
+  "evidence_level": "static APK inventory; not hardware validation",
+  "fingerprint_definition": "SHA256 of resolved instruction names/outputs, including registers and branch offsets; equality is strong evidence of identical inspected instruction streams; inequality does not establish changed semantics",
+  "apks": [
+    {
+      "filename": "01-DBTapBattle.apk",
+      "apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+      "classes_dex_sha256": "0e2de1f3d712454aa30175016b0e2987c4d7e8e36bddab48ef4a2037023ecb72",
+      "family": "named-original-core",
+      "controller_class": "Lcom/namcobandaigames/dragonballtap/apk/Controller;",
+      "keydata_class": "Lcom/namcobandaigames/dragonballtap/apk/KeyData;",
+      "status": "STATIC INVENTORY ONLY; Vita executes the pinned original core",
+      "input_methods": {
+        "Lcom/namcobandaigames/dragonballtap/apk/Controller;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 23,
+            "resolved_instruction_sha256": "933468d1ec90287f47e94600fe72b75a779d8a584eb641315d323ffec028f5ce"
+          },
+          {
+            "name": "AddPad",
+            "descriptor": "(I I I I I I)I",
+            "instruction_count": 103,
+            "resolved_instruction_sha256": "b21d47c8a7ba31c66da79f68eefb0a4f0ec8b5192851b2b7bc475d2ca5945ec5"
+          },
+          {
+            "name": "ClearKey",
+            "descriptor": "()V",
+            "instruction_count": 11,
+            "resolved_instruction_sha256": "7fff9353390d0c3b17e3a541990cca3f583eaa71e6788dc494ad559142a2f8ee"
+          },
+          {
+            "name": "GetCenterX",
+            "descriptor": "(I)I",
+            "instruction_count": 43,
+            "resolved_instruction_sha256": "34380cb427a592a048d4e3c7e2cb86f83ef3ca1a246b898088bd8714b332c7cb"
+          },
+          {
+            "name": "GetCenterY",
+            "descriptor": "(I)I",
+            "instruction_count": 43,
+            "resolved_instruction_sha256": "8b425ec0930f1ef1b000af2ad321087d500c0738758eda5e877cd48b51ca56b8"
+          },
+          {
+            "name": "GetCount",
+            "descriptor": "()I",
+            "instruction_count": 3,
+            "resolved_instruction_sha256": "221b4077f35b4ace3dfbd26e34aa7de37b4bfa5c4f132b160a30456598128834"
+          },
+          {
+            "name": "GetKeepFrame",
+            "descriptor": "(I)I",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "76124db477ea1fdc0669f840cb58d64cf1926c6749a1ecf0e6f3e6494a69023c"
+          },
+          {
+            "name": "GetKey",
+            "descriptor": "(I I)I",
+            "instruction_count": 9,
+            "resolved_instruction_sha256": "524ceb8f8ca4d65b6ac6df0ce125ae8ac04030dd4567783f37c1bc88e98ed17c"
+          },
+          {
+            "name": "GetRange",
+            "descriptor": "(I I)I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "8d020455c9417a61b4c124b5657b1d58169e17e5bdd0e61ae94f89466589fd7d"
+          },
+          {
+            "name": "GetSpeed",
+            "descriptor": "(I)I",
+            "instruction_count": 7,
+            "resolved_instruction_sha256": "98efb6994f33497747a24d63d92b71b1dd5a3fbc014db7d0f95b584fccfa4450"
+          },
+          {
+            "name": "GetStatus",
+            "descriptor": "(I I)I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "3b2b9c6ef5212b08f29a24f8fcb1985d2d6f06f0e97f3e2b02b6a1412e64dea0"
+          },
+          {
+            "name": "GetStickAngles",
+            "descriptor": "(I)I",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "5897ca86c2ce6c9c6f013ac20bd2fc87cafc3756accf3b367f27c64e44ea0def"
+          },
+          {
+            "name": "GetStickRange",
+            "descriptor": "(I)F",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "a41dfae9c3d7b9c66e9211a75c49c8f7a57f93ad5279a13fbf28ff73e4bcd4a9"
+          },
+          {
+            "name": "GetTapPullX",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "41033c65b6cf567f3958d2da1038162b27835ff46763be8d55e6dd196f51938d"
+          },
+          {
+            "name": "GetTapPullY",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "b4bcc7c4e03c92081a3d4151c2368440dc1e3c61f134219214783a5374a74e17"
+          },
+          {
+            "name": "GetTapType",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "3a9ee96498d3a840ede7a1507efb67e753e4274873aa213b805b60e29e03c424"
+          },
+          {
+            "name": "GetTapX",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "639be809e223ad4baaf8ce3a89baa3046c61266201e6fb046a995c964ceed2ed"
+          },
+          {
+            "name": "GetTapY",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "d794b5e39e23db061ec240fbe28e17f8b729ba1fa466a47b7ccd654795583222"
+          },
+          {
+            "name": "GetX",
+            "descriptor": "(I)I",
+            "instruction_count": 19,
+            "resolved_instruction_sha256": "b7cd2efee8502283c1b207b9bd8bb431d0bd5870bb6523955b1ac34df478924a"
+          },
+          {
+            "name": "GetY",
+            "descriptor": "(I)I",
+            "instruction_count": 19,
+            "resolved_instruction_sha256": "aa3b44ac892b859092eadacf89ad06f1c976fcadce895f527c922fa90f424854"
+          },
+          {
+            "name": "Init",
+            "descriptor": "()V",
+            "instruction_count": 4,
+            "resolved_instruction_sha256": "061cb258cfda6eed412f03e7b1335680eee6eb0482984593775ece1b2c492a35"
+          },
+          {
+            "name": "KeyLock",
+            "descriptor": "(I Z)V",
+            "instruction_count": 16,
+            "resolved_instruction_sha256": "a871e68c04b6250b24ce4aa48f5db0f3306c628f26357b64aa229fab7baf0eb3"
+          },
+          {
+            "name": "SetKey",
+            "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/KeyData;)V",
+            "instruction_count": 4229,
+            "resolved_instruction_sha256": "3e4d41cf8a2a881bcf8681441e30e96113ab6013888a268ad6a479f1a2a8a3fd"
+          },
+          {
+            "name": "SetKeyCode",
+            "descriptor": "(I I I)V",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "584de84a1842e393d2413b960264262e56352c945bb5b8683959dcd981458126"
+          },
+          {
+            "name": "SetPad",
+            "descriptor": "(I I I I I)V",
+            "instruction_count": 85,
+            "resolved_instruction_sha256": "cca2b89f56a71e713fcb38dc27aefb4373f92899204cd961f32c16839dd77a39"
+          },
+          {
+            "name": "SetPad_Pos",
+            "descriptor": "(I I I)V",
+            "instruction_count": 33,
+            "resolved_instruction_sha256": "254cbc66fbb6f1816bf3691ad56ba98d94d96f19e5c2b174a6ae6454cd76a3e2"
+          },
+          {
+            "name": "SetSkipKey",
+            "descriptor": "(I I)V",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "651d03215ddf53d24b35e6fb9d7582a5e3ac16f7b7b373f4b3ea43beb76c804b"
+          }
+        ],
+        "Lcom/namcobandaigames/dragonballtap/apk/KeyData;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 30,
+            "resolved_instruction_sha256": "74f0cd2528cbc43e8087cf943aa930e8a4ed58125539e097152034a95e39baeb"
+          },
+          {
+            "name": "Clear",
+            "descriptor": "(I)V",
+            "instruction_count": 21,
+            "resolved_instruction_sha256": "0f0d302712092ae1f07e83320f8c623392d2d502d755ce3e9793e061b31d5b62"
+          },
+          {
+            "name": "ClearBegin",
+            "descriptor": "()V",
+            "instruction_count": 9,
+            "resolved_instruction_sha256": "af6417d8434b6759c36643695ac20c91f7695f807f634f994ff2a55189134be9"
+          },
+          {
+            "name": "GetIndex",
+            "descriptor": "(I)I",
+            "instruction_count": 13,
+            "resolved_instruction_sha256": "068967c3cd55f007275e250e438dd16380498a0bb21c8c8cc8fa43d96a1bffdb"
+          },
+          {
+            "name": "GetSpace",
+            "descriptor": "()I",
+            "instruction_count": 14,
+            "resolved_instruction_sha256": "5500827672d848bfd6a57190b81ce5f8ed38271bd73195efbb7c927b99f3beb5"
+          },
+          {
+            "name": "Init",
+            "descriptor": "()V",
+            "instruction_count": 19,
+            "resolved_instruction_sha256": "052457eedd147819948edfa36d82913d3138d4b70b7cf316ddaa8a8372462dfd"
+          },
+          {
+            "name": "Set",
+            "descriptor": "(I I I I)V",
+            "instruction_count": 69,
+            "resolved_instruction_sha256": "c8a902b1e0a79d708e2eb0471072e8b04d846ccb04669b770c07854003681151"
+          },
+          {
+            "name": "getMoveX",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "dd990bda579ad363eac5a947948fba766d9145e067f876d2b258c867ab56610e"
+          },
+          {
+            "name": "getMoveY",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "04e732918b7127bafa834ab0fb4d8889cfe5ce6fbe0df38ec6e927d92b0907ba"
+          },
+          {
+            "name": "getSpeedX",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "c4d315d4be66a67e7176f0980811db1c3cd5da228bef5bab836dcb07bb47945b"
+          },
+          {
+            "name": "getSpeedY",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "b6c5349c23344096962917c3e86b3a62fb7a6e7fa93f608a60933b05f5903201"
+          },
+          {
+            "name": "getX",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "61d341214a2c8ee80349b410846796e1a4ac6a2a703915ca81f8dbc552b92372"
+          },
+          {
+            "name": "getY",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "61a5030d2e4e958ca4d872c1bce156c7929c2a2cbc0be9d821f22a85d85be8c4"
+          },
+          {
+            "name": "isBeginTouch",
+            "descriptor": "(I)Z",
+            "instruction_count": 10,
+            "resolved_instruction_sha256": "5c604a02a11090f3fa6da2dd2e9365dbf8bf1036bca1deb681d19f8e8b10cb94"
+          }
+        ]
+      },
+      "virtual_pad_callers": [
+        {
+          "name": "Game14",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 5982,
+          "resolved_instruction_sha256": "1163b5c863ac676290b6fe05191694068151da4cf5b388e58ff94d072c317d9f",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 1
+        },
+        {
+          "name": "Game16",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 3973,
+          "resolved_instruction_sha256": "7a99415eb14ad31bcec2b312fadb080748fc9ee59902ede943d03c221de7d7af",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "Game3",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 8052,
+          "resolved_instruction_sha256": "d700d4ff0a5a242db3bf32ad8f0a985f198d684f50032a2b44b4dc4393251742",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 11
+        },
+        {
+          "name": "Game8",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 3594,
+          "resolved_instruction_sha256": "ee1ae393a6c050f69b70112ccbab7e2f93aac788728e32bd61ea96aeaa8320a5",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 8
+        }
+      ]
+    },
+    {
+      "filename": "02-tap-battle-android-14.apk",
+      "apk_sha256": "a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4",
+      "classes_dex_sha256": "f4e52c47fac7f1f6288c4bf7e4d31bc819ebb6ec2d2a6afac2c0275602995184",
+      "family": "obfuscated-ext-family",
+      "controller_class": "Lext/i;",
+      "keydata_class": "Lext/r;",
+      "status": "STATIC INVENTORY ONLY; Vita executes the pinned original core",
+      "input_methods": {
+        "Lext/i;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 54,
+            "resolved_instruction_sha256": "7c11ef30726f5ea64e8c88ea691497c712a91fc49cbfc119f00ff94c63ac1a6c"
+          },
+          {
+            "name": "a",
+            "descriptor": "()I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "6d0a37038e6ae83a63735e41c746d10d9f2234203f02079b75402736f9543687"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "62493ef0f5794cf6eb93bacf9999d67675584325bbf9ea0d8199f79648151822"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I)I",
+            "instruction_count": 20,
+            "resolved_instruction_sha256": "6ef15213b7ee3541ce545adacc7bac6af61be4386ba485f4c307ae57feaa1f1c"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I I I)I",
+            "instruction_count": 188,
+            "resolved_instruction_sha256": "5f03579458029ccd7a76c9e1720b14dcc9c762f7744acb9e8c0e482fc3b02b98"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "f9b593246327441a0ecb95176c9709d45794fa43512d880316127f3f3714db8d"
+          },
+          {
+            "name": "a",
+            "descriptor": "(Lext/r;)V",
+            "instruction_count": 3447,
+            "resolved_instruction_sha256": "b40816b763ea1925bc984053e0b0e772dd819d761d60acb7bcd47a78b83052b5"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "d6b4e2c2dbb7f0c510767f7b632f6df09b60f9fa58ac184be4b014f7ebb357ed"
+          }
+        ],
+        "Lext/r;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 58,
+            "resolved_instruction_sha256": "c1a8d66bb7b0ab07627ce98dec762f07e333b42670bd537d66d937556e336f99"
+          },
+          {
+            "name": "b",
+            "descriptor": "()V",
+            "instruction_count": 34,
+            "resolved_instruction_sha256": "379cf6c12f568fa7ed2eebbc1340522d8d7e00fa1adacfae0b97171f2d059217"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "81d7c4fc27268e0340c1b30ae0db4d0bca1bcf4487085852434392cd0cfad11d"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 14,
+            "resolved_instruction_sha256": "9188960e229287f67612d7c87143ffaf58cad47a386913ad1cc9b0b5e313ad86"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)V",
+            "instruction_count": 63,
+            "resolved_instruction_sha256": "e9dcc6dd4e8b6013d88496dea67b61238b77c05828418f15e636516f458867f3"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I)V",
+            "instruction_count": 177,
+            "resolved_instruction_sha256": "8d970c719eafeea346d646300ae20eaa46242313118f211269df993c6efbca18"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)Z",
+            "instruction_count": 38,
+            "resolved_instruction_sha256": "b4871ea7f65a8b8ae1c7944a599f0b3902c6d5b26cb075b98f64002ddc846e17"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "a2f0a76bce592539ee625ebca6e656cddf7284f4fbbde2a947d6b60d97683bdf"
+          }
+        ]
+      },
+      "virtual_pad_callers": [
+        {
+          "name": "A",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5426,
+          "resolved_instruction_sha256": "94b67e3b2ad9ee7fd4c05362d0d03736572feedaa7c5884ced5b16be8fdabff0",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "q",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5955,
+          "resolved_instruction_sha256": "726363100c2e98f6a2a4756200747b50f8b0acaacff25d5beb13351ed54c9b2a",
+          "class": "Lext/C;",
+          "addpad_call_count": 1
+        },
+        {
+          "name": "s",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 4039,
+          "resolved_instruction_sha256": "4081957eb84397ec0e891b89c98d7f25133167cb92e5daa435460fa9e0eda730",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "v",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 8155,
+          "resolved_instruction_sha256": "7f3ab9abc9ad943c1e562260dec4307cd15f828743cb4f826bd36f246b8403fe",
+          "class": "Lext/C;",
+          "addpad_call_count": 11
+        }
+      ]
+    },
+    {
+      "filename": "03-gen.apk",
+      "apk_sha256": "d52cbd7ef248d995ad17ba6ec8ec6fa08590a344ac2a9786e5ac839bf7715f28",
+      "classes_dex_sha256": "cba71bc13b9d1281aa8180423be9d08db0deb0fc2f5ef6825cc11ba66a17b729",
+      "family": "named-original-core",
+      "controller_class": "Lcom/namcobandaigames/dragonballtap/apk/Controller;",
+      "keydata_class": "Lcom/namcobandaigames/dragonballtap/apk/KeyData;",
+      "status": "STATIC INVENTORY ONLY; Vita executes the pinned original core",
+      "input_methods": {
+        "Lcom/namcobandaigames/dragonballtap/apk/Controller;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 23,
+            "resolved_instruction_sha256": "933468d1ec90287f47e94600fe72b75a779d8a584eb641315d323ffec028f5ce"
+          },
+          {
+            "name": "AddPad",
+            "descriptor": "(I I I I I I)I",
+            "instruction_count": 103,
+            "resolved_instruction_sha256": "b21d47c8a7ba31c66da79f68eefb0a4f0ec8b5192851b2b7bc475d2ca5945ec5"
+          },
+          {
+            "name": "ClearKey",
+            "descriptor": "()V",
+            "instruction_count": 11,
+            "resolved_instruction_sha256": "7fff9353390d0c3b17e3a541990cca3f583eaa71e6788dc494ad559142a2f8ee"
+          },
+          {
+            "name": "GetCenterX",
+            "descriptor": "(I)I",
+            "instruction_count": 43,
+            "resolved_instruction_sha256": "34380cb427a592a048d4e3c7e2cb86f83ef3ca1a246b898088bd8714b332c7cb"
+          },
+          {
+            "name": "GetCenterY",
+            "descriptor": "(I)I",
+            "instruction_count": 43,
+            "resolved_instruction_sha256": "8b425ec0930f1ef1b000af2ad321087d500c0738758eda5e877cd48b51ca56b8"
+          },
+          {
+            "name": "GetCount",
+            "descriptor": "()I",
+            "instruction_count": 3,
+            "resolved_instruction_sha256": "221b4077f35b4ace3dfbd26e34aa7de37b4bfa5c4f132b160a30456598128834"
+          },
+          {
+            "name": "GetKeepFrame",
+            "descriptor": "(I)I",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "76124db477ea1fdc0669f840cb58d64cf1926c6749a1ecf0e6f3e6494a69023c"
+          },
+          {
+            "name": "GetKey",
+            "descriptor": "(I I)I",
+            "instruction_count": 9,
+            "resolved_instruction_sha256": "524ceb8f8ca4d65b6ac6df0ce125ae8ac04030dd4567783f37c1bc88e98ed17c"
+          },
+          {
+            "name": "GetRange",
+            "descriptor": "(I I)I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "8d020455c9417a61b4c124b5657b1d58169e17e5bdd0e61ae94f89466589fd7d"
+          },
+          {
+            "name": "GetSpeed",
+            "descriptor": "(I)I",
+            "instruction_count": 7,
+            "resolved_instruction_sha256": "98efb6994f33497747a24d63d92b71b1dd5a3fbc014db7d0f95b584fccfa4450"
+          },
+          {
+            "name": "GetStatus",
+            "descriptor": "(I I)I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "3b2b9c6ef5212b08f29a24f8fcb1985d2d6f06f0e97f3e2b02b6a1412e64dea0"
+          },
+          {
+            "name": "GetStickAngles",
+            "descriptor": "(I)I",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "5897ca86c2ce6c9c6f013ac20bd2fc87cafc3756accf3b367f27c64e44ea0def"
+          },
+          {
+            "name": "GetStickRange",
+            "descriptor": "(I)F",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "a41dfae9c3d7b9c66e9211a75c49c8f7a57f93ad5279a13fbf28ff73e4bcd4a9"
+          },
+          {
+            "name": "GetTapPullX",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "41033c65b6cf567f3958d2da1038162b27835ff46763be8d55e6dd196f51938d"
+          },
+          {
+            "name": "GetTapPullY",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "b4bcc7c4e03c92081a3d4151c2368440dc1e3c61f134219214783a5374a74e17"
+          },
+          {
+            "name": "GetTapType",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "3a9ee96498d3a840ede7a1507efb67e753e4274873aa213b805b60e29e03c424"
+          },
+          {
+            "name": "GetTapX",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "639be809e223ad4baaf8ce3a89baa3046c61266201e6fb046a995c964ceed2ed"
+          },
+          {
+            "name": "GetTapY",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "d794b5e39e23db061ec240fbe28e17f8b729ba1fa466a47b7ccd654795583222"
+          },
+          {
+            "name": "GetX",
+            "descriptor": "(I)I",
+            "instruction_count": 19,
+            "resolved_instruction_sha256": "b7cd2efee8502283c1b207b9bd8bb431d0bd5870bb6523955b1ac34df478924a"
+          },
+          {
+            "name": "GetY",
+            "descriptor": "(I)I",
+            "instruction_count": 19,
+            "resolved_instruction_sha256": "aa3b44ac892b859092eadacf89ad06f1c976fcadce895f527c922fa90f424854"
+          },
+          {
+            "name": "Init",
+            "descriptor": "()V",
+            "instruction_count": 4,
+            "resolved_instruction_sha256": "061cb258cfda6eed412f03e7b1335680eee6eb0482984593775ece1b2c492a35"
+          },
+          {
+            "name": "KeyLock",
+            "descriptor": "(I Z)V",
+            "instruction_count": 16,
+            "resolved_instruction_sha256": "a871e68c04b6250b24ce4aa48f5db0f3306c628f26357b64aa229fab7baf0eb3"
+          },
+          {
+            "name": "SetKey",
+            "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/KeyData;)V",
+            "instruction_count": 4229,
+            "resolved_instruction_sha256": "3e4d41cf8a2a881bcf8681441e30e96113ab6013888a268ad6a479f1a2a8a3fd"
+          },
+          {
+            "name": "SetKeyCode",
+            "descriptor": "(I I I)V",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "584de84a1842e393d2413b960264262e56352c945bb5b8683959dcd981458126"
+          },
+          {
+            "name": "SetPad",
+            "descriptor": "(I I I I I)V",
+            "instruction_count": 85,
+            "resolved_instruction_sha256": "cca2b89f56a71e713fcb38dc27aefb4373f92899204cd961f32c16839dd77a39"
+          },
+          {
+            "name": "SetPad_Pos",
+            "descriptor": "(I I I)V",
+            "instruction_count": 33,
+            "resolved_instruction_sha256": "254cbc66fbb6f1816bf3691ad56ba98d94d96f19e5c2b174a6ae6454cd76a3e2"
+          },
+          {
+            "name": "SetSkipKey",
+            "descriptor": "(I I)V",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "651d03215ddf53d24b35e6fb9d7582a5e3ac16f7b7b373f4b3ea43beb76c804b"
+          }
+        ],
+        "Lcom/namcobandaigames/dragonballtap/apk/KeyData;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 30,
+            "resolved_instruction_sha256": "74f0cd2528cbc43e8087cf943aa930e8a4ed58125539e097152034a95e39baeb"
+          },
+          {
+            "name": "Clear",
+            "descriptor": "(I)V",
+            "instruction_count": 21,
+            "resolved_instruction_sha256": "0f0d302712092ae1f07e83320f8c623392d2d502d755ce3e9793e061b31d5b62"
+          },
+          {
+            "name": "ClearBegin",
+            "descriptor": "()V",
+            "instruction_count": 9,
+            "resolved_instruction_sha256": "af6417d8434b6759c36643695ac20c91f7695f807f634f994ff2a55189134be9"
+          },
+          {
+            "name": "GetIndex",
+            "descriptor": "(I)I",
+            "instruction_count": 13,
+            "resolved_instruction_sha256": "068967c3cd55f007275e250e438dd16380498a0bb21c8c8cc8fa43d96a1bffdb"
+          },
+          {
+            "name": "GetSpace",
+            "descriptor": "()I",
+            "instruction_count": 14,
+            "resolved_instruction_sha256": "5500827672d848bfd6a57190b81ce5f8ed38271bd73195efbb7c927b99f3beb5"
+          },
+          {
+            "name": "Init",
+            "descriptor": "()V",
+            "instruction_count": 19,
+            "resolved_instruction_sha256": "052457eedd147819948edfa36d82913d3138d4b70b7cf316ddaa8a8372462dfd"
+          },
+          {
+            "name": "Set",
+            "descriptor": "(I I I I)V",
+            "instruction_count": 69,
+            "resolved_instruction_sha256": "c8a902b1e0a79d708e2eb0471072e8b04d846ccb04669b770c07854003681151"
+          },
+          {
+            "name": "getMoveX",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "dd990bda579ad363eac5a947948fba766d9145e067f876d2b258c867ab56610e"
+          },
+          {
+            "name": "getMoveY",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "04e732918b7127bafa834ab0fb4d8889cfe5ce6fbe0df38ec6e927d92b0907ba"
+          },
+          {
+            "name": "getSpeedX",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "c4d315d4be66a67e7176f0980811db1c3cd5da228bef5bab836dcb07bb47945b"
+          },
+          {
+            "name": "getSpeedY",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "b6c5349c23344096962917c3e86b3a62fb7a6e7fa93f608a60933b05f5903201"
+          },
+          {
+            "name": "getX",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "61d341214a2c8ee80349b410846796e1a4ac6a2a703915ca81f8dbc552b92372"
+          },
+          {
+            "name": "getY",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "61a5030d2e4e958ca4d872c1bce156c7929c2a2cbc0be9d821f22a85d85be8c4"
+          },
+          {
+            "name": "isBeginTouch",
+            "descriptor": "(I)Z",
+            "instruction_count": 10,
+            "resolved_instruction_sha256": "5c604a02a11090f3fa6da2dd2e9365dbf8bf1036bca1deb681d19f8e8b10cb94"
+          }
+        ]
+      },
+      "virtual_pad_callers": [
+        {
+          "name": "Game14",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 5982,
+          "resolved_instruction_sha256": "1163b5c863ac676290b6fe05191694068151da4cf5b388e58ff94d072c317d9f",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 1
+        },
+        {
+          "name": "Game16",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 3973,
+          "resolved_instruction_sha256": "7a99415eb14ad31bcec2b312fadb080748fc9ee59902ede943d03c221de7d7af",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "Game3",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 8052,
+          "resolved_instruction_sha256": "d700d4ff0a5a242db3bf32ad8f0a985f198d684f50032a2b44b4dc4393251742",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 11
+        },
+        {
+          "name": "Game8",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 3594,
+          "resolved_instruction_sha256": "ee1ae393a6c050f69b70112ccbab7e2f93aac788728e32bd61ea96aeaa8320a5",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 8
+        }
+      ]
+    },
+    {
+      "filename": "04-DBTB-en-espa-ol-para-Android-14.apk",
+      "apk_sha256": "b38cc2c4ae3f20d1b1c6c1419a7b6b62ab57ea8954468874f6c5f8c40b39a098",
+      "classes_dex_sha256": "d594affc14328decc5a9d898ab8fed52f83c54e2795cf06973454d9f5385a81c",
+      "family": "obfuscated-ext-family",
+      "controller_class": "Lext/i;",
+      "keydata_class": "Lext/r;",
+      "status": "STATIC INVENTORY ONLY; Vita executes the pinned original core",
+      "input_methods": {
+        "Lext/i;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 54,
+            "resolved_instruction_sha256": "7c11ef30726f5ea64e8c88ea691497c712a91fc49cbfc119f00ff94c63ac1a6c"
+          },
+          {
+            "name": "a",
+            "descriptor": "()I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "6d0a37038e6ae83a63735e41c746d10d9f2234203f02079b75402736f9543687"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "62493ef0f5794cf6eb93bacf9999d67675584325bbf9ea0d8199f79648151822"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I)I",
+            "instruction_count": 20,
+            "resolved_instruction_sha256": "6ef15213b7ee3541ce545adacc7bac6af61be4386ba485f4c307ae57feaa1f1c"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I I I)I",
+            "instruction_count": 188,
+            "resolved_instruction_sha256": "5f03579458029ccd7a76c9e1720b14dcc9c762f7744acb9e8c0e482fc3b02b98"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "f9b593246327441a0ecb95176c9709d45794fa43512d880316127f3f3714db8d"
+          },
+          {
+            "name": "a",
+            "descriptor": "(Lext/r;)V",
+            "instruction_count": 3447,
+            "resolved_instruction_sha256": "b40816b763ea1925bc984053e0b0e772dd819d761d60acb7bcd47a78b83052b5"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "d6b4e2c2dbb7f0c510767f7b632f6df09b60f9fa58ac184be4b014f7ebb357ed"
+          }
+        ],
+        "Lext/r;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 58,
+            "resolved_instruction_sha256": "c1a8d66bb7b0ab07627ce98dec762f07e333b42670bd537d66d937556e336f99"
+          },
+          {
+            "name": "b",
+            "descriptor": "()V",
+            "instruction_count": 34,
+            "resolved_instruction_sha256": "379cf6c12f568fa7ed2eebbc1340522d8d7e00fa1adacfae0b97171f2d059217"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "81d7c4fc27268e0340c1b30ae0db4d0bca1bcf4487085852434392cd0cfad11d"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 14,
+            "resolved_instruction_sha256": "9188960e229287f67612d7c87143ffaf58cad47a386913ad1cc9b0b5e313ad86"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)V",
+            "instruction_count": 63,
+            "resolved_instruction_sha256": "e9dcc6dd4e8b6013d88496dea67b61238b77c05828418f15e636516f458867f3"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I)V",
+            "instruction_count": 177,
+            "resolved_instruction_sha256": "8d970c719eafeea346d646300ae20eaa46242313118f211269df993c6efbca18"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)Z",
+            "instruction_count": 38,
+            "resolved_instruction_sha256": "b4871ea7f65a8b8ae1c7944a599f0b3902c6d5b26cb075b98f64002ddc846e17"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "a2f0a76bce592539ee625ebca6e656cddf7284f4fbbde2a947d6b60d97683bdf"
+          }
+        ]
+      },
+      "virtual_pad_callers": [
+        {
+          "name": "A",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5426,
+          "resolved_instruction_sha256": "94b67e3b2ad9ee7fd4c05362d0d03736572feedaa7c5884ced5b16be8fdabff0",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "q",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5955,
+          "resolved_instruction_sha256": "726363100c2e98f6a2a4756200747b50f8b0acaacff25d5beb13351ed54c9b2a",
+          "class": "Lext/C;",
+          "addpad_call_count": 1
+        },
+        {
+          "name": "s",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 4039,
+          "resolved_instruction_sha256": "4081957eb84397ec0e891b89c98d7f25133167cb92e5daa435460fa9e0eda730",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "v",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 8155,
+          "resolved_instruction_sha256": "7f3ab9abc9ad943c1e562260dec4307cd15f828743cb4f826bd36f246b8403fe",
+          "class": "Lext/C;",
+          "addpad_call_count": 11
+        }
+      ]
+    },
+    {
+      "filename": "05-TAP-BATTLE-INVASION-BETA-3.apk",
+      "apk_sha256": "caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d",
+      "classes_dex_sha256": "05aa0c5ec839161e59b93eccd8657925380c56b46f1a4a452c662b1f115212d1",
+      "family": "obfuscated-ext-family",
+      "controller_class": "Lext/i;",
+      "keydata_class": "Lext/r;",
+      "status": "STATIC INVENTORY ONLY; Vita executes the pinned original core",
+      "input_methods": {
+        "Lext/i;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 54,
+            "resolved_instruction_sha256": "7c11ef30726f5ea64e8c88ea691497c712a91fc49cbfc119f00ff94c63ac1a6c"
+          },
+          {
+            "name": "a",
+            "descriptor": "()I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "6d0a37038e6ae83a63735e41c746d10d9f2234203f02079b75402736f9543687"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "62493ef0f5794cf6eb93bacf9999d67675584325bbf9ea0d8199f79648151822"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I)I",
+            "instruction_count": 20,
+            "resolved_instruction_sha256": "6ef15213b7ee3541ce545adacc7bac6af61be4386ba485f4c307ae57feaa1f1c"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I I I)I",
+            "instruction_count": 188,
+            "resolved_instruction_sha256": "5f03579458029ccd7a76c9e1720b14dcc9c762f7744acb9e8c0e482fc3b02b98"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "f9b593246327441a0ecb95176c9709d45794fa43512d880316127f3f3714db8d"
+          },
+          {
+            "name": "a",
+            "descriptor": "(Lext/r;)V",
+            "instruction_count": 3447,
+            "resolved_instruction_sha256": "b40816b763ea1925bc984053e0b0e772dd819d761d60acb7bcd47a78b83052b5"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "d6b4e2c2dbb7f0c510767f7b632f6df09b60f9fa58ac184be4b014f7ebb357ed"
+          }
+        ],
+        "Lext/r;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 58,
+            "resolved_instruction_sha256": "c1a8d66bb7b0ab07627ce98dec762f07e333b42670bd537d66d937556e336f99"
+          },
+          {
+            "name": "b",
+            "descriptor": "()V",
+            "instruction_count": 34,
+            "resolved_instruction_sha256": "379cf6c12f568fa7ed2eebbc1340522d8d7e00fa1adacfae0b97171f2d059217"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "81d7c4fc27268e0340c1b30ae0db4d0bca1bcf4487085852434392cd0cfad11d"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 14,
+            "resolved_instruction_sha256": "9188960e229287f67612d7c87143ffaf58cad47a386913ad1cc9b0b5e313ad86"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)V",
+            "instruction_count": 63,
+            "resolved_instruction_sha256": "e9dcc6dd4e8b6013d88496dea67b61238b77c05828418f15e636516f458867f3"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I)V",
+            "instruction_count": 177,
+            "resolved_instruction_sha256": "8d970c719eafeea346d646300ae20eaa46242313118f211269df993c6efbca18"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)Z",
+            "instruction_count": 38,
+            "resolved_instruction_sha256": "b4871ea7f65a8b8ae1c7944a599f0b3902c6d5b26cb075b98f64002ddc846e17"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "a2f0a76bce592539ee625ebca6e656cddf7284f4fbbde2a947d6b60d97683bdf"
+          }
+        ]
+      },
+      "virtual_pad_callers": [
+        {
+          "name": "A",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5426,
+          "resolved_instruction_sha256": "94b67e3b2ad9ee7fd4c05362d0d03736572feedaa7c5884ced5b16be8fdabff0",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "q",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5955,
+          "resolved_instruction_sha256": "726363100c2e98f6a2a4756200747b50f8b0acaacff25d5beb13351ed54c9b2a",
+          "class": "Lext/C;",
+          "addpad_call_count": 1
+        },
+        {
+          "name": "s",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 4039,
+          "resolved_instruction_sha256": "4081957eb84397ec0e891b89c98d7f25133167cb92e5daa435460fa9e0eda730",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "v",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 8155,
+          "resolved_instruction_sha256": "7f3ab9abc9ad943c1e562260dec4307cd15f828743cb4f826bd36f246b8403fe",
+          "class": "Lext/C;",
+          "addpad_call_count": 11
+        }
+      ]
+    },
+    {
+      "filename": "06-DragonBallZuperSamuGamerYT.apk",
+      "apk_sha256": "1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d",
+      "classes_dex_sha256": "cba71bc13b9d1281aa8180423be9d08db0deb0fc2f5ef6825cc11ba66a17b729",
+      "family": "named-original-core",
+      "controller_class": "Lcom/namcobandaigames/dragonballtap/apk/Controller;",
+      "keydata_class": "Lcom/namcobandaigames/dragonballtap/apk/KeyData;",
+      "status": "STATIC INVENTORY ONLY; Vita executes the pinned original core",
+      "input_methods": {
+        "Lcom/namcobandaigames/dragonballtap/apk/Controller;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 23,
+            "resolved_instruction_sha256": "933468d1ec90287f47e94600fe72b75a779d8a584eb641315d323ffec028f5ce"
+          },
+          {
+            "name": "AddPad",
+            "descriptor": "(I I I I I I)I",
+            "instruction_count": 103,
+            "resolved_instruction_sha256": "b21d47c8a7ba31c66da79f68eefb0a4f0ec8b5192851b2b7bc475d2ca5945ec5"
+          },
+          {
+            "name": "ClearKey",
+            "descriptor": "()V",
+            "instruction_count": 11,
+            "resolved_instruction_sha256": "7fff9353390d0c3b17e3a541990cca3f583eaa71e6788dc494ad559142a2f8ee"
+          },
+          {
+            "name": "GetCenterX",
+            "descriptor": "(I)I",
+            "instruction_count": 43,
+            "resolved_instruction_sha256": "34380cb427a592a048d4e3c7e2cb86f83ef3ca1a246b898088bd8714b332c7cb"
+          },
+          {
+            "name": "GetCenterY",
+            "descriptor": "(I)I",
+            "instruction_count": 43,
+            "resolved_instruction_sha256": "8b425ec0930f1ef1b000af2ad321087d500c0738758eda5e877cd48b51ca56b8"
+          },
+          {
+            "name": "GetCount",
+            "descriptor": "()I",
+            "instruction_count": 3,
+            "resolved_instruction_sha256": "221b4077f35b4ace3dfbd26e34aa7de37b4bfa5c4f132b160a30456598128834"
+          },
+          {
+            "name": "GetKeepFrame",
+            "descriptor": "(I)I",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "76124db477ea1fdc0669f840cb58d64cf1926c6749a1ecf0e6f3e6494a69023c"
+          },
+          {
+            "name": "GetKey",
+            "descriptor": "(I I)I",
+            "instruction_count": 9,
+            "resolved_instruction_sha256": "524ceb8f8ca4d65b6ac6df0ce125ae8ac04030dd4567783f37c1bc88e98ed17c"
+          },
+          {
+            "name": "GetRange",
+            "descriptor": "(I I)I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "8d020455c9417a61b4c124b5657b1d58169e17e5bdd0e61ae94f89466589fd7d"
+          },
+          {
+            "name": "GetSpeed",
+            "descriptor": "(I)I",
+            "instruction_count": 7,
+            "resolved_instruction_sha256": "98efb6994f33497747a24d63d92b71b1dd5a3fbc014db7d0f95b584fccfa4450"
+          },
+          {
+            "name": "GetStatus",
+            "descriptor": "(I I)I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "3b2b9c6ef5212b08f29a24f8fcb1985d2d6f06f0e97f3e2b02b6a1412e64dea0"
+          },
+          {
+            "name": "GetStickAngles",
+            "descriptor": "(I)I",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "5897ca86c2ce6c9c6f013ac20bd2fc87cafc3756accf3b367f27c64e44ea0def"
+          },
+          {
+            "name": "GetStickRange",
+            "descriptor": "(I)F",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "a41dfae9c3d7b9c66e9211a75c49c8f7a57f93ad5279a13fbf28ff73e4bcd4a9"
+          },
+          {
+            "name": "GetTapPullX",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "41033c65b6cf567f3958d2da1038162b27835ff46763be8d55e6dd196f51938d"
+          },
+          {
+            "name": "GetTapPullY",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "b4bcc7c4e03c92081a3d4151c2368440dc1e3c61f134219214783a5374a74e17"
+          },
+          {
+            "name": "GetTapType",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "3a9ee96498d3a840ede7a1507efb67e753e4274873aa213b805b60e29e03c424"
+          },
+          {
+            "name": "GetTapX",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "639be809e223ad4baaf8ce3a89baa3046c61266201e6fb046a995c964ceed2ed"
+          },
+          {
+            "name": "GetTapY",
+            "descriptor": "()I",
+            "instruction_count": 2,
+            "resolved_instruction_sha256": "d794b5e39e23db061ec240fbe28e17f8b729ba1fa466a47b7ccd654795583222"
+          },
+          {
+            "name": "GetX",
+            "descriptor": "(I)I",
+            "instruction_count": 19,
+            "resolved_instruction_sha256": "b7cd2efee8502283c1b207b9bd8bb431d0bd5870bb6523955b1ac34df478924a"
+          },
+          {
+            "name": "GetY",
+            "descriptor": "(I)I",
+            "instruction_count": 19,
+            "resolved_instruction_sha256": "aa3b44ac892b859092eadacf89ad06f1c976fcadce895f527c922fa90f424854"
+          },
+          {
+            "name": "Init",
+            "descriptor": "()V",
+            "instruction_count": 4,
+            "resolved_instruction_sha256": "061cb258cfda6eed412f03e7b1335680eee6eb0482984593775ece1b2c492a35"
+          },
+          {
+            "name": "KeyLock",
+            "descriptor": "(I Z)V",
+            "instruction_count": 16,
+            "resolved_instruction_sha256": "a871e68c04b6250b24ce4aa48f5db0f3306c628f26357b64aa229fab7baf0eb3"
+          },
+          {
+            "name": "SetKey",
+            "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/KeyData;)V",
+            "instruction_count": 4229,
+            "resolved_instruction_sha256": "3e4d41cf8a2a881bcf8681441e30e96113ab6013888a268ad6a479f1a2a8a3fd"
+          },
+          {
+            "name": "SetKeyCode",
+            "descriptor": "(I I I)V",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "584de84a1842e393d2413b960264262e56352c945bb5b8683959dcd981458126"
+          },
+          {
+            "name": "SetPad",
+            "descriptor": "(I I I I I)V",
+            "instruction_count": 85,
+            "resolved_instruction_sha256": "cca2b89f56a71e713fcb38dc27aefb4373f92899204cd961f32c16839dd77a39"
+          },
+          {
+            "name": "SetPad_Pos",
+            "descriptor": "(I I I)V",
+            "instruction_count": 33,
+            "resolved_instruction_sha256": "254cbc66fbb6f1816bf3691ad56ba98d94d96f19e5c2b174a6ae6454cd76a3e2"
+          },
+          {
+            "name": "SetSkipKey",
+            "descriptor": "(I I)V",
+            "instruction_count": 5,
+            "resolved_instruction_sha256": "651d03215ddf53d24b35e6fb9d7582a5e3ac16f7b7b373f4b3ea43beb76c804b"
+          }
+        ],
+        "Lcom/namcobandaigames/dragonballtap/apk/KeyData;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 30,
+            "resolved_instruction_sha256": "74f0cd2528cbc43e8087cf943aa930e8a4ed58125539e097152034a95e39baeb"
+          },
+          {
+            "name": "Clear",
+            "descriptor": "(I)V",
+            "instruction_count": 21,
+            "resolved_instruction_sha256": "0f0d302712092ae1f07e83320f8c623392d2d502d755ce3e9793e061b31d5b62"
+          },
+          {
+            "name": "ClearBegin",
+            "descriptor": "()V",
+            "instruction_count": 9,
+            "resolved_instruction_sha256": "af6417d8434b6759c36643695ac20c91f7695f807f634f994ff2a55189134be9"
+          },
+          {
+            "name": "GetIndex",
+            "descriptor": "(I)I",
+            "instruction_count": 13,
+            "resolved_instruction_sha256": "068967c3cd55f007275e250e438dd16380498a0bb21c8c8cc8fa43d96a1bffdb"
+          },
+          {
+            "name": "GetSpace",
+            "descriptor": "()I",
+            "instruction_count": 14,
+            "resolved_instruction_sha256": "5500827672d848bfd6a57190b81ce5f8ed38271bd73195efbb7c927b99f3beb5"
+          },
+          {
+            "name": "Init",
+            "descriptor": "()V",
+            "instruction_count": 19,
+            "resolved_instruction_sha256": "052457eedd147819948edfa36d82913d3138d4b70b7cf316ddaa8a8372462dfd"
+          },
+          {
+            "name": "Set",
+            "descriptor": "(I I I I)V",
+            "instruction_count": 69,
+            "resolved_instruction_sha256": "c8a902b1e0a79d708e2eb0471072e8b04d846ccb04669b770c07854003681151"
+          },
+          {
+            "name": "getMoveX",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "dd990bda579ad363eac5a947948fba766d9145e067f876d2b258c867ab56610e"
+          },
+          {
+            "name": "getMoveY",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "04e732918b7127bafa834ab0fb4d8889cfe5ce6fbe0df38ec6e927d92b0907ba"
+          },
+          {
+            "name": "getSpeedX",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "c4d315d4be66a67e7176f0980811db1c3cd5da228bef5bab836dcb07bb47945b"
+          },
+          {
+            "name": "getSpeedY",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "b6c5349c23344096962917c3e86b3a62fb7a6e7fa93f608a60933b05f5903201"
+          },
+          {
+            "name": "getX",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "61d341214a2c8ee80349b410846796e1a4ac6a2a703915ca81f8dbc552b92372"
+          },
+          {
+            "name": "getY",
+            "descriptor": "(I)I",
+            "instruction_count": 8,
+            "resolved_instruction_sha256": "61a5030d2e4e958ca4d872c1bce156c7929c2a2cbc0be9d821f22a85d85be8c4"
+          },
+          {
+            "name": "isBeginTouch",
+            "descriptor": "(I)Z",
+            "instruction_count": 10,
+            "resolved_instruction_sha256": "5c604a02a11090f3fa6da2dd2e9365dbf8bf1036bca1deb681d19f8e8b10cb94"
+          }
+        ]
+      },
+      "virtual_pad_callers": [
+        {
+          "name": "Game14",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 5982,
+          "resolved_instruction_sha256": "1163b5c863ac676290b6fe05191694068151da4cf5b388e58ff94d072c317d9f",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 1
+        },
+        {
+          "name": "Game16",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 3973,
+          "resolved_instruction_sha256": "7a99415eb14ad31bcec2b312fadb080748fc9ee59902ede943d03c221de7d7af",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "Game3",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 8052,
+          "resolved_instruction_sha256": "d700d4ff0a5a242db3bf32ad8f0a985f198d684f50032a2b44b4dc4393251742",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 11
+        },
+        {
+          "name": "Game8",
+          "descriptor": "(Lcom/namcobandaigames/dragonballtap/apk/GlobalWork; I)V",
+          "instruction_count": 3594,
+          "resolved_instruction_sha256": "ee1ae393a6c050f69b70112ccbab7e2f93aac788728e32bd61ea96aeaa8320a5",
+          "class": "Lcom/namcobandaigames/dragonballtap/apk/TCBManajer;",
+          "addpad_call_count": 8
+        }
+      ]
+    },
+    {
+      "filename": "07-Dbfz-v22.apk",
+      "apk_sha256": "5fe0b98d45822cc060a95ef8d9bfa069b4005d7897d83c540db160134c4af67f",
+      "classes_dex_sha256": "11d60c43184a61743781062ce9260c293cbba948fc097d9c10daff44e778085a",
+      "family": "obfuscated-ext-family",
+      "controller_class": "Lext/i;",
+      "keydata_class": "Lext/r;",
+      "status": "STATIC INVENTORY ONLY; Vita executes the pinned original core",
+      "input_methods": {
+        "Lext/i;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 54,
+            "resolved_instruction_sha256": "7c11ef30726f5ea64e8c88ea691497c712a91fc49cbfc119f00ff94c63ac1a6c"
+          },
+          {
+            "name": "a",
+            "descriptor": "()I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "6d0a37038e6ae83a63735e41c746d10d9f2234203f02079b75402736f9543687"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "62493ef0f5794cf6eb93bacf9999d67675584325bbf9ea0d8199f79648151822"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I)I",
+            "instruction_count": 20,
+            "resolved_instruction_sha256": "6ef15213b7ee3541ce545adacc7bac6af61be4386ba485f4c307ae57feaa1f1c"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I I I)I",
+            "instruction_count": 188,
+            "resolved_instruction_sha256": "5f03579458029ccd7a76c9e1720b14dcc9c762f7744acb9e8c0e482fc3b02b98"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "f9b593246327441a0ecb95176c9709d45794fa43512d880316127f3f3714db8d"
+          },
+          {
+            "name": "a",
+            "descriptor": "(Lext/r;)V",
+            "instruction_count": 3447,
+            "resolved_instruction_sha256": "b40816b763ea1925bc984053e0b0e772dd819d761d60acb7bcd47a78b83052b5"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "d6b4e2c2dbb7f0c510767f7b632f6df09b60f9fa58ac184be4b014f7ebb357ed"
+          }
+        ],
+        "Lext/r;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 58,
+            "resolved_instruction_sha256": "c1a8d66bb7b0ab07627ce98dec762f07e333b42670bd537d66d937556e336f99"
+          },
+          {
+            "name": "b",
+            "descriptor": "()V",
+            "instruction_count": 34,
+            "resolved_instruction_sha256": "379cf6c12f568fa7ed2eebbc1340522d8d7e00fa1adacfae0b97171f2d059217"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "81d7c4fc27268e0340c1b30ae0db4d0bca1bcf4487085852434392cd0cfad11d"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 14,
+            "resolved_instruction_sha256": "9188960e229287f67612d7c87143ffaf58cad47a386913ad1cc9b0b5e313ad86"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)V",
+            "instruction_count": 63,
+            "resolved_instruction_sha256": "e9dcc6dd4e8b6013d88496dea67b61238b77c05828418f15e636516f458867f3"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I)V",
+            "instruction_count": 177,
+            "resolved_instruction_sha256": "8d970c719eafeea346d646300ae20eaa46242313118f211269df993c6efbca18"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)Z",
+            "instruction_count": 38,
+            "resolved_instruction_sha256": "b4871ea7f65a8b8ae1c7944a599f0b3902c6d5b26cb075b98f64002ddc846e17"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "a2f0a76bce592539ee625ebca6e656cddf7284f4fbbde2a947d6b60d97683bdf"
+          }
+        ]
+      },
+      "virtual_pad_callers": [
+        {
+          "name": "A",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5426,
+          "resolved_instruction_sha256": "94b67e3b2ad9ee7fd4c05362d0d03736572feedaa7c5884ced5b16be8fdabff0",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "q",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5955,
+          "resolved_instruction_sha256": "726363100c2e98f6a2a4756200747b50f8b0acaacff25d5beb13351ed54c9b2a",
+          "class": "Lext/C;",
+          "addpad_call_count": 1
+        },
+        {
+          "name": "s",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 4039,
+          "resolved_instruction_sha256": "4081957eb84397ec0e891b89c98d7f25133167cb92e5daa435460fa9e0eda730",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "v",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 8155,
+          "resolved_instruction_sha256": "7f3ab9abc9ad943c1e562260dec4307cd15f828743cb4f826bd36f246b8403fe",
+          "class": "Lext/C;",
+          "addpad_call_count": 11
+        }
+      ]
+    },
+    {
+      "filename": "08-dbs-mobile-tap-battle-v1.apk",
+      "apk_sha256": "ce00bb66f2d19f5558bdd26bf6f80e8ec6193d20137a7dd0d1deb37066f2fc84",
+      "classes_dex_sha256": "2392d43b74e81f601ecc771ec26453d444fbdecb48fffd4995f4b7b96f796de7",
+      "family": "obfuscated-ext-family",
+      "controller_class": "Lext/i;",
+      "keydata_class": "Lext/r;",
+      "status": "STATIC INVENTORY ONLY; Vita executes the pinned original core",
+      "input_methods": {
+        "Lext/i;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 54,
+            "resolved_instruction_sha256": "7c11ef30726f5ea64e8c88ea691497c712a91fc49cbfc119f00ff94c63ac1a6c"
+          },
+          {
+            "name": "a",
+            "descriptor": "()I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "6d0a37038e6ae83a63735e41c746d10d9f2234203f02079b75402736f9543687"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "62493ef0f5794cf6eb93bacf9999d67675584325bbf9ea0d8199f79648151822"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I)I",
+            "instruction_count": 20,
+            "resolved_instruction_sha256": "6ef15213b7ee3541ce545adacc7bac6af61be4386ba485f4c307ae57feaa1f1c"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I I I)I",
+            "instruction_count": 188,
+            "resolved_instruction_sha256": "5f03579458029ccd7a76c9e1720b14dcc9c762f7744acb9e8c0e482fc3b02b98"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "f9b593246327441a0ecb95176c9709d45794fa43512d880316127f3f3714db8d"
+          },
+          {
+            "name": "a",
+            "descriptor": "(Lext/r;)V",
+            "instruction_count": 3447,
+            "resolved_instruction_sha256": "b40816b763ea1925bc984053e0b0e772dd819d761d60acb7bcd47a78b83052b5"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "d6b4e2c2dbb7f0c510767f7b632f6df09b60f9fa58ac184be4b014f7ebb357ed"
+          }
+        ],
+        "Lext/r;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 58,
+            "resolved_instruction_sha256": "c1a8d66bb7b0ab07627ce98dec762f07e333b42670bd537d66d937556e336f99"
+          },
+          {
+            "name": "b",
+            "descriptor": "()V",
+            "instruction_count": 34,
+            "resolved_instruction_sha256": "379cf6c12f568fa7ed2eebbc1340522d8d7e00fa1adacfae0b97171f2d059217"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "81d7c4fc27268e0340c1b30ae0db4d0bca1bcf4487085852434392cd0cfad11d"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 14,
+            "resolved_instruction_sha256": "9188960e229287f67612d7c87143ffaf58cad47a386913ad1cc9b0b5e313ad86"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)V",
+            "instruction_count": 63,
+            "resolved_instruction_sha256": "e9dcc6dd4e8b6013d88496dea67b61238b77c05828418f15e636516f458867f3"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I)V",
+            "instruction_count": 177,
+            "resolved_instruction_sha256": "8d970c719eafeea346d646300ae20eaa46242313118f211269df993c6efbca18"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)Z",
+            "instruction_count": 38,
+            "resolved_instruction_sha256": "b4871ea7f65a8b8ae1c7944a599f0b3902c6d5b26cb075b98f64002ddc846e17"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "a2f0a76bce592539ee625ebca6e656cddf7284f4fbbde2a947d6b60d97683bdf"
+          }
+        ]
+      },
+      "virtual_pad_callers": [
+        {
+          "name": "A",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5426,
+          "resolved_instruction_sha256": "94b67e3b2ad9ee7fd4c05362d0d03736572feedaa7c5884ced5b16be8fdabff0",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "q",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5955,
+          "resolved_instruction_sha256": "726363100c2e98f6a2a4756200747b50f8b0acaacff25d5beb13351ed54c9b2a",
+          "class": "Lext/C;",
+          "addpad_call_count": 1
+        },
+        {
+          "name": "s",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 4039,
+          "resolved_instruction_sha256": "4081957eb84397ec0e891b89c98d7f25133167cb92e5daa435460fa9e0eda730",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "v",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 8155,
+          "resolved_instruction_sha256": "7f3ab9abc9ad943c1e562260dec4307cd15f828743cb4f826bd36f246b8403fe",
+          "class": "Lext/C;",
+          "addpad_call_count": 11
+        }
+      ]
+    },
+    {
+      "filename": "09-dbz-mobile-v9.apk",
+      "apk_sha256": "6876176626b2458eec9905e32f4fc88740a867f990a0f910205c937e140a6764",
+      "classes_dex_sha256": "b90abccce8952240760f50c4bad31a1da8fbd3621992391e77301bc89283118d",
+      "family": "obfuscated-ext-family",
+      "controller_class": "Lext/i;",
+      "keydata_class": "Lext/r;",
+      "status": "STATIC INVENTORY ONLY; Vita executes the pinned original core",
+      "input_methods": {
+        "Lext/i;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 54,
+            "resolved_instruction_sha256": "7c11ef30726f5ea64e8c88ea691497c712a91fc49cbfc119f00ff94c63ac1a6c"
+          },
+          {
+            "name": "a",
+            "descriptor": "()I",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "6d0a37038e6ae83a63735e41c746d10d9f2234203f02079b75402736f9543687"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "62493ef0f5794cf6eb93bacf9999d67675584325bbf9ea0d8199f79648151822"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I)I",
+            "instruction_count": 20,
+            "resolved_instruction_sha256": "6ef15213b7ee3541ce545adacc7bac6af61be4386ba485f4c307ae57feaa1f1c"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I I I)I",
+            "instruction_count": 188,
+            "resolved_instruction_sha256": "5f03579458029ccd7a76c9e1720b14dcc9c762f7744acb9e8c0e482fc3b02b98"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 6,
+            "resolved_instruction_sha256": "f9b593246327441a0ecb95176c9709d45794fa43512d880316127f3f3714db8d"
+          },
+          {
+            "name": "a",
+            "descriptor": "(Lext/r;)V",
+            "instruction_count": 3447,
+            "resolved_instruction_sha256": "b40816b763ea1925bc984053e0b0e772dd819d761d60acb7bcd47a78b83052b5"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 32,
+            "resolved_instruction_sha256": "d6b4e2c2dbb7f0c510767f7b632f6df09b60f9fa58ac184be4b014f7ebb357ed"
+          }
+        ],
+        "Lext/r;": [
+          {
+            "name": "<init>",
+            "descriptor": "()V",
+            "instruction_count": 58,
+            "resolved_instruction_sha256": "c1a8d66bb7b0ab07627ce98dec762f07e333b42670bd537d66d937556e336f99"
+          },
+          {
+            "name": "b",
+            "descriptor": "()V",
+            "instruction_count": 34,
+            "resolved_instruction_sha256": "379cf6c12f568fa7ed2eebbc1340522d8d7e00fa1adacfae0b97171f2d059217"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "81d7c4fc27268e0340c1b30ae0db4d0bca1bcf4487085852434392cd0cfad11d"
+          },
+          {
+            "name": "a",
+            "descriptor": "()V",
+            "instruction_count": 14,
+            "resolved_instruction_sha256": "9188960e229287f67612d7c87143ffaf58cad47a386913ad1cc9b0b5e313ad86"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)V",
+            "instruction_count": 63,
+            "resolved_instruction_sha256": "e9dcc6dd4e8b6013d88496dea67b61238b77c05828418f15e636516f458867f3"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I I I I)V",
+            "instruction_count": 177,
+            "resolved_instruction_sha256": "8d970c719eafeea346d646300ae20eaa46242313118f211269df993c6efbca18"
+          },
+          {
+            "name": "a",
+            "descriptor": "(I)Z",
+            "instruction_count": 38,
+            "resolved_instruction_sha256": "b4871ea7f65a8b8ae1c7944a599f0b3902c6d5b26cb075b98f64002ddc846e17"
+          },
+          {
+            "name": "b",
+            "descriptor": "(I)I",
+            "instruction_count": 36,
+            "resolved_instruction_sha256": "a2f0a76bce592539ee625ebca6e656cddf7284f4fbbde2a947d6b60d97683bdf"
+          }
+        ]
+      },
+      "virtual_pad_callers": [
+        {
+          "name": "A",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5426,
+          "resolved_instruction_sha256": "94b67e3b2ad9ee7fd4c05362d0d03736572feedaa7c5884ced5b16be8fdabff0",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "q",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 5955,
+          "resolved_instruction_sha256": "726363100c2e98f6a2a4756200747b50f8b0acaacff25d5beb13351ed54c9b2a",
+          "class": "Lext/C;",
+          "addpad_call_count": 1
+        },
+        {
+          "name": "s",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 4039,
+          "resolved_instruction_sha256": "4081957eb84397ec0e891b89c98d7f25133167cb92e5daa435460fa9e0eda730",
+          "class": "Lext/C;",
+          "addpad_call_count": 8
+        },
+        {
+          "name": "v",
+          "descriptor": "(Lext/p; I)V",
+          "instruction_count": 8155,
+          "resolved_instruction_sha256": "7f3ab9abc9ad943c1e562260dec4307cd15f828743cb4f826bd36f246b8403fe",
+          "class": "Lext/C;",
+          "addpad_call_count": 11
+        }
+      ]
+    }
+  ]
+}
