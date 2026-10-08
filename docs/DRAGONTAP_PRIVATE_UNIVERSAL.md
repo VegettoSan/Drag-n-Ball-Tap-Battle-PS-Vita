@@ -74,11 +74,11 @@ Each decoded region must be strictly within the PAC. The literal `plt\0` tag is 
 
 The source DEX resolves `46C3.pac → common.pac` and `2B98.pac → demo_00.pac`. The earlier guess in the manually registered DBFZ codec accidentally swapped them. Extraction was *structurally* plausible but semantically incorrect; this discovery prompted a correction to all three extractors, regression cases and `DBFZ_V22_APK.md`. Do not trust a renamed archive merely because `common.pac` exists: validate it against the DEX mapping.
 
-## Proposed **one-time** universal integration
+## Implemented universal bridge (experimental source; hardware pending)
 
 The latest *stable* public VPK v1.0 (00.34 gameplay source) must remain untouched. Integrate this as a new, separately versioned candidate.
 
-**Extractor side (Web and Windows, then engineering Python):**
+**Extractor side (Web and Windows implemented; engineering Python CLI remains separate):**
 
 1. Detect ordinary canonical `assets/` or `res/raw/` profiles using the existing safe path and ZIP rules.
 2. For unknown protected `assets/*.pac`, inspect `classes.dex` without executing it. Find **exactly one** static initializer meeting the 17-alias + 17-key contract. Never infer keys from random arbitrary binary snippets.
@@ -96,7 +96,7 @@ The latest *stable* public VPK v1.0 (00.34 gameplay source) must remain untouche
 5. Keep profile filesystem/save isolation and existing no-fallback policy. Test suspend/resume and switching profiles (do not leave pointers to a previous profile's codec).
 6. Compile a **separate test VPK**. Re-test Original, Gen, Android14, Spanish14, Invasion, Samu, DBFZ, character selection, battle, results and extended session on hardware.
 
-This sidecar design is proposed, **not currently implemented**. A Python **read-only proof-of-concept scanner** is provided in the conversation artifact `dragon_tap_universal_probe.py`, together with `dragon_tap_universal_probe_results.json`, so a future implementation can be verified against actual APK corpora without having hard-coded aliases or XOR constants.
+**Now implemented in source for Web, Windows and Vita:** the extractors detect an unseen PRIVATE DEX loader, remap protected names without rewriting PAC contents and emit a bounded `dbtb_codec.json`. Vita loads it per selected profile, resets it on profile change and supplies its keys to the existing PAC/GameData/RGBA/WAV decoders. The existing stable v1.0 release was not rebuilt or overwritten. Hardware/gameplay verification and a separately compiled full-engine VPK are **still pending**. The Python CLI extractor remains on registered codecs. A Python **read-only proof-of-concept scanner** is provided in the conversation artifact `dragon_tap_universal_probe.py`, together with `dragon_tap_universal_probe_results.json`, so a future implementation can be verified against actual APK corpora without having hard-coded aliases or XOR constants.
 
 ## What cannot be promised
 
@@ -118,3 +118,10 @@ A new community APK was supplied after the initial four-mod research, making thi
 Additional APK ZIP check: 155 non-directory assets (117 PAC, 36 audio with `.ogg` suffix, 1 PNG and 1 BIN), 129,925,365 unpacked asset bytes, no bad ZIP CRCs. Of the 36 `.ogg` files, 26 have an OggS stream header and 10 have an MP4/M4A `ftyp` header; the existing media converter needs to account for misleading extensions. APK SHA-256: `ce00bb66f2d19f5558bdd26bf6f80e8ec6193d20137a7dd0d1deb37066f2fc84`.
 
 **Critical limitation:** source snapshots of the published Windows and Web extractors still hard-code only the first four alias families. Their recognition scores for this fifth APK are **0 for all four profiles**; `assets/common.pac` is absent (its actual name is `assets/4AF4.pac`). Accordingly their default extraction path falls back to generic assets and rejects with `common.pac was not found`. This is *not* a passing production extractor test, merely a passing **universal proof-of-concept** test. Implement DEX-powered extraction and Vita-side runtime codec metadata before promising that new protected mods are immediately playable; do not change stable VPK 1.0.
+
+## Actual implementation and CI evidence
+
+- `web/private-dex.mjs` + `web/extractor-core.mjs`: recognize new 17-alias/17-key DEX generator, statically validate every PAC, emit a per-profile numeric JSON sidecar, preserve ZIP CRC and file size limits. End-to-end synthetic extraction and malformed rejection passed [Pages CI](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37718130522).
+- `tools/windows/PrivateModDex.ps1` + `tools/windows/Extraer_APK_para_Vita.ps1`: same detection and sidecar, no external Python. The portable Windows ZIP includes this new helper. All 20 Windows regression tests passed [Windows CI](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37718063263).
+- `src/dynamic_codec.hpp` + `src/community_profiles.hpp` + `tools/aot/engine/native/resources.cpp` + `src/engine_resources.cpp`: single opt-in, profile-local codec with strict JSON schema and `C14U` texture marker. Synthetic fifth-mod code path and four existing codecs passed [native host regression tests](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37717841023); native Vita compilation also passed its link-smoke workflow, which uses a **non-playable mock TeaVM core**.
+- Do not claim the full original AOT engine or hardware-combat flows were validated by these checks. Build the full VPK using the existing manual prerelease workflow and test with original and all mods on real Vita before promoting a stable version.
