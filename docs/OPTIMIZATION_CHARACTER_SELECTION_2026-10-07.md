@@ -100,3 +100,37 @@ To enable the existing workflow without committing commercial APK content:
 
 **Never distribute a native-smoke/dummy VPK as the playable test build.**
 A passed synthetic host test is not a release-ready VPK.
+
+## Offline full-engine test VPK produced (2026-10-07)
+
+The previous GitHub Actions attempt above remains a true record of **that CI
+run's** missing secret. An independent build using the attached original APK and
+the repository's exported, pinned public toolchains has now succeeded **locally**;
+no GitHub Actions secret was necessary for this local build.
+
+- Output: `Dragon-Ball-Tap-Battle-PS-Vita-v1.0-Character-Cache-Test.vpk`
+- SHA-256: `ab40f9608ba52eafc691b4c22bb303b385b209ce810ff556ae6bfa342b17b654`
+- Size: `2735041` bytes; `eboot.bin` size: `2359750` bytes.
+- `APP_VER=01.00`, `TITLE_ID=DBTB01178` (matches stable v1.0 package identity).
+- Runtime generated directly from original `DBTapBattle.apk`, verified
+  SHA-256 `b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b`.
+- TeaVM original engine generated with the repo's pinned dex2jar 2.4 / ECJ
+  3.37.0 / TeaVM 0.12.3 / Temurin Java 17; compiled with exported VitaSDK
+  2026.08 (GCC 15.2.0; TeaVM `-O1`, native `-O2`).
+- Source base: repository's native-smoke source snapshot export from 2026-10-07
+  23:44 UTC. The experimental branch's `src/resource_cache.hpp` was copied
+  over that snapshot; its Git blob hash was verified as
+  `3703b6ef7d36e6304d8c92d87f948a9d18919f64` (the exact experimental
+  branch resource-cache code).
+- Verified: complete TeaVM symbols including `TCBManajer`, Vita ELF / VELF /
+  SELF build, VPK integrity/CRC, LiveArea toolkit-format validator, icon,
+  selector assets, SFO title ID and APP_VER.
+- **Not yet physically tested on Vita**. Successful compile and package checks
+  cannot establish pause reduction, runtime heap safety, or mod compatibility.
+- `main` and the stable v1.0 release remain untouched. This test build is a
+  separate downloadable chat artifact, not a new GitHub Release or tag.
+
+On device, compare first visit vs revisit to characters in Original, Invasion,
+Samu; send the test build's `runtime.log` and report whether recurring
+`charNN.pac filter=251` requests now log `cache=hit` and whether the
+visible pause improved. Revert to original v1.0 if any gameplay regression.
