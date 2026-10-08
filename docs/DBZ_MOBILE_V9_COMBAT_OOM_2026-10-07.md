@@ -19,6 +19,15 @@ The log shows:
 3. `tools/aot/engine/native/resources.cpp`: when the combat object PAC stream (e.g. `bobj03.pac`) closes, release only **idle** resource/texture cache ownership, retaining active streams and in-use textures. Diagnostic Newlib used/free bytes are logged at that boundary.
 4. Do **not** increase the Newlib 96 MiB heap or TeaVM 48 MiB max blindly; both are shared within Vita's finite allocation budget. No original Android logic, class behavior, combat rules, or asset conversion was changed.
 
+## Full local test build (same session)
+
+- Built the *complete pinned original TeaVM/AOT engine* locally using user-provided `DBTapBattle.apk`, exported pinned Java tools and VitaSDK 2026.08. No dummy TeaVM core and no GitHub Action used for this binary.
+- Output: `DBTapBattle-Vita-Universal-MemoryFix-Experimental-01.00.vpk`; SHA-256 `3562e444ddd72e8552bac107c80377d0927aed97c57bbe48bafcf5945af7a97c`.
+- Existing universal experimental VPK ZIP and replacement contain the **same 15 entry names**, and the **only changed payload is `eboot.bin`**. Selector art, LiveArea files, save seed and third-party notices are unchanged.
+- Verified ZIP member CRCs, `validate_livearea_vpk.py` pass, full 32-bit ARM ELF (unstripped) and new native `Combat resource boundary` diagnostic string.
+- Host original + Android14 real resource regression: **125 PACs, 137 containers, 470 images, 68 converted BIN, 198 PCM WAV**; all pass.
+- Do not claim hardware crash resolution until a new `dbz_mobile_v9` battle is tested. Preserve 1.0 release and user save/profile folders.
+
 ## Validation / limitations
 
 - Host synthetic protected PAC normalizer tests (Android14, Spanish, Invasion, DBFZ and a dynamic profile) pass with the updated capacity/bridge path.
