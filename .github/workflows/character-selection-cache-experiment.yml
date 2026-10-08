@@ -1,0 +1,26 @@
+name: Character selection cache experiment (host regression)
+
+on:
+  push:
+    branches:
+      - perf/character-switch-metadata-cache
+  workflow_dispatch:
+
+jobs:
+  synthetic-cache-regression:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile character cache regression (no copyrighted assets)
+        run: |
+          set -euxo pipefail
+          g++ -std=c++14 -O2 -Wall -Wextra -Isrc \
+            tests/test_character_selection_cache.cpp \
+            src/engine_resources.cpp src/pac.cpp src/game_data.cpp src/vfs.cpp \
+            -o /tmp/dbtb-test-character-selection-cache
+      - name: Run character metadata and combat cache regression
+        run: |
+          set -euxo pipefail
+          /tmp/dbtb-test-character-selection-cache
