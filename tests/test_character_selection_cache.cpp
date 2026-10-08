@@ -1,9 +1,7 @@
 // Regression for the Vita 1.0 character-selection ~125 ms PAC metadata reload.
 // Uses a large *synthetic* original-format PAC; no commercial data required.
 // Build:
-// g++ -std=c++14 -O2 -Isrc tests/test_character_selection_cache.cpp \
-//     src/engine_resources.cpp src/pac.cpp src/game_data.cpp src/vfs.cpp \
-//     -o /tmp/test-character-selection-cache
+// Build instructions are also in docs/VALIDATION.md and the branch CI.
 // /tmp/test-character-selection-cache
 
 #include "resource_cache.hpp"
