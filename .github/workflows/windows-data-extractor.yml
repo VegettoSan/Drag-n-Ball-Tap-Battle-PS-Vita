@@ -33,7 +33,7 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = 'Stop'
-          Compress-Archive -LiteralPath tools/windows/Extract_APK_for_Vita.bat,tools/windows/Extraer_APK_para_Vita.bat,tools/windows/Extraer_APK_para_Vita.ps1,tools/windows/README.txt,tools/windows/LEEME.txt -DestinationPath DBTapBattle-Extractor-Windows.zip
+          Compress-Archive -LiteralPath tools/windows/Extract_APK_for_Vita.bat,tools/windows/Extraer_APK_para_Vita.bat,tools/windows/Extraer_APK_para_Vita.ps1,tools/windows/PrivateModDex.ps1,tools/windows/README.txt,tools/windows/LEEME.txt -DestinationPath DBTapBattle-Extractor-Windows.zip
       - uses: actions/upload-artifact@v4
         with:
           name: DBTapBattle-Extractor-Windows
