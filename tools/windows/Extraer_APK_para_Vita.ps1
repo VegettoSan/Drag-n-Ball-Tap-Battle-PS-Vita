@@ -125,7 +125,7 @@ function Get-CommunityProfiles {
     $dbfz = [pscustomobject]@{
         Name='community14-dbfz-11d60c43'; Count=[uint32]14766; Offset=[uint32]2949014588; Size=[uint32]1691246971;
         Types=@([uint32]2764525539,[uint32]244929431,[uint32]2197378859,[uint32]272914723,[uint32]79620228,[uint32]1046491043);
-        Fixed=@{ '2B98'='common'; 'CC4B'='select0'; '7D98'='effect'; '46C3'='demo_00'; 'D6E1'='demo_08'; 'B727'='card_preview'; 'AC9E'='gamedata'; 'D791'='text00' };
+        Fixed=@{ '46C3'='common'; 'CC4B'='select0'; '7D98'='effect'; '2B98'='demo_00'; 'D6E1'='demo_08'; 'B727'='card_preview'; 'AC9E'='gamedata'; 'D791'='text00' };
         Numbered=@{ '8ED7'=@('back',2); 'DC70'=@('bobj',2); '128B'=@('char',2); 'CD4A'=@('chardemo',2); '4BD8'=@('charf',4); 'FDD0'=@('card',3) }
     }
     return @($legacy,$spanish,$invasion,$dbfz)
