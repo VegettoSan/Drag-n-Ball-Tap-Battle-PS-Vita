@@ -163,3 +163,38 @@ Because 712x712 protected character atlas images can individually require 2,027,
 - Full ELF -> Sony VELF -> SELF -> VPK succeeded and LiveArea icon/background/startup/template validation passed; ZIP CRC verified. Relative to the previous TextureStream test VPK, all 15 file paths and content remain identical **except `eboot.bin`**.
 - Previously supplied real compressed 712x712 source images from `char37` and `char07` passed byte-perfect bounded decoding tests; host resource normalization regression also passed for Android14/Spanish/Invasion/DBFZ. Repacked GPU pixels are predictably reduced to 4-bit precision and half-resolution (not byte-perfect source quality).
 - **No hardware gameplay success claimed.** Before any stable release, test both a new protected mod and at least one previously working original/known mod. If GPUCompact still crashes, retain the new `runtime.log` and `psp2dmp`, and consider resource lifetime/driver allocation behavior instead of blindly reducing resolution further.
+
+
+## Sixth hardware report: GPUCompact works, color/alpha wrong (2026-10-08)
+
+User tested `DBTapBattle-Vita-Universal-GPUCompact-Experimental-01.00.vpk` on a real Vita with the previously crashing `dbz_mobile_v9` profile and supplied four display photographs plus `runtime.log`.
+
+### Confirmed on hardware
+
+- Menu, character selection, first fight, victory screen and next fight load **without crash or deadlock** during this test. The log shows sequential fights and periods close to **59.9 FPS** during gameplay.
+- Native AAC/M4A `Compressed BGM indexed` loads succeed and original gameplay behavior is retained.
+- The screen exhibits an obvious red/pink wash, distorted transparency/ki effects and excessively pixelated character/UI atlases. This is **not** an acceptable stable release.
+- `[TextureCompact]` showed 512x512 -> 256x256 and 912x912 -> 456x456, explaining the soft presentation. The earlier GPU OOM is resolved *for the observed hardware test*, not every possible mod.
+
+### Root cause of the red/pink tint and transparency
+
+Old compact output wrote the 16-bit word as `AAAABBBBGGGGRRRR` (R in the least-significant nibble). But the **single direct** `glTexImage2D(GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4)` upload and its `SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_RGBA` hardware fast path interpret it as standard **`RRRRGGGGBBBBAAAA`** (R most significant, A least significant). The red channel was receiving the source's alpha and the output alpha was receiving source red. Consequences: intense red/pink appearance and invisible translucent visual effects. This was introduced **only by the GPUCompact experiment**.
+
+Correct packing uses `((R&0xF0)<<8) | ((G&0xF0)<<4) | (B&0xF0) | (A>>4)`, retaining alpha in the correct nibble.
+
+The repaired pack was evaluated against independently decoded real `char37.pac` and `char07.pac` images, both 712x712: output RGB(A) mean channels match the source to quantization precision (maximum per-channel difference <= 15 out of 255); the previous pack interchanged alpha and red. Every individual 4-bit alpha value can be represented. These are offline CPU checks; actual color correctness still requires the Vita visual test.
+
+### Generic quality policy, not mod-specific hacks
+
+- Keep **one GL upload, RGBA4444 packed storage and 256 KiB DEFLATE row decoding**. No `glTexSubImage2D`, no full-size RGBA temporary, no original Java logic changes.
+- For any protected dynamic `C14U` image, choose a physical GPU resolution with longest side **up to 512 pixels**, preserving original aspect ratio. Small textures keep original resolution; examples: 512x512 now 512x512 (vs 256x256), 712x712 now 512x512 (vs 356x356), 912x912 now 512x512 (vs 456x456).
+- Track current GPU-allocated bytes for the dynamic bridge, including cached textures until eviction; discount allocations on texture delete. After a **24 MiB soft quality budget**, new images automatically fall back to the previous conservative downscaling sizes. Do not attempt a risky allocate-then-retry fallback because a failing VitaGL allocation can terminate the process.
+- All sizing and budget choices depend exclusively on image dimensions, live texture lifetime and available dynamic-bridge budget. **No mod name, saved-profile name, APK-specific override, or per-mod configuration** exists in the code.
+- Original game, Android14, Spanish, Invasion and DBFZ legacy `C14R/C14S/C14I/C14D` and native PNG paths remain **byte-for-byte unchanged** in the renderer.
+- Source PAC files, `dbtb_codec.json` and saved game files are neither modified nor regenerated.
+
+### Direct VitaSDK experimental rebuild
+
+Build `DBTapBattle-Vita-Universal-VisualQuality-Experimental-01.00.vpk` directly with VitaSDK 2026.08 and original TeaVM core. Offline original+Android14/Spanish/Invasion/DBFZ resource regression passed; real 712x712 protected DEFLATE pixel streams validated byte-for-byte; actual original pixels versus RGBA4444 output compared, max quantization error 15; LiveArea/ZIP validation passed. The only VPK member changed compared with the previous hardware-proven GPUCompact experiment is `eboot.bin`.
+
+**Status: experimental.** Ask the user to verify restored color/transparency, first fight, next fight and at least one previously working original/legacy mod. Avoid claiming the enhanced quality tier is hardware-safe until measured.
