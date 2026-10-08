@@ -18,6 +18,15 @@ bool decodeCommunityImageProfile(const std::vector<uint8_t>& data, size_t entry_
                                  PacEncoding encoding, RgbaImage& image, std::string& error);
 bool decodeCommunityImageProfile(const uint8_t* data, size_t size, size_t entry_index,
                                  PacEncoding encoding, RgbaImage& image, std::string& error);
+// Stream protected RGBA without ever materializing its entire decoded image.
+// The row callback receives complete RGBA scanlines in original image order.
+using CommunityImageRowSink = bool (*)(void*, const uint8_t*, uint32_t first_row, uint32_t row_count, uint32_t width);
+bool communityImageDimensions(const uint8_t* data, size_t size, size_t entry_index,
+                              PacEncoding encoding, uint32_t& width, uint32_t& height,
+                              std::string& error);
+bool decodeCommunityImageProfileRows(const uint8_t* data, size_t size, size_t entry_index,
+                                     PacEncoding encoding, void* opaque, CommunityImageRowSink sink,
+                                     std::string& error);
 // Backwards-compatible entry point for the hardware-confirmed a210795b profile.
 bool decodeCommunityImage(const std::vector<uint8_t>& data, size_t entry_index,
                           RgbaImage& image, std::string& error);
