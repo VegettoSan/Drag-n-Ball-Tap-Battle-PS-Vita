@@ -1,6 +1,7 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
 #include "performance.hpp"
+#include "diagnostic_watchdog.hpp"
 #include "engine_resources.hpp"
 #include "resource_cache.hpp"
 #include "installed_data.hpp"
@@ -403,6 +404,8 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
         ++dbtb_performance().texture_cache_hits;
         return id;
     }
+    dbtb_setDiagnosticStage(2,uint32_t(size),uint32_t(dbtb_performance().textures));
+    const uint64_t decode_start=dbtb_timeUs();
     RgbaImage image; std::string error; bool ok;
     PacEncoding image_encoding = PacEncoding::Auto;
     if (size >= 8 && !std::memcmp(b, "C14R", 4)) image_encoding = PacEncoding::Community14;
@@ -412,9 +415,9 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
     else if (size >= 8 && !std::memcmp(b, "C14U", 4)) image_encoding = PacEncoding::Community14Dynamic;
     if (image_encoding != PacEncoding::Auto) {
         const uint32_t index = b[4] | (uint32_t(b[5]) << 8) | (uint32_t(b[6]) << 16) | (uint32_t(b[7]) << 24);
-        ok = decodeCommunityImageProfile(std::vector<uint8_t>(b + 8, b + size), index, image_encoding, image, error);
+        ok = decodeCommunityImageProfile(b + 8, size_t(size) - 8, index, image_encoding, image, error);
     } else {
-        ok = decodePng(std::vector<uint8_t>(b, b + size), image, error);
+        ok = decodePng(b, size_t(size), image, error);
         if (ok) {
             // Match Android Bitmap/GLUtils premultiplication, without touching
             // the original PNG bytes or applying it twice to community pixels.
@@ -424,11 +427,24 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
             image.premultiplied_alpha = true;
         }
     }
-    if (!ok) { std::fprintf(stderr, "Engine texture: %s\n", error.c_str()); return -1; }
+    dbtb_performance().texture_decode_us += dbtb_timeUs() - decode_start;
+    if (!ok) {
+        dbtb_setDiagnosticStage(1);
+        std::fprintf(stderr, "Engine texture: %s\n", error.c_str()); return -1;
+    }
     const size_t cost = size_t(size) + image.pixels.size();
     // Discard idle selection atlases before allocating a large combat texture.
     const bool retain = trimTextures(cost);
+    dbtb_setDiagnosticStage(3,uint32_t(image.pixels.size()),uint32_t(dbtb_performance().textures));
+    const uint64_t upload_start=dbtb_timeUs();
     const int id = upload(image, linear != 0);
+    const uint64_t upload_us=dbtb_timeUs()-upload_start;
+    dbtb_performance().texture_upload_us += upload_us;
+    if (upload_us >= 750000)
+        std::fprintf(stderr,"[TextureSlow] upload_us=%llu pixels=%llu dimensions=%ux%u success=%d\n",
+            static_cast<unsigned long long>(upload_us),static_cast<unsigned long long>(image.pixels.size()),
+            unsigned(image.width),unsigned(image.height),id>0 ? 1 : 0);
+    dbtb_setDiagnosticStage(1);
     if (id > 0 && retain) {
         texture_cache.push_front({hash, linear != 0, std::vector<uint8_t>(b, b + size), GLuint(id), cost, 1});
         texture_cache_bytes += cost;
