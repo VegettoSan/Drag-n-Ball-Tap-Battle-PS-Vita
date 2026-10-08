@@ -114,6 +114,9 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 # amalgamation. -O2 exceeds the memory budget of modest builders; -O1 keeps
 # useful optimization while native render/audio/platform code remains at -O2.
 set_source_files_properties("${TEAVM_C_DIR}/all.c" PROPERTIES COMPILE_OPTIONS "-O1")
+# The file-backed AAC indexer is cold-path code; prefer smaller native text
+# to preserve the linker space required by vita-elf-create.
+set_source_files_properties("${REPO_ROOT}/tools/aot/engine/native/compressed_bgm.cpp" PROPERTIES COMPILE_OPTIONS "-Os")
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-q,-z,max-page-size=0x10000")
 
 # Dependencies are ordered from consumers to providers, matching vitaGL ports.
