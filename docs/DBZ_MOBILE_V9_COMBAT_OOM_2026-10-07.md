@@ -37,3 +37,23 @@ The log shows:
 ## Important stability policy
 
 Preserve the known-good 1.0 VPK / 00.34 runtime. This repair is an experimental native memory optimization only; do not publish as stable until user confirmation.
+
+## Second hardware failure: definitive native call chain (2026-10-07 23:25)
+
+Supplied `dbz mobile v9.apk`, SHA-256 DEX `b90abccce8952240760f50c4bad31a1da8fbd3621992391e77301bc89283118d`, was independently parsed: **210/210 protected PAC directories valid, 41 contiguous characters, no unrecognized PAC types, 642 embedded WAV streams**. This is a new protected profile and not the separately tested DBS Mobile v1.
+
+User's second `runtime.log` records `Combat resource boundary: bobj03.pac idle_cache_released=1473726 newlib_used=93850288 newlib_free=6002000` followed by `std::bad_alloc`. Contrary to the initial working hypothesis, the latest compressed Sony core dump **does** narrow the allocation source precisely when parsed with the Vita-specific `THREAD_INFO` / `THREAD_REG_INFO` notes and rebased to the debug ELF.
+
+- Core main module loaded its text at `0x81046000`, debug ELF linked at `0x81000000`. Subtract `0x46000` from runtime code addresses before symbolication.
+- Main thread `DBTB01178` stopped at `0x8129e986` (terminate/kill). Stack contains `operator new(unsigned int)` at `0x811d6d59`, then `std::vector<unsigned char>::_M_default_append` at `0x811b5847`, and **`dbtb_openCompressedBgm` at `0x811c6b41`**.
+- Other frames include `dbtb_bgmPlay`, original `SoundEffect.playBgm`, `TCBManajer_PlayBGM`, `TCBManajer_GdtBGM` and `TCBManajer_Game1`.
+- The dumped stack string identifies the requested track **`bgm_03.ogg`**; in this mod it is an **AAC/M4A** (MP4 `ftyp`) weighing **2,159,645 bytes**, not Ogg Vorbis. The original compressed player loaded this entire file into a `std::vector<uint8_t>` after the fighters/effects were resident. Newlib had approximately 5.7 MiB free in total but no successful large contiguous allocation.
+- The previous fix correctly reclaimed idle PAC cache ownership, but could not eliminate this **independent audio allocation**; do not keep modifying PAC/engine loading based on that earlier hypothesis.
+
+### Targeted new remedy (source, hardware acceptance pending)
+
+`tools/aot/engine/native/compressed_bgm.cpp` now creates a **small file-backed AAC/M4A index** from `ftyp` and `moov`, replaces `mdat` with an eight-byte placeholder in the parser's in-memory view, and reads original AAC sample bytes on demand using a 64 KiB read-ahead buffer. Retains the existing Vita Audiodec API, sample positions, looping, gains, resampling, native audio thread ownership and SceAudiodec decoder-lifetime behavior. The existing Ogg/Vorbis, MP3, PAC and original AOT gameplay code paths are untouched. Oversized/truncated MP4 atoms reject safely. Index limit 1 MiB, source limit 16 MiB. The change avoids the 2.16 MiB allocation observed in the failed battle.
+
+Real APK offline validation: `bgm_03.ogg` metadata footprint **41,614 B** (instead of 2,159,645 B); original `stsz` describes **5,701 samples**, maximum compressed ES packet **599 bytes**. All nine M4A BGM files in this mod have index footprints under 102 KiB and each sample's max size is below Vita's supported AAC `SCE_AUDIODEC_AAC_MAX_ES_SIZE=1536`. These data-only checks do **not** prove realtime audio on PS Vita; a new full-engine hardware test must confirm both audio and combat.
+
+Build note: native cold-path `compressed_bgm.cpp` is size-optimized separately with `-Os` to leave appropriate Sony ELF converter segment headroom. Do not change TeaVM heap policy or touch the original game logic to address this specific crash.
