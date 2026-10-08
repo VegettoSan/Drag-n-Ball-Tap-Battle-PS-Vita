@@ -48,6 +48,18 @@ bool save_cache_exists = false;
 InstalledDataAudit installed_audit;
 struct Size { int w, h; };
 std::unordered_map<unsigned, Size> textures;
+// Account for physical GPU allocations made by the protected dynamic bridge.
+// The quality budget applies to *all* such profiles, never to mod names.
+std::unordered_map<unsigned, size_t> dynamic_texture_bytes;
+size_t dynamic_gpu_bytes = 0;
+constexpr size_t kDynamicQualityBudget = 24u * 1024u * 1024u;
+void forgetDynamicTexture(unsigned id) {
+    auto it = dynamic_texture_bytes.find(id);
+    if (it == dynamic_texture_bytes.end()) return;
+    dynamic_gpu_bytes -= it->second;
+    dynamic_texture_bytes.erase(it);
+}
+
 std::unordered_map<std::string, bool> resource_exists_cache;
 struct CachedTexture {
     uint32_t hash;
@@ -70,6 +82,7 @@ bool trimTextures(size_t incoming) {
         --it;
         if (it->users) continue;
         glDeleteTextures(1, &it->id);
+        forgetDynamicTexture(it->id);
         textures.erase(it->id);
         texture_cache_bytes -= it->cost;
         it = texture_cache.erase(it);
@@ -260,6 +273,7 @@ bool dbtb_releaseTexture(unsigned id) {
         if (cached.users) --cached.users;
         return false; // immutable imported texture retained until idle eviction
     }
+    forgetDynamicTexture(id);
     textures.erase(id);
     return true;
 }
