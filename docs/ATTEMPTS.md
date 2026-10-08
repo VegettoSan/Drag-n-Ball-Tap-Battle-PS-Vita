@@ -1362,3 +1362,21 @@ regression test; do not restore the conditional vector assignment.
   Samu if possible, and verify battle entry, repeated fights, memory, audio
   and profile saves. See
   [full evidence and rollback plan](OPTIMIZATION_CHARACTER_SELECTION_2026-10-07.md).
+
+## 2026-10-07 — full-engine cache optimization test VPK built locally (hardware pending)
+
+- Recovered the repository's pinned open-source toolchain exports and VitaSDK
+  2026.08, generated the **full original TeaVM engine** privately using the
+  SHA-256-pinned user-attached original APK, then compiled the experimental
+  `src/resource_cache.hpp` exactly as committed on the branch.
+- Full ARM ELF / VELF / SELF and VPK compilation **PASS**; full engine symbol
+  `TCBManajer` verified (not an empty smoke stub). CRC and LiveArea **PASS**.
+- Test VPK SHA-256:
+  `ab40f9608ba52eafc691b4c22bb303b385b209ce810ff556ae6bfa342b17b654`
+  (`2735041` bytes, APP_VER `01.00`, TITLE_ID `DBTB01178`).
+- The 2026-10-07 GitHub Actions test-package workflow initially failed because
+  its CI download secret was missing; the successful **local** build did not
+  require that secret. Preserve both records; they describe different builds.
+- Hardware test not yet reported; **do not claim the 1/4-second pause resolved**.
+  Stable v1.0 and `main` were not replaced. Detailed source provenance and
+  device acceptance plan: `OPTIMIZATION_CHARACTER_SELECTION_2026-10-07.md`.
