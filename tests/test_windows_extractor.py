@@ -18,6 +18,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 import community14
+from private_dex_fixture import make_apk as make_private_apk, pac as private_pac
 TOOL = ROOT / 'tools/windows/Extraer_APK_para_Vita.ps1'
 BAT = ROOT / 'tools/windows/Extract_APK_for_Vita.bat'
 PS = os.environ.get('DBTB_POWERSHELL') or shutil.which('powershell') or shutil.which('pwsh')
@@ -122,6 +123,29 @@ class WindowsExtractorTests(unittest.TestCase):
         with zipfile.ZipFile(source) as z:
             for file in m['files']:
                 self.assertEqual((package / 'data/DBTapBattle/profiles/original' / file['name']).read_bytes(), z.read(file['apk_path']))
+
+    def test_unknown_private_mod_auto_codec_and_sidecar(self):
+        source = make_private_apk(self.root / 'private-nueva.apk')
+        package, = self.run_tool(source)
+        root = package / 'data/DBTapBattle/profiles/private-nueva'
+        manifest = json.loads((root / 'dbtb_manifest.json').read_text('utf-8'))
+        metadata = json.loads((root / 'dbtb_codec.json').read_text('utf-8'))
+        self.assertEqual(manifest['source_layout'], 'community14-dynamic')
+        self.assertEqual(manifest['pac_codec'], 'dragontap-private-v1')
+        self.assertEqual(metadata['format'], 1)
+        self.assertEqual(metadata['generator'], 'dragontap-private-v1')
+        self.assertEqual(metadata['count_xor'], 24318)
+        self.assertEqual(metadata['type_bin'], 793741694)
+        self.assertEqual(len(manifest['renamed_files']), 7)
+        for name in ('common.pac','gamedata.pac','text00.pac',
+                     'char00.pac','chardemo00.pac','charf0000.pac'):
+            self.assertEqual((root / name).read_bytes(), private_pac())
+        self.assertFalse((root / 'classes.dex').exists())
+
+    def test_unknown_private_mod_rejects_corrupt_pac(self):
+        source = make_private_apk(self.root / 'private-corrupt.apk', corrupt=True)
+        self.run_tool(source, expect=1)
+        self.assertFalse(list(self.output.glob('Paquete_*')))
 
     def test_android14_aliases_preserve_encoded_pac(self):
         data = encoded_pac()
