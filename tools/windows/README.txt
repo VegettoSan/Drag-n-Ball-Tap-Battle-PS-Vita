@@ -1,4 +1,4 @@
-DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.5
+DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.5 / VITA RELEASE v1.1
 
 WEB EXTRACTOR ALTERNATIVE
 If you do not have a Windows PC, use Web Extractor 1.0:
@@ -91,11 +91,19 @@ IMPORTANT
 The tool prepares game data only. The VPK is installed separately.
 A mod that changes Android code may still require Vita-side compatibility work.
 
-UNIVERSAL PRIVATE MODS (experimental Vita source)
+UNIVERSAL PRIVATE MODS (VITA v1.1 HARDWARE TESTED)
 - Previously unknown DragonTap PRIVATE variants are recognized by statically
   inspecting classes.dex. No Android execution, external Python, or mod keys.
 - Such profiles include dbtb_codec.json next to the unchanged PAC payloads.
 - Install that sidecar together with the profile's other extracted files.
-- The published stable v1.0 VPK DOES NOT yet read this new file; an updated
-  experimental VPK is required for new protected variants.
+- The v1.1 Universal Mod Support VPK reads dbtb_codec.json. The older v1.0
+  VPK does not; do not use v1.0 with newly recognized PRIVATE profiles.
 - Original and known protected mod paths remain on their audited codecs.
+- Some large mod sprites/atlases can exhaust PS Vita GPU memory and cause a
+  crash or freeze at fight loading. For stability, v1.1 uses a generic compact
+  texture path and can REDUCE RESOLUTION on some protected high-resolution
+  images. Therefore some graphics may appear blurry. Source PAC bytes remain
+  intact; there is NO mod-specific quality exception.
+- Compatibility is not guaranteed for all Android code-changing mods.
+- Full Spanish/English-friendly instructions and memory warnings:
+  https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/blob/main/docs/INSTALLATION_AND_EXTRACTION.md
