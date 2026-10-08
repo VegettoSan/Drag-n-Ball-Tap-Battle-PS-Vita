@@ -33,6 +33,13 @@ hardware-confirmed fixed after explicit protected-PAC ownership transfer. See
 
 ## Main-loop ordering recovered
 
+The [2026-10-08 input investigation](VITA_CONTROLS_RESEARCH_2026-10-08.md)
+identifies the actual combat pad in Game8 cases 37/38, settings in Game11
+854/855, ConfigData[4] reloads and the tutorial's forced gesture mode.
+The preferred future Vita adapter enters through KeyData before Run; it does
+not replace Controller, command buffers or task dispatch. New type-1/type-4
+host probes pass, but physical gameplay support is not implemented yet.
+
 1. Renderer checks initialization, lifecycle/lock/pause flags.
 2. TCBManajer.Run handles resume resources, processes queued sound and Controller.
 3. Transfers stable KeyData touches into Tap/Touches arrays, clears begin flags.

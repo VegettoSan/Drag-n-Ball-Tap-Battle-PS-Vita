@@ -35,8 +35,11 @@ order. Completion below applies only to the stated scope/build.
   and suspend/resume before claiming complete gameplay fidelity.
 - Confirm profile save isolation and backups with real fixtures; document any
   migration rather than silently sharing progress.
-- Design physical controls around original gesture/command semantics. In-game
-  button neutrality currently prevents accidental Android-Back exits.
+- Implement physical controls through the recovered original mode-1 virtual
+  pad and KeyData, following [the 2026-10-08 research](VITA_CONTROLS_RESEARCH_2026-10-08.md).
+  Host JVM type-1/type-4 probes pass; selector/configuration, pointer allocation,
+  tutorial, pause and hardware acceptance remain pending. Preserve physical
+  Back neutrality outside validated gameplay contexts.
 - Extend asset mods first; Java/code-mod mechanics and new codecs require
   independent audits. File fallback does not merge PAC entries.
 - Optional selector metadata/Unicode, remembered profile and log rotation remain

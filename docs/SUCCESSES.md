@@ -1,5 +1,20 @@
 # Confirmed Successes
 
+## 2026-10-08 — original virtual-pad contract validated on host JVM
+
+**Level: HOST INPUT CONTRACT, not a Vita gameplay result.** The new
+`tools/aot/VirtualPadProbe.java` runs against the APK-derived original
+Controller/KeyData. Eight directions, type-4 buttons, press/hold/release,
+effective half-ranges, five simultaneous IDs and continuous direction changes
+pass. Original/Gen/Samu inspected input-method fingerprints match; inspected
+input methods/AddPad callers match within the six obfuscated-family APKs.
+
+This supports an adapter-only plan using original virtual-pad mode 1. Selector
+choice, native mapping, save-option integration, new TeaVM equivalence and
+physical Vita acceptance remain pending. No gameplay executable was changed.
+See [controls research](VITA_CONTROLS_RESEARCH_2026-10-08.md) and
+[host evidence](evidence/vita_controls_host_probe_2026-10-08.json).
+
 > **Historical document notice — current v1.0 contract:** this file preserves
 > evidence/instructions for the build or investigation named here. The current
 > Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no

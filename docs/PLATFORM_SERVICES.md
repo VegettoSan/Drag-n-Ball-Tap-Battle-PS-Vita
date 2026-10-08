@@ -43,6 +43,12 @@ facts; see [VALIDATION](VALIDATION.md) for counter meanings.
 
 ## Touch and physical controls
 
+Research update (2026-10-08): [Vita controls investigation](VITA_CONTROLS_RESEARCH_2026-10-08.md)
+recovers original gesture mode 2, virtual-pad mode 1, ConfigData[4] persistence
+and the actual type-1/type-4 pad geometry. A new JVM probe validates the original
+pad. The proposed selector choice and synthetic-contact adapter are not yet
+implemented; the current runtime behavior in the table below is unchanged.
+
 Original screen scale is 320/screen_height. VitaEngine sets 960×544, truncates
 scaled width to 564 and applies original horizontal offsets before KeyData.
 Raw Vita touch IDs are mapped to stable logical slots 0–4; Begin/Move/End and

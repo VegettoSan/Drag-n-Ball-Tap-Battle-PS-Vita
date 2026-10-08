@@ -1,5 +1,30 @@
 # Attempts Log
 
+## 2026-10-08 — original virtual-pad controls research
+
+**Goal:** find an adapter-only route for Vita buttons and a selector input-mode
+choice without altering the accepted original-core gameplay runtime.
+
+**Evidence:** reviewed current source and nine supplied APKs; original/Gen/Samu
+input-method fingerprints match, and six obfuscated-family APKs match each
+other in inspected input methods and AddPad callers. Recovered mode 1/2,
+ConfigData[4], Game8 pad cases 37/38, tutorial case 685 and later save reloads.
+
+**Tests:** dex2jar 2.4 + ECJ 3.37.0 + host JVM against APK-derived classes.
+Existing InputProbe and new VirtualPadProbe PASS: eight directions, six buttons,
+press/hold/release, actual half-ranges and five simultaneous IDs 0..4. Initial
+rage/stick overlap suspicion was rejected after checking AddPad's half-ranges;
+the corrected probe passes without a runtime workaround.
+
+**Conclusion:** synthesize contacts into original KeyData in mode 1. Extend
+native selector choice and use the existing cached, atomic profile-save service
+for the byte-4 preference. Do not write command buffers or globally enable
+Android Back. No VPK/runtime changes or physical-test result in this attempt.
+
+**Details/evidence:** [research](VITA_CONTROLS_RESEARCH_2026-10-08.md),
+[APK inventory](evidence/vita_controls_apk_inventory_2026-10-08.json),
+[host results](evidence/vita_controls_host_probe_2026-10-08.json).
+
 > **Historical document notice — current v1.0 contract:** this file preserves
 > evidence/instructions for the build or investigation named here. The current
 > Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no

@@ -7,6 +7,17 @@ This document retains the early probe recipes/results and their limited scope.
 No generated game JAR, class, C source, executable or commercial data is in Git.
 The handwritten probes call classes supplied by the user's original APK.
 
+## VirtualPadProbe — 2026-10-08 research
+
+The additional `VirtualPadProbe.java` exercises actual original combat pad
+types 1/4: eight directions, six buttons, press/hold/release, effective ranges,
+five simultaneous IDs 0..4 and continuous direction changes. It passes on the
+host JVM against the pinned original APK converted with dex2jar 2.4. Its new
+TeaVM/native comparison and Vita integration remain pending; the historical
+InputProbe AOT result below does not establish those new checks.
+See [controls research](../../docs/VITA_CONTROLS_RESEARCH_2026-10-08.md) for
+reproduction, evidence and the adapter-only implementation plan.
+
 ## Results
 
 DEX→JAR succeeds with dex2jar 2.4 on original APK b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b.

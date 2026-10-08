@@ -1,5 +1,18 @@
 # Current status — 2026-10-08, v1.1 Universal Mod Support (release ready)
 
+## Physical controls research — 2026-10-08, no runtime change
+
+The original settings and combat pad were inspected in the supplied APKs.
+Original mode 1 offers a virtual stick and six buttons; mode 2 is gesture input.
+A new host JVM probe passes type-1/type-4 direction/button press, hold, release
+and five simultaneous logical contacts. Recommended implementation feeds Vita
+controls as synthetic contacts to original KeyData, with a native selector
+choice and profile-local option applied through the existing save service.
+The tutorial temporarily forces mode 2 and save reloads restore ConfigData[4].
+Those boundaries require explicit handling; physical gameplay remains absent
+from the current VPK. No engine/runtime code was changed by this research.
+See [research and implementation plan](VITA_CONTROLS_RESEARCH_2026-10-08.md).
+
 ## Latest confirmed: v1.1 VisualQuality promoted for release
 
 The user has **approved the 2026-10-08 VisualQuality experimental build on
