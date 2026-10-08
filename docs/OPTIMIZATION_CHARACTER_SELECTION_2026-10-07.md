@@ -54,7 +54,7 @@ g++ -std=c++14 -O2 -Wall -Wextra -Isrc \
 /tmp/dbtb-test-character-selection-cache
 ```
 
-Test has **not** been executed by this chat's host environment, and neither VitaSDK compilation nor device testing has yet occurred. It must pass before publishing a playable experimental VPK.
+**Host regression passed in GitHub Actions** on the experimental branch: run [37708484312](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37708484312), job `synthetic-cache-regression`, compilation and run completed successfully and logged `CHARACTER SELECTION CACHE PASS`. This is a host test only: neither full VitaSDK engine compilation nor hardware playback has occurred yet. Any experimental VPK must still be verified on the device.
 
 ## Planned physical Vita A/B acceptance
 
