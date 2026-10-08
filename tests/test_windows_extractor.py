@@ -153,6 +153,24 @@ class WindowsExtractorTests(unittest.TestCase):
                 self.assertEqual((root / 'common.pac').read_bytes(), data)
                 self.assertEqual((root / 'char21.pac').read_bytes(), data)
 
+    def test_dbfz_v22_aliases_preserve_protected_pac(self):
+        profile = community14.DBFZ
+        data = encoded_pac_profile(profile)
+        source = self.apk('Dbfz v22', [
+            ('assets/2B98.pac', data),
+            ('assets/128B57.pac', data),
+            ('assets/CD4A57.pac', data),
+            ('assets/4BD80057.pac', data),
+        ])
+        package, = self.run_tool(source)
+        m = self.manifest(package, 'profiles/Dbfz_v22')
+        self.assertEqual(m['source_layout'], 'community14')
+        self.assertEqual(m['pac_codec'], 'community14-dbfz-11d60c43')
+        self.assertEqual(len(m['renamed_files']), 4)
+        root = package / 'data/DBTapBattle/profiles/Dbfz_v22'
+        for name in ['common.pac', 'char57.pac', 'chardemo57.pac', 'charf0057.pac']:
+            self.assertEqual((root / name).read_bytes(), data)
+
     def test_assets_with_empty_raw_stubs(self):
         source = self.apk('assets', [('res/raw/common.pac', b''), ('assets/common.pac', b'original')])
         package, = self.run_tool(source)
