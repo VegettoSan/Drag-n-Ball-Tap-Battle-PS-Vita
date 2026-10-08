@@ -25,6 +25,9 @@
 #include <unistd.h>
 #include <unordered_map>
 #include <list>
+#ifdef __vita__
+#include <malloc.h>
+#endif
 
 namespace {
 constexpr size_t kSaveSize = 12906;
@@ -280,11 +283,33 @@ int32_t dbtb_readResourceStream(int32_t handle, int32_t position, void* target, 
 void dbtb_closeResourceStream(int32_t handle) {
     const auto stream=resource_streams.find(handle);
     if (stream==resource_streams.end()) return;
+    const auto& backing=stream->second.resource->path;
+    const size_t slash=backing.find_last_of('/');
+    const std::string logical=backing.substr(slash==std::string::npos ? 0 : slash+1);
+    const bool combat_object=logical.size()>=10 && logical.compare(0,4,"bobj")==0 &&
+                             logical.compare(logical.size()-4,4,".pac")==0;
     std::fprintf(stderr,"Resource stream closed: bytes=%llu largest_read=%llu active=%u\n",
         static_cast<unsigned long long>(stream->second.resource->bytes.size()),
         static_cast<unsigned long long>(stream->second.largest_read),
         unsigned(resource_streams.size()-1));
     resource_streams.erase(stream);
+    if (combat_object) {
+        // Combat object PACs are loaded after fighters/effects/cards. Reclaim
+        // only idle cache ownership before the AOT engine allocates combat state.
+        // Open streams and active textures remain owned by their consumers.
+        const size_t cached_before=resource_cache.used();
+        dbtb_reclaimIdleResources();
+#ifdef __vita__
+        const struct mallinfo heap=mallinfo();
+        std::fprintf(stderr,
+            "Combat resource boundary: %s idle_cache_released=%llu newlib_used=%d newlib_free=%d\n",
+            logical.c_str(),static_cast<unsigned long long>(cached_before),
+            heap.uordblks,heap.fordblks);
+#else
+        std::fprintf(stderr,"Combat resource boundary: %s idle_cache_released=%llu\n",
+            logical.c_str(),static_cast<unsigned long long>(cached_before));
+#endif
+    }
 }
 int32_t dbtb_installedData() {
     if (!installed_audit.ready) {
