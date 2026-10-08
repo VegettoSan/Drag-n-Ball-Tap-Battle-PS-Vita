@@ -505,9 +505,8 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
         }
         CompactTexturePixels compact;
         compact.source_w=width; compact.source_h=height;
-        compact.divisor=(width >= 384 || height >= 384) ? 2u : 1u;
-        compact.gpu_w=(width+compact.divisor-1)/compact.divisor;
-        compact.gpu_h=(height+compact.divisor-1)/compact.divisor;
+        bool conservative = false;
+        dynamicTextureDimensions(width,height,compact.gpu_w,compact.gpu_h,conservative);
         const size_t rgba4_bytes=size_t(compact.gpu_w)*compact.gpu_h*2;
         // Strictly cap output to protect Newlib and GPU memory.
         if (!rgba4_bytes || rgba4_bytes>8u*1024u*1024u) {
@@ -518,7 +517,7 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
         compact.packed.resize(size_t(compact.gpu_w)*compact.gpu_h);
         if (!decodeCommunityImageProfileRows(b + 8,size_t(size)-8,index,
                 image_encoding,&compact,&packCompactRows,error) ||
-            compact.rows_seen != height) {
+            compact.rows_seen != height || compact.output_rows != compact.gpu_h) {
             dbtb_setDiagnosticStage(1);
             std::fprintf(stderr,"[TextureCompact] decode rejected: %s\n",error.c_str());
             return -1;
@@ -555,6 +554,8 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
         // Keep the *logical* dimensions used by the original Java engine,
         // even though the physical GPU image is smaller. UV math is unchanged.
         textures[id]={int(width),int(height)};
+        dynamic_texture_bytes[id]=rgba4_bytes;
+        dynamic_gpu_bytes += rgba4_bytes;
         if (retain) {
             texture_cache.push_front({hash,linear!=0,
                 std::vector<uint8_t>(b,b+size),id,cost,1});
@@ -563,8 +564,10 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
         if (dbtb_performance().textures<=5 || upload_us>=200000) {
             std::fprintf(stderr,
                 "[TextureCompact] logical=%ux%u gpu=%ux%u rgba4444_KiB=%u "
-                "decode_ms=%llu GPU_ms=%llu\n",
+                "gpu_resident_KiB=%llu quality=%s decode_ms=%llu GPU_ms=%llu\n",
                 width,height,compact.gpu_w,compact.gpu_h,unsigned(rgba4_bytes/1024),
+                static_cast<unsigned long long>(dynamic_gpu_bytes/1024),
+                conservative ? "memory-safe" : "enhanced",
                 static_cast<unsigned long long>((decode_end-decode_start)/1000),
                 static_cast<unsigned long long>(upload_us/1000));
         }
