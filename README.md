@@ -12,6 +12,22 @@ vitaGL, and the original game core compiled privately for Vita.
 > **Important:** the repository and VPK do not distribute the original Android
 > gameplay data. Prepare data from an APK you own with the included extractor.
 
+## Requirements (PS Vita)
+
+Before installing the port, make sure you have:
+
+- **A homebrew-enabled PlayStation Vita** (PS Vita 1000 or 2000, with HENkaku/taiHEN, Ensō, or a compatible homebrew setup). The v1.1 release has been tested on real PS Vita hardware; PS TV and Vita3K compatibility have **not** been confirmed.
+- **VitaShell** (or another compatible VPK installer) to install the game and transfer extracted data using USB, FTP, or your preferred method.
+- **`libshacccg.suprx` installed and working on the console.** The port uses **vitaGL**, which requires this shader compiler module. **It is not included in the VPK.** Follow the [vitaGL prerequisites](https://github.com/Rinnegatamante/vitaGL#prerequisites) and the [libshacccg extraction/installation guide](https://samilops2.gitbook.io/vita-troubleshooting-guide/shader-compiler/extract-libshacccg.suprx) to prepare it from your own console.
+- **Writable `ux0:` storage with enough free space** for the VPK and at least one extracted game profile. The amount of space needed depends on the APK/mod; large mods can use considerably more storage.
+- **A compatible Dragon Ball Tap Battle APK that you legally possess.** The VPK contains **no playable game data**, so you must prepare a profile using the [Windows extractor](docs/WINDOWS_DATA_TOOL.md) (Windows 10/11) or the [Web extractor](https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/) (modern desktop/mobile browser). A PC is **not required** if you use the Web extractor on a phone or tablet.
+
+**Required data location:** `ux0:data/DBTapBattle/profiles/<Profile>/`. If an extractor generates `dbtb_codec.json`, keep it with that profile's PAC files.
+
+**No VitaSDK or separate vitaGL installation is needed on the console**; those are build-time dependencies. The required `libshacccg.suprx` module is a separate runtime prerequisite.
+
+> **Compatibility note:** Not every community mod is guaranteed to work. Some high-resolution mods need longer loading times and may display softer/blurry textures because the port reduces GPU memory usage to prevent crashes. See [installation and extraction](docs/INSTALLATION_AND_EXTRACTION.md) and [mod compatibility](docs/MODS.md).
+
 ## Current data model
 
 All playable datasets now use one directory:
