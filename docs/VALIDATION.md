@@ -365,3 +365,23 @@ native smoke run `37544588962` PASS. Full candidate VPK SHA-256:
 Audible playback/loop/transition behavior remains a physical gate; see
 [TEST_VITA_00_27](TEST_VITA_00_27.md) and
 [evidence](evidence/vita_samu_direct_audio_00.27.json).
+
+## Experimental character-selection PAC cache (2026-10-07)
+
+The following small host test needs no original APK and is intended for the
+`perf/character-switch-metadata-cache` branch, not the v1.0 stable release.
+It exercises a synthetic 3 MiB PAC, filter-251 cache reuse after filter 187,
+file replacement, retained-cache limits and full-combat cache clearing:
+
+```sh
+g++ -std=c++14 -O2 -Wall -Wextra -Isrc \
+  tests/test_character_selection_cache.cpp \
+  src/engine_resources.cpp src/pac.cpp src/game_data.cpp src/vfs.cpp \
+  -o /tmp/dbtb-test-character-selection-cache
+/tmp/dbtb-test-character-selection-cache
+```
+
+This test does not establish physical Vita FPS, file-I/O timing or
+mod compatibility. See
+[character-selection experiment](OPTIMIZATION_CHARACTER_SELECTION_2026-10-07.md)
+for the actual v1.0 log evidence and the A/B hardware acceptance procedure.
