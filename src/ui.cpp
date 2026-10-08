@@ -1,6 +1,7 @@
 #include "ui.hpp"
 #include "log.hpp"
 #include "input.hpp"
+#include "control_settings.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -320,6 +321,62 @@ void drawProfileOpening(const std::string& profile, bool theme_ready,
     vglSwapBuffers(GL_FALSE);
 }
 
+// This screen belongs to the Vita launcher, before the original engine starts.
+bool chooseControls(VitaInput& input, BootChoice& choice, bool themed,
+                    const UiTexture& background, const UiTexture& header,
+                    const UiTexture& button) {
+    int selected = readControlPreference(choice.profile_directory);
+    const char* labels[] = {"TACTIL", "VITA - PAD VISIBLE", "VITA - PAD OCULTO"};
+    // Release the selecting finger/button before accepting another selection.
+    bool armed = false;
+    for (;;) {
+        const InputFrame frame = input.poll();
+        bool finger = false;
+        for (size_t i = 0; i < frame.pointer_count; ++i)
+            finger |= frame.pointers[i].phase != PointerPhase::End;
+        if (!armed && !finger && !frame.held) armed = true;
+        if (armed) {
+            if (frame.back) return false;
+            if (frame.up && selected > 0) --selected;
+            if (frame.down && selected < 2) ++selected;
+            bool confirm = frame.confirm;
+            for (size_t i = 0; i < frame.pointer_count; ++i) {
+                const auto& pointer = frame.pointers[i];
+                if (pointer.phase != PointerPhase::Begin) continue;
+                for (int row = 0; row < 3; ++row) {
+                    const float y = 160.0f + row * 85.0f;
+                    if (pointer.x >= 148 && pointer.x <= 812 && pointer.y >= y && pointer.y <= y + 58) {
+                        selected = row; confirm = true;
+                    }
+                }
+            }
+            if (confirm) {
+                choice.control_mode = selected;
+                if (!writeControlPreference(choice.profile_directory, selected))
+                    runtimeLog("Controls preference could not be saved; selected mode remains active");
+                return true;
+            }
+        }
+        glClearColor(0.005f, 0.035f, 0.10f, 1.0f); glClear(GL_COLOR_BUFFER_BIT); begin2D();
+        if (themed) {
+            drawUiTextureUv(background, 0, 0, 960, 544, background.content_u_max, background.content_v_max, 0.7f);
+            drawUiTexture(header, 72, 26, 816, 58);
+        }
+        centeredShadowText(480, 43, 3, "CONTROLES", 1, 0.86f, 0.08f);
+        centeredShadowText(480, 105, 2, clipped(choice.profile_directory, 38), 0.9f, 0.94f, 1);
+        for (int row = 0; row < 3; ++row) {
+            const float y = 160.0f + row * 85.0f;
+            if (themed) drawUiTexture(button, 148, y, 664, 58, row == selected ? 1.0f : 0.6f);
+            else rect(148, y, 664, 58, 0.1f, row == selected ? 0.45f : 0.18f, 0.6f);
+            centeredShadowText(480, y + 20, 2.4f, labels[row], 1, 0.98f, 0.78f);
+        }
+        centeredShadowText(480, 430, 1.8f, "MENUS: PANTALLA TACTIL", 0.9f, 0.94f, 1);
+        centeredShadowText(480, 463, 1.6f, "VITA: BOTONES EN COMBATE / DPAD EN PERSONAJES", 0.9f, 0.94f, 1);
+        centeredShadowText(480, 505, 1.6f, "DPAD / STICK   X / TOUCH SELECT   O BACK", 1, 0.86f, 0.08f);
+        vglSwapBuffers(GL_FALSE); sceKernelDelayThread(16000);
+    }
+}
+
 } // namespace
 
 bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choice) {
@@ -372,6 +429,7 @@ bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choic
 
         if (confirm) {
             choice.profile_directory = profiles[static_cast<size_t>(selected)];
+            if (!chooseControls(input, choice, theme_ready, theme_background, theme_header, theme_button)) continue;
             runtimeLog("Boot selector opening profile: " + choice.profile_directory);
             drawProfileOpening(choice.profile_directory, theme_ready,
                                theme_background, theme_header, theme_button);

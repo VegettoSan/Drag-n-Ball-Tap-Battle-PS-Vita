@@ -4,6 +4,7 @@
 extern "C" {
 #endif
 int32_t dbtb_start(void);
+int32_t dbtb_controlMode(void);
 int32_t dbtb_frame(void * events);
 void dbtb_present(void);
 int32_t dbtb_resource(void * name);

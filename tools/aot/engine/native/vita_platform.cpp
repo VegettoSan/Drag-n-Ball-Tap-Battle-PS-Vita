@@ -25,13 +25,14 @@
 namespace {
 std::unique_ptr<VitaInput> input;
 bool renderer_ready = false;
+int control_mode = 0;
 uint64_t frame_start = 0, previous_frame = 0, window_start = 0;
 uint64_t run_total = 0, run_max = 0, swap_total = 0, interval_max = 0;
 unsigned window_frames = 0;
 
 void clearEvents(int32_t* events) {
     if (!events) return;
-    for (int i = 0; i < 42; ++i) events[i] = 0;
+    for (int i = 0; i < 45; ++i) events[i] = 0;
 }
 
 void attachRuntimeStreams() {
@@ -94,6 +95,9 @@ int32_t dbtb_start(void) {
     }
 
     const std::string profile = choice.profile_directory;
+    control_mode = choice.control_mode;
+    dbtb_setControlMode(control_mode);
+    runtimeLog("Control mode: " + std::to_string(control_mode));
     runtimeLog("Selected profile: " + profile);
     if (!dbtb_initResources(GameVfs::kBasePath, profile)) {
         runtimeLog("FATAL: resource VFS initialization failed");
@@ -108,6 +112,7 @@ int32_t dbtb_start(void) {
     return 1;
 }
 
+int32_t dbtb_controlMode(void) { return control_mode; }
 int32_t dbtb_frame(void* raw_events) {
     if (!renderer_ready || !input || !raw_events) return -1;
     frame_start = dbtb_timeUs();
@@ -130,16 +135,13 @@ int32_t dbtb_frame(void* raw_events) {
         events[p + 3] = static_cast<int32_t>(event.phase);
     }
 
-    // The selector deliberately uses Vita face buttons, but once the original
-    // touch game is running we must not translate Circle/Triangle into Android
-    // Back. The original engine treats Back as an application/menu exit request
-    // in several states, which made ordinary Vita button presses close the game.
-    // Keep physical gameplay controls neutral until their gesture mappings are
-    // implemented intentionally; front-touch remains the authoritative input.
+    // Never translate face buttons into global Android Back. The Java adapter
+    // consumes held state only in the original battle/character-pad contexts.
     events[40] = 0;
-    events[41] = 0;
-    if (frame.back || frame.pause)
-        runtimeLog("Gameplay physical back/pause button ignored; use front touch");
+    events[41] = frame.held;
+    events[42] = frame.analog_x;
+    events[43] = frame.analog_y;
+    events[44] = frame.pause ? 1 : 0;
     return static_cast<int32_t>(count);
 }
 

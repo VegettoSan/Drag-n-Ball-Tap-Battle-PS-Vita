@@ -5,6 +5,7 @@ void dbtb_reclaimIdleResources();
 #include <string>
 
 bool dbtb_initResources(const std::string& base, const std::string& mod);
+void dbtb_setControlMode(int mode);
 const GameVfs& dbtb_vfs();
 bool dbtb_releaseTexture(unsigned id);
 void dbtb_mixAudio(short* interleaved, int frames);

@@ -24,6 +24,8 @@ def main():
     parser.add_argument('--build-directory', type=Path, required=True,
                         help='fresh private directory outside the repository')
     parser.add_argument('--jobs', type=int, default=max(1, min(4, os.cpu_count() or 1)))
+    parser.add_argument('--test-controls', action='store_true',
+                        help='separate test bubble DBTBCT001, version 01.02, isolated profile saves')
     args = parser.parse_args()
 
     here = Path(__file__).resolve().parent
@@ -46,8 +48,11 @@ def main():
     build.mkdir(parents=True)
     shutil.copytree(source, private_c)
     run([sys.executable, here / 'patch_runtime.py', private_c])
+    options = ['-DVITA_TITLEID=DBTBCT001', '-DVITA_VERSION=01.02',
+               '-DVITA_APP_NAME=DB Tap Battle Controls Test',
+               '-DDBTB_SAVE_BASENAME=save-controls-test.bin'] if args.test_controls else []
     run(['cmake', '-S', here, '-B', cmake_build, '-DCMAKE_BUILD_TYPE=Release',
-         f'-DTEAVM_C_DIR={private_c}'])
+         f'-DTEAVM_C_DIR={private_c}', *options])
     run(['cmake', '--build', cmake_build, f'-j{args.jobs}'])
 
     artifacts = list(cmake_build.glob('DBTapBattle-Vita-*.vpk'))

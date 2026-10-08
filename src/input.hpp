@@ -11,6 +11,9 @@ enum class PointerPhase { Begin, Move, End };
 struct PointerEvent { int id = -1; float x = 0, y = 0; PointerPhase phase = PointerPhase::Move; };
 struct InputFrame {
     bool up = false, down = false, confirm = false, back = false, pause = false;
+    // Portable held-state ABI: U,D,L,R,X,Square,Triangle,Circle,L,R,Start.
+    uint32_t held = 0;
+    int analog_x = 128, analog_y = 128;
     std::array<PointerEvent, 16> pointers{};
     size_t pointer_count = 0;
 };

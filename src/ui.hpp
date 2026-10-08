@@ -6,6 +6,7 @@
 
 struct BootChoice {
     std::string profile_directory;
+    int control_mode = 0; // 0 touch, 1 Vita visible, 2 Vita hidden
 };
 
 bool runBootSelector(const std::vector<std::string>& profiles, BootChoice& choice);

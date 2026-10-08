@@ -8,6 +8,7 @@
 #include "pac.hpp"
 #include "dynamic_codec.hpp"
 #include "image.hpp"
+#include "pad_visibility.hpp"
 #if defined(__vita__)
 #include <vitaGL.h>
 #else
@@ -36,7 +37,9 @@ std::unique_ptr<GameVfs> vfs;
 std::vector<uint8_t> pending;
 EngineResourceCache resource_cache(8u * 1024u * 1024u);
 std::shared_ptr<CachedEngineResource> pending_resource;
-struct ResourceStream { std::shared_ptr<CachedEngineResource> resource; size_t largest_read=0; };
+int control_mode = 0;
+std::vector<size_t> pending_hidden;
+struct ResourceStream { std::shared_ptr<CachedEngineResource> resource; size_t largest_read=0; std::vector<size_t> hidden; };
 std::unordered_map<int32_t,ResourceStream> resource_streams;
 int32_t next_stream_handle=1;
 int pending_encoding=0;
@@ -218,6 +221,8 @@ int upload(const RgbaImage& image, bool linear) {
 }
 }
 
+void dbtb_setControlMode(int mode) { control_mode = mode >= 0 && mode <= 2 ? mode : 0; }
+
 bool dbtb_initResources(const std::string& base, const std::string& profile) {
     vfs.reset(new GameVfs(base));
     if (!vfs->prepareDirectories() || profile.empty() || !vfs->selectProfile(profile)) return false;
@@ -254,13 +259,23 @@ bool dbtb_initResources(const std::string& base, const std::string& profile) {
     // profile starts from the same exact VPK-bundled seed. app0: is read-only:
     // copy app0:/save.bin only when this profile has no save yet. Never overwrite
     // existing profile progress on launch, profile switches or VPK updates.
-    save_path = base + "/profiles/" + profile + "/save.bin";
+    #ifndef DBTB_SAVE_BASENAME
+#define DBTB_SAVE_BASENAME "save.bin"
+#endif
+    save_path = base + "/profiles/" + profile + "/" DBTB_SAVE_BASENAME;
     save_cache.clear();
     resource_exists_cache.clear();
     resource_streams.clear();
     resource_cache.clear();
     pending_resource.reset();
     save_cache_exists = readFile(save_path, save_cache);
+    if (!save_cache_exists && std::string(DBTB_SAVE_BASENAME) != "save.bin") {
+        std::vector<uint8_t> original;
+        if (readFile(base + "/profiles/" + profile + "/save.bin", original) && original.size() == kSaveSize && publishSave(original)) {
+            save_cache.swap(original); save_cache_exists = true;
+            std::printf("Controls test: copied progress into isolated save\n");
+        }
+    }
     if (!save_cache_exists) {
         std::vector<uint8_t> seed;
         if (readFile("app0:/save.bin", seed) && seed.size() == kSaveSize) {
@@ -309,7 +324,7 @@ extern "C" {
 int32_t dbtb_resourceFiltered(void* name, int32_t filter) {
     DbtbTimedScope timer(dbtb_performance().resource_us);
     ++dbtb_performance().resources;
-    std::string error; pending.clear(); pending_resource.reset(); pending_encoding=0;
+    std::string error; pending.clear(); pending_resource.reset(); pending_hidden.clear(); pending_encoding=0;
     bool hit = false;
     const uint64_t start = dbtb_timeUs();
     if (!name || !resource_cache.read(dbtb_vfs(), static_cast<const char*>(name), filter, pending_resource, hit, error)) {
@@ -320,6 +335,12 @@ int32_t dbtb_resourceFiltered(void* name, int32_t filter) {
     dbtb_performance().resource_cache_hits += hit;
     if (!hit) dbtb_performance().resource_bytes += pending_resource->io_bytes;
     const std::string logical=path.substr(path.find_last_of('/')+1);
+    if(control_mode == 2 && logical == "effect.pac" && !(filter & 16)) {
+        std::string why;
+        if(VitaPadVisibility::build(pending_resource->bytes, pending_hidden, why))
+            std::fprintf(stderr,"Vita pad overlay: %u bytes, immutable cache\n",unsigned(pending_hidden.size()));
+        else std::fprintf(stderr,"Vita pad overlay declined; pad remains visible: %s\n",why.c_str());
+    }
     if(logical=="gamedata.pac")text_encodings[0]=pending_encoding;
     if(logical=="text00.pac")text_encodings[1]=pending_encoding;
     if(logical=="gamedata.pac"||logical=="text00.pac")std::fprintf(stderr,"Text codec %s: %d\n",logical.c_str(),pending_encoding);
@@ -341,7 +362,7 @@ int32_t dbtb_openResourceStream(void* name, int32_t filter) {
     const int32_t handle=next_stream_handle;
     next_stream_handle=handle==INT32_MAX ? 1 : handle+1;
     if (resource_streams.count(handle)) { pending_resource.reset(); return -1; }
-    resource_streams.emplace(handle, ResourceStream{pending_resource,0});
+    resource_streams.emplace(handle, ResourceStream{pending_resource,0,std::move(pending_hidden)});
     pending_resource.reset();
     return handle;
 }
@@ -354,7 +375,10 @@ int32_t dbtb_readResourceStream(int32_t handle, int32_t position, void* target, 
     if (stream==resource_streams.end() || position<0 || size<0 || (size && !target)) return -1;
     const auto& bytes=stream->second.resource->bytes;
     if (size_t(position)>bytes.size() || size_t(size)>bytes.size()-size_t(position)) return -1;
-    if (size) std::memcpy(target,bytes.data()+position,size);
+    if (size) {
+        std::memcpy(target,bytes.data()+position,size);
+        VitaPadVisibility::apply(stream->second.hidden,size_t(position),static_cast<uint8_t*>(target),size_t(size));
+    }
     stream->second.largest_read=std::max(stream->second.largest_read,size_t(size));
     return size;
 }
@@ -404,7 +428,11 @@ int32_t dbtb_textEncoding(int32_t source) { return source>=0 && source<2?text_en
 void dbtb_copyResource(void* data, int32_t size) {
     const auto& bytes = pending_resource ? pending_resource->bytes : pending;
     if (size < 0 || size_t(size) != bytes.size() || (size && !data)) std::abort();
-    if (size) std::memcpy(data, bytes.data(), size);
+    if (size) {
+        std::memcpy(data, bytes.data(), size);
+        VitaPadVisibility::apply(pending_hidden,0,static_cast<uint8_t*>(data),size_t(size));
+    }
+    pending_hidden.clear();
     pending_resource.reset();
     std::vector<uint8_t>().swap(pending);
 }
@@ -428,6 +456,7 @@ int32_t dbtb_exists(void* name) {
 int32_t dbtb_readSave(void* name) {
     pending.clear();
     pending_resource.reset();
+    pending_hidden.clear();
     if (!name || std::strcmp(static_cast<const char*>(name), "save.bin")) return -1;
     if (!save_cache_known) {
         save_cache_exists = readFile(save_path, save_cache);
@@ -435,6 +464,9 @@ int32_t dbtb_readSave(void* name) {
     }
     if (!save_cache_exists) return -1;
     pending = save_cache;
+    // Android config byte 4 selects pad type. Overlay reads only; keep the
+    // user's touch preference on disk while the running Vita session sees pad 1.
+    if(control_mode != 0 && pending.size() == kSaveSize) pending[4] = 1;
     return int32_t(pending.size());
 }
 int32_t dbtb_writeSave(void* name, void* data, int32_t size, int32_t position, int32_t truncate) {
@@ -448,6 +480,7 @@ int32_t dbtb_writeSave(void* name, void* data, int32_t size, int32_t position, i
     if (!truncate && save_cache_exists) out = save_cache;
     if (truncate || size_t(position) + size > out.size()) out.resize(size_t(position) + size);
     if (size) std::memcpy(out.data() + position, data, size);
+    if(control_mode != 0 && out.size() > 4) out[4] = save_cache.size() > 4 ? save_cache[4] : 2;
     const bool ok = publishSave(out);
     if (!ok) {
         std::fprintf(stderr, "Save publication failed: %s\n", save_path.c_str());

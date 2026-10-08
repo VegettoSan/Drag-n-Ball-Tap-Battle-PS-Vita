@@ -47,6 +47,11 @@ InputFrame VitaInput::poll() {
         frame.confirm = (pressed & SCE_CTRL_CROSS) != 0;
         frame.back = (pressed & (SCE_CTRL_CIRCLE | SCE_CTRL_TRIANGLE)) != 0;
         frame.pause = (pressed & SCE_CTRL_START) != 0;
+        const uint32_t bits[] = {SCE_CTRL_UP, SCE_CTRL_DOWN, SCE_CTRL_LEFT, SCE_CTRL_RIGHT,
+            SCE_CTRL_CROSS, SCE_CTRL_SQUARE, SCE_CTRL_TRIANGLE, SCE_CTRL_CIRCLE,
+            SCE_CTRL_LTRIGGER, SCE_CTRL_RTRIGGER, SCE_CTRL_START};
+        for (unsigned i = 0; i < 11; ++i) if (pad.buttons & bits[i]) frame.held |= 1u << i;
+        frame.analog_x = pad.lx; frame.analog_y = pad.ly;
         previous_buttons_ = pad.buttons; previous_up_ = up; previous_down_ = down;
     }
     if (!touch_ready_) return frame;

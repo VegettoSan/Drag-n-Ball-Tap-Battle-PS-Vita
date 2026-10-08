@@ -21,10 +21,10 @@ public final class VitaEngine {
         // Graphics2D and restore BGM, then clears bResume itself. Without it the
         // Vita port entered DrawExec with the text surfaces still null.
         gw.bResume=true;
-        int[] events=new int[42];int frames=0;
-        while(gw.bThreadActive){int count=NativePlatform.frame(Address.ofData(events));if(count<0)break;if(count>10)throw new IllegalStateException("Input overflow");gw.bBackKey=events[40]!=0;
-            for(int i=0;i<count;i++){int p=i*4,id=events[p],phase=events[p+3];int x=(int)(events[p+1]*gw.fScreenScale)-gw.iScreenOffsetX;int y=(int)(events[p+2]*gw.fScreenScale)-gw.iScreenOffsetY;
-                if(phase==2)gw.keyData.Clear(id);else gw.keyData.Set(x,y,phase==0?1:0,id);}
+        VitaControls controls=new VitaControls(NativePlatform.controlMode());
+        int[] events=new int[45];int frames=0;
+        while(gw.bThreadActive){int count=NativePlatform.frame(Address.ofData(events));if(count<0)break;if(count>10)throw new IllegalStateException("Input overflow");
+            controls.update(gw,engine,events,count);
             engine.Run(gw);NativePlatform.present();
             // TeaVM's C backend maps java.lang.Thread to cooperative fibers
             // scheduled through EventQueue. Android normally pumps its scheduler,

@@ -7,6 +7,7 @@ import org.teavm.interop.c.Include;
 @Include(value="dbtb_bridge.h",isSystem=false)
 public final class NativePlatform {
     @Import(name="dbtb_start") public static native int start();
+    @Import(name="dbtb_controlMode") public static native int controlMode();
     @Import(name="dbtb_frame") public static native int frame(Address events);
     @Import(name="dbtb_present") public static native void present();
     @Import(name="dbtb_resource") public static native int resource(Address name);

@@ -22,9 +22,10 @@ if(NOT TEAVM_C_DIR OR NOT EXISTS "${TEAVM_C_DIR}/all.c")
 endif()
 get_filename_component(TEAVM_C_DIR "${TEAVM_C_DIR}" ABSOLUTE)
 
-set(VITA_APP_NAME "Dragon Ball Tap Battle Vita")
-set(VITA_TITLEID "DBTB01178")
-set(VITA_VERSION "01.00")
+set(VITA_APP_NAME "Dragon Ball Tap Battle Vita" CACHE STRING "LiveArea title")
+set(VITA_TITLEID "DBTB01178" CACHE STRING "Vita application identifier")
+set(VITA_VERSION "01.00" CACHE STRING "Vita package version")
+set(DBTB_SAVE_BASENAME "save.bin" CACHE STRING "Native per-profile save filename")
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 set(DBTB_DEFAULT_SAVE "${CMAKE_CURRENT_BINARY_DIR}/default_save.bin")
@@ -119,6 +120,11 @@ set_source_files_properties("${TEAVM_C_DIR}/all.c" PROPERTIES COMPILE_OPTIONS "-
 set_source_files_properties("${REPO_ROOT}/tools/aot/engine/native/compressed_bgm.cpp" PROPERTIES COMPILE_OPTIONS "-Os")
 # Compact the bounded streaming image path to retain Vita ELF SCE stub headroom.
 set_source_files_properties("${REPO_ROOT}/src/image.cpp" "${REPO_ROOT}/tools/aot/engine/native/resources.cpp" PROPERTIES COMPILE_OPTIONS "-Os")
+set_source_files_properties("${REPO_ROOT}/tools/aot/engine/native/resources.cpp"
+  PROPERTIES COMPILE_DEFINITIONS "DBTB_SAVE_BASENAME=\"${DBTB_SAVE_BASENAME}\"")
+# Compact the launcher to retain headroom for SCE import data at the end of
+# the RX segment. This does not change the original TeaVM engine compilation.
+set_source_files_properties("${REPO_ROOT}/src/ui.cpp" PROPERTIES COMPILE_OPTIONS "-Os")
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-q,-z,max-page-size=0x10000")
 
 # Dependencies are ordered from consumers to providers, matching vitaGL ports.
