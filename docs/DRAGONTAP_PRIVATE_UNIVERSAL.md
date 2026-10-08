@@ -5,7 +5,7 @@ _Date: 2026-10-07; source work on main; no new Vita hardware approval._
 
 The historical community tutorial “Como Funciona El DragonTap_Util 2.6” (SankBlogs, 2020-08-09), https://sank-youtube.blogspot.com/2020/08/como-funciona-el-dragontaputil-2.html, documents `com.neon.dragonhack` output, ordinary “Make MOD.APK”, and **“Make PRIVATE MOD.APK”**, with per-mod package name and extra resource protection. This is a strong candidate for the common source of the protected APKs, but **not definitive attribution** without comparing the original tool executable.
 
-The following are direct observations from the four user-provided protected APKs, not guesses based on name resemblance:
+The following are direct observations from the five user-provided protected APKs, not guesses based on name resemblance:
 
 | APK | DEX short SHA | Static resource loader | PAC directories validated | Contiguous characters |
 |---|---|---|---:|---:|
@@ -13,8 +13,9 @@ The following are direct observations from the four user-provided protected APKs
 | DBTB en español para Android 14.apk | `d594affc` | `Lext/o;.<clinit>` | 106/106 | 13 |
 | TAP BATTLE INVASION BETA 3.apk | `05aa0c5e` | `Lext/o;.<clinit>` | 139/139 | 22 |
 | Dbfz v22.apk | `11d60c43` | `Lext/o;.<clinit>` | 261/261 | 58 |
+| dbs mobile tap battle v1.apk | `2392d43b` | `Lext/o;.<clinit>` | 117/117 | 14 |
 
-**612/612 protected PAC outer directories pass** header/table type/bounds checks when decoded using parameters recovered from each APK's own DEX, with **zero hard-coded mod profiles** in the scanner. The four APKs also share an identical arm64 `libabc.so` helper (SHA-256 prefix `7e98a974c49f24b3`). This establishes a common decoding *schema*, not a guarantee that all gameplay alterations are data-only.
+**729/729 protected PAC outer directories pass** header/table type/bounds checks when decoded using parameters recovered from each APK's own DEX, with **zero hard-coded mod profiles** in the scanner. The original four APKs also share an identical arm64 `libabc.so` helper (SHA-256 prefix `7e98a974c49f24b3`). This establishes a common decoding *schema*, not a guarantee that all gameplay alterations are data-only.
 
 ## Decisive discovery: aliases AND XOR keys are in classes.dex
 
@@ -67,7 +68,7 @@ size   = read_le32(pac, 6 + entry * 16) XOR pac_size_xor XOR entry
 type   = read_be32(pac, 10 + entry * 16) XOR entry
 ```
 
-Each decoded region must be strictly within the PAC. The literal `plt\0` tag is a special case, observed in each of four protected corpora, not an XOR-obfuscated invented code.
+Each decoded region must be strictly within the PAC. The literal `plt\0` tag is a special case, observed in all five protected corpora, not an XOR-obfuscated invented code.
 
 ### Prior DBFZ alias correction
 
@@ -104,8 +105,16 @@ This sidecar design is proposed, **not currently implemented**. A Python **read-
 ## Validation acceptance gates
 
 - Legacy known-codec/static extractors remain byte-for-byte compatible with previous input sources.
-- Pure generator-independent DEX parser extracts all required names and integers correctly from four distinct APKs and validates 612/612 PAC directory structures.
+- Pure generator-independent DEX parser extracts all required names and integers correctly from five distinct APKs and validates 729/729 PAC directory structures.
 - New Web and Windows extractors produce byte-for-byte matching canonical names/files/manifests for those four fixture APKs.
 - Malformed/synthetic DEX, truncated PAC, wrong keys, path traversal, duplicate aliases, huge/empty PACs and mixed profiles reject gracefully.
 - New Vita runtime decodes known profiles exactly as before; generic metadata path passes native tests and extended on-device character/battle/selector/suspend checks.
 - Never promote to stable v1.0 replacement solely because source tests pass.
+
+## Independent fifth-mod test — dbs mobile tap battle v1.apk
+
+A new community APK was supplied after the initial four-mod research, making this an independent holdout test of the schema rather than a fitted dataset. Without pre-registering any DEX hash, alias, or XOR key, the read-only `dragon_tap_universal_probe.py` discovered a new loader `Lext/o;.<clinit>`, DEX SHA-256 `2392d43b74e81f601ecc771ec26453d444fbdecb48fffd4995f4b7b96f796de7`, and automatically resolved all 117 PAC names and record tables (117 valid, 0 invalid, 0 unknown types). Its character triplets cover 00–13 (14 complete), there are 51 cards 000–050, and mandatory common/select0/gamedata/text00 files are present after DEX-guided renaming. Example: `4AF4.pac→common.pac`, `259D.pac→gamedata.pac`, `36D713.pac→char13.pac`. `font00.pac` is absent, as in previously compatible protected variants.
+
+Additional APK ZIP check: 155 non-directory assets (117 PAC, 36 audio with `.ogg` suffix, 1 PNG and 1 BIN), 129,925,365 unpacked asset bytes, no bad ZIP CRCs. Of the 36 `.ogg` files, 26 have an OggS stream header and 10 have an MP4/M4A `ftyp` header; the existing media converter needs to account for misleading extensions. APK SHA-256: `ce00bb66f2d19f5558bdd26bf6f80e8ec6193d20137a7dd0d1deb37066f2fc84`.
+
+**Critical limitation:** source snapshots of the published Windows and Web extractors still hard-code only the first four alias families. Their recognition scores for this fifth APK are **0 for all four profiles**; `assets/common.pac` is absent (its actual name is `assets/4AF4.pac`). Accordingly their default extraction path falls back to generic assets and rejects with `common.pac was not found`. This is *not* a passing production extractor test, merely a passing **universal proof-of-concept** test. Implement DEX-powered extraction and Vita-side runtime codec metadata before promising that new protected mods are immediately playable; do not change stable VPK 1.0.
