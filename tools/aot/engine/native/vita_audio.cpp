@@ -1,6 +1,7 @@
 #include "dbtb_bridge.h"
 #include "services.hpp"
 #include "performance.hpp"
+#include "diagnostic_watchdog.hpp"
 #include "log.hpp"
 #include "compressed_bgm.hpp"
 
@@ -433,7 +434,21 @@ void mixVoice(Voice& v, int32_t& left, int32_t& right) {
 int audioThread(SceSize, void*) {
     alignas(64) int16_t buffer[kFrames * 2];
     uint64_t previous_submission = 0;
+    uint32_t last_stall_report = 0;
     while (audio_running.load()) {
+        auto& watchdog = dbtb_diagnosticStage();
+        const uint32_t phase = watchdog.phase.load(std::memory_order_acquire);
+        const uint32_t stamp = watchdog.stamp_seconds.load(std::memory_order_relaxed);
+        const uint32_t current = uint32_t(dbtb_timeUs()/1000000u);
+        const uint32_t stalled_seconds = current - stamp;
+        if (phase && stamp && stalled_seconds >= 8 && (current - last_stall_report >= 10)) {
+            last_stall_report = current;
+            std::fprintf(stderr,
+                "[FrameWatchdog] blocked_seconds=%u phase=%u bytes=%u operation=%u\n",
+                unsigned(stalled_seconds),unsigned(phase),
+                unsigned(watchdog.detail_bytes.load(std::memory_order_relaxed)),
+                unsigned(watchdog.detail_index.load(std::memory_order_relaxed)));
+        }
         const uint64_t start = dbtb_timeUs();
         dbtb_mixAudio(buffer, kFrames);
         const uint32_t elapsed = static_cast<uint32_t>(dbtb_timeUs() - start);
