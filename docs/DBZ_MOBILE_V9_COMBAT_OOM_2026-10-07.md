@@ -69,3 +69,24 @@ Compiled the **full original APK-derived TeaVM core** locally (not GitHub Action
 - ZIP CRC audit passed. The 15 member names match the previous MemoryFix experimental VPK, and **only `eboot.bin` differs**. LiveArea icon, background, startup, theme, selector graphics and seed files remain unchanged. `tools/validate_livearea_vpk.py` reports PASS.
 - The compiled ELF contains `Compressed BGM indexed:`, the universal image marker `C14U` and the retained `Combat resource boundary:` diagnostic.
 - Still experimental: Sony Vita hardware tests are pending. Check `dbz_mobile_v9` with the previous character pairing (char37 versus char20) and capture `runtime.log` if the crash persists. A successful build does **not** by itself prove playback or gameplay stability.
+
+## Third PS Vita test — combat succeeds; transition to next fight stops responding
+
+### New `runtime.log` evidence
+
+- Full original-engine universal AAC-stream build, `dbz_mobile_v9`. The previous `bgm_03.ogg` allocation exception no longer occurs: `Compressed BGM indexed` confirms file-backed playback.
+- Entering the tested battle generates a `[Perf]` window with **154 textures / 20,837.9 ms of texture work**, with a single **16,948 ms** maximum frame. Once in combat, `[Perf]` windows stabilize at ~59.4–59.9 FPS. This is a real loading bottleneck, **not a 4-FPS combat engine**.
+- On the next fight transition, the last completed native stream is `chardemo37.pac`, after `char07.pac`, `back06.pac` and `demo_00.pac`. The user reported over three minutes stuck; however the log has no timestamp after that last stream, so it cannot distinguish a blocked TeaVM update from texture loading or a native lock.
+- **No new psp2dmp was supplied** and there is no `std::bad_alloc` in this third log. Do not relabel a hang as another crash. Never assume the BGM path is the cause.
+
+### Narrow experimental diagnostics + allocation reduction
+
+- New `src/diagnostic_watchdog.hpp` tracks the main frame's progress and the current native texture phase with small atomic counters. The *existing* audio worker reports `[FrameWatchdog] blocked_seconds=... phase=... bytes=... operation=...` every 10 seconds if the main frame is stuck for at least 8 seconds while audio keeps running. Phases: 1 original-engine frame, 2 image decompression, 3 GL texture upload; stage 0 indicates outside original frame. If the watchdog also stops reporting, examine audio thread/GPU waits with a core dump and debugger; **do not spin or alter gameplay**.
+- `src/image.cpp/.hpp` expose new pointer+length image decoding entry points and preserve all existing vector APIs. `dbtb_loadTexture` now passes raw `C14*` image bytes and original PNG bytes directly instead of duplicating each compressed image in temporary vectors. Decoder output, premultiplied alpha, GL upload and texture ownership are unchanged.
+- Performance windows now show both `texture_decode_ms` and `texture_upload_ms`; any upload longer than 750 ms records `[TextureSlow]` with dimensions and byte count. Diagnoses the 20-second battle load before changing GPU behavior or texture cache lifetime.
+- Host native regression passed: Original + Android14 real-data fixtures, **125 PACs, 137 containers, 470 textures, 68 protected BIN tables and 198 PCM WAV**; VPK full Vita original TeaVM core compiled directly and passed `validate_livearea_vpk.py`. ZIP member list and LiveArea contents match the previous AAC-stream VPK, with `eboot.bin` the only changed member.
+- Test VPK SHA-256: `740647d4cd8fb74b9801df441fa90fd03ed6c882b30c40e4d4cc33dc8da145f5`. filename `DBTapBattle-Vita-Universal-NextFight-Diagnostic-01.00.vpk`.
+
+### Next required PS Vita test
+
+With the same `dbz_mobile_v9` profile and existing save, start battle 37 versus 20, finish it, and proceed to battle with character 07. If transition hangs, wait 20–30 s, then retrieve the full `runtime.log`. Specifically inspect `[FrameWatchdog]`, `[TextureSlow]`, `texture_decode_ms`, and `texture_upload_ms`. This determines where an actual behavioral optimization should target. Stable v1.0 release stays unchanged; nothing was modified in original AOT gameplay.
