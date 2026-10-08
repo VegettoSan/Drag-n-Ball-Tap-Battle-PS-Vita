@@ -21,7 +21,8 @@ built-in Original entry and never reads game/ or mods/ as current profile roots.
 
 QUICK START
 1. Extract the entire extractor ZIP into one folder.
-2. Keep Extract_APK_for_Vita.bat and Extraer_APK_para_Vita.ps1 together.
+2. Keep Extract_APK_for_Vita.bat, Extraer_APK_para_Vita.ps1 and
+   PrivateModDex.ps1 together. This last file is needed for NEW protected mods.
 3. Drag one or more Dragon Ball Tap Battle APK files onto Extract_APK_for_Vita.bat.
    You can also double-click the BAT and select APK files.
 4. Wait until the tool reports READY.
@@ -89,3 +90,12 @@ WHAT THE EXTRACTOR DOES
 IMPORTANT
 The tool prepares game data only. The VPK is installed separately.
 A mod that changes Android code may still require Vita-side compatibility work.
+
+UNIVERSAL PRIVATE MODS (experimental Vita source)
+- Previously unknown DragonTap PRIVATE variants are recognized by statically
+  inspecting classes.dex. No Android execution, external Python, or mod keys.
+- Such profiles include dbtb_codec.json next to the unchanged PAC payloads.
+- Install that sidecar together with the profile's other extracted files.
+- The published stable v1.0 VPK DOES NOT yet read this new file; an updated
+  experimental VPK is required for new protected variants.
+- Original and known protected mod paths remain on their audited codecs.
