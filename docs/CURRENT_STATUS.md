@@ -1,4 +1,33 @@
-# Current status — 2026-10-07 (America/Bogota), v1.0 RELEASE / 00.34 HARDWARE BASELINE
+# Current status — 2026-10-08, v1.1 Universal Mod Support (release ready)
+
+## Latest confirmed: v1.1 VisualQuality promoted for release
+
+The user has **approved the 2026-10-08 VisualQuality experimental build on
+physical PS Vita** with the high-resolution protected `dbz_mobile_v9` profile.
+Character selection, first fight, victory and successive battles proceed without
+the previously reproduced crashes or long loading deadlocks. Attached
+`runtime.log` has 340 performance windows, 317 at 58+ FPS, 78
+`[TextureCompact]` messages, 7 indexed AAC tracks and 3 combat cache
+boundaries; no logged `std::bad_alloc`. Heavy-load transitions can take longer.
+
+**Known accepted limitation:** some high-resolution mod textures appear blurry
+because the general dynamic-C14U renderer uses RGBA4444 and adaptively reduces
+physical GPU texture resolution to stay within PS Vita memory limits. Not all
+community mods are verified. No per-mod quality exceptions were added.
+
+**v1.1 release package:** `Dragon-Ball-Tap-Battle-PS-Vita-v1.1.vpk`,
+SHA-256 `9953e8c99ce59a5b4b55dab3ae2caec788c39ffe1edb19a2d4e5833c958ee6bd`,
+APP_VER `01.01`, TITLE_ID `DBTB01178`. Its `eboot.bin` matches the hardware
+approved VisualQuality VPK bit-for-bit; only APP_VER SFO metadata was changed.
+VPK ZIP and LiveArea integrity pass. The previous v1.0 remains historical.
+
+**Public release upload still belongs to the maintainer**; do not claim GitHub
+has already published v1.1. Full instructions: [v1.1 release notes](RELEASE_v1.1.md)
+and [Web/Windows install guide](INSTALLATION_AND_EXTRACTION.md).
+
+---
+
+## Historical status — 2026-10-07 v1.0 / 00.34
 
 > **Authoritative current contract:** [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 > Any later section in this document that mentions `game/`, `mods/`, an
