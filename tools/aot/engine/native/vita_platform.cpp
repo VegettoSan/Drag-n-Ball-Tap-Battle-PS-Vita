@@ -3,6 +3,7 @@
 #include "performance.hpp"
 #include "input.hpp"
 #include "log.hpp"
+#include "diagnostic_watchdog.hpp"
 #include "ui.hpp"
 #include "vfs.hpp"
 
@@ -110,6 +111,7 @@ int32_t dbtb_start(void) {
 int32_t dbtb_frame(void* raw_events) {
     if (!renderer_ready || !input || !raw_events) return -1;
     frame_start = dbtb_timeUs();
+    dbtb_setDiagnosticStage(1);
     if (!window_start) window_start = frame_start;
     if (previous_frame)
         interval_max = std::max(interval_max, frame_start - previous_frame);
@@ -147,6 +149,7 @@ void dbtb_present(void) {
     const uint64_t run_us = frame_start ? before_swap - frame_start : 0;
     run_total += run_us;
     run_max = std::max(run_max, run_us);
+    dbtb_setDiagnosticStage(0);
     vglSwapBuffers(GL_FALSE);
     const uint64_t now = dbtb_timeUs();
     swap_total += now - before_swap;
@@ -160,7 +163,7 @@ void dbtb_present(void) {
     std::fprintf(stderr,
         "[Perf] fps=%.1f run_ms=%.2f run_max_ms=%.2f swap_ms=%.2f interval_max_ms=%.2f "
         "draws_per_frame=%.1f client_KiB=%llu loads=%u load_ms=%.1f textures=%u "
-        "texture_ms=%.1f text_ms=%.1f audio_decode_ms=%.1f "
+        "texture_ms=%.1f texture_decode_ms=%.1f texture_upload_ms=%.1f text_ms=%.1f audio_decode_ms=%.1f "
         "resource_cache_hits=%u resource_io_KiB=%llu voice_cache_hits=%u texture_cache_hits=%u "
         "audio_clip_samples=%u audio_overload_samples=%u audio_late_mix=%u audio_mix_max_us=%u "
         "audio_submit_gaps=%u audio_submit_max_us=%u\n",
@@ -170,6 +173,7 @@ void dbtb_present(void) {
         double(perf.draws) / window_frames,
         static_cast<unsigned long long>(perf.client_bytes / 1024), perf.resources,
         double(perf.resource_us) / 1000.0, perf.textures, double(perf.texture_us) / 1000.0,
+        double(perf.texture_decode_us) / 1000.0, double(perf.texture_upload_us) / 1000.0,
         double(perf.text_us) / 1000.0, double(perf.audio_decode_us) / 1000.0,
         perf.resource_cache_hits, static_cast<unsigned long long>(perf.resource_bytes / 1024), perf.voice_cache_hits, perf.texture_cache_hits,
         audio.clipped_samples, audio.overload_samples, audio.late_mix_blocks, audio.max_mix_us,
