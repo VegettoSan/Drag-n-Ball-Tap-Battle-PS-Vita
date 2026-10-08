@@ -141,39 +141,66 @@ bool synchronizeInstalledCharacters(std::vector<uint8_t>& save, int characters) 
     return changed;
 }
 struct CompactTexturePixels {
-    // The source pixels remain at full fidelity while being decompressed.
-    // For Vita's very large PRIVATE mods, pack to a single RGBA4444 upload;
-    // inputs >=384px use 2:1 downsampling (resource-specific, not engine logic).
+    // No full RGBA decode buffer. Quantize directly from 256 KiB DEFLATE rows.
     uint32_t source_w = 0, source_h = 0;
-    uint32_t gpu_w = 0, gpu_h = 0, divisor = 1;
-    uint32_t rows_seen = 0;
+    uint32_t gpu_w = 0, gpu_h = 0;
+    uint32_t rows_seen = 0, output_rows = 0;
     std::vector<uint16_t> packed;
 };
+
+// GL_RGBA + GL_UNSIGNED_SHORT_4_4_4_4 takes the standard high-to-low
+// RGBA nibble order: RRRR GGGG BBBB AAAA. The old implementation put
+// alpha in the red nibble, causing the pink/red wash and missing alpha FX.
+inline uint16_t packGpuRgba4444(const uint8_t* px) {
+    return uint16_t((uint16_t(px[0] & 0xF0u) << 8) |
+                    (uint16_t(px[1] & 0xF0u) << 4) |
+                    uint16_t(px[2] & 0xF0u) |
+                    uint16_t(px[3] >> 4));
+}
 
 bool packCompactRows(void* context, const uint8_t* rgba, uint32_t y,
                      uint32_t rows, uint32_t width) {
     auto& dst = *static_cast<CompactTexturePixels*>(context);
     if (!rgba || width != dst.source_w || y != dst.rows_seen ||
-        y > dst.source_h || rows > dst.source_h-y) return false;
+        y > dst.source_h || rows > dst.source_h - y) return false;
+    // Independent scale per axis preserves aspect ratio. A given target scanline
+    // is filled exactly once when its corresponding source scanline arrives.
     for (uint32_t sy = 0; sy < rows; ++sy) {
-        const uint32_t source_y = y + sy;
-        if (source_y % dst.divisor) continue;
-        const uint32_t ty = source_y / dst.divisor;
-        if (ty >= dst.gpu_h) return false;
+        const uint32_t src_y = y + sy;
         const uint8_t* line = rgba + size_t(sy) * width * 4;
-        uint16_t* output = dst.packed.data() + size_t(ty) * dst.gpu_w;
-        for (uint32_t tx = 0; tx < dst.gpu_w; ++tx) {
-            const uint8_t* px = line + size_t(tx * dst.divisor) * 4;
-            // VitaGL read_rgba4444: AAAABBBBGGGGRRRR (bit0=R), premultiplied
-            // original color and transparency are retained (4-bit precision).
-            output[tx] = uint16_t((px[0] >> 4) |
-                                  (px[1] & 0xF0u) |
-                                  ((px[2] & 0xF0u) << 4) |
-                                  ((px[3] & 0xF0u) << 8));
+        while (dst.output_rows < dst.gpu_h &&
+               uint32_t(uint64_t(dst.output_rows) * dst.source_h / dst.gpu_h) == src_y) {
+            uint16_t* output = dst.packed.data() + size_t(dst.output_rows) * dst.gpu_w;
+            for (uint32_t tx = 0; tx < dst.gpu_w; ++tx) {
+                const uint32_t src_x = uint32_t(uint64_t(tx) * dst.source_w / dst.gpu_w);
+                output[tx] = packGpuRgba4444(line + size_t(src_x) * 4);
+            }
+            ++dst.output_rows;
         }
     }
     dst.rows_seen = y + rows;
     return true;
+}
+
+// A common texture-size policy shared by all dynamic protected mods. Improve
+// fidelity until live GPU allocations near their soft budget; then retain the
+// exact conservative half-size strategy that passed physical Vita testing.
+void dynamicTextureDimensions(uint32_t w, uint32_t h, uint32_t& out_w,
+                              uint32_t& out_h, bool& conservative) {
+    const uint32_t edge = std::max(w, h);
+    const uint32_t cap = std::min(edge, 512u);
+    out_w = std::max(1u, uint32_t((uint64_t(w) * cap + edge / 2) / edge));
+    out_h = std::max(1u, uint32_t((uint64_t(h) * cap + edge / 2) / edge));
+    const size_t enhanced = size_t(out_w) * out_h * 2;
+    conservative = enhanced > kDynamicQualityBudget - std::min(kDynamicQualityBudget, dynamic_gpu_bytes);
+    if (conservative) {
+        const uint32_t divisor=(w >= 384 || h >= 384) ? 2u : 1u;
+        const uint32_t conservative_w=(w + divisor - 1) / divisor;
+        const uint32_t conservative_h=(h + divisor - 1) / divisor;
+        // Never enlarge a huge image compared with the normal 512px cap.
+        out_w=std::min(out_w, conservative_w);
+        out_h=std::min(out_h, conservative_h);
+    }
 }
 
 int upload(const RgbaImage& image, bool linear) {
