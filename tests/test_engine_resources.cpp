@@ -1,4 +1,5 @@
 #include "engine_resources.hpp"
+#include "dynamic_codec.hpp"
 #include "game_data.hpp"
 #include "image.hpp"
 #include "pac.hpp"
@@ -99,11 +100,32 @@ std::vector<uint8_t> protectedFixture(PacEncoding encoding){
     return pac;
 }
 void profileNormalisation(){
-    for(PacEncoding encoding:{PacEncoding::Community14,PacEncoding::Community14Spanish,PacEncoding::Community14Invasion,PacEncoding::Community14Dbfz}){
+    // The fifth mod's independently recovered DEX constants, with no hard-coded
+    // encoder added to the normal legacy codec registry.
+    const std::string json=R"json({"format":1,"generator":"dragontap-private-v1",
+      "count_xor":24318,"offset_xor":2346498164,"size_xor":1511186348,
+      "image_width_xor":3304,"image_height_xor":48805,
+      "table_count_xor":14952,"table_position_xor":3392584592,
+      "table_width_xor":5971,"table_height_xor":39614,"wav_size_xor":24318,
+      "type_act":882113049,"type_bin":793741694,
+      "type_cnv":1846986893,"type_dac":2966949568,
+      "type_rgba":3328993045,"type_spr":3407625201,
+      "type_wav":151024925})json";
+    const std::vector<uint8_t> source(json.begin(),json.end());
+    CommunityPacProfile decoded{};std::string parse_error;
+    assert(parseDynamicCodecJson(source,decoded,parse_error));
+    installDynamicCommunityProfile(&decoded);
+    for(const std::string broken:{std::string("{}"),json+std::string(" trailing"),
+                                  json.substr(0,json.size()-1),json+json}){
+        CommunityPacProfile rejected{};std::string error;
+        const std::vector<uint8_t> b(broken.begin(),broken.end());
+        assert(!parseDynamicCodecJson(b,rejected,error));
+    }
+    for(PacEncoding encoding:{PacEncoding::Community14,PacEncoding::Community14Spanish,PacEncoding::Community14Invasion,PacEncoding::Community14Dbfz,PacEncoding::Community14Dynamic}){
         const auto input=protectedFixture(encoding);std::vector<uint8_t> output;std::string error;int protected_encoding=0;
         assert(normaliseEnginePac(input,"common.pac",output,error,&protected_encoding)&&protected_encoding==1);
         assert(u16(output,0)==3&&!std::memcmp(output.data()+10,"png",3)&&!std::memcmp(output.data()+26,"bin",3)&&!std::memcmp(output.data()+42,"wav",3));
-        auto image=entry(output,0);const char* expected=encoding==PacEncoding::Community14?"C14R":encoding==PacEncoding::Community14Spanish?"C14S":encoding==PacEncoding::Community14Invasion?"C14I":"C14D";
+        auto image=entry(output,0);const char* expected=encoding==PacEncoding::Community14?"C14R":encoding==PacEncoding::Community14Spanish?"C14S":encoding==PacEncoding::Community14Invasion?"C14I":encoding==PacEncoding::Community14Dynamic?"C14U":"C14D";
         assert(image.size()>=8&&!std::memcmp(image.data(),expected,4)&&u32(image,4)==0);
         image.erase(image.begin(),image.begin()+8);RgbaImage decoded;assert(decodeCommunityImageProfile(image,0,encoding,decoded,error));
         assert(decoded.width==1&&decoded.height==1&&decoded.pixels==std::vector<uint8_t>({10,20,30,40}));
@@ -111,6 +133,8 @@ void profileNormalisation(){
         assert(table.records().size()==1&&table.value(0,0,0,value)&&value==0x7f);
         assert(entry(output,2)==std::vector<uint8_t>({1,2,3,4}));
     }
+    installDynamicCommunityProfile(nullptr);
+    assert(!communityProfile(PacEncoding::Community14Dynamic));
 }
 }
 
