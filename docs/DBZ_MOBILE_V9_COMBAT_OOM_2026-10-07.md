@@ -132,3 +132,34 @@ Changed only the native image/texture bridge for **dynamic C14U protected profil
 **Host proof:** synthetic protected DEFLATE 1x1, 100x113, 512x512, 712x712 and 4096x1024 images decoded byte-for-byte identically to the full-buffer algorithm; truncated streams rejected. Extracted *actual* 712x712 protected images from `char37.pac` (entry 17) and `char07.pac` (entry 18) of the user-supplied APK also matched exactly, with **8 tiles / 262,016 maximum temporary pixel bytes**. Legacy community and engine-resource regression tests passed.
 
 **Status: experimental; hardware acceptance pending.** Do not mark the crash fixed until user confirms entering and completing first and second fights. If it fails, capture full `runtime.log` and Sony `psp2dmp`; `[TextureStream]` messages report per-image tile count and CPU/GPU timing. Particularly distinguish a further texture allocation failure from a GPU stall and the prior audio crash. Existing v1.0 release remains untouched.
+
+
+## Fifth Vita hardware report: TextureStream crash at first battle (2026-10-08)
+
+**Inputs**: user-provided `runtime.log` and `psp2core-1791436599-0x0001922053-eboot.bin.psp2dmp` while using experimental `TextureStream` VPK with dynamic `dbz_mobile_v9` profile.
+
+### Evidence and correction of prior assumption
+
+- The new `[TextureStream]` entries show 512x512 textures decoded and uploaded in four approximately 256 KiB chunks in 20-30 ms under light load. These logs independently confirm the bounded raw DEFLATE decoder was used.
+- Near initial combat creation, the `[TextureStream]` entry for a 512x512 effect texture instead records **4023 ms total / 4005 ms GPU**; the final source resource reported before crash is `bobj03.pac` (`io_bytes=352833`). No completed combat boundary appears.
+- The gzip-wrapped Sony core has a `dbtb_original_engine` text base of **0x81069000**. Important: this differs from the previous dump's base 0x81025000. The exact ELF symbols must be rebased with **0x69000**; otherwise call stacks produce misleading names. Rebased stack includes `glTexSubImage2D -> _malloc_r` along with `uploadRows -> decodeCommunityImageProfileRows -> dbtb_loadTexture -> AndroidGLTexture.loadTexture -> GameData.Init`. Root physical allocation behavior inside vitaGL is not yet proven beyond the visible stack.
+- **Conclusion:** the CPU image decompression copy optimization alone does not address repeated GPU-side allocation/transfer pressure in this protected mod. Do not claim the AAC fix regressed; it remains unchanged.
+
+### Experimental GPUCompact mitigation (for protected dynamic codec ONLY)
+
+Because 712x712 protected character atlas images can individually require 2,027,776 bytes of RGBA8 plus driver staging, the new experimental native bridge avoids **all `glTexSubImage2D`** calls in `PacEncoding::Community14Dynamic`. The original/base/known protected profiles preserve their existing decoder and GL path.
+
+1. DEFLATE decompression retains bounded 256 KiB scanline strips.
+2. Dynamic images at least 384 px on either axis are sampled to half resolution; smaller ones retain their original resolution. Original source PACs, pixel coordinate definitions and original Java engine gameplay logic are untouched. **This changes physical image sharpness, intentionally and only in the new experimental path.**
+3. Pixels are packed into 16-bit `GL_UNSIGNED_SHORT_4_4_4_4` (4-bit R/G/B/A, including quantized premultiplied alpha) and transferred using **one `glTexImage2D`** rather than a preceding allocation and multiple sub-image uploads.
+4. VitaGL **requires `internalFormat=GL_RGBA`** to trigger its `fast_store` path for 16-bit packed input. Passing `GL_RGBA4` is insufficient because that path can convert to 32-bit. Channel bits follow vitaGL's `read_rgba4444`: R occupies bits 0-3, G bits 4-7, B bits 8-11, A bits 12-15.
+5. The bridge reports the original *logical* width/height to the untouched engine, so original sprite layout and normalized UV math remain consistent. Physical GPU dimensions are smaller for large dynamic textures. A `[TextureCompact]` diagnostic records logical, GPU dimensions, packed KiB and decoding/upload times. On GL errors it deletes the new texture and returns -1.
+6. CPU source RGBA budget remains bounded: 256 KiB strips plus one packed output allocation, at most 8 MiB. For actual 712x712 images from mod char37/char07, physical output is 356x356 pixels at **253472 B** each vs **2027776 B** original RGBA8 (**87.5% less**).
+
+### Build and validation
+
+- Built **directly, without GitHub Actions**, from the complete original DBTapBattle.apk TeaVM core using local VitaSDK 2026.08 (not the CI dummy core).
+- `DBTapBattle-Vita-Universal-GPUCompact-Experimental-01.00.vpk`, **2,740,383 B**, SHA-256 `d76f33a82995e0386cdebeeda60b0e82b07dd4d53041b3117ce17f3602fdb18b`.
+- Full ELF -> Sony VELF -> SELF -> VPK succeeded and LiveArea icon/background/startup/template validation passed; ZIP CRC verified. Relative to the previous TextureStream test VPK, all 15 file paths and content remain identical **except `eboot.bin`**.
+- Previously supplied real compressed 712x712 source images from `char37` and `char07` passed byte-perfect bounded decoding tests; host resource normalization regression also passed for Android14/Spanish/Invasion/DBFZ. Repacked GPU pixels are predictably reduced to 4-bit precision and half-resolution (not byte-perfect source quality).
+- **No hardware gameplay success claimed.** Before any stable release, test both a new protected mod and at least one previously working original/known mod. If GPUCompact still crashes, retain the new `runtime.log` and `psp2dmp`, and consider resource lifetime/driver allocation behavior instead of blindly reducing resolution further.
