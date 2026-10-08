@@ -32,14 +32,14 @@ Before installing the port, make sure you have:
 
 All playable datasets now use one directory:
 
-\`\`\`text
+```text
 ux0:data/DBTapBattle/profiles/
-\`\`\`
+```
 
-Each first-level folder inside \`profiles/\` is one selectable game dataset.
-There is no special \`game/\` folder and no separate \`mods/\` folder anymore.
+Each first-level folder inside `profiles/` is one selectable game dataset.
+There is no special `game/` folder and no separate `mods/` folder anymore.
 
-The Vita selector shows only folders that actually exist inside \`profiles/\`.
+The Vita selector shows only folders that actually exist inside `profiles/`.
 If no profiles are installed, it shows **NO GAME DATA FOUND** and tells the user
 to prepare a Tap Battle APK with the extractor.
 
@@ -57,7 +57,7 @@ Both the Web Extractor 1.0 and Windows Extractor 1.5 derive the Vita profile fol
 
 Examples:
 
-\`\`\`text
+```text
 gen.apk
 -> ux0:data/DBTapBattle/profiles/gen/
 
@@ -66,7 +66,7 @@ tap battle android 14.apk
 
 TAP BATTLE INVASION BETA 3.apk
 -> ux0:data/DBTapBattle/profiles/TAP_BATTLE_INVASION_BETA_3/
-\`\`\`
+```
 
 APK type detection is independent from profile naming. The extractor can still
 identify ordinary Gen-style assets or audited Android14-family protected layouts
@@ -81,13 +81,13 @@ No PAC files need to be edited and the APK does not need to be extracted again.
 1. Install the Dragon Ball Tap Battle Vita VPK with VitaShell.
 2. Prepare your APK data with either:
    - **Web Extractor 1.0:** https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
-   - **Windows Extractor 1.5:** \`tools/windows/Extract_APK_for_Vita.bat\`
+   - **Windows Extractor 1.5:** `tools/windows/Extract_APK_for_Vita.bat`
 3. With the web version, select the APK and download the generated ZIP; with
    Windows, run/drag the APK onto the BAT.
 4. Extract the generated ZIP/package when necessary, then copy its **data**
-   folder to the root of \`ux0:\`.
+   folder to the root of `ux0:`.
 5. Confirm profiles end up under:
-   \`ux0:data/DBTapBattle/profiles/<Profile>/\`
+   `ux0:data/DBTapBattle/profiles/<Profile>/`
 6. Launch the game and choose the installed profile.
 
 The Web Extractor runs entirely in the browser: the selected APK is **not
@@ -96,9 +96,9 @@ have a PC.
 
 Do not create:
 
-\`\`\`text
+```text
 ux0:data/data/DBTapBattle/
-\`\`\`
+```
 
 **[Complete installation & extraction guide (Web + Windows)](docs/INSTALLATION_AND_EXTRACTION.md)**
 
@@ -111,27 +111,27 @@ Detailed extractor instructions:
 
 Each profile owns its own save:
 
-\`\`\`text
+```text
 ux0:data/DBTapBattle/profiles/<Profile>/save.bin
-\`\`\`
+```
 
 The VPK contains one read-only initial save seed. When a profile is launched for
-the first time, the port creates that profile's \`save.bin\` only if it does not
+the first time, the port creates that profile's `save.bin` only if it does not
 already exist.
 
-The extractor intentionally does **not** install a \`save.bin\` found inside an
+The extractor intentionally does **not** install a `save.bin` found inside an
 APK. Back up an existing profile's save before deleting or replacing its folder.
 
 ## APK extraction behavior
 
 The extractor automatically determines where useful game data is stored.
 
-For ordinary / Gen-style APKs it extracts canonical files from \`assets/\`.
+For ordinary / Gen-style APKs it extracts canonical files from `assets/`.
 For audited Android14-family APKs, protected PAC aliases are mapped back to their
 canonical filenames while PAC payload bytes are preserved.
 
 The extractor also detects contiguous character triplets in the supported
-\`00..99\` namespace, so large datasets are not truncated to the original
+`00..99` namespace, so large datasets are not truncated to the original
 13-character baseline.
 
 Every extracted APK is standalone. The runtime does not borrow a missing resource
@@ -188,4 +188,4 @@ proprietary gameplay datasets, Android DEX/classes, and extracted commercial
 assets should not be redistributed through this repository.
 
 Third-party attribution is documented in
-[THIRD_PARTY.md](docs/THIRD_PARTY.md) and \`licenses/\`.
+[THIRD_PARTY.md](docs/THIRD_PARTY.md) and `licenses/`.
