@@ -8,7 +8,8 @@ enum class PacEncoding {
     Original,
     Community14,
     Community14Spanish,
-    Community14Invasion
+    Community14Invasion,
+    Community14Dbfz
 };
 
 struct CommunityPacProfile {
@@ -63,6 +64,17 @@ inline const CommunityPacProfile* communityProfiles(size_t& count) {
             0x842fu,
             0u, 0xaebfc3a0u, 0x877e379fu, 0x8125d853u,
             0xe7c20ecbu, 0x403d58e7u, 0x153ccb39u
+        },
+        {
+            // DBFZ v22 (classes.dex SHA-256 prefix 11d60c43). Derived from
+            // all 261 source PAC directories and converted game data tables.
+            PacEncoding::Community14Dbfz, "community14-dbfz-11d60c43",
+            0x39aeu, 0xafc6643cu, 0x64ce617bu,
+            0x4b8bu, 0xc03au,
+            0xf00du, 0x4bcc7d9eu, 0x5ab5u, 0x44f7u,
+            0x39aeu,
+            0u, 0xa4c74fe3u, 0x0e995397u, 0x82f9572bu,
+            0x10445923u, 0x04bee884u, 0x3e602fa3u
         }
     };
     count = sizeof(profiles) / sizeof(profiles[0]);
@@ -117,7 +129,8 @@ inline uint32_t communityReadBe32(const uint8_t* p) {
 inline PacEncoding detectCommunityEncoding(const uint8_t* data, size_t size) {
     if (!data || size < 18) return PacEncoding::Original;
     const uint16_t raw_count = communityReadLe16(data);
-    if (!(raw_count & 0x8000u)) return PacEncoding::Original;
+    // Older protected profiles have the high count bit set; DBFZ v22 does not.
+    // Full bounds + recognized type keys + unique profile matching remain required.
     size_t profile_count = 0;
     const CommunityPacProfile* profiles = communityProfiles(profile_count);
     PacEncoding match = PacEncoding::Original;
