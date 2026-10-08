@@ -1,4 +1,15 @@
 # DragonTap_Util PRIVATE MOD — universal recognition research
+
+> **2026-10-08 hardware update:** the universal PRIVATE decoder, file-backed
+> AAC audio and memory-safe GPU texture bridge are now tested in a full original
+> TeaVM VPK on physical PS Vita with `dbz_mobile_v9`, including consecutive
+> battles. User approved VisualQuality as the v1.1 publication baseline.
+> On some very large sprite atlases the memory-aware compact texture policy
+> downscales resolution; this may appear blurry. Compatibility is not promised
+> for all mods. The older sections below preserve their *original experimental
+> research status* as dated history. See [v1.1 release notes](RELEASE_v1.1.md)
+> and [installation instructions](INSTALLATION_AND_EXTRACTION.md).
+>
 _Date: 2026-10-07; source work on main; no new Vita hardware approval._
 
 ## Attribution and confidence
