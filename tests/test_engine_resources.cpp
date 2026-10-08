@@ -34,6 +34,7 @@ void validate(const std::vector<uint8_t>& b) {
         if(payload.size()>=8&&!std::memcmp(payload.data(),"C14R",4))marked=PacEncoding::Community14;
         else if(payload.size()>=8&&!std::memcmp(payload.data(),"C14S",4))marked=PacEncoding::Community14Spanish;
         else if(payload.size()>=8&&!std::memcmp(payload.data(),"C14I",4))marked=PacEncoding::Community14Invasion;
+        else if(payload.size()>=8&&!std::memcmp(payload.data(),"C14D",4))marked=PacEncoding::Community14Dbfz;
         if(marked!=PacEncoding::Auto){
             size_t original_index=u32(payload,4);assert(original_index==i);
             payload.erase(payload.begin(),payload.begin()+8);
@@ -97,11 +98,11 @@ std::vector<uint8_t> protectedFixture(PacEncoding encoding){
     return pac;
 }
 void profileNormalisation(){
-    for(PacEncoding encoding:{PacEncoding::Community14,PacEncoding::Community14Spanish,PacEncoding::Community14Invasion}){
+    for(PacEncoding encoding:{PacEncoding::Community14,PacEncoding::Community14Spanish,PacEncoding::Community14Invasion,PacEncoding::Community14Dbfz}){
         const auto input=protectedFixture(encoding);std::vector<uint8_t> output;std::string error;int protected_encoding=0;
         assert(normaliseEnginePac(input,"common.pac",output,error,&protected_encoding)&&protected_encoding==1);
         assert(u16(output,0)==3&&!std::memcmp(output.data()+10,"png",3)&&!std::memcmp(output.data()+26,"bin",3)&&!std::memcmp(output.data()+42,"wav",3));
-        auto image=entry(output,0);const char* expected=encoding==PacEncoding::Community14?"C14R":encoding==PacEncoding::Community14Spanish?"C14S":"C14I";
+        auto image=entry(output,0);const char* expected=encoding==PacEncoding::Community14?"C14R":encoding==PacEncoding::Community14Spanish?"C14S":encoding==PacEncoding::Community14Invasion?"C14I":"C14D";
         assert(image.size()>=8&&!std::memcmp(image.data(),expected,4)&&u32(image,4)==0);
         image.erase(image.begin(),image.begin()+8);RgbaImage decoded;assert(decodeCommunityImageProfile(image,0,encoding,decoded,error));
         assert(decoded.width==1&&decoded.height==1&&decoded.pixels==std::vector<uint8_t>({10,20,30,40}));
@@ -114,7 +115,7 @@ void profileNormalisation(){
 
 int main(int argc,char** argv){
     profileNormalisation();
-    if(argc==1){std::puts("ENGINE RESOURCE PROFILE PASS: Android14 + Spanish + Invasion normalisation");return 0;}
+    if(argc==1){std::puts("ENGINE RESOURCE PROFILE PASS: Android14 + Spanish + Invasion + DBFZ normalisation");return 0;}
     assert(argc==2);GameVfs vfs(argv[1]);std::string path,error;std::vector<uint8_t> output;
     size_t files=0,converted_bins=0,decoded_wavs=0; long long wav_energy=0;
     for(const std::string& profile:{std::string("Original"),std::string("Android14")}){
