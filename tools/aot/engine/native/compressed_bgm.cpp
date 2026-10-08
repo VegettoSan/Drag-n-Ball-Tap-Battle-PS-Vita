@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <climits>
 #include <cstdio>
 #include <cstring>
 #include <string>
@@ -145,7 +146,7 @@ bool childBox(const std::vector<uint8_t>& d, const Box& parent, uint32_t wanted,
     return false;
 }
 
-bool parseM4a(const std::vector<uint8_t>& d, int& channels, int& rate,
+bool parseM4a(const std::vector<uint8_t>& d, size_t physical_bytes, int& channels, int& rate,
               std::vector<AacSample>& samples, std::string& error) {
     if (d.size() < 16 || std::memcmp(d.data() + 4, "ftyp", 4) != 0) return false;
     Box root{0,d.size()}, moov, trak, mdia, minf, stbl, stsd, stsz, stsc, stco, co64, mdhd;
@@ -242,12 +243,67 @@ bool parseM4a(const std::vector<uint8_t>& d, int& channels, int& rate,
         uint64_t off = chunks[chunk-1];
         for (uint32_t j=0;j<map[map_index].per && sample<sample_count;++j,++sample) {
             const uint32_t size = sizes[sample];
-            if (off > d.size() || size > d.size() - size_t(off)) { error = "AAC M4A sample outside file"; return false; }
+            if (off > physical_bytes || size > physical_bytes - size_t(off)) { error = "AAC M4A sample outside file"; return false; }
             samples.push_back({uint32_t(off),size});
             off += size;
         }
     }
     if (samples.size() != sample_count) { error = "AAC M4A sample mapping incomplete"; samples.clear(); return false; }
+    return true;
+}
+
+// Only index metadata (ftyp/moov) is retained; mdat becomes an eight-byte
+// placeholder. Original stco/co64 offsets still refer to the on-disk file.
+bool readM4aIndex(FILE* f, size_t length, std::vector<uint8_t>& index,
+                  std::string& error) {
+    constexpr size_t kIndexBudget = 1024u * 1024u;
+    index.clear();
+    if (length < 16 || length > kMaxCompressedBytes) {
+        error = "M4A source length outside supported range"; return false;
+    }
+    size_t pos = 0; bool have_ftyp = false, have_moov = false;
+    for (unsigned i=0; pos + 8 <= length && i < 64; ++i) {
+        if (pos > LONG_MAX || std::fseek(f, long(pos), SEEK_SET) != 0) {
+            error = "M4A index seek failed"; return false;
+        }
+        uint8_t header[16]{};
+        if (std::fread(header,1,8,f) != 8) { error = "M4A index read failed";return false; }
+        uint64_t n = be32(header), width = 8;
+        if (n == 1) {
+            if (pos+16>length || std::fread(header+8,1,8,f)!=8) {
+                error = "M4A extended box header truncated";return false;
+            }
+            n = be64(header+8);width = 16;
+        } else if (n == 0) n=length-pos;
+        if (n<width || n>length-pos || n>LONG_MAX) {
+            error = "M4A top-level box outside source"; return false;
+        }
+        const uint32_t kind=be32(header+4);
+        const bool copy=kind==fourcc('f','t','y','p') || kind==fourcc('m','o','o','v');
+        if (copy) {
+            if (kind==fourcc('f','t','y','p')) {
+                if (pos!=0 || have_ftyp) { error="M4A has misplaced ftyp"; return false; }
+                have_ftyp=true;
+            }
+            if (kind==fourcc('m','o','o','v')) {
+                if (have_moov) { error="M4A has duplicate moov"; return false; }
+                have_moov=true;
+            }
+            if (n>kIndexBudget-index.size()) { error="M4A index budget exceeded"; return false; }
+            const size_t at=index.size();index.resize(at+size_t(n));
+            if (std::fseek(f,long(pos),SEEK_SET)!=0 ||
+                std::fread(index.data()+at,1,size_t(n),f)!=n) {
+                error="M4A index payload truncated";return false;
+            }
+        } else {
+            if (8>kIndexBudget-index.size()) { error="M4A index budget exceeded"; return false; }
+            index.insert(index.end(),{0,0,0,8,header[4],header[5],header[6],header[7]});
+        }
+        pos+=size_t(n);
+    }
+    if (pos!=length || !have_ftyp || !have_moov) {
+        error="M4A incomplete top-level index"; return false;
+    }
     return true;
 }
 
@@ -272,8 +328,14 @@ bool initLibrary(Codec codec, std::string& error) {
 
 struct DbtbCompressedBgm {
     Codec codec = Codec::Mp3;
-    std::vector<uint8_t> bytes;
+    std::vector<uint8_t> bytes; // Original MP3 path; empty for indexed AAC.
+    FILE* indexed_file = nullptr;
+    size_t physical_bytes = 0;
+    std::array<uint8_t,64u*1024u> read_ahead{};
+    size_t read_base = 0, read_count = 0;
+    std::array<uint8_t,SCE_AUDIODEC_AAC_MAX_ES_SIZE> aac_es{};
     std::vector<AacSample> aac_samples;
+    ~DbtbCompressedBgm() { if (indexed_file) std::fclose(indexed_file); }
     size_t aac_index = 0;
     size_t mp3_start = 0, mp3_pos = 0;
     unsigned mp3_version = 0;
@@ -336,6 +398,24 @@ bool rewindDecoder(DbtbCompressedBgm& s) {
     return true;
 }
 
+// Small sequential read-ahead cache: original compressed AAC samples remain
+// unmodified; a few tens of KiB are held in RAM rather than the entire song.
+bool readIndexedSample(DbtbCompressedBgm& s, const AacSample& sample) {
+    if (!s.indexed_file || sample.size>s.aac_es.size() ||
+        sample.offset>s.physical_bytes || sample.size>s.physical_bytes-sample.offset) return false;
+    if (sample.offset<s.read_base || sample.size>s.read_count ||
+        size_t(sample.offset-s.read_base)>s.read_count-sample.size) {
+        if (sample.offset>LONG_MAX ||
+            std::fseek(s.indexed_file,long(sample.offset),SEEK_SET)!=0) return false;
+        s.read_base=sample.offset;
+        s.read_count=std::fread(s.read_ahead.data(),1,
+            std::min(s.read_ahead.size(),s.physical_bytes-s.read_base),s.indexed_file);
+        if (s.read_count<sample.size) return false;
+    }
+    std::memcpy(s.aac_es.data(),s.read_ahead.data()+size_t(sample.offset-s.read_base),sample.size);
+    return true;
+}
+
 bool decodeChunk(DbtbCompressedBgm& s) {
     s.decoded_frame = s.decoded_frames = 0;
     for (;;) {
@@ -344,7 +424,10 @@ bool decodeChunk(DbtbCompressedBgm& s) {
                 if (!rewindDecoder(s)) return false;
             }
             const AacSample smp = s.aac_samples[s.aac_index++];
-            s.ctrl.pEs = s.bytes.data()+smp.offset;
+            if (s.indexed_file) {
+                if (!readIndexedSample(s,smp)) return false;
+                s.ctrl.pEs = s.aac_es.data();
+            } else s.ctrl.pEs = s.bytes.data()+smp.offset;
             s.ctrl.maxEsSize = smp.size;
         } else {
             if (s.mp3_pos + 4 > s.bytes.size()) {
@@ -388,10 +471,38 @@ DbtbCompressedBgm* dbtb_openCompressedBgm(const std::string& relative,
     error.clear();
     auto* s = new (std::nothrow) DbtbCompressedBgm();
     if (!s) { error = "compressed BGM state allocation failed"; return nullptr; }
-    if (!loadFile(relative,s->bytes,error)) { delete s; return nullptr; }
-
+    // M4A audio is indexed from its original file and decoded in 64 KiB
+    // windows. Ogg/Vorbis and original MP3 paths are deliberately unchanged.
+    std::string path;
+    if (!dbtb_vfs().resolve(relative,path)) { delete s; error=dbtb_vfs().error(); return nullptr; }
+    FILE* probe=std::fopen(path.c_str(),"rb");
+    if (!probe) { delete s; error="compressed BGM open failed"; return nullptr; }
+    uint8_t magic[8]{};
+    const bool mp4=std::fread(magic,1,8,probe)==8 &&
+                  std::memcmp(magic+4,"ftyp",4)==0;
+    if (mp4) {
+        if (std::fseek(probe,0,SEEK_END)!=0 || std::ftell(probe)<16) {
+            std::fclose(probe);delete s;error="M4A source seek failed";return nullptr;
+        }
+        const long n=std::ftell(probe);
+        s->indexed_file=probe;s->physical_bytes=size_t(n);
+        std::vector<uint8_t> index;
+        if (!readM4aIndex(probe,s->physical_bytes,index,error)) { delete s;return nullptr; }
+        int ch=0,rate=0;
+        if (!parseM4a(index,s->physical_bytes,ch,rate,s->aac_samples,error)) { delete s;return nullptr; }
+        s->codec=Codec::AacM4a;s->channels=ch;s->rate=rate;
+        std::vector<uint8_t>().swap(index);
+        runtimeLog("Compressed BGM indexed: "+relative+" source_bytes="+
+                   std::to_string(s->physical_bytes)+" sample_count="+
+                   std::to_string(s->aac_samples.size()));
+    } else {
+        std::fclose(probe);
+        if (!loadFile(relative,s->bytes,error)) { delete s; return nullptr; }
+    }
     Mp3Header mh; size_t mp3_start = 0;
-    if (findMp3(s->bytes,mp3_start,mh)) {
+    if (s->indexed_file) {
+        // AAC/M4A metadata was parsed without buffering the full media file.
+    } else if (findMp3(s->bytes,mp3_start,mh)) {
         s->codec = Codec::Mp3;
         s->mp3_start = s->mp3_pos = mp3_start;
         s->mp3_version = mh.version;
@@ -399,7 +510,7 @@ DbtbCompressedBgm* dbtb_openCompressedBgm(const std::string& relative,
         s->rate = int(mh.rate);
     } else {
         int ch=0,rate=0;
-        if (!parseM4a(s->bytes,ch,rate,s->aac_samples,error)) { delete s; return nullptr; }
+        if (!parseM4a(s->bytes,s->bytes.size(),ch,rate,s->aac_samples,error)) { delete s; return nullptr; }
         s->codec = Codec::AacM4a;
         s->channels=ch; s->rate=rate;
     }
@@ -415,7 +526,7 @@ DbtbCompressedBgm* dbtb_openCompressedBgm(const std::string& relative,
     s->primed=true;
     runtimeLog(std::string("Compressed BGM direct: ") + relative + " codec=" + dbtb_compressedBgmCodec(s) +
                " rate=" + std::to_string(s->rate) + " channels=" + std::to_string(s->channels) +
-               " source_bytes=" + std::to_string(s->bytes.size()));
+               " source_bytes=" + std::to_string(s->indexed_file?s->physical_bytes:s->bytes.size()));
     return s;
 }
 
