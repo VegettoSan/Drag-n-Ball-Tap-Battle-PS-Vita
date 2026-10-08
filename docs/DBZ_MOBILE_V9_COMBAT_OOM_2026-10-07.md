@@ -106,3 +106,29 @@ The supplied **dbz mobile v9.apk** was examined directly using its dynamically r
 Many actor pose textures are 712x712 pixels (2,027,776 RGBA bytes each). These numbers are **not** measurements of concurrent VRAM residency: a resource can load and release images or reuse textures. But they are compelling evidence for substantial texture throughput and allocation pressure on fight transitions.
 
 Keep full image quality for now. The diagnostic VPK distinguishes texture_decode_ms versus texture_upload_ms and has a native frame watchdog, so hardware evidence can direct a narrow subsequent optimization. Avoid unilateral image downsampling across already-confirmed older profiles.
+
+## Fourth hardware report: crash on first combat after NextFight diagnostics
+
+**Observed:** user reported a crash at first fight when testing `DBTapBattle-Vita-Universal-NextFight-Diagnostic-01.00.vpk`, with `runtime.log` and `psp2core-1791435467-0x0000f328c7-eboot.bin.psp2dmp`.
+
+**Source evidence:**
+- `runtime.log` selects `dbz_mobile_v9`, detects 41 character triplets, and loads char37/char20/effect/cards/charf/bobj03 for combat. A `[TextureSlow]` line records a **4,003,310 microsecond** GPU texture upload of a 512x512 RGBA image. Last line: `std::bad_alloc`. There is **no** subsequent `Compressed BGM indexed: bgm_03.ogg` or `Combat resource boundary` on this run.
+- Decode gzip-wrapped Sony ELF core (5,382,916 bytes). The MODULE_INFO note reports `dbtb_original_engine` load text base **0x81025000**. Rebase addresses by subtracting **0x25000** against the exact `NextFight` unstripped ELF (previous debug binaries have a different base/shape; do not mix them).
+- The crashing main thread's stack contains `operator new(unsigned int)` -> `decodeCommunityImageProfile(const unsigned char*, ..., PacEncoding,...)` -> `dbtb_loadTexture` -> original `AndroidGLTexture.loadTexture` -> `GameData.Init`. This is a **large protected sprite decompression allocation**, *not* the earlier full AAC song buffer exception. It does not prove a particular individual image size caused exhaustion without malloc request tracing.
+- The protected `dbz mobile v9.apk` char37 and char07 atlas directories contain numerous **712x712** RGBA frames, decoded to **2,027,776 bytes each**. Existing decoder materialized a complete image pixel vector for every texture, transiently increasing Newlib's memory pressure near gameplay transition. No original game-loop logic faults are proven.
+
+### Fourth targeted mitigation: original-quality bounded texture streaming
+
+Changed only the native image/texture bridge for **dynamic C14U protected profiles**. For these profiles:
+1. Validate the exact original width, height, entry index, type and 16 MiB image bound *before* allocating a pixel buffer.
+2. Create an original-resolution GPU texture with `glTexImage2D(...,nullptr)`.
+3. Incrementally decode raw DEFLATE scanlines into at most **256 KiB** of temporary RGBA storage, uploading each complete strip with `glTexSubImage2D`. Validate zlib termination, full pixel count, and full input consumption.
+4. Keep the texture cache ownership, reference counting, parameters, dimensions, premultiplied alpha and normalized UV semantics. On malformed image / GL allocation failure, log `[TextureStream] rejected` and fail that texture without deliberately changing gameplay or performing resolution downsampling.
+5. Retain pointer/vector decoding for original, Android14, Spanish, Invasion and DBFZ formats; do not activate the new upload algorithm outside `PacEncoding::Community14Dynamic`.
+6. Separate source-size optimization `-Os` for `image.cpp` and `native/resources.cpp` to meet Sony ELF stub requirements. Leave original TeaVM and AAC streaming unchanged.
+
+**Direct no-workflow build:** `DBTapBattle-Vita-Universal-TextureStream-Experimental-01.00.vpk`; SHA-256 **`74e7b66e49a55b6c68cf963daa0862e48c463a5af04738a707cc99d9dfe1dd62`**, size **2,740,298 bytes**, complete TeaVM core compiled locally with VitaSDK 2026.08. ELF -> VELF -> SELF -> VPK passed, LiveArea validation passed, all 15 ZIP entries equal to `NextFight` VPK **except `eboot.bin`**.
+
+**Host proof:** synthetic protected DEFLATE 1x1, 100x113, 512x512, 712x712 and 4096x1024 images decoded byte-for-byte identically to the full-buffer algorithm; truncated streams rejected. Extracted *actual* 712x712 protected images from `char37.pac` (entry 17) and `char07.pac` (entry 18) of the user-supplied APK also matched exactly, with **8 tiles / 262,016 maximum temporary pixel bytes**. Legacy community and engine-resource regression tests passed.
+
+**Status: experimental; hardware acceptance pending.** Do not mark the crash fixed until user confirms entering and completing first and second fights. If it fails, capture full `runtime.log` and Sony `psp2dmp`; `[TextureStream]` messages report per-image tile count and CPU/GPU timing. Particularly distinguish a further texture allocation failure from a GPU stall and the prior audio crash. Existing v1.0 release remains untouched.
