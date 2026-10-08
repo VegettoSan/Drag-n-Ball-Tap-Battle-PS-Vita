@@ -90,3 +90,19 @@ Compiled the **full original APK-derived TeaVM core** locally (not GitHub Action
 ### Next required PS Vita test
 
 With the same `dbz_mobile_v9` profile and existing save, start battle 37 versus 20, finish it, and proceed to battle with character 07. If transition hangs, wait 20–30 s, then retrieve the full `runtime.log`. Specifically inspect `[FrameWatchdog]`, `[TextureSlow]`, `texture_decode_ms`, and `texture_upload_ms`. This determines where an actual behavioral optimization should target. Stable v1.0 release stays unchanged; nothing was modified in original AOT gameplay.
+
+### Real APK resource atlas pressure (independent offline validation)
+
+The supplied **dbz mobile v9.apk** was examined directly using its dynamically recovered PRIVATE codec, decoding the outer PAC entries and the per-image XOR dimensions. No game assets or gameplay logic were changed.
+
+| Resource | Protected file bytes | RGBA images | Total RGBA pixel data |
+|---|---:|---:|---:|
+| char37.pac | 5,220,001 | 93 | **158.55 MiB** |
+| char07.pac | 3,571,656 | 73 | **124.54 MiB** |
+| char20.pac | 2,608,467 | 21 | **19.50 MiB** |
+| effect.pac | 2,317,013 | 28 | **24.29 MiB** |
+| chardemo37.pac | 1,017,260 | 5 | **5.78 MiB** |
+
+Many actor pose textures are 712x712 pixels (2,027,776 RGBA bytes each). These numbers are **not** measurements of concurrent VRAM residency: a resource can load and release images or reuse textures. But they are compelling evidence for substantial texture throughput and allocation pressure on fight transitions.
+
+Keep full image quality for now. The diagnostic VPK distinguishes texture_decode_ms versus texture_upload_ms and has a native frame watchdog, so hardware evidence can direct a narrow subsequent optimization. Avoid unilateral image downsampling across already-confirmed older profiles.
