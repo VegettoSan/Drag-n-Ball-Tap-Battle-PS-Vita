@@ -30,7 +30,7 @@ const COMMUNITY_PROFILES = [
   {
     name: 'community14-dbfz-11d60c43', count: 0x39ae, offset: 0xafc6643c, size: 0x64ce617b,
     types: [0xa4c74fe3,0xe995397,0x82f9572b,0x10445923,0x4bee884,0x3e602fa3],
-    fixed: { '2B98':'common', 'CC4B':'select0', '7D98':'effect', '46C3':'demo_00', 'D6E1':'demo_08', 'B727':'card_preview', 'AC9E':'gamedata', 'D791':'text00' },
+    fixed: { '46C3':'common', 'CC4B':'select0', '7D98':'effect', '2B98':'demo_00', 'D6E1':'demo_08', 'B727':'card_preview', 'AC9E':'gamedata', 'D791':'text00' },
     numbered: { '8ED7':['back',2], 'DC70':['bobj',2], '128B':['char',2], 'CD4A':['chardemo',2], '4BD8':['charf',4], 'FDD0':['card',3] }
   }
 ];
