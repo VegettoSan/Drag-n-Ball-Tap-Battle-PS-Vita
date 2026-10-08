@@ -8,7 +8,9 @@ assert.equal(canonicalName('9036.pac','community14-invasion-05aa0c5e'),'common.p
 assert.equal(canonicalName('095315.pac','community14-invasion-05aa0c5e'),'char15.pac');
 assert.equal(canonicalName('normal.pac','community14-invasion-05aa0c5e'),'normal.pac');
 assert.equal(detectCommunityProfile(['9036.pac','7E8F.pac','095300.pac','364E00.pac','91F90000.pac']),'community14-invasion-05aa0c5e');
-assert.equal(detectCommunityProfile(['2B98.pac','CC4B.pac','128B00.pac','CD4A00.pac','4BD80000.pac']),'community14-dbfz-11d60c43');
+assert.equal(detectCommunityProfile(['46C3.pac','CC4B.pac','128B00.pac','CD4A00.pac','4BD80000.pac']),'community14-dbfz-11d60c43');
+assert.equal(canonicalName('46C3.pac','community14-dbfz-11d60c43'),'common.pac');
+assert.equal(canonicalName('2B98.pac','community14-dbfz-11d60c43'),'demo_00.pac');
 assert.equal(canonicalName('128B57.pac','community14-dbfz-11d60c43'),'char57.pac');
 assert.equal(canonicalName('CD4A57.pac','community14-dbfz-11d60c43'),'chardemo57.pac');
 assert.equal(canonicalName('4BD80057.pac','community14-dbfz-11d60c43'),'charf0057.pac');
