@@ -117,6 +117,8 @@ set_source_files_properties("${TEAVM_C_DIR}/all.c" PROPERTIES COMPILE_OPTIONS "-
 # The file-backed AAC indexer is cold-path code; prefer smaller native text
 # to preserve the linker space required by vita-elf-create.
 set_source_files_properties("${REPO_ROOT}/tools/aot/engine/native/compressed_bgm.cpp" PROPERTIES COMPILE_OPTIONS "-Os")
+# Compact the bounded streaming image path to retain Vita ELF SCE stub headroom.
+set_source_files_properties("${REPO_ROOT}/src/image.cpp" "${REPO_ROOT}/tools/aot/engine/native/resources.cpp" PROPERTIES COMPILE_OPTIONS "-Os")
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-q,-z,max-page-size=0x10000")
 
 # Dependencies are ordered from consumers to providers, matching vitaGL ports.
