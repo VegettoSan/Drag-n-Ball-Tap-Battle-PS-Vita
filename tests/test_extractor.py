@@ -102,6 +102,21 @@ class ExtractorTest(unittest.TestCase):
                             profile.offset_xor, 3 ^ profile.size_xor)
                 + struct.pack('>I', raw_bin) + bytes(4) + b'abc')
 
+    def test_dbfz_profile_detects_protected_non_high_bit_count(self):
+        profile = community14.DBFZ
+        data = self.encoded_pac_profile(profile)
+        with zipfile.ZipFile(self.apk, 'w') as archive:
+            archive.writestr('assets/2B98.pac', data)
+            archive.writestr('assets/128B57.pac', data)
+            archive.writestr('assets/CD4A57.pac', data)
+            archive.writestr('assets/4BD80057.pac', data)
+        m = e.extract(self.apk, self.output)
+        self.assertEqual(m['pac_codec'], 'community14-dbfz-11d60c43')
+        self.assertEqual(m['source_layout'], 'community14')
+        self.assertEqual(len(m['renamed_files']), 4)
+        for name in ('common.pac', 'char57.pac', 'chardemo57.pac', 'charf0057.pac'):
+            self.assertEqual((self.output / name).read_bytes(), data)
+
     def test_spanish_and_invasion_profiles_auto_detect_and_canonicalize(self):
         cases = [
             (community14.SPANISH, '4D7F.pac', 'common.pac',
