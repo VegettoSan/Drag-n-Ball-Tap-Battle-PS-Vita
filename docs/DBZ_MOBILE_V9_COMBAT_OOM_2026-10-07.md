@@ -207,3 +207,25 @@ Build `DBTapBattle-Vita-Universal-VisualQuality-Experimental-01.00.vpk` directly
 - Direct VitaSDK ELF -> VELF -> SELF -> VPK build and `validate_livearea_vpk.py` **PASS**.
 - Native host image/PAC regressions **PASS** for Android14, Spanish, Invasion and DBFZ. Two actual 712x712 PRIVATE protected image streams **PASS** exact RGBA decompression. New CPU-side nibble ordering agrees with real source images within 4-bit quantization (per-channel max error <= 15).
 - **Experimental on Vita** until visual color and alpha, quality, first battle, next battle and previously working profiles are confirmed by hardware testing. Do not label it as stable 1.0 yet.
+
+
+## Final hardware acceptance and release freeze — 2026-10-08, v1.1
+
+**User-confirmed outcome:** On an actual PS Vita, the VisualQuality experimental VPK successfully ran the `dbz mobile v9` mod, including first fight, victory and transitioning to later fights. No repeat crash or three-minute freeze occurred in the accepted test session. Heavy mods still load more slowly than light/original datasets, which is accepted for this release.
+
+**Final uploaded `runtime.log` evidence** (user tested, 2026-10-08 00:50 local): `Selected profile: dbz_mobile_v9`, 7 visible installed profile directories, 78 `[TextureCompact]` diagnostics, 7 `Compressed BGM indexed` music events, 3 `Combat resource boundary` events, and 340 `[Perf]` reporting windows (317 at >=58 FPS). No `std::bad_alloc` or crash message appears in the log; independent user observation confirms successive playable fights. Do not extrapolate this to every mod or any duration beyond the test.
+
+**Accepted known issue:** Some sprites/UI backgrounds/effects remain very blurry while other textures are fairly sharp. Cause is the **intentionally lower physical resolution for some protected high-resolution sprite atlases** chosen by the generic dynamic `C14U` GPU memory-aware path, using the RGBA4444 texture format. This is the protective tradeoff that stopped the prior system/GPU-memory crashes. Source images and protected PACs remain intact on disk. Sprite-atlas grouping can make several visual elements share a lower-resolution texture; we have not proved this explains every soft asset individually. Fine-grained selective image fidelity is a **future non-blocking enhancement**.
+
+**No mod-specific hacks:** The accepted quality policy depends only on resource dimensions and dynamic texture memory pressure. All previously audited/known original and community profile decoders retain their prior path. Existing v1.0 was not modified, and the v1.1 baseline is frozen for publication.
+
+### Publication package identity
+
+- Hardware-proven experimental VPK: `DBTapBattle-Vita-Universal-VisualQuality-Experimental-01.00.vpk`, SHA-256 `479fb4e4b2fc50d7dc7dec08c08101bb83ecb6b414328cf467d85e9e9b09d71a`.
+- Release candidate: `Dragon-Ball-Tap-Battle-PS-Vita-v1.1.vpk`, SHA-256 `9953e8c99ce59a5b4b55dab3ae2caec788c39ffe1edb19a2d4e5833c958ee6bd`, `TITLE_ID DBTB01178`, `APP_VER 01.01`.
+- Game `eboot.bin` SHA-256: `bea473a4f1287702eafb2fe79e1b529d192b862bcd1ef63d681bf13f6a6d3af2`, **byte-identical in both VPKs**.
+- The ONLY changed VPK member between experimental and release archives is `sce_sys/param.sfo`, APP_VER `01.00` -> `01.01`, preserving title, icons, LiveArea, selector theme and save seed. CRC/ZIP and LiveArea validation PASS. Repacked metadata has not received a separate physical install test; gameplay executable is the exact accepted one.
+- Universal Windows extractor source scripts kept byte-identical to earlier 20-test-pass artifact; release ZIP updates only text documentation, SHA-256 `148480f1f5447086796eaa66ad3f97a45af7a15b5c32f03eadea929b5c4d44a2`.
+- Source/release documentation [v1.1 notes](RELEASE_v1.1.md), [Web/Windows installation](INSTALLATION_AND_EXTRACTION.md), [README](../README.md) warn users explicitly about high-resolution mod crashes and protective texture downscaling.
+
+**Release-ready, manually published by the maintainer. Do not claim all mods tested, nor publish the next visual optimization as part of this v1.1 freeze.**
