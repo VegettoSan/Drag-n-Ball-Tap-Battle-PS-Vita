@@ -22,7 +22,8 @@ static std::vector<uint8_t> fixture(PacEncoding encoding) {
 static bool bounds() {
     GameDataTable t; uint8_t value;
     for (auto codec : {PacEncoding::Original, PacEncoding::Community14,
-                       PacEncoding::Community14Spanish, PacEncoding::Community14Invasion}) {
+                       PacEncoding::Community14Spanish, PacEncoding::Community14Invasion,
+                       PacEncoding::Community14Dbfz}) {
         const auto data = fixture(codec);
         CHECK(t.decode(data, codec));
         CHECK(t.records().size() == 2 && t.encoding() == codec);
@@ -46,7 +47,7 @@ static bool bounds() {
     CHECK(!t.decode(bad,PacEncoding::Original)); // huge row product
     CHECK(!t.decode(fixture(PacEncoding::Original),PacEncoding::Auto));
     for (auto codec : {PacEncoding::Community14, PacEncoding::Community14Spanish,
-                       PacEncoding::Community14Invasion}) {
+                       PacEncoding::Community14Invasion, PacEncoding::Community14Dbfz}) {
         CHECK(!t.decode(fixture(codec),PacEncoding::Original));
         CHECK(!t.decode(fixture(PacEncoding::Original),codec));
     }
