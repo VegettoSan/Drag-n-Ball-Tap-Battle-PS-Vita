@@ -176,9 +176,14 @@ modo al volver al selector/reiniciar el perfil. Si después se permite alternar
 durante una partida, habrá que coordinar también los DAC ya cargados en Java:
 invalidar solo el LRU nativo no restaura esos bytes.
 
-El tutorial fuerza modo 2 temporalmente. Conservar sus gestos, indicadores y
-cursor; el overlay se limita a las acciones del pad identificadas, sin ocultar
+El tutorial fuerza modo 2 temporalmente. Conservar sus gestos e indicadores
+táctiles; el overlay se limita a las acciones del pad identificadas, sin ocultar
 marcas genéricas de toque ni forzar modo 1 en cada frame.
+
+Preferencia del usuario, 2026-10-08: mantener los menús táctiles. La única
+adaptación adicional propuesta fuera del combate es D-pad izquierda/derecha
+para cambiar de personaje en la selección. No hace falta un cursor Vita ni
+adaptar todos los menús para la primera versión.
 
 ## 6. Alternativas revisadas
 

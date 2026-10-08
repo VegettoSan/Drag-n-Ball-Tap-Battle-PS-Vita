@@ -153,7 +153,7 @@ El port ya usa ambas APIs; no se requiere un plugin de remapeo del sistema.
 | L | Pad 5: cuarto atajo especial |
 | R | Pad 6: ira/acción especial habilitada por el motor |
 | Start | Pausa original, solamente con validación de contexto |
-| Stick derecho + X fuera de combate | Cursor Vita para tap/arrastre en menús y tutorial; propuesta de compatibilidad |
+| Cruceta izquierda/derecha en selección de personajes | Propuesta aceptada por el usuario: pasar al personaje anterior/siguiente mediante la selección original; integración pendiente |
 | Pantalla frontal | Disponible en ambos modos mediante un único asignador de contactos |
 
 Los nombres finales de las técnicas dependen del personaje/datos. No prometer
@@ -166,19 +166,20 @@ del juego; no crear nuevas acciones de combate para hacer el mapeo.
 - La firma del pad de combate debe comprobarse leyendo el `Controller`/`padID`
   actual desde el adaptador Vita del mismo paquete. No identificar combate
   únicamente por que `iControlType==1`: muchos menús usan otros pads.
-- Fuera del pad válido, pasar a cursor/tap/arrastre y suprimir las entradas de
-  ataque. Priorizar el toque real conserva compatibilidad con pantallas no
-  exploradas. Menús totalmente navegables con botones requieren comprobarlos;
-  esta investigación no certifica navegación directa de todas sus opciones.
-- El tutorial establece modo 2 en caso 685. Respetarlo. Un cursor con arrastre
-  puede representar sus gestos, pero su comodidad y cobertura están pendientes.
-  No forzar modo 1 cada frame ni omitir el tutorial.
+- **Preferencia del usuario, 2026-10-08:** los menús se navegan con la pantalla
+  táctil. La primera versión no necesita cursor ni navegación general por
+  botones. Fuera del pad válido, suprimir entradas de ataque. La excepción
+  propuesta es D-pad izquierda/derecha en selección de personajes: anterior/
+  siguiente, conservando el flujo de selección del juego. Aún debe integrarse.
+- El tutorial establece modo 2 en caso 685. Respetar sus gestos mediante el
+  panel frontal. No forzar modo 1 cada frame ni omitir el tutorial.
 - Start no debe convertirse globalmente en Android Back. La rama original
   `Game1`, caso 676, pausa cuando `iBackKeyType==1` y no hay loading. En modo
   Bluetooth 8 la misma entrada puede desconectar/salir: excluirlo de este
   mapeo hasta auditarlo. Comprobar además tarea/escena, pausa y transición.
-- El cursor en menús debe ocupar ID lógico 0 cuando esté solo: numerosas
-  pantallas consultan explícitamente `TouchesStatus[0]`. No darle ID 7/9.
+- Para la futura excepción de selección, tener en cuenta que numerosas
+  pantallas consultan explícitamente `TouchesStatus[0]`; no inyectar el tap de
+  selección en ID 7/9 ni robar el contacto 0 de un toque real activo.
 
 También existe una pausa por toque en `Game8`, caso 38: contacto lógico 0 en
 `220<x<260`, `0<y<60`, con `bGameStart` y `iPlayMode!=8`. Un tap en `(240,30)`
