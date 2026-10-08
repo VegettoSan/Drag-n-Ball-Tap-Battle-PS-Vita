@@ -7,6 +7,12 @@
 > **v1.0 / APP_VER 01.00 / TITLE_ID DBTB01178**; 00.34 remains the exact
 > hardware-tested gameplay baseline.
 
+## Universal protected DragonTap loader — experimental source, not yet hardware validated
+
+New Web and Windows extractors automatically inspect the shared PRIVATE-MOD Dalvik initializer to recover PAC keys and aliases without adding a hard-coded profile. For new protected variants, extraction creates a versioned **dbtb_codec.json** inside the selected profile (raw PAC bytes unchanged). The Vita native resource bridge strictly parses this metadata on selection, resets previous profile state and uses the preexisting PAC/GameData/image/WAV decoders with the `C14U` texture marker. All changes are isolated to data extraction and native resource loading; the original TeaVM/AOT gameplay logic has not been modified.
+
+CI: [Web end-to-end DEX/ZIP fixture](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37718130522), [Windows 20 tests](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37718063263), [native host regression](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37717841023), native Vita build smoke (dummy **nonplayable** AOT). See [DRAGONTAP_PRIVATE_UNIVERSAL](DRAGONTAP_PRIVATE_UNIVERSAL.md) for schema and limitations. **Published v1.0 VPK remains unchanged; a new full-engine test VPK and actual Vita gameplay acceptance are still pending.** The Python CLI extractor was not yet given this DEX reader.
+
 ## DBFZ v22 mod integration — source-only candidate, hardware pending
 
 A new user-supplied `Dbfz v22.apk` (`5fe0b98d45822cc060a95ef8d9bfa069b4005d7897d83c540db160134c4af67f`) uses a fourth protected Community14-family PAC codec and renamed asset families. The updated Web and Windows extractors recognize this audited profile, and the native PAC/texture bridge has corresponding decode support, **without modifying original AOT gameplay logic or the already published stable v1.0 artifact**.
