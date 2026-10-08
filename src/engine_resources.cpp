@@ -196,8 +196,34 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
             nested |= std::memcmp(input.data() + 10 + i * 16, "spr", 3) == 0;
         if (!nested) { output = input; return true; }
     }
+    // Protected WAV wrappers can expand substantially into decoded PCM.
+    // Reserve the planned final PAC capacity before materialization to prevent
+    // geometric reallocations while combat fighters/effects coexist in RAM.
+    size_t planned = base;
+    for (size_t i = 0; i < count; ++i) {
+        const uint8_t* row = input.data() + 2 + i * 16;
+        const uint32_t offset = le32(row) ^ (profile ? (profile->offset_xor ^ uint32_t(i)) : 0u);
+        const uint32_t length = le32(row + 4) ^ (profile ? (profile->size_xor ^ uint32_t(i)) : 0u);
+        if (offset > input.size() - base || length > input.size() - base - offset) {
+            error = "PAC entry outside input"; return false;
+        }
+        const char* kind = profile ? communityType(*profile, communityReadBe32(row + 8) ^ uint32_t(i)) : nullptr;
+        if (depth == 0 && filter) {
+            const std::string type = kind ? kind : std::string(reinterpret_cast<const char*>(row + 8), 4);
+            if (filter & filterBit(type)) continue;
+        }
+        size_t bytes = length;
+        if (profile && kind && !std::strcmp(kind, "rgba")) {
+            bytes += 8; // C14 image marker and source index
+        } else if (profile && kind && !std::strcmp(kind, "wav") && depth == 0 && length >= 5) {
+            const uint32_t decoded = le32(input.data() + base + offset) ^ profile->wav_size_xor ^ uint32_t(i);
+            if (decoded && decoded <= kBudget) bytes = decoded;
+        }
+        if (bytes > kBudget - planned) { error = "normalised PAC exceeds budget"; return false; }
+        planned += bytes;
+    }
     std::vector<uint8_t> out(base, 0);
-    out.reserve(input.size());
+    out.reserve(planned);
     put16(out, 0, count);
     bool changed = encoded;
     for (size_t i = 0; i < count; ++i) {
@@ -224,14 +250,26 @@ bool normalise(const std::vector<uint8_t>& input, const std::string& name,
             put32(out, 14 + i * 16, le32(row + 12));
             continue;
         }
-        std::vector<uint8_t> payload(input.begin() + base + offset, input.begin() + base + offset + size);
         if (profile && type == "rgba") {
-            if (payload.size() > kBudget - 8) { error = "image bridge exceeds budget"; return false; }
-            std::vector<uint8_t> marked(8 + payload.size());
-            std::memcpy(marked.data(), imageMarker(encoding), 4); put32(marked, 4, i);
-            std::memcpy(marked.data() + 8, payload.data(), payload.size());
-            payload.swap(marked); type = "png";
-        } else if (type == "spr") {
+            // Append source image straight into the bridge PAC. Avoid the
+            // previous payload+marked+output triple copy during battle loading.
+            if (size > kBudget - out.size() || 8 > kBudget - out.size() - size) {
+                error = "image bridge exceeds budget"; return false;
+            }
+            const size_t at = out.size();
+            out.resize(at + 8);
+            std::memcpy(out.data() + at, imageMarker(encoding), 4);
+            put32(out, at + 4, i);
+            out.insert(out.end(), input.begin() + base + offset,
+                       input.begin() + base + offset + size);
+            put32(out, 2 + i * 16, at - base);
+            put32(out, 6 + i * 16, out.size() - at);
+            std::memcpy(out.data() + 10 + i * 16, "png", 3);
+            put32(out, 14 + i * 16, le32(row + 12));
+            continue;
+        }
+        std::vector<uint8_t> payload(input.begin() + base + offset, input.begin() + base + offset + size);
+        if (type == "spr") {
             std::vector<uint8_t> nested;
             if (!normalise(payload, "", nested, error, depth + 1)) return false;
             if (nested != payload) changed = true;
