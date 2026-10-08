@@ -106,7 +106,7 @@ class ExtractorTest(unittest.TestCase):
         profile = community14.DBFZ
         data = self.encoded_pac_profile(profile)
         with zipfile.ZipFile(self.apk, 'w') as archive:
-            archive.writestr('assets/2B98.pac', data)
+            archive.writestr('assets/46C3.pac', data)
             archive.writestr('assets/128B57.pac', data)
             archive.writestr('assets/CD4A57.pac', data)
             archive.writestr('assets/4BD80057.pac', data)
