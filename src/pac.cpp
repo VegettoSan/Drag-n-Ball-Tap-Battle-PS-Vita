@@ -134,7 +134,7 @@ bool PacFile::open(const std::string& path, PacEncoding encoding) {
             const char* type = communityType(*profile, entry.encoded_type);
             std::memset(entry.type, 0, 4);
             std::memcpy(entry.type, type ? type : "unk", type ? std::strlen(type) : 3);
-            if (encoding_ == PacEncoding::Community14Dbfz && !std::memcmp(raw + 8, "plt", 4))
+            if (!std::memcmp(raw + 8, "plt", 4))
                 std::memcpy(entry.type, "plt", 4);
         }
 
