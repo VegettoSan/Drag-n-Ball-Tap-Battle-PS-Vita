@@ -70,6 +70,7 @@ class WindowsExtractorTests(unittest.TestCase):
             local.mkdir()
             shutil.copy2(BAT, local / BAT.name)
             shutil.copy2(TOOL, local / TOOL.name)
+            shutil.copy2(TOOL.with_name('PrivateModDex.ps1'), local / 'PrivateModDex.ps1')
             # Pass a raw CreateProcess command line: list2cmdline follows CRT
             # escaping rules, which do not match cmd.exe's nested /c quoting.
             # Expand the quoted env paths once, preserving literal % and !.
