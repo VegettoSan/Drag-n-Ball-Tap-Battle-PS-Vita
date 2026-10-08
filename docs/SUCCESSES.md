@@ -1,5 +1,16 @@
 # Confirmed Successes
 
+## 2026-10-08 — pad visual-data ownership audited in nine APKs
+
+**Level: STRUCTURAL DATA AUDIT, not a render/hardware result.** The handwritten
+audit resolves original pad roots and linked layers in each selected effect
+resource, including PRIVATE variants. All nine corpora have 22 actions/25 image
+fields eligible for the narrow absent-image overlay: 50 bytes, unchanged size,
+no unrelated record ownership or incoming foreign links. Source assets are
+never written. This supports a resource-adapter design; it does not establish
+that the original engine has run with the overlay or that pads disappeared
+on Vita. [Evidence and limits](VITA_PAD_VISIBILITY_RESEARCH_2026-10-08.md).
+
 ## 2026-10-08 — original virtual-pad contract validated on host JVM
 
 **Level: HOST INPUT CONTRACT, not a Vita gameplay result.** The new

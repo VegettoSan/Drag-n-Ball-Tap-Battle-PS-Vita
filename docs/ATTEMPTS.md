@@ -1,5 +1,28 @@
 # Attempts Log
 
+## 2026-10-08 — invisible virtual-pad research, nine APKs
+
+**Goal:** hide virtual-pad graphics through Vita while retaining original input
+and mod data. Reviewed original Game8/Game4/_SetAct/_ActReqMain/DrawExec,
+Graphics2D and Vita resource/GL boundaries. The original DrawExec image=-1
+branch was cross-checked in DEX.
+
+**Experiment:** `tools/audit_pad_visibility.py` audits source effect DAC/CNV,
+using the existing known/PRIVATE codec readers. A roots-only overlay was found
+insufficient because pads link extra layers, including cyclic stick references.
+The visited-set closure includes 22 actions/25 image fields in every APK.
+All nine hypothetical overlays change exactly 50 bytes, with no foreign record
+ownership, incoming foreign links or unrelated DAC-byte changes. DBFZ/DBS/DBZ
+animation payloads differ, so fixed original offsets/assets are unsuitable.
+
+**Conclusion:** prefer an in-memory resource-stream overlay of absent-image
+fields, selected before profile launch. Preserve source PACs, original tasks,
+input, cache ownership and stream allocation behavior. Actual engine rendering,
+VPK integration and physical Vita tests remain pending.
+
+[Design](VITA_PAD_VISIBILITY_RESEARCH_2026-10-08.md) ·
+[Metadata evidence](evidence/vita_pad_visibility_2026-10-08.json).
+
 ## 2026-10-08 — original virtual-pad controls research
 
 **Goal:** find an adapter-only route for Vita buttons and a selector input-mode

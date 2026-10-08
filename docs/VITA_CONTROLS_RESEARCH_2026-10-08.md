@@ -13,6 +13,11 @@ pendiente. Este trabajo no cambia el ejecutable ni convierte la propuesta en
 una función disponible. El punto de partida vigente es el candidato v1.1
 VisualQuality aceptado en Vita, conservando v1.0 como referencia histórica.
 
+**Ampliación solicitada:** se auditó la ocultación del pad en los nueve APKs.
+La ruta preferida es un overlay visual del DAC en la frontera de recursos Vita;
+no requiere cambiar el motor ni las zonas de entrada. Diseño, capas enlazadas,
+selector y límites en [investigación de visibilidad](VITA_PAD_VISIBILITY_RESEARCH_2026-10-08.md).
+
 ## 1. Qué aportaba la investigación anterior
 
 Se revisaron `ENGINE_MAP`, `PLATFORM_SERVICES`, `DECISIONS`, `PORTING_PLAN`,
@@ -174,6 +179,13 @@ del juego; no crear nuevas acciones de combate para hacer el mapeo.
   mapeo hasta auditarlo. Comprobar además tarea/escena, pausa y transición.
 - El cursor en menús debe ocupar ID lógico 0 cuando esté solo: numerosas
   pantallas consultan explícitamente `TouchesStatus[0]`. No darle ID 7/9.
+
+También existe una pausa por toque en `Game8`, caso 38: contacto lógico 0 en
+`220<x<260`, `0<y<60`, con `bGameStart` y `iPlayMode!=8`. Un tap en `(240,30)`
+podría representar Start por esa ruta original, evitando Android Back. No es
+una inyección libre en cualquier ID: si el slot 0 pertenece a un toque real,
+no se puede robar/reasignar su contacto. Su arbitraje y prueba en combate/menú
+de pausa siguen pendientes.
 
 ## 4. Elección en el selector antes del perfil: viable
 

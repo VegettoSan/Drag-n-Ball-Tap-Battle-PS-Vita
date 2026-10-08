@@ -1,0 +1,3399 @@
+{
+  "scope": "structural-only; no Vita or original renderer execution",
+  "method": "DAC image-field ownership; hypothetical same-length absent-image overlay",
+  "apks": [
+    {
+      "apk": "01-DBTapBattle.apk",
+      "apk_sha256": "b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b",
+      "codec": "original",
+      "effects": [
+        {
+          "source": "res/raw/effect.pac",
+          "pac_sha256": "2c2a3babdf88d814a9cc1514a018b09d2bdcf8f6b86d55ea0817b68a4aa523c0",
+          "dac_sha256": "9dd51dfaa0b5aa04d94cf39cbe91ec0170f9d33666f0824219082893fb70322e",
+          "cnv_sha256": "dfb9dc2473d3253f47b4ecb39d7aa0019c72d7e4d280d045e9e386bf0137370b",
+          "action_count": 426,
+          "pad_actions": [
+            {
+              "action": 200,
+              "root": true,
+              "links": [
+                201
+              ],
+              "frames": 1,
+              "images": [
+                103
+              ],
+              "texture_slots": [
+                8
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 201,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 202,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 203,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 204,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 205,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 206,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 207,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 208,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 209,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 210,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 211,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 330,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 331,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 333,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 334,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 336,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 337,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 339,
+              "root": true,
+              "links": [
+                341
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 340,
+              "root": true,
+              "links": [
+                342
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 341,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 342,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            }
+          ],
+          "pad_image_fields": 25,
+          "pad_action_closure": [
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            330,
+            331,
+            333,
+            334,
+            336,
+            337,
+            339,
+            340,
+            341,
+            342
+          ],
+          "fields_shared_with_other_actions": [],
+          "pad_fields_inside_other_action_records": [],
+          "pad_fields_outside_own_record": [],
+          "incoming_links": [],
+          "narrow_overlay_structurally_eligible": true,
+          "overlay_changed_bytes": 50,
+          "overlay_dac_sha256": "d2e63557068b6dc3613fa8eeab3a4ea21b16101e2454b2d3a5ac455691802b81",
+          "unrelated_dac_bytes_unchanged": true
+        }
+      ]
+    },
+    {
+      "apk": "02-tap-battle-android-14.apk",
+      "apk_sha256": "a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4",
+      "codec": "community14-a210795b",
+      "effects": [
+        {
+          "source": "assets/9B28.pac",
+          "pac_sha256": "91b9f09aa83b6ac7630f7f7c49ab036d366f0e70f1b8339f048b28315327c02a",
+          "dac_sha256": "9dd51dfaa0b5aa04d94cf39cbe91ec0170f9d33666f0824219082893fb70322e",
+          "cnv_sha256": "dfb9dc2473d3253f47b4ecb39d7aa0019c72d7e4d280d045e9e386bf0137370b",
+          "action_count": 426,
+          "pad_actions": [
+            {
+              "action": 200,
+              "root": true,
+              "links": [
+                201
+              ],
+              "frames": 1,
+              "images": [
+                103
+              ],
+              "texture_slots": [
+                8
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 201,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 202,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 203,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 204,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 205,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 206,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 207,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 208,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 209,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 210,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 211,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 330,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 331,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 333,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 334,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 336,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 337,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 339,
+              "root": true,
+              "links": [
+                341
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 340,
+              "root": true,
+              "links": [
+                342
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 341,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 342,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            }
+          ],
+          "pad_image_fields": 25,
+          "pad_action_closure": [
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            330,
+            331,
+            333,
+            334,
+            336,
+            337,
+            339,
+            340,
+            341,
+            342
+          ],
+          "fields_shared_with_other_actions": [],
+          "pad_fields_inside_other_action_records": [],
+          "pad_fields_outside_own_record": [],
+          "incoming_links": [],
+          "narrow_overlay_structurally_eligible": true,
+          "overlay_changed_bytes": 50,
+          "overlay_dac_sha256": "d2e63557068b6dc3613fa8eeab3a4ea21b16101e2454b2d3a5ac455691802b81",
+          "unrelated_dac_bytes_unchanged": true
+        }
+      ]
+    },
+    {
+      "apk": "03-gen.apk",
+      "apk_sha256": "d52cbd7ef248d995ad17ba6ec8ec6fa08590a344ac2a9786e5ac839bf7715f28",
+      "codec": "original",
+      "effects": [
+        {
+          "source": "assets/effect.pac",
+          "pac_sha256": "2c2a3babdf88d814a9cc1514a018b09d2bdcf8f6b86d55ea0817b68a4aa523c0",
+          "dac_sha256": "9dd51dfaa0b5aa04d94cf39cbe91ec0170f9d33666f0824219082893fb70322e",
+          "cnv_sha256": "dfb9dc2473d3253f47b4ecb39d7aa0019c72d7e4d280d045e9e386bf0137370b",
+          "action_count": 426,
+          "pad_actions": [
+            {
+              "action": 200,
+              "root": true,
+              "links": [
+                201
+              ],
+              "frames": 1,
+              "images": [
+                103
+              ],
+              "texture_slots": [
+                8
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 201,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 202,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 203,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 204,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 205,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 206,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 207,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 208,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 209,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 210,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 211,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 330,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 331,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 333,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 334,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 336,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 337,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 339,
+              "root": true,
+              "links": [
+                341
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 340,
+              "root": true,
+              "links": [
+                342
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 341,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 342,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            }
+          ],
+          "pad_image_fields": 25,
+          "pad_action_closure": [
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            330,
+            331,
+            333,
+            334,
+            336,
+            337,
+            339,
+            340,
+            341,
+            342
+          ],
+          "fields_shared_with_other_actions": [],
+          "pad_fields_inside_other_action_records": [],
+          "pad_fields_outside_own_record": [],
+          "incoming_links": [],
+          "narrow_overlay_structurally_eligible": true,
+          "overlay_changed_bytes": 50,
+          "overlay_dac_sha256": "d2e63557068b6dc3613fa8eeab3a4ea21b16101e2454b2d3a5ac455691802b81",
+          "unrelated_dac_bytes_unchanged": true
+        }
+      ]
+    },
+    {
+      "apk": "04-DBTB-en-espa-ol-para-Android-14.apk",
+      "apk_sha256": "b38cc2c4ae3f20d1b1c6c1419a7b6b62ab57ea8954468874f6c5f8c40b39a098",
+      "codec": "community14-es-d594affc",
+      "effects": [
+        {
+          "source": "assets/B248.pac",
+          "pac_sha256": "029184c6b077f25fbe2d70750ccdd62d0fc66d57427afb75afa14c9df8100b36",
+          "dac_sha256": "9dd51dfaa0b5aa04d94cf39cbe91ec0170f9d33666f0824219082893fb70322e",
+          "cnv_sha256": "dfb9dc2473d3253f47b4ecb39d7aa0019c72d7e4d280d045e9e386bf0137370b",
+          "action_count": 426,
+          "pad_actions": [
+            {
+              "action": 200,
+              "root": true,
+              "links": [
+                201
+              ],
+              "frames": 1,
+              "images": [
+                103
+              ],
+              "texture_slots": [
+                8
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 201,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 202,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 203,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 204,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 205,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 206,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 207,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 208,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 209,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 210,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 211,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 330,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 331,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 333,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 334,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 336,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 337,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 339,
+              "root": true,
+              "links": [
+                341
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 340,
+              "root": true,
+              "links": [
+                342
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 341,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 342,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            }
+          ],
+          "pad_image_fields": 25,
+          "pad_action_closure": [
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            330,
+            331,
+            333,
+            334,
+            336,
+            337,
+            339,
+            340,
+            341,
+            342
+          ],
+          "fields_shared_with_other_actions": [],
+          "pad_fields_inside_other_action_records": [],
+          "pad_fields_outside_own_record": [],
+          "incoming_links": [],
+          "narrow_overlay_structurally_eligible": true,
+          "overlay_changed_bytes": 50,
+          "overlay_dac_sha256": "d2e63557068b6dc3613fa8eeab3a4ea21b16101e2454b2d3a5ac455691802b81",
+          "unrelated_dac_bytes_unchanged": true
+        }
+      ]
+    },
+    {
+      "apk": "05-TAP-BATTLE-INVASION-BETA-3.apk",
+      "apk_sha256": "caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d",
+      "codec": "community14-invasion-05aa0c5e",
+      "effects": [
+        {
+          "source": "assets/1E1C.pac",
+          "pac_sha256": "b7f538d0ffb0618ab769c7d57b1c4049ac6f9aca46392fdac65330340dc43059",
+          "dac_sha256": "9dd51dfaa0b5aa04d94cf39cbe91ec0170f9d33666f0824219082893fb70322e",
+          "cnv_sha256": "dfb9dc2473d3253f47b4ecb39d7aa0019c72d7e4d280d045e9e386bf0137370b",
+          "action_count": 426,
+          "pad_actions": [
+            {
+              "action": 200,
+              "root": true,
+              "links": [
+                201
+              ],
+              "frames": 1,
+              "images": [
+                103
+              ],
+              "texture_slots": [
+                8
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 201,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 202,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 203,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 204,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 205,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 206,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 207,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 208,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 209,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 210,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 211,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 330,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 331,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 333,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 334,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 336,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 337,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 339,
+              "root": true,
+              "links": [
+                341
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 340,
+              "root": true,
+              "links": [
+                342
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 341,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 342,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            }
+          ],
+          "pad_image_fields": 25,
+          "pad_action_closure": [
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            330,
+            331,
+            333,
+            334,
+            336,
+            337,
+            339,
+            340,
+            341,
+            342
+          ],
+          "fields_shared_with_other_actions": [],
+          "pad_fields_inside_other_action_records": [],
+          "pad_fields_outside_own_record": [],
+          "incoming_links": [],
+          "narrow_overlay_structurally_eligible": true,
+          "overlay_changed_bytes": 50,
+          "overlay_dac_sha256": "d2e63557068b6dc3613fa8eeab3a4ea21b16101e2454b2d3a5ac455691802b81",
+          "unrelated_dac_bytes_unchanged": true
+        }
+      ]
+    },
+    {
+      "apk": "06-DragonBallZuperSamuGamerYT.apk",
+      "apk_sha256": "1771d71de25d664894dfb33b4a296ad6d30f5d897a34eb1ec14f3135496ec41d",
+      "codec": "original",
+      "effects": [
+        {
+          "source": "assets/effect.pac",
+          "pac_sha256": "4e702a01aa3708a8a097db9eafc06c5bf0de3588659f164d0fd6610c1da00cb2",
+          "dac_sha256": "9dd51dfaa0b5aa04d94cf39cbe91ec0170f9d33666f0824219082893fb70322e",
+          "cnv_sha256": "dfb9dc2473d3253f47b4ecb39d7aa0019c72d7e4d280d045e9e386bf0137370b",
+          "action_count": 426,
+          "pad_actions": [
+            {
+              "action": 200,
+              "root": true,
+              "links": [
+                201
+              ],
+              "frames": 1,
+              "images": [
+                103
+              ],
+              "texture_slots": [
+                8
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 201,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 202,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 203,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 204,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 205,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 206,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 207,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 208,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 209,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 210,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 211,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 330,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 331,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 333,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 334,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 336,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 337,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 339,
+              "root": true,
+              "links": [
+                341
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 340,
+              "root": true,
+              "links": [
+                342
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 341,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 342,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            }
+          ],
+          "pad_image_fields": 25,
+          "pad_action_closure": [
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            330,
+            331,
+            333,
+            334,
+            336,
+            337,
+            339,
+            340,
+            341,
+            342
+          ],
+          "fields_shared_with_other_actions": [],
+          "pad_fields_inside_other_action_records": [],
+          "pad_fields_outside_own_record": [],
+          "incoming_links": [],
+          "narrow_overlay_structurally_eligible": true,
+          "overlay_changed_bytes": 50,
+          "overlay_dac_sha256": "d2e63557068b6dc3613fa8eeab3a4ea21b16101e2454b2d3a5ac455691802b81",
+          "unrelated_dac_bytes_unchanged": true
+        }
+      ]
+    },
+    {
+      "apk": "07-Dbfz-v22.apk",
+      "apk_sha256": "5fe0b98d45822cc060a95ef8d9bfa069b4005d7897d83c540db160134c4af67f",
+      "codec": "community14-dbfz-11d60c43",
+      "effects": [
+        {
+          "source": "assets/7D98.pac",
+          "pac_sha256": "65096dff6b16b7aaa89ff2d8b9c79e050c3c60f4fb7d3f5081a10d23d7c4b176",
+          "dac_sha256": "6e583e9c867e85ae15e888c8e64875f18751efc24df1629ebc9f2ea186e693a0",
+          "cnv_sha256": "57bb149d3f695c45e49b30537345d05b1b95e492927fb5fe05d723a227a94cdc",
+          "action_count": 426,
+          "pad_actions": [
+            {
+              "action": 200,
+              "root": true,
+              "links": [
+                201
+              ],
+              "frames": 1,
+              "images": [
+                103
+              ],
+              "texture_slots": [
+                8
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 201,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 202,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 203,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 204,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 205,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 206,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 207,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 208,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 209,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 210,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 211,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 330,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 331,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 333,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 334,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 336,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 337,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 339,
+              "root": true,
+              "links": [
+                341
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 340,
+              "root": true,
+              "links": [
+                342
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 341,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 342,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            }
+          ],
+          "pad_image_fields": 25,
+          "pad_action_closure": [
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            330,
+            331,
+            333,
+            334,
+            336,
+            337,
+            339,
+            340,
+            341,
+            342
+          ],
+          "fields_shared_with_other_actions": [],
+          "pad_fields_inside_other_action_records": [],
+          "pad_fields_outside_own_record": [],
+          "incoming_links": [],
+          "narrow_overlay_structurally_eligible": true,
+          "overlay_changed_bytes": 50,
+          "overlay_dac_sha256": "fcb1115f7a8db288f2ddd77197440a9a259d5ae1462265f1c5302557138d730d",
+          "unrelated_dac_bytes_unchanged": true
+        }
+      ]
+    },
+    {
+      "apk": "08-dbs-mobile-tap-battle-v1.apk",
+      "apk_sha256": "ce00bb66f2d19f5558bdd26bf6f80e8ec6193d20137a7dd0d1deb37066f2fc84",
+      "codec": "dragontap-private-v1",
+      "effects": [
+        {
+          "source": "assets/49B9.pac",
+          "pac_sha256": "cfa75b11df6f209ec7ed53b2662bbced6119605dae4b454ca6fcf75ffc600d8f",
+          "dac_sha256": "037e7b8116b9ca399c8a39be9615d68b0e9ca8289f581922b5b94e88a8279d5b",
+          "cnv_sha256": "57bb149d3f695c45e49b30537345d05b1b95e492927fb5fe05d723a227a94cdc",
+          "action_count": 426,
+          "pad_actions": [
+            {
+              "action": 200,
+              "root": true,
+              "links": [
+                201
+              ],
+              "frames": 1,
+              "images": [
+                103
+              ],
+              "texture_slots": [
+                8
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 201,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 202,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 203,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 204,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 205,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 206,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 207,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 208,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 209,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 210,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 211,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 330,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 331,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 333,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 334,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 336,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 337,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 339,
+              "root": true,
+              "links": [
+                341
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 340,
+              "root": true,
+              "links": [
+                342
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 341,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 342,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            }
+          ],
+          "pad_image_fields": 25,
+          "pad_action_closure": [
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            330,
+            331,
+            333,
+            334,
+            336,
+            337,
+            339,
+            340,
+            341,
+            342
+          ],
+          "fields_shared_with_other_actions": [],
+          "pad_fields_inside_other_action_records": [],
+          "pad_fields_outside_own_record": [],
+          "incoming_links": [],
+          "narrow_overlay_structurally_eligible": true,
+          "overlay_changed_bytes": 50,
+          "overlay_dac_sha256": "e0a718dcf7d83a6be520d6026c5ce1f8c5b3be740b68f80e410dcf60fb5c5f76",
+          "unrelated_dac_bytes_unchanged": true
+        }
+      ]
+    },
+    {
+      "apk": "09-dbz-mobile-v9.apk",
+      "apk_sha256": "6876176626b2458eec9905e32f4fc88740a867f990a0f910205c937e140a6764",
+      "codec": "dragontap-private-v1",
+      "effects": [
+        {
+          "source": "assets/54F1.pac",
+          "pac_sha256": "71f10facad5943670ffa8c5310bcc2e3b88a262f100a1214dca531dd673d4c6d",
+          "dac_sha256": "62b3d073d75e8a6d101e55e0d501b3242471f5b900e8d2856f4c72c46c1b1837",
+          "cnv_sha256": "57bb149d3f695c45e49b30537345d05b1b95e492927fb5fe05d723a227a94cdc",
+          "action_count": 426,
+          "pad_actions": [
+            {
+              "action": 200,
+              "root": true,
+              "links": [
+                201
+              ],
+              "frames": 1,
+              "images": [
+                103
+              ],
+              "texture_slots": [
+                8
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 201,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 202,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 203,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 204,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 205,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 206,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 207,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 208,
+              "root": true,
+              "links": [
+                200
+              ],
+              "frames": 1,
+              "images": [
+                104
+              ],
+              "texture_slots": [
+                10
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 209,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 210,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 211,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                105
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 330,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 331,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                160
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                332
+              ]
+            },
+            {
+              "action": 333,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 334,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                161
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                335
+              ]
+            },
+            {
+              "action": 336,
+              "root": true,
+              "links": [],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 337,
+              "root": true,
+              "links": [
+                211
+              ],
+              "frames": 1,
+              "images": [
+                162
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": [
+                338
+              ]
+            },
+            {
+              "action": 339,
+              "root": true,
+              "links": [
+                341
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 340,
+              "root": true,
+              "links": [
+                342
+              ],
+              "frames": 1,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 341,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            },
+            {
+              "action": 342,
+              "root": false,
+              "links": [],
+              "frames": 2,
+              "images": [
+                163
+              ],
+              "texture_slots": [
+                9
+              ],
+              "shared_images_with_other_actions": []
+            }
+          ],
+          "pad_image_fields": 25,
+          "pad_action_closure": [
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            330,
+            331,
+            333,
+            334,
+            336,
+            337,
+            339,
+            340,
+            341,
+            342
+          ],
+          "fields_shared_with_other_actions": [],
+          "pad_fields_inside_other_action_records": [],
+          "pad_fields_outside_own_record": [],
+          "incoming_links": [],
+          "narrow_overlay_structurally_eligible": true,
+          "overlay_changed_bytes": 50,
+          "overlay_dac_sha256": "db32a762d0cdd44c15e914d89dff7aca40314b6e9cb6d362757704c5d70e664e",
+          "unrelated_dac_bytes_unchanged": true
+        }
+      ]
+    }
+  ]
+}

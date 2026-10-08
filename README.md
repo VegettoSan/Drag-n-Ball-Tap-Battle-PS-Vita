@@ -169,6 +169,7 @@ See [Current Status](docs/CURRENT_STATUS.md) for validation scope and history.
 ## Technical documentation
 
 - [Vita physical controls research and selector-mode plan](docs/VITA_CONTROLS_RESEARCH_2026-10-08.md) — original virtual-pad host probes pass; gameplay bindings are not yet implemented.
+- [Hide virtual-pad graphics through Vita resource adaptation](docs/VITA_PAD_VISIBILITY_RESEARCH_2026-10-08.md) — nine-APK structural audit; runtime and hardware validation pending.
 - [Install & extract data for v1.1](docs/INSTALLATION_AND_EXTRACTION.md)
 - [v1.1 Release Notes](docs/RELEASE_v1.1.md)
 - [Current Runtime Contract](docs/CURRENT_RUNTIME_CONTRACT.md)

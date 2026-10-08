@@ -13,6 +13,14 @@ Those boundaries require explicit handling; physical gameplay remains absent
 from the current VPK. No engine/runtime code was changed by this research.
 See [research and implementation plan](VITA_CONTROLS_RESEARCH_2026-10-08.md).
 
+Pad visibility research additionally found an adapter-only resource overlay:
+the original renderer skips DAC frames with image -1. All nine supplied APKs
+have an isolated pad-action closure of 22 actions/25 image fields; a hypothetical
+50-byte in-memory overlay leaves unrelated DAC bytes and source files unchanged.
+Linked button/stick layers must also be included. This is structural evidence,
+not an integrated invisible-pad feature or a hardware rendering result.
+See [visibility design and evidence](VITA_PAD_VISIBILITY_RESEARCH_2026-10-08.md).
+
 ## Latest confirmed: v1.1 VisualQuality promoted for release
 
 The user has **approved the 2026-10-08 VisualQuality experimental build on
