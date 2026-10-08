@@ -1354,7 +1354,7 @@ regression test; do not restore the conditional vector assignment.
   No change to the original Java/TeaVM engine or profile/mod assets.
 - Added a fully synthetic >3 MiB PAC regression
   `tests/test_character_selection_cache.cpp` and a host compile/run command.
-  **Host tests and Vita device test have not run in this chat.**
+  **Synthetic host compile/run PASS** via GitHub Actions [run 37708484312](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37708484312); Vita hardware test still pending.
 - No release, version bump or stable-main modification. First-ever loads of a
   character still cost the original cold I/O time; revisit hits should improve.
 - Required before promotion: pass host regression, produce a separately named
