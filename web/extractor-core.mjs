@@ -1,3 +1,4 @@
+import {discoverPrivateCodec,canonicalPrivateName,codecSidecar,validatePrivatePac} from './private-dex.mjs';
 const MAX_APK_SIZE = 1024 * 1024 * 1024;
 const MAX_ENTRY_SIZE = 64 * 1024 * 1024;
 const MAX_DATA_SIZE = 512 * 1024 * 1024;
@@ -324,9 +325,21 @@ export async function extractApks(files, {onProgress=()=>{}}={}) {
     const assets=zip.entries.filter(e=>!e.directory&&e.name.startsWith('assets/'));
     const rawBytes=raw.reduce((n,e)=>n+e.size,0), assetBytes=assets.reduce((n,e)=>n+e.size,0);
     if(rawBytes>0&&assetBytes>0) throw new Error(`Ambiguous APK: non-empty game data exists in both res/raw and assets: ${apk.name}`);
-    let layout,prefix,communityCodec=null,sourceEntries;
+    let layout,prefix,communityCodec=null,dynamicCodec=null,sourceEntries;
     if(rawBytes>0){layout='raw';prefix='res/raw/';sourceEntries=raw;}
-    else if(assetBytes>0){layout='assets';prefix='assets/';sourceEntries=assets;communityCodec=detectCommunityProfile(assets.map(e=>e.name.slice(7)));if(communityCodec)layout='community14';}
+    else if(assetBytes>0){
+      layout='assets';prefix='assets/';sourceEntries=assets;
+      communityCodec=detectCommunityProfile(assets.map(e=>e.name.slice(7)));
+      if(communityCodec)layout='community14';
+      else if(!assets.some(e=>e.name==='assets/common.pac')){
+        // Unknown PRIVATE loader: recover profile from its DEX without running Android code.
+        const dex=zip.entries.find(e=>e.name==='classes.dex'&&!e.directory);
+        if(!dex||dex.size>16*1024*1024)throw Error('Unrecognized protected mod: no safe classes.dex loader');
+        const loaded=await entryDataBlob(zip,dex);
+        dynamicCodec=discoverPrivateCodec(new Uint8Array(await loaded.blob.arrayBuffer()));
+        layout='community14-dynamic';
+      }
+    }
     else throw new Error(`The APK contains no usable game data in res/raw or assets: ${apk.name}`);
 
     let profile=`profiles/${sanitizeProfileName(sourceStem(apk.name))}`, original=profile, suffix=2;
@@ -340,6 +353,7 @@ export async function extractApks(files, {onProgress=()=>{}}={}) {
       if(entry.directory){if(name)assertSafeName(name.replace(/\/$/,''));continue;}
       assertSafeName(name);
       if(layout==='community14')name=canonicalName(name,communityCodec);
+      else if(dynamicCodec)name=canonicalPrivateName(name,dynamicCodec);
       const key=name.toLowerCase();if(names.has(key))throw new Error(`Duplicate name after normalization: ${name}`);
       const mode=(entry.externalAttrs>>>16)&0xf000;if(mode!==0&&mode!==0x8000)throw new Error(`Non-regular ZIP entry: ${name}`);
       if((entry.flags&1)!==0||![0,8].includes(entry.method))throw new Error(`Encrypted entry or unsupported compression: ${name}`);
@@ -352,11 +366,17 @@ export async function extractApks(files, {onProgress=()=>{}}={}) {
     }
     if(!names.has('common.pac'))throw new Error(`common.pac was not found; this does not look like a complete Tap Battle APK: ${apk.name}`);
 
+    if(dynamicCodec){
+      // Every profile gets a bounded, data-only sidecar. The Vita will load it
+      // before opening any PAC. Never transfer the DEX/native libraries.
+      await addPackageFile(ctx,outputRoot+'dbtb_codec.json',jsonBlob(codecSidecar(dynamicCodec)));
+    }
     const filesMeta=[], renamed=[], unknown=[]; let pos=0;
     for(const item of items){
       pos++;onProgress({phase:'extracting',apk:apk.name,apkIndex,totalApks:selected.length,percent:10+Math.floor(78*pos/Math.max(items.length,1)),message:`Extracting ${item.name}`,file:item.name,fileIndex:pos,totalFiles:items.length});
       const extracted=await entryDataBlob(zip,item.entry);
       if(layout==='community14'&&item.name.endsWith('.pac'))await validateCommunityPac(extracted.blob,communityCodec,item.name);
+      else if(dynamicCodec&&item.name.endsWith('.pac'))await validatePrivatePac(extracted.blob,dynamicCodec,item.name);
       const sha=await sha256Blob(extracted.blob);
       await addPackageFile(ctx,outputRoot+item.name,extracted.blob,sha,extracted.crc);
       filesMeta.push({name:item.name,size:item.entry.size,sha256:sha,apk_path:item.entry.name});
@@ -366,7 +386,7 @@ export async function extractApks(files, {onProgress=()=>{}}={}) {
     const canonicalSet=new Set([...names.values()]);
     const roster=characterInventory(canonicalSet);
     const notExtracted=zip.entries.filter(e=>!e.directory&&!e.name.startsWith(prefix)).map(e=>e.name);
-    const manifest={format:4,tool:'DBTapBattle Web Extractor 1.0',runtime_contract:'profiles-v1',source_layout:layout,pac_codec:layout==='community14'?communityCodec:'original-or-unknown',payloads_unchanged:true,standalone_profile:true,requires_game_directory:false,renamed_files:renamed,source_apk:apk.name,source_apk_sha256:apkHash,file_count:filesMeta.length,files:filesMeta,unknown_files:unknown,unknown_raw_files:layout==='raw'?unknown:[],not_extracted:notExtracted,vita_profile:profile,character_count:roster.count,character_indices:roster.completeIndices,character_runtime_compatible:roster.runtimeCompatible,incomplete_character_indices:roster.incomplete,character_indices_after_gap:roster.laterAfterGap,unsupported_character_files:roster.unsupported,save_policy:'per-profile-vpk-seed',bundled_save:bundledSave,profile_save_installed:false};
+    const manifest={format:4,tool:'DBTapBattle Web Extractor 1.0',runtime_contract:'profiles-v1',source_layout:layout,pac_codec:dynamicCodec?'dragontap-private-v1':layout==='community14'?communityCodec:'original-or-unknown',payloads_unchanged:true,standalone_profile:true,requires_game_directory:false,renamed_files:renamed,source_apk:apk.name,source_apk_sha256:apkHash,file_count:filesMeta.length,files:filesMeta,unknown_files:unknown,unknown_raw_files:layout==='raw'?unknown:[],not_extracted:notExtracted,vita_profile:profile,character_count:roster.count,character_indices:roster.completeIndices,character_runtime_compatible:roster.runtimeCompatible,incomplete_character_indices:roster.incomplete,character_indices_after_gap:roster.laterAfterGap,unsupported_character_files:roster.unsupported,save_policy:'per-profile-vpk-seed',bundled_save:bundledSave,profile_save_installed:false};
     await addPackageFile(ctx,outputRoot+'dbtb_manifest.json',jsonBlob(manifest));
     reports.push({apk:apk.name,profile,files:filesMeta.length,source_sha256:apkHash,character_count:roster.count,character_indices:roster.completeIndices,character_runtime_compatible:roster.runtimeCompatible,bundled_save:bundledSave,layout,pac_codec:manifest.pac_codec});
     onProgress({phase:'profile-ready',apk:apk.name,apkIndex,totalApks:selected.length,percent:90,message:`Profile ready: ${profile}`});
@@ -374,7 +394,7 @@ export async function extractApks(files, {onProgress=()=>{}}={}) {
 
   const guideLines=['DRAGON BALL TAP BATTLE DATA FOR PS VITA','', 'Generated locally in your browser. The APK was not uploaded to a server.','', 'Copy the data folder from THIS ZIP to the ux0: root using VitaShell/FTP/USB or another file-transfer method.','The final path must be ux0:data/DBTapBattle/profiles/<Profile>/.','Install Dragon Ball Tap Battle PS Vita v1.0 (TITLE_ID DBTB01178) separately. This ZIP contains data only.','','EXTRACTED PROFILES:'];
   for(const r of reports){const label=r.profile.slice(r.profile.lastIndexOf('/')+1);guideLines.push(`- ${r.apk}: ux0:data/DBTapBattle/${r.profile}/ -> select ${label} in the VPK.`);guideLines.push(`  Characters detected: ${r.character_count} ${r.character_indices}`);if(!r.character_runtime_compatible)guideLines.push('  WARNING: roster does not fully satisfy the current profiles-v1 contract; check dbtb_manifest.json.');if(r.bundled_save)guideLines.push('  The APK contained save.bin, but it was not installed. The VPK creates an independent profile save.');}
-  guideLines.push('', 'Every APK is stored as an independent profile under profiles/, using the APK filename as the profile folder.','There is no separate game/ or mods/ layout and there is no cross-profile resource fallback.','To change the selector name, rename the extracted profile folder.','','PAC/media payloads are preserved byte-for-byte. Protected Android14-family profiles only rename audited aliases.','ZIP CRC, file sizes and SHA-256 hashes are verified. dbtb_manifest.json records provenance.','APK DEX/classes/native libraries are not copied as Vita gameplay code. Mods changing Android code may need Vita-side compatibility work.');
+  guideLines.push('', 'Every APK is stored as an independent profile under profiles/, using the APK filename as the profile folder.','There is no separate game/ or mods/ layout and there is no cross-profile resource fallback.','To change the selector name, rename the extracted profile folder.','','PAC/media payloads are preserved byte-for-byte. Protected Android14-family profiles keep PAC bytes intact; unknown PRIVATE variants use DEX-derived aliases and per-profile dbtb_codec.json.','ZIP CRC, file sizes and SHA-256 hashes are verified. dbtb_manifest.json records provenance.','APK DEX/classes/native libraries are not copied as Vita gameplay code. Mods changing Android code may need Vita-side compatibility work.');
   await addPackageFile(ctx,'LEEME_COPIAR_A_VITA.txt',textBlob(guideLines.join('\n')+'\n'));
   await addPackageFile(ctx,'RESULTADO.json',jsonBlob({tool_version:'web-1.0',runtime_contract:'profiles-v1',runtime_root:'ux0:data/DBTapBattle/profiles/',standalone_profiles:true,verified:true,processing:'local-browser',title_id:'DBTB01178',profiles:reports}));
   const sums=ctx.packageFiles.slice().sort((a,b)=>a.path.localeCompare(b.path)).map(f=>`${f.sha}  ${f.path}`).join('\n')+'\n';
