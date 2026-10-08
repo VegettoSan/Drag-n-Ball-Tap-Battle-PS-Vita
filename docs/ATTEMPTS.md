@@ -1335,3 +1335,30 @@ Invasion play after the previously reproducible transition. The 00.32
 `std::bad_alloc`/protected-PAC duplicate-allocation issue is therefore closed in
 the tested scope. Keep the explicit `output.swap(out)` ownership transfer and its
 regression test; do not restore the conditional vector assignment.
+
+## 2026-10-07 — experimental v1.0 character-selection metadata LRU (not hardware tested)
+
+- Hardware baseline remains **public v1.0**; user confirms stable gameplay and
+  reports ~1/4-second short pauses when changing characters.
+- Supplied v1.0 `runtime.log` (Invasion profile, boot `0da8684`) shows 17
+  `charNN.pac filter=251` requests, **17 misses**, 125.2 ms mean;
+  15 `filter=187` requests, **15 misses**, 300.3 ms mean.
+  Repeated `char14.pac filter=251` remains ~123–125 ms per load.
+- Hypothesis supported by source inspection: the existing >2 MiB source guard
+  clears the 8 MiB LRU even on *tiny filtered* character-metadata imports.
+- Experimental **branch only**:
+  `perf/character-switch-metadata-cache`. Keep an at-most-256-KiB,
+  per-profile, stat-validated LRU for charNN filter 251 with results <=24 KiB;
+  reserve that budget out of the existing 8 MiB cap. Preserve metadata across
+  filtered character imports, but clear all caches before full large combat PACs.
+  No change to the original Java/TeaVM engine or profile/mod assets.
+- Added a fully synthetic >3 MiB PAC regression
+  `tests/test_character_selection_cache.cpp` and a host compile/run command.
+  **Host tests and Vita device test have not run in this chat.**
+- No release, version bump or stable-main modification. First-ever loads of a
+  character still cost the original cold I/O time; revisit hits should improve.
+- Required before promotion: pass host regression, produce a separately named
+  test VPK, compare `cache=hit` / `us=` on real Vita in Original, Invasion and
+  Samu if possible, and verify battle entry, repeated fights, memory, audio
+  and profile saves. See
+  [full evidence and rollback plan](OPTIMIZATION_CHARACTER_SELECTION_2026-10-07.md).
