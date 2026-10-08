@@ -1,50 +1,62 @@
-# Dragon Ball Tap Battle PS Vita — v1.1 Universal Mod Support
+# Dragon Ball Tap Battle PS Vita v1.1 — Universal Mod Support
 
-**Estado:** compilación aprobada por pruebas en PS Vita real; preparada para que el mantenedor publique manualmente la release.
+**Status:** hardware-tested release build, ready for maintainer publication.
 
 **VPK:** `Dragon-Ball-Tap-Battle-PS-Vita-v1.1.vpk`  
-**SHA-256:** `9953e8c99ce59a5b4b55dab3ae2caec788c39ffe1edb19a2d4e5833c958ee6bd`  
+**VPK SHA-256:** `9953e8c99ce59a5b4b55dab3ae2caec788c39ffe1edb19a2d4e5833c958ee6bd`  
 **Vita TITLE_ID:** `DBTB01178` · **APP_VER:** `01.01`  
-**Extractor Windows:** `DBTapBattle-Extractor-Windows-v1.1.zip` · SHA-256 `148480f1f5447086796eaa66ad3f97a45af7a15b5c32f03eadea929b5c4d44a2`  
-**Extractor Web:** https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
+**Windows Extractor:** `DBTapBattle-Extractor-Windows-v1.1.zip` · SHA-256 `148480f1f5447086796eaa66ad3f97a45af7a15b5c32f03eadea929b5c4d44a2`  
+**Web Extractor:** https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
 
-## Novedades
+## What's new
 
-- **Soporte ampliado para mods:** juego original y mods con datos compatibles, incluida detección de más mods DragonTap PRIVATE sin incorporar claves ni reglas específicas de cada APK al ejecutable.
-- **Extractores Web y Windows:** generan perfiles independientes y recuperan automáticamente la estructura del APK. Los nuevos mods PRIVATE compatibles reciben `dbtb_codec.json`; los anteriores pueden no necesitarlo.
-- **Mayor estabilidad:** reducidas las reservas de memoria de PAC, reproducción de música AAC/M4A por lectura incremental y políticas de carga compacta de texturas para evitar agotamiento de memoria al entrar y avanzar en combates.
-- **Selector de perfiles, LiveArea, audio y guardados independientes** conservados de la versión anterior.
-- **Compatibilidad progresiva:** la extracción correcta no garantiza que se pueda ejecutar cualquier cambio de lógica Dalvik/Android realizado por un mod.
+- **Expanded mod compatibility:** support for the original game and compatible community mods, including automatic recognition of additional DragonTap PRIVATE resource formats without embedding per-mod keys in the Vita executable.
+- **Universal Web and Windows extractors:** every APK becomes an independent profile; compatible newly discovered PRIVATE formats receive a profile-local `dbtb_codec.json` automatically.
+- **Improved stability:** reduced PAC memory peaks, incremental/file-backed AAC/M4A playback, compact GPU texture handling, and adaptive texture quality for especially heavy protected assets.
+- **Existing behavior preserved:** profile selector, LiveArea, audio paths, independent saves, and previously audited profile decoders remain intact.
+- **Progressive compatibility:** successful extraction does not guarantee compatibility with arbitrary Android/Dalvik gameplay-code modifications.
 
-## Compatibilidad validada en hardware
+## Hardware validation
 
-El usuario verificó en una PS Vita real que el mod **dbz mobile v9** abre, permite seleccionar personajes, iniciar y terminar una pelea y avanzar a varias peleas consecutivas, sin reproducir los crashes y bloqueos anteriores. `runtime.log` de la prueba final: selector con 7 perfiles, 78 mensajes `[TextureCompact]`, 7 pistas AAC indexadas, 3 límites de recursos de combate y largos tramos cercanos a 60 FPS. No contiene `std::bad_alloc` ni un crash registrado. La confirmación del usuario es la evidencia del resultado jugable; el log por sí solo no prueba compatibilidad universal.
+The final VisualQuality runtime was tested on a real PS Vita with the heavy **dbz mobile v9** profile. The user confirmed character selection, fight startup, victory, and multiple consecutive battles without reproducing the previous crash/freeze behavior.
 
-Los perfiles originales y de mods previamente aceptados conservan su ruta histórica de carga. **No se han probado todos los mods disponibles**, por lo que se agradecen informes de compatibilidad.
+The final `runtime.log` records 7 installed profile directories, 78 `[TextureCompact]` diagnostics, 7 indexed compressed BGM tracks, 3 combat-resource boundaries, and 340 performance reporting windows, 317 of them at 58 FPS or higher. No `std::bad_alloc` or crash is recorded in that log. These figures describe the tested session only and are not a blanket performance guarantee for every mod.
 
-## Limitación conocida: nitidez de algunas texturas
+The original game and previously accepted mod paths retain their established resource-loading behavior. **Not every community mod has been tested.**
 
-Algunos mods incluyen sprites, fondos, efectos y atlas de alta resolución de varios megabytes. La memoria del sistema y de la GPU de PS Vita es limitada; cargar todas esas imágenes a calidad máxima puede causar `std::bad_alloc`, cuelgues o cierres.
+## Known limitation: texture sharpness
 
-**Para priorizar la estabilidad, esta release usa formatos gráficos compactos y puede reducir dinámicamente la resolución de algunas texturas.** Por eso algunas imágenes pueden verse borrosas mientras otras siguen nítidas. Los tiempos de carga pueden ser mayores en mods pesados. No se modifica ni recomprime el contenido del APK/PAC durante la extracción, y la política de calidad es **general por formato, dimensiones y memoria**, no una lista de ajustes especiales por mod. La mejora de nitidez queda como trabajo futuro; esta publicación conserva la configuración que funcionó en la consola.
+Some mods contain very large/high-resolution sprite atlases, backgrounds, effects, and UI assets. Loading all of them at full quality can exceed the PS Vita's limited system/GPU memory and cause `std::bad_alloc`, freezes, or crashes.
 
-## Instalación resumida
+To prioritize stability, v1.1 uses compact GPU storage and a **generic memory-aware quality policy** for compatible high-resolution protected textures. It may **reduce the physical resolution of selected textures**, so some graphics can look blurry while others remain sharp.
 
-1. Instala el **VPK v1.1** con VitaShell sobre la versión previa; **no desinstales** ni borres los perfiles.
-2. **Windows:** descarga y descomprime el ZIP del extractor; arrastra el APK a `Extract_APK_for_Vita.bat`; espera a que termine.
-3. **Web (Android/PC):** abre el [extractor Web](https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/), selecciona el APK, pulsa **EXTRACT DATA FOR PS VITA** y descarga el ZIP.
-4. Descomprime la salida, y copia su carpeta `data/` en la raíz de `ux0:`, de modo que los archivos queden bajo `ux0:data/DBTapBattle/profiles/<Perfil>/`.
-5. Abre el juego y elige el perfil. **Si existe `dbtb_codec.json`, cópialo junto con los PAC**. No es necesario volver a extraer los perfiles antiguos.
+This is intentional. The extractor does not damage or recompress the source PAC files, and there are **no mod-name-specific quality configurations**. Heavy mods can also take longer to load. Improving fidelity for these especially large assets is future work; v1.1 keeps the configuration confirmed stable on real hardware.
 
-**Guía completa:** [Instalación y extracción para Windows/Web](INSTALLATION_AND_EXTRACTION.md).  
-**Diagnóstico de resolución/memoria:** [Crash y solución experimental del mod v9](DBZ_MOBILE_V9_COMBAT_OOM_2026-10-07.md).
+## Installation summary
 
-## Reportes
+1. Install **v1.1 VPK** with VitaShell. When updating, install it over the previous version without deleting your profile data.
+2. **Windows:** extract the Windows tool ZIP, then drag your APK onto `Extract_APK_for_Vita.bat`.
+3. **Web / Android / desktop:** open the [Web Extractor](https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/), select the APK, press **EXTRACT DATA FOR PS VITA**, and download the generated ZIP.
+4. Extract the generated package and copy its **`data/` folder to the root of `ux0:`**.
+5. The final profile path must be `ux0:data/DBTapBattle/profiles/<Profile>/`.
+6. If the extractor generated `dbtb_codec.json`, keep it next to the profile PAC files.
 
-Si un mod no abre, presenta gráficos incorrectos, se congela o termina con crash, crea un [issue](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/issues) con la versión del VPK, nombre del mod y pasos para reproducirlo; adjunta `runtime.log` y, si existe, el `psp2core*.psp2dmp`. No adjuntes ni publiques APK o archivos comerciales.
+See the [complete installation and extraction guide](INSTALLATION_AND_EXTRACTION.md) for detailed Windows and Web instructions.
 
-## Identidad y validación del paquete
+## Reporting compatibility problems
 
-La **v1.1 contiene el mismo `eboot.bin` que la compilación VisualQuality experimental aprobada en Vita** (SHA-256 `bea473a4f1287702eafb2fe79e1b529d192b862bcd1ef63d681bf13f6a6d3af2`). Solo se actualizó el valor `APP_VER` en `sce_sys/param.sfo`, de `01.00` a `01.01`. Se conservan el mismo `TITLE_ID DBTB01178`, 15 miembros, recursos del selector, LiveArea y seed de guardados. Comprobaciones: integridad ZIP/CRC y validador LiveArea **PASS**. La identidad 1.0 anterior permanece como histórico/respaldo.
+If a mod crashes, freezes, fails to load, or displays incorrect graphics, open a GitHub Issue and include the VPK version, mod name/version, characters/mode, exact reproduction steps, and `runtime.log`. Attach `psp2core*.psp2dmp` when a crash dump exists.
 
-El VPK y las herramientas no incluyen datos comerciales: utiliza archivos APK obtenidos legalmente y extráelos localmente.
+Do not upload proprietary APKs or commercial game data to the repository.
+
+## Package identity
+
+The v1.1 VPK contains the **exact same `eboot.bin` as the hardware-approved VisualQuality experimental build**:
+
+`bea473a4f1287702eafb2fe79e1b529d192b862bcd1ef63d681bf13f6a6d3af2`
+
+Only `sce_sys/param.sfo` was changed to move `APP_VER` from `01.00` to `01.01`. `TITLE_ID DBTB01178`, LiveArea assets, selector assets, and the save seed remain unchanged. ZIP/CRC and LiveArea validation pass.
+
+The previous v1.0 package remains the historical rollback baseline.
+
+The VPK and extractors do not distribute the original APK or proprietary game data. Use an APK copy that you legally possess and extract its data locally.
