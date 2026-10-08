@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import {discoverPrivateCodec,canonicalPrivateName,codecSidecar,validatePrivatePac} from '../web/private-dex.mjs';
 import {sanitizeProfileName, canonicalName, detectCommunityProfile, characterInventory, crc32Bytes} from '../web/extractor-core.mjs';
 
 assert.equal(sanitizeProfileName('tap battle android 14'),'tap_battle_android_14');
@@ -21,4 +23,21 @@ const names=new Set();
 for(let i=0;i<13;i++){const a=String(i).padStart(2,'0'),b=String(i).padStart(4,'0');names.add(`char${a}.pac`);names.add(`chardemo${a}.pac`);names.add(`charf${b}.pac`);}
 const roster=characterInventory(names);assert.equal(roster.count,13);assert.equal(roster.runtimeCompatible,true);assert.equal(roster.completeIndices,'00..12');
 const crc=(crc32Bytes(new TextEncoder().encode('123456789'))^0xffffffff)>>>0;assert.equal(crc,0xcbf43926);
+const fixture = 'import sys;sys.path.insert(0,"tests");from private_dex_fixture import dex,pac;sys.stdout.buffer.write(dex())';
+const dex=execFileSync('python3',['-c',fixture]);
+const privateCodec=discoverPrivateCodec(dex);
+assert.equal(privateCodec.count_xor,24318);
+assert.equal(privateCodec.type_keys.bin,793741694);
+assert.equal(canonicalPrivateName('4AF4.pac',privateCodec),'common.pac');
+assert.equal(canonicalPrivateName('36D713.pac',privateCodec),'char13.pac');
+assert.equal(canonicalPrivateName('A5400013.pac',privateCodec),'charf0013.pac');
+const sidecar=codecSidecar(privateCodec);
+assert.equal(sidecar.generator,'dragontap-private-v1');
+assert.equal(sidecar.type_wav,151024925);
+assert.equal(sidecar.image_height_xor,48805);
+const pac=execFileSync('python3',['-c',
+  'import sys;sys.path.insert(0,"tests");from private_dex_fixture import pac;sys.stdout.buffer.write(pac())']);
+await validatePrivatePac(new Blob([pac]),privateCodec,'common.pac');
+await assert.rejects(validatePrivatePac(new Blob([pac.subarray(0,6)]),privateCodec,'bad.pac'));
+assert.throws(()=>discoverPrivateCodec(new Uint8Array([0,0,0,0])));
 console.log('Web extractor core tests: PASS');
