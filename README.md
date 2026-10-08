@@ -1,10 +1,10 @@
 # Dragon Ball Tap Battle PS Vita
 
-> **Current public release: v1.0** — Vita `APP_VER 01.00`, `TITLE_ID DBTB01178`.
-> The gameplay/runtime baseline is the hardware-confirmed 00.34 checkpoint; the
-> v1.0 package changes release identity/metadata, not game logic.
+> **Ready to publish: v1.1 — Universal Mod Support** — Vita `APP_VER 01.01`, `TITLE_ID DBTB01178`.
+> **Hardware-confirmed:** the updated VisualQuality engine plays successive battles in the heavy `dbz_mobile_v9` mod, with no crash or freeze in the user's accepted test. Previous public **v1.0 / 00.34** remains the historical fallback.
+> The release VPK contains the *exact* hardware-tested `eboot.bin`; only `sce_sys/param.sfo` differs from the approved experimental VPK to set APP_VER 01.01.
 
-> **Current v1.0 data/runtime contract (00.34 runtime baseline):** see [Current runtime contract](docs/CURRENT_RUNTIME_CONTRACT.md). Historical documents may retain older paths only as build-specific evidence.
+> **Current data/runtime contract:** see [Current runtime contract](docs/CURRENT_RUNTIME_CONTRACT.md). Historical documents retain earlier 00.34/v1.0 observations as build-specific evidence.
 
 A native PlayStation Vita port of **Dragon Ball Tap Battle** built with VitaSDK,
 vitaGL, and the original game core compiled privately for Vita.
@@ -26,6 +26,14 @@ There is no special \`game/\` folder and no separate \`mods/\` folder anymore.
 The Vita selector shows only folders that actually exist inside \`profiles/\`.
 If no profiles are installed, it shows **NO GAME DATA FOUND** and tells the user
 to prepare a Tap Battle APK with the extractor.
+
+## Important: high-resolution mod assets and PS Vita memory
+
+**Some community mods contain unusually heavy or high-resolution sprite atlases, backgrounds and effects.** Loading all of those textures at full size can exhaust the PS Vita's limited system/graphics memory and cause a crash, freeze or severe loading delays.
+
+For stability, v1.1 applies a **generic memory-aware texture quality policy** to newly discovered protected formats. It can store textures in a compact GPU format and **reduce the physical resolution of some images**. Consequently **some textures may look blurry while others remain sharp**. This is a deliberate protection against memory exhaustion, *not* a damaged APK, extraction error or a per-mod exception. Extraction retains the source PAC bytes. Older audited profiles keep their previous rendering paths.
+
+Compatibility is **not guaranteed for every mod**, especially ones that modify Android game logic. Heavy mods may take longer to load. See [Installation & extraction](docs/INSTALLATION_AND_EXTRACTION.md), [Mod compatibility](docs/MODS.md) and [GPU/memory diagnostic](docs/DBZ_MOBILE_V9_COMBAT_OOM_2026-10-07.md).
 
 ## Profile names
 
@@ -76,6 +84,8 @@ Do not create:
 ux0:data/data/DBTapBattle/
 \`\`\`
 
+**[Complete installation & extraction guide (Web + Windows)](docs/INSTALLATION_AND_EXTRACTION.md)**
+
 Detailed extractor instructions:
 
 - [Web APK Data Extractor](docs/WEB_DATA_TOOL.md)
@@ -113,7 +123,19 @@ from another profile.
 
 ## Project status
 
-The current public package is **v1.0**:
+**v1.1 Universal Mod Support — hardware-approved release candidate (2026-10-08)**
+
+- Release VPK: `Dragon-Ball-Tap-Battle-PS-Vita-v1.1.vpk` — Vita APP_VER `01.01`, TITLE_ID `DBTB01178`
+- SHA-256: `9953e8c99ce59a5b4b55dab3ae2caec788c39ffe1edb19a2d4e5833c958ee6bd`
+- Runtime: identical `eboot.bin` to the user-approved VisualQuality experimental VPK; **only APP_VER SFO metadata changed** for the release.
+- New: Web/Windows DEX-based PRIVATE mod detection, optional per-profile `dbtb_codec.json`, native dynamic decoding; file-backed AAC/M4A BGM; safer compressed texture handling with adaptive memory-aware quality.
+- Real Vita result: `dbz_mobile_v9` entered and completed consecutive fights without the previous crashes/freezes. Selected textures can look blurry because high-resolution content is downscaled for GPU stability.
+- Compatibility is best effort, not verified for every community mod. Older audited formats keep their original rendering path. Preserve profile folders and saves during upgrades.
+- [Full user installation & extraction guide](docs/INSTALLATION_AND_EXTRACTION.md) · [v1.1 release notes](docs/RELEASE_v1.1.md)
+
+**Historical public release: v1.0**
+
+The original v1.0 published package was:
 
 - file: `Dragon-Ball-Tap-Battle-PS-Vita-v1.0.vpk`
 - Vita APP_VER: `01.00`
@@ -130,6 +152,8 @@ See [Current Status](docs/CURRENT_STATUS.md) for validation scope and history.
 
 ## Technical documentation
 
+- [Install & extract data for v1.1](docs/INSTALLATION_AND_EXTRACTION.md)
+- [v1.1 Release Notes](docs/RELEASE_v1.1.md)
 - [Current Runtime Contract](docs/CURRENT_RUNTIME_CONTRACT.md)
 - [Data Layout](docs/DATA_LAYOUT.md)
 - [Web APK Data Extractor](docs/WEB_DATA_TOOL.md)
