@@ -9,7 +9,8 @@ enum class PacEncoding {
     Community14,
     Community14Spanish,
     Community14Invasion,
-    Community14Dbfz
+    Community14Dbfz,
+    Community14Dynamic
 };
 
 struct CommunityPacProfile {
@@ -37,7 +38,7 @@ struct CommunityPacProfile {
 };
 
 inline const CommunityPacProfile* communityProfiles(size_t& count) {
-    static const CommunityPacProfile profiles[] = {
+    static CommunityPacProfile profiles[] = {
         {
             PacEncoding::Community14, "community14-a210795b",
             0xa732u, 0x3b681c6bu, 0x02d6d26eu,
@@ -75,7 +76,10 @@ inline const CommunityPacProfile* communityProfiles(size_t& count) {
             0x39aeu,
             0u, 0xa4c74fe3u, 0x0e995397u, 0x82f9572bu,
             0x10445923u, 0x04bee884u, 0x3e602fa3u
-        }
+        },
+        // Mutable, per-selected-profile slot. A null name disables this codec.
+        { PacEncoding::Community14Dynamic, nullptr, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0 }
     };
     count = sizeof(profiles) / sizeof(profiles[0]);
     return profiles;
@@ -85,8 +89,20 @@ inline const CommunityPacProfile* communityProfile(PacEncoding encoding) {
     size_t count = 0;
     const CommunityPacProfile* profiles = communityProfiles(count);
     for (size_t i = 0; i < count; ++i)
-        if (profiles[i].encoding == encoding) return &profiles[i];
+        if (profiles[i].encoding == encoding && profiles[i].name) return &profiles[i];
     return nullptr;
+}
+
+// Dynamic codec state is per process and reset on every profile selection. The
+// slot lives in the existing registry to keep every caller (PAC, GameData,
+// RGBA image and WAV) on the same verified resource-decoding implementation.
+inline void installDynamicCommunityProfile(const CommunityPacProfile* verified) {
+    size_t count = 0;
+    const CommunityPacProfile* profiles = communityProfiles(count);
+    CommunityPacProfile& slot = const_cast<CommunityPacProfile&>(profiles[count - 1]);
+    slot = CommunityPacProfile{};
+    slot.encoding = PacEncoding::Community14Dynamic;
+    if (verified) { slot = *verified; slot.encoding = PacEncoding::Community14Dynamic; slot.name = "dragontap-private-v1"; }
 }
 
 inline bool isCommunityEncoding(PacEncoding encoding) {
@@ -137,6 +153,7 @@ inline PacEncoding detectCommunityEncoding(const uint8_t* data, size_t size) {
     unsigned matches = 0;
     for (size_t p = 0; p < profile_count; ++p) {
         const CommunityPacProfile& profile = profiles[p];
+        if (!profile.name) continue;
         const size_t count = raw_count ^ profile.count_xor;
         const uint64_t base = 2ull + uint64_t(count) * 16ull;
         if (!count || base > size) continue;
