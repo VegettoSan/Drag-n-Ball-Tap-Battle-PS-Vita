@@ -46,7 +46,7 @@ int main() {
     }
     runtimeLog("Selected profile: " + choice.profile_directory);
     installDynamicCommunityProfile(nullptr);
-    const std::string codec_path = vfs.basePath() + "/profiles/" + choice.profile_directory + "/dbtb_codec.json";
+    const std::string codec_path = std::string(GameVfs::kBasePath) + "/profiles/" + choice.profile_directory + "/dbtb_codec.json";
     FILE* codec_file = std::fopen(codec_path.c_str(), "rb");
     if (codec_file) {
         std::vector<uint8_t> bytes;
