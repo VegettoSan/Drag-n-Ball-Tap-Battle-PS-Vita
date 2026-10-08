@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
+import {mkdtempSync,readFileSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {discoverPrivateCodec,canonicalPrivateName,codecSidecar,validatePrivatePac} from '../web/private-dex.mjs';
-import {sanitizeProfileName, canonicalName, detectCommunityProfile, characterInventory, crc32Bytes} from '../web/extractor-core.mjs';
+import {sanitizeProfileName, canonicalName, detectCommunityProfile, characterInventory, crc32Bytes, extractApks} from '../web/extractor-core.mjs';
 
 assert.equal(sanitizeProfileName('tap battle android 14'),'tap_battle_android_14');
 assert.equal(sanitizeProfileName('CON'),'Mod_CON');
@@ -40,4 +43,24 @@ const pac=execFileSync('python3',['-c',
 await validatePrivatePac(new Blob([pac]),privateCodec,'common.pac');
 await assert.rejects(validatePrivatePac(new Blob([pac.subarray(0,6)]),privateCodec,'bad.pac'));
 assert.throws(()=>discoverPrivateCodec(new Uint8Array([0,0,0,0])));
+const folder=mkdtempSync(join(tmpdir(),'dbtb-web-private-'));
+try {
+  const filename=join(folder,'brand-new-private.apk');
+  execFileSync('python3',['tests/private_dex_fixture.py',filename]);
+  const archive=new Blob([readFileSync(filename)]);
+  archive.name='brand-new-private.apk';
+  const result=await extractApks([archive]);
+  assert.equal(result.reports.length,1);
+  assert.equal(result.reports[0].pac_codec,'dragontap-private-v1');
+  assert.equal(result.reports[0].files,7);
+  assert.equal(result.reports[0].character_count,1);
+  assert(result.packageSize>1000);
+  const corrupted=join(folder,'corrupt.apk');
+  execFileSync('python3',['tests/private_dex_fixture.py',corrupted,'corrupt']);
+  const badArchive=new Blob([readFileSync(corrupted)]);
+  badArchive.name='corrupt.apk';
+  await assert.rejects(extractApks([badArchive]),/PAC/);
+} finally {
+  rmSync(folder,{recursive:true,force:true});
+}
 console.log('Web extractor core tests: PASS');
