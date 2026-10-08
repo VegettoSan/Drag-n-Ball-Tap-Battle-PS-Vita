@@ -34,8 +34,9 @@ Unknown or mixed private codecs fail instead of being guessed.
 | `community14-a210795b` | `a210795bf7ded8636a91bea96df051557229149feb310cf07baf16b0731e79c4` | `f4e52c47fac7f1f6288c4bf7e4d31bc819ebb6ec2d2a6afac2c0275602995184` | 106/106 | format + hardware path previously confirmed |
 | `community14-es-d594affc` | `b38cc2c4ae3f20d1b1c6c1419a7b6b62ab57ea8954468874f6c5f8c40b39a098` | `d594affc14328decc5a9d898ab8fed52f83c54e2795cf06973454d9f5385a81c` | 106/106 | format confirmed; Vita gameplay pending |
 | `community14-invasion-05aa0c5e` | `caaf294ddb9bf833868d7b541fc310603827bed44072230f60e0552cbb2dc94d` | `05aa0c5ec839161e59b93eccd8657925380c56b46f1a4a452c662b1f115212d1` | 139/139 | format + standalone Vita gameplay/audio + repeated-fight crash fix hardware-confirmed in tested paths |
+| `community14-dbfz-11d60c43` | `5fe0b98d45822cc060a95ef8d9bfa069b4005d7897d83c540db160134c4af67f` | `11d60c43184a61743781062ce9260c293cbba948fc097d9c10daff44e778085a` | 261/261 | protected PAC/audio/table format audited and source integration added; Vita hardware gameplay pending |
 
-The three supplied protected APKs use byte-identical `libabc.so` helper builds
+The earlier Android14, Spanish and Invasion protected APKs use byte-identical `libabc.so` helper builds
 for each corresponding ABI. That establishes common loader lineage, not identical
 gameplay code.
 
@@ -144,6 +145,7 @@ and add only synthetic regression fixtures.
 - [Full five-APK technical reference](APK_TECHNICAL_REFERENCE.md)
 - [Spanish Android14 audit](SPANISH_ANDROID14_APK.md)
 - [Invasion Beta 3 audit](INVASION_BETA3_APK.md)
+- [DBFZ v22 protected APK audit and integration](DBFZ_V22_APK.md)
 - [Machine-readable audit evidence](evidence/apk_deep_structure_2026-10-06.json)
 
 ## 00.33 protected PAC runtime result
