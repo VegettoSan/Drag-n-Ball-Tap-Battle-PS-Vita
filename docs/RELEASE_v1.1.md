@@ -5,7 +5,7 @@
 **VPK:** `Dragon-Ball-Tap-Battle-PS-Vita-v1.1.vpk`  
 **SHA-256:** `9953e8c99ce59a5b4b55dab3ae2caec788c39ffe1edb19a2d4e5833c958ee6bd`  
 **Vita TITLE_ID:** `DBTB01178` · **APP_VER:** `01.01`  
-**Extractor Windows:** `DBTapBattle-Extractor-Windows-v1.1.zip`  
+**Extractor Windows:** `DBTapBattle-Extractor-Windows-v1.1.zip` · SHA-256 `148480f1f5447086796eaa66ad3f97a45af7a15b5c32f03eadea929b5c4d44a2`  
 **Extractor Web:** https://vegettosan.github.io/Drag-n-Ball-Tap-Battle-PS-Vita/
 
 ## Novedades
