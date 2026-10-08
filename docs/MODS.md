@@ -1,9 +1,8 @@
-# Mod compatibility model — current v1.0 contract
+# Mod compatibility model — v1.1 universal release candidate
 
 > Historical test documents may use older `game/` and `mods/` paths. The
 > current runtime contract is [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
-> v1.0 uses APP_VER `01.00` and TITLE_ID `DBTB01178`; mod compatibility behavior
-> is inherited from the hardware-confirmed 00.34 runtime.
+> v1.1 uses APP_VER `01.01` and TITLE_ID `DBTB01178`. It retains the hardware-confirmed 00.34 profile/save model and adds universal PRIVATE codec parsing and graphics memory safety. The v1.0 baseline remains available for rollback.
 
 ## Selection model
 
@@ -91,8 +90,30 @@ behavioral differences when necessary.
 Protected Android14-family APKs require an audited codec/alias profile. Unknown
 constants are rejected rather than guessed.
 
-Audited protected families currently include Android14, Spanish Android14 and
-Invasion Beta 3.
+Audited protected families include Android14, Spanish Android14, Invasion and
+DBFZ. For many additional DragonTap PRIVATE variants, the Web and Windows
+extractors derive codec aliases/XOR values *from the APK's own DEX initializer*,
+validate PAC structure, and write a profile-local `dbtb_codec.json` when required.
+The v1.1 Vita bridge reads this metadata without executing Android code.
+Neither a successful decode nor a complete character roster proves that every
+customized mod works: DEX logic changes may require separate porting.
+
+### High-resolution sprites / GPU memory (known v1.1 limitation)
+
+Some mods have large sprite atlases/effect assets that can exhaust Vita system/GPU
+memory during character selection, fight startup or between fights. The universal
+C14U texture bridge uses compact RGBA4444 uploads and an **adaptive memory-aware
+quality policy**. It may reduce GPU texture resolution to prevent out-of-memory
+crashes. Therefore **some characters, effects, UI elements or backgrounds may
+look blurry while others are sharp**. This is a tradeoff intentionally kept in
+the hardware-approved v1.1 build. The extractor preserves the original PACs.
+
+The policy is generic across compatible protected formats and depends on resource
+dimensions and memory usage; **there are no mod-name-specific configuration
+files or per-mod quality exceptions**. Older original/audited code paths are not
+overwritten. Loading high-resolution mods may take longer than ordinary datasets.
+
+[Hardware and memory investigation](DBZ_MOBILE_V9_COMBAT_OOM_2026-10-07.md).
 
 ## Audio compatibility
 
@@ -124,6 +145,8 @@ tests. Their old `--mod`/fixture examples are not the current user-facing Vita
 installation layout unless explicitly updated to `profiles/`.
 
 ## Current evidence
+
+- v1.1 VisualQuality: physical Vita accepts repeated fights of `dbz_mobile_v9`, no reproduced prior crash/freeze, though some reduced-resolution textures are blurry. `runtime.log` shows 340 performance windows, 317 of which are 58+ FPS; this is a tested-session result, not a blanket performance promise.
 
 - 00.33: hardware-confirmed repeated-fight protected-PAC ownership fix.
 - Recent hardware sequence: Loading recovery, dynamic rosters including Samu 92.
