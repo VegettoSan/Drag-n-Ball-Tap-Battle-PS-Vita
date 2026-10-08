@@ -287,6 +287,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         foreach ($entry in $raw) { $rawBytes += $entry.Length }
         foreach ($entry in $assets) { $assetBytes += $entry.Length }
         if ($rawBytes -gt 0 -and $assetBytes -gt 0) { throw 'Ambiguous APK: non-empty game data exists in both res/raw and assets.' }
+        $dynamicCodec = $null
         if ($rawBytes -gt 0) {
             $layout = 'raw'; $prefix = 'res/raw/'
         }
@@ -294,6 +295,15 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             $layout = 'assets'; $prefix = 'assets/'; $communityCodec = $null
             $communityCodec = Get-CommunityProfileFromNames @($assets | ForEach-Object { $_.FullName.Substring(7) })
             if ($communityCodec) { $layout = 'community14' }
+            elseif (-not @($assets | Where-Object { $_.FullName -ceq 'assets/common.pac' }).Count) {
+                # Dynamic PRIVATE loader: derive keys from DEX; reject ambiguous
+                # or unsupported initializers instead of guessing another mod.
+                $reader=Join-Path $PSScriptRoot 'PrivateModDex.ps1'
+                if (-not (Test-Path -LiteralPath $reader)) { throw 'PrivateModDex.ps1 is missing next to the extractor' }
+                . $reader
+                $dynamicCodec=Get-PrivateModProfile $archive
+                $layout='community14-dynamic'
+            }
         }
         else { throw 'The APK contains no usable game data in res/raw or assets.' }
 
@@ -317,6 +327,7 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             if ($entry.Name -eq '') { if ($name) { Assert-SafeName $name.TrimEnd('/') }; continue }
             Assert-SafeName $name
             if ($layout -eq 'community14') { $name = Get-CanonicalName $name $communityCodec }
+            elseif ($null -ne $dynamicCodec) { $name = $dynamicCodec.Canonical($name) }
             $key = $name.ToLowerInvariant()
             if ($names.ContainsKey($key)) { throw "Duplicate name after normalization: $name" }
             $record = $records[$index]
@@ -354,6 +365,9 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
             try { [DbtbZipChecks]::CopyChecked($source, $file, $item.Entry.Length, $item.Record.Crc) }
             finally { $source.Dispose() }
             if ($layout -eq 'community14' -and $item.Name.EndsWith('.pac',[StringComparison]::Ordinal)) { Assert-CommunityPac $file $communityCodec }
+            elseif ($null -ne $dynamicCodec -and $item.Name.EndsWith('.pac',[StringComparison]::Ordinal)) {
+                if (-not $dynamicCodec.ValidPac([IO.File]::ReadAllBytes($file))) { throw "Unsupported/mixed protected PAC: $file" }
+            }
             $files += [pscustomobject]@{ name=$item.Name; size=$item.Entry.Length; sha256=(Get-Sha $file); apk_path=$item.Entry.FullName }
             if ($item.Name -cne $item.Entry.FullName.Substring($prefix.Length)) {
                 $renamed += [pscustomobject]@{ apk_path=$item.Entry.FullName; name=$item.Name }
@@ -363,6 +377,10 @@ function Import-Apk([string]$Apk, [string]$Package, $UsedProfiles) {
         Write-Progress -Activity ([IO.Path]::GetFileName($Apk)) -Completed
         $codec = 'original-or-unknown'
         if ($layout -eq 'community14') { $codec = $communityCodec }
+        if ($null -ne $dynamicCodec) {
+            $codec='dragontap-private-v1'
+            Write-Json (Join-Path $target 'dbtb_codec.json') (Get-PrivateCodecSidecar $dynamicCodec)
+        }
         $roster = Get-CharacterInventory $names
         $rawUnknown = @(); if ($layout -eq 'raw') { $rawUnknown = $unknown }
         $manifest = [ordered]@{ format=4; tool='DBTapBattle Windows Extractor 1.5'; runtime_contract='profiles-v1'; source_layout=$layout;
@@ -457,7 +475,7 @@ try {
         'save.bin files bundled inside APKs/mods are not copied automatically; each profile starts from the same VPK seed.',
         'Do not overwrite a profile save.bin with another profile save unless you intentionally want to replace its progress.',
         'Each run creates a new package and does not delete or merge previous outputs.', '',
-        'PAC and media files are preserved byte-for-byte. Protected Android14-family profiles only rename audited aliases.',
+        'PAC and media files are preserved byte-for-byte. Known protected profiles retain their audited codecs. Unknown DragonTap PRIVATE loaders generate a per-profile dbtb_codec.json and preserve original PAC payloads.',
         'File sizes, ZIP CRCs, and SHA-256 hashes are verified. dbtb_manifest.json records provenance.',
         'APK files, DEX code, and Android libraries are not included. Mods that change Android code',
         'may require port changes; extracting data does not reproduce Android code changes.',
