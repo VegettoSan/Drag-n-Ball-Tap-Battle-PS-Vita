@@ -1,4 +1,4 @@
-# Windows APK data extractor 1.5
+# Windows APK data extractor 1.5 — universal v1.1 support
 
 The public launcher is:
 
@@ -25,9 +25,18 @@ browser and does not upload the selected APK. See
 - built-in Windows PowerShell 5.1
 - no Python, Java, 7-Zip, administrator rights, or network access required
 
-## Runtime contract
+## v1.1 universal protected mods
 
-Extractor 1.5 targets the v1.0 VPK (`APP_VER 01.00`, `TITLE_ID DBTB01178`)
+The release ZIP includes `PrivateModDex.ps1` beside
+`Extraer_APK_para_Vita.ps1`. Keep both files together. Unknown compatible
+PRIVATE PAC variants are identified by reading the APK's DEX constants without
+executing Android code. The result includes `dbtb_codec.json` where needed;
+copy it with the rest of the profile. Older profiles may have no codec sidecar.
+Heavy mod images can be blurred/downscaled on Vita for memory stability.
+See [full installation guide](INSTALLATION_AND_EXTRACTION.md).
+
+
+Extractor 1.5 targets the v1.1 VPK (`APP_VER 01.01`, `TITLE_ID DBTB01178`)
 and its `profiles-v1` contract documented in
 [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md). The VPK scans only
 `ux0:data/DBTapBattle/profiles/`; it does not use `game/` or `mods/` as
