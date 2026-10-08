@@ -4,6 +4,7 @@
 #include "ui.hpp"
 #include "vfs.hpp"
 #include "game_data.hpp"
+#include "dynamic_codec.hpp"
 
 #include <cstdio>
 #include <string>
@@ -44,6 +45,22 @@ int main() {
         return 2;
     }
     runtimeLog("Selected profile: " + choice.profile_directory);
+    installDynamicCommunityProfile(nullptr);
+    const std::string codec_path = vfs.basePath() + "/profiles/" + choice.profile_directory + "/dbtb_codec.json";
+    FILE* codec_file = std::fopen(codec_path.c_str(), "rb");
+    if (codec_file) {
+        std::vector<uint8_t> bytes;
+        uint8_t buffer[512]; size_t count;
+        while ((count=std::fread(buffer,1,sizeof(buffer),codec_file))>0 && bytes.size()<=4096)
+            bytes.insert(bytes.end(),buffer,buffer+count);
+        std::fclose(codec_file);
+        CommunityPacProfile decoded{}; std::string error;
+        if (!parseDynamicCodecJson(bytes,decoded,error)) {
+            runtimeLog("Codec metadata error: "+error); return 9;
+        }
+        installDynamicCommunityProfile(&decoded);
+    }
+ 
 
     // Start the same two converted-table loads as original InitGameData.
     // Keep both tables alive for the engine that will replace the preview.
