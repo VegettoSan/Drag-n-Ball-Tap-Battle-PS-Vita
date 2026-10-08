@@ -7,6 +7,14 @@
 > **v1.0 / APP_VER 01.00 / TITLE_ID DBTB01178**; 00.34 remains the exact
 > hardware-tested gameplay baseline.
 
+## DBFZ v22 mod integration — source-only candidate, hardware pending
+
+A new user-supplied `Dbfz v22.apk` (`5fe0b98d45822cc060a95ef8d9bfa069b4005d7897d83c540db160134c4af67f`) uses a fourth protected Community14-family PAC codec and renamed asset families. The updated Web and Windows extractors recognize this audited profile, and the native PAC/texture bridge has corresponding decode support, **without modifying original AOT gameplay logic or the already published stable v1.0 artifact**.
+
+The corpus contains 261 PAC files, 58 contiguous character triplets (00..57), protected game/text tables, and 10 AAC/M4A files mislabeled `.ogg`. Audited metadata and implementation details: [DBFZ V22 APK](DBFZ_V22_APK.md). Standalone installation path: `ux0:data/DBTapBattle/profiles/Dbfz_v22/`.
+
+**Not a hardware acceptance claim**: this source update requires a separately built test VPK and Vita gameplay/regression evidence. Public v1.0 / 00.34 remains the stable hardware-tested checkpoint.
+
 ## v1.0 public release identity
 
 The first stable public release is:
