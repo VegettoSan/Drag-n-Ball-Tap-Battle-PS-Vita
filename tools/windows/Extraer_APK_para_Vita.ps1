@@ -122,7 +122,13 @@ function Get-CommunityProfiles {
         Fixed=@{ '9036'='common'; '7E8F'='select0'; '1E1C'='effect'; '97E6'='demo_00'; '6E24'='demo_08'; '0708'='card_preview'; '90EA'='gamedata'; 'D37C'='text00' };
         Numbered=@{ 'F813'=@('back',2); '17A5'=@('bobj',2); '0953'=@('char',2); '364E'=@('chardemo',2); '91F9'=@('charf',4); '1A4B'=@('card',3) }
     }
-    return @($legacy,$spanish,$invasion)
+    $dbfz = [pscustomobject]@{
+        Name='community14-dbfz-11d60c43'; Count=[uint32]0x39AE; Offset=[uint32]0xAFC6643C; Size=[uint32]0x64CE617B;
+        Types=@([uint32]0xA4C74FE3,[uint32]0xE995397,[uint32]0x82F9572B,[uint32]0x10445923,[uint32]0x4BEE884,[uint32]0x3E602FA3);
+        Fixed=@{ '2B98'='common'; 'CC4B'='select0'; '7D98'='effect'; '46C3'='demo_00'; 'D6E1'='demo_08'; 'B727'='card_preview'; 'AC9E'='gamedata'; 'D791'='text00' };
+        Numbered=@{ '8ED7'=@('back',2); 'DC70'=@('bobj',2); '128B'=@('char',2); 'CD4A'=@('chardemo',2); '4BD8'=@('charf',4); 'FDD0'=@('card',3) }
+    }
+    return @($legacy,$spanish,$invasion,$dbfz)
 }
 
 function Get-CanonicalName([string]$Name, [string]$Codec = '') {
