@@ -1,5 +1,10 @@
 # Investigación: controles físicos Vita y elección antes de abrir un perfil
 
+> Implementation update: the experiment is now built on `test/vita-controls`.
+> See [Controls Test 1](TEST_VITA_CONTROLS.md) and
+> [local build evidence](evidence/vita_controls_test_1.json). The research below
+> retains its original scope; hardware acceptance is still pending.
+
 Fecha: 2026-10-08. Repositorio revisado: `b295b29e7f276cac75471d80ac7d41ede6160431`.
 
 **Conclusión:** la ruta preferida es adaptar los botones y sticks Vita a los

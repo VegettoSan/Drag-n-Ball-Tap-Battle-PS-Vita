@@ -1,5 +1,14 @@
 # Current status — 2026-10-08, v1.1 Universal Mod Support (release ready)
 
+## Experimental Vita controls — separate test branch, hardware pending
+
+`test/vita-controls` implements the accepted Vita button scheme, a per-profile
+Touch / Vita visible / Vita hidden launcher choice, and character-selection
+left/right arrows. Core classes match the existing main compatibility pipeline; controls add no core patches. This branch
+uses a separate test bubble and isolated profile saves; `main` and the stable
+v1.1 package are not replaced. Host input/resource checks pass; actual Vita
+acceptance is still required. See [test protocol](TEST_VITA_CONTROLS.md).
+
 ## Physical controls research — 2026-10-08, no runtime change
 
 The original settings and combat pad were inspected in the supplied APKs.

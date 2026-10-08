@@ -12,7 +12,7 @@ int main(int argc,char** argv) {
         const std::string stablePath=std::string(argv[profile])+"/profiles/Sample/save.bin";
         {std::ofstream f(stablePath,std::ios::binary);f.write(reinterpret_cast<const char*>(stable.data()),stable.size());assert(f);}
         dbtb_setControlMode(0);assert(dbtb_initResources(argv[profile],"Sample"));
-        assert(save_path!=stablePath && save_cache.size()==kSaveSize);
+        assert(save_path!=stablePath && save_cache==stable);
         std::vector<uint8_t> isolated;assert(readFile(save_path,isolated));
         char effect[]="effect";int size=dbtb_resource(effect);assert(size>0);
         auto cached=pending_resource;std::vector<uint8_t> original(size);dbtb_copyResource(original.data(),size);

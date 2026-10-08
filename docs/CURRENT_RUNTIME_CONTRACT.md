@@ -1,5 +1,20 @@
 # Current runtime/data contract — v1.1 Universal Mod Support (00.34 historical stable baseline)
 
+## Experimental controls branch only
+
+On `test/vita-controls`, the launcher adds three remembered modes before
+profile startup. The test bubble is `DBTBCT001` / APP_VER `01.02`; its native
+save path is `profiles/<Profile>/save-controls-test.bin`, initially copied from
+the stable `save.bin` or the approved seed. Stable release paths below remain
+the release contract. `vita-controls.cfg` holds only the Vita mode. See
+[controls protocol and limits](TEST_VITA_CONTROLS.md).
+
+Vita modes overlay save-read config byte 4 with original pad mode 1 and retain
+the touch preference on disk during original writes. Gameplay input remains
+`KeyData.Set/Clear`; no task/command/controller implementation is replaced.
+Hidden mode uses a sparse per-stream view of the normalized effect animation
+image fields, preserving the immutable shared cache and source PACs.
+
 > This file is the source of truth for the **current** runtime and extractor
 > contract. Historical test documents may mention older `game/` and `mods/`
 > layouts because those paths were correct for those specific builds.

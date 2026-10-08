@@ -1,5 +1,21 @@
 # Confirmed Successes
 
+## 2026-10-08 — experimental controls host validation
+
+**Level: HOST JVM / NATIVE RESOURCE CONTRACT, hardware pending.** VitaControls
+passes eight directions, six button press/hold/release paths, five contacts,
+touch priority, pause pointer/rearming, character arrows, menu neutrality and
+analog input against original APK-derived Controller/KeyData classes.
+
+Native tests pass for actual effect DAC/CNV from all nine supplied APKs: 50
+sparse image bytes, unchanged unrelated bytes/cache/source containers, visible
+mode restoration, stream mode snapshots, fragmented reads, and atomic refusal
+of truncated/foreign-aliased data. Save tests preserve the touch preference,
+progress writes and stable save while the test uses its independent save.
+TCBManajer/Controller/KeyData match the existing main compatibility pipeline;
+Controller/KeyData also match the original APK. No new core patch was added. These results do
+not establish gameplay, visual fidelity or timing on PS Vita.
+
 ## 2026-10-08 — pad visual-data ownership audited in nine APKs
 
 **Level: STRUCTURAL DATA AUDIT, not a render/hardware result.** The handwritten

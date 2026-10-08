@@ -1,5 +1,27 @@
 # Attempts Log
 
+## 2026-10-08 — implement Vita controls on test/vita-controls
+
+Adapted Vita held states into original KeyData pointers, gated by original
+battle-pad signatures and live tasks. Added original character-arrow touches,
+Start pause pointer 0, real-touch priority and release/rearm at transitions.
+Added three launcher modes and isolated test saves. Read/write config overlay
+keeps the original tactile preference on disk while Vita mode reads pad 1.
+
+Native hiding follows each profile's effect DAC links and validates all
+foreign ownership before serving 50 sparse absent-image bytes. Nine native
+resource tests pass, including fragmented reads and immutable cache snapshots.
+All patched-JAR payloads match the existing main compatibility pipeline.
+Controller/KeyData also match the original APK; TCBManajer retains only the
+preexisting text/roster adaptations. No new core patch was added.
+
+Packaging attempt at the inherited 64 KiB layout failed: only 2216 bytes of
+RX-to-RW headroom, SCE imports required 3804. Raising max-page-size to 128 KiB
+merged the SDK's fixed-layout segments and was rejected (overlapping sections).
+Final route retains 64 KiB and compacts the Vita launcher at -Os; full original
+TeaVM code remains -O1. No workflow was dispatched. Hardware acceptance remains
+pending; do not merge to main yet.
+
 ## 2026-10-08 — invisible virtual-pad research, nine APKs
 
 **Goal:** hide virtual-pad graphics through Vita while retaining original input

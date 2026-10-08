@@ -1,5 +1,41 @@
 # Build and packaging
 
+## Controls Test 1 — local full-engine build, separate branch
+
+Built on `test/vita-controls` without dispatching or running a build workflow.
+The existing open-source tool exports supply pinned TeaVM 0.12.3, ECJ 3.37.0
+and VitaSDK 2026.08 / GCC 15.2.0. The user-owned original APK/JAR and generated
+C remain outside Git. Do not build the repository-root atlas bootstrap for
+this test; it is not the playable engine.
+
+```sh
+python tools/aot/engine/generate.py --original-jar /private/original.jar \
+  --ecj /private/tools/ecj-3.37.0.jar --lib-directory /private/tools/lib \
+  --work-directory /private/controls-generation
+python tools/aot/engine/vita/build.py --generated-c /private/controls-generation/c \
+  --build-directory /private/controls-build --jobs 2 --test-controls
+```
+
+`--test-controls` sets `DBTBCT001`, APP_VER `01.02`, the test title and isolated
+profile save filename. It retains the original full TeaVM amalgamation at
+`-O1`; native code stays `-O2`, with existing cold paths and the launcher at
+`-Os`. Launcher compaction preserves SCE import headroom for vita-elf-create
+without changing the original Java engine or its optimization level.
+
+Host validation: original Controller/KeyData input probe; native sparse views,
+immutable cache and stream snapshot/fragmentation tests against effect DAC/CNV
+from nine supplied APKs; native save preference/progress/isolation tests;
+Python regression suite and final LiveArea/VPK integrity checks. Fixture
+construction keeps private data outside Git; the native corpus uses actual
+DAC/CNV payloads in normalized test containers, not nine rendered games.
+Artifact: `DBTapBattle-Vita-01.02-Controls-Test-1.vpk`, 2749339 bytes.
+SHA-256: `f0fb5355304671a69865c9e11b1ea513b682b50c670438210adc0bbcccc3b3f0`.
+Source commit: `213b203c02798e60b821537263d4c7e7aa0228c6`.
+Final RX-to-RW headroom: 9192 bytes; SCE conversion, SELF,
+ZIP/SFO/seed/full-engine checks and approved LiveArea validation pass.
+See [hardware protocol](TEST_VITA_CONTROLS.md) and
+[build evidence](evidence/vita_controls_test_1.json).
+
 ## v1.0 public release — DBTB01178
 
 Current public package identity:

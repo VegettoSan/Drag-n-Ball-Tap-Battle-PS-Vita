@@ -1,0 +1,88 @@
+{
+  "scope": "local full original-engine build; hardware pending",
+  "branch": "test/vita-controls",
+  "source_commit": "213b203c02798e60b821537263d4c7e7aa0228c6",
+  "main_base": "a6b90ef0a2714dbfa02dc4d2e1afc85fca076931",
+  "workflow_dispatched": false,
+  "filename": "DBTapBattle-Vita-01.02-Controls-Test-1.vpk",
+  "size": 2749339,
+  "sha256": "f0fb5355304671a69865c9e11b1ea513b682b50c670438210adc0bbcccc3b3f0",
+  "eboot_sha256": "3a15afbbeb69fefe9412f5850fd03930989662ab7d74888703a64bd1afc7a314",
+  "elf_sha256": "e12c607adad2963eb8fa0490943a7a8c41b7ee2e9eb21abc7363bb0406f30054",
+  "sfo": {
+    "APP_VER": "01.02",
+    "ATTRIBUTE": null,
+    "ATTRIBUTE2": null,
+    "ATTRIBUTE_MINOR": null,
+    "BOOT_FILE": "",
+    "CATEGORY": "gd",
+    "CONTENT_ID": "",
+    "EBOOT_APP_MEMSIZE": null,
+    "EBOOT_ATTRIBUTE": null,
+    "EBOOT_PHY_MEMSIZE": null,
+    "LAREA_TYPE": null,
+    "NP_COMMUNICATION_ID": "",
+    "PARENTAL_LEVEL": null,
+    "PSP2_DISP_VER": "00.000",
+    "PSP2_SYSTEM_VER": null,
+    "STITLE": "DB Tap Battle Controls Test",
+    "TITLE": "DB Tap Battle Controls Test",
+    "TITLE_ID": "DBTBCT001",
+    "VERSION": "00.00"
+  },
+  "rx_to_rw_headroom_bytes": 9192,
+  "compilation": {
+    "TeaVM": "0.12.3",
+    "ECJ": "3.37.0",
+    "VitaSDK": "2026.08",
+    "GCC": "15.2.0",
+    "java_C": "full amalgamation -O1",
+    "native": "-O2; existing cold resource/image/BGM paths and launcher -Os"
+  },
+  "core_class_comparison": {
+    "TCBManajer": {
+      "original_sha256": "59a7c65e6e17773a40042014a8a4e12b9e488ae2d7a1f37da5873d211348473e",
+      "baseline_sha256": "5348dba298c5421692793a8f20883a74961b6a7a4a4a5c7c0efe767ad6bdd789",
+      "candidate_sha256": "5348dba298c5421692793a8f20883a74961b6a7a4a4a5c7c0efe767ad6bdd789",
+      "same_as_existing_main_pipeline": true,
+      "same_as_original_apk": false
+    },
+    "Controller": {
+      "original_sha256": "b6772034d0290eda1b3fa56aec92120d72f12b6c27f320eb00beaa6f398bbfdc",
+      "baseline_sha256": "b6772034d0290eda1b3fa56aec92120d72f12b6c27f320eb00beaa6f398bbfdc",
+      "candidate_sha256": "b6772034d0290eda1b3fa56aec92120d72f12b6c27f320eb00beaa6f398bbfdc",
+      "same_as_existing_main_pipeline": true,
+      "same_as_original_apk": true
+    },
+    "KeyData": {
+      "original_sha256": "5561f82d40d589d4a7887f5acf3e259f42df5618fe6e8810e2cb31b999576e43",
+      "baseline_sha256": "5561f82d40d589d4a7887f5acf3e259f42df5618fe6e8810e2cb31b999576e43",
+      "candidate_sha256": "5561f82d40d589d4a7887f5acf3e259f42df5618fe6e8810e2cb31b999576e43",
+      "same_as_existing_main_pipeline": true,
+      "same_as_original_apk": true
+    }
+  },
+  "checks": {
+    "complete_arm_elf": true,
+    "full_game_and_adapter_symbols": true,
+    "self_matches_vpk": true,
+    "approved_save_seed": true,
+    "zip_crc": true,
+    "livearea": "PASS",
+    "jvm_input": "PASS",
+    "native_DAC_CNV_corpora": 9,
+    "python_tests": {
+      "total": 61,
+      "passed": 41,
+      "skipped": 20
+    }
+  },
+  "limits": [
+    "No physical Vita test performed",
+    "Nine actual animation corpora tested in normalized DAC/CNV fixture containers, with mocked GL, not nine rendered games",
+    "Nonmatching/ambiguous effect DAC layouts retain visible pads",
+    "Five original contact IDs; real fingers have priority",
+    "Tutorial remains touch/gestures",
+    "Tests use isolated save-controls-test.bin; stable save.bin untouched"
+  ]
+}
