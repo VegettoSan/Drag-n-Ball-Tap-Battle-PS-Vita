@@ -69,3 +69,34 @@ On both the original APK and Invasion (plus Samu if available):
 5. If a crash happens, capture `runtime.log` plus `psp2core` and revert to the untouched v1.0 release.
 
 **Promotion criterion:** passing synthetic host regression, actual Vita testing with original + at least the tested mods, and no regression in fighting, memory or data isolation. Until then this remains an unverified optimization attempt.
+
+
+## Full-engine experimental VPK build attempt (2026-10-07)
+
+An isolated workflow was added at
+`.github/workflows/vita-character-cache-vpk.yml` to compile the **actual**
+original TeaVM engine plus native adapters from this branch, run the
+character-cache regression, validate LiveArea and upload a test-only VPK
+without modifying `main` or publishing/overwriting the stable v1.0 release.
+
+First attempt: [GitHub Actions run 37708790788](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37708790788).
+**Blocked before compilation** because repository Actions secret
+`DBTB_ORIGINAL_APK_URL` is not configured. No VPK was produced or uploaded.
+The attached local `DBTapBattle.apk` hashes to the pinned
+`b84f98a3ed70957354f358b7930bd8fb651cc89b74e16f8774ebd989fbf0899b`,
+but GitHub runners have no access to chat-local uploaded files.
+
+To enable the existing workflow without committing commercial APK content:
+
+1. Host the exact original `DBTapBattle.apk` at a **private, direct HTTPS**
+   download URL usable by non-interactive CI for the duration of the build.
+2. Add it under **Settings → Secrets and variables → Actions** as the
+   repository secret `DBTB_ORIGINAL_APK_URL`.
+3. Re-run workflow run 37708790788 from GitHub Actions; after a successful full
+   build the downloadable artifact will be named
+   `DBTapBattle-v1.0-character-cache-experimental-<run-id>`, containing
+   `Dragon-Ball-Tap-Battle-PS-Vita-v1.0-Character-Cache-Test.vpk`,
+   `SHA256SUMS.txt`, and `README.txt`.
+
+**Never distribute a native-smoke/dummy VPK as the playable test build.**
+A passed synthetic host test is not a release-ready VPK.
