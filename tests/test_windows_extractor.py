@@ -144,7 +144,7 @@ class WindowsExtractorTests(unittest.TestCase):
 
     def test_unknown_private_mod_rejects_corrupt_pac(self):
         source = make_private_apk(self.root / 'private-corrupt.apk', corrupt=True)
-        self.run_tool(source, expect=1)
+        self.run_tool(source, expect=2)
         self.assertFalse(list(self.output.glob('Paquete_*')))
 
     def test_android14_aliases_preserve_encoded_pac(self):
