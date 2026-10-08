@@ -1,4 +1,4 @@
-# Web APK data extractor 1.0
+# Web APK data extractor — v1.1 Universal Mod Support
 
 The project includes a browser-based data extractor for users who do not have a
 Windows PC.
@@ -11,7 +11,19 @@ The site is deployed from the repository by `.github/workflows/pages.yml`.
 GitHub Pages deployment run `37704582648` completed successfully and reported
 the URL above.
 
-## Privacy model
+## Current v1.1 universal extraction note
+
+For compatible previously unknown DragonTap PRIVATE mods, the browser statically
+parses `classes.dex`, verifies protected PAC aliases and emits `dbtb_codec.json`
+inside the profile. The v1.1 Vita runtime uses that metadata. Legacy profiles
+may not require it. This does not run Android code and does not guarantee
+compatibility with arbitrary DEX logic changes.
+
+**High-resolution mod warning:** heavy graphics can exceed Vita GPU memory;
+v1.1 may downscale selected textures for stability, so some graphics look blurry.
+The extracted PAC files retain their original bytes. Read the
+[complete installation and extraction guide](INSTALLATION_AND_EXTRACTION.md).
+
 
 APK processing is entirely local to the browser.
 
@@ -73,7 +85,7 @@ name collisions receive `_2`, `_3`, etc.
 ux0:data/DBTapBattle/profiles/<Profile>/
 ```
 
-10. Launch Dragon Ball Tap Battle PS Vita v1.0 (`TITLE_ID DBTB01178`) and select
+10. Launch Dragon Ball Tap Battle PS Vita v1.1 (`TITLE_ID DBTB01178`) and select
     the profile.
 
 Do **not** copy the generated ZIP itself into `ux0:data/`, and do not create
