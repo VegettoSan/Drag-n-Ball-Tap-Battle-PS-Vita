@@ -127,23 +127,40 @@ bool synchronizeInstalledCharacters(std::vector<uint8_t>& save, int characters) 
     }
     return changed;
 }
-struct StreamingTextureUpload {
-    GLuint texture = 0;
-    unsigned tiles = 0;
-    uint64_t upload_us = 0;
+struct CompactTexturePixels {
+    // The source pixels remain at full fidelity while being decompressed.
+    // For Vita's very large PRIVATE mods, pack to a single RGBA4444 upload;
+    // inputs >=384px use 2:1 downsampling (resource-specific, not engine logic).
+    uint32_t source_w = 0, source_h = 0;
+    uint32_t gpu_w = 0, gpu_h = 0, divisor = 1;
+    uint32_t rows_seen = 0;
+    std::vector<uint16_t> packed;
 };
 
-bool uploadRows(void* context, const uint8_t* rgba, uint32_t y, uint32_t rows, uint32_t width) {
-    auto& stream = *static_cast<StreamingTextureUpload*>(context);
-    const uint64_t start = dbtb_timeUs();
-    dbtb_setDiagnosticStage(3, uint32_t(size_t(rows) * width * 4), stream.tiles);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, GLint(y), int(width), int(rows),
-                    GL_RGBA, GL_UNSIGNED_BYTE, rgba);
-    const GLenum code = glGetError();
-    stream.upload_us += dbtb_timeUs() - start;
-    ++stream.tiles;
-    dbtb_setDiagnosticStage(2);
-    return code == GL_NO_ERROR;
+bool packCompactRows(void* context, const uint8_t* rgba, uint32_t y,
+                     uint32_t rows, uint32_t width) {
+    auto& dst = *static_cast<CompactTexturePixels*>(context);
+    if (!rgba || width != dst.source_w || y != dst.rows_seen ||
+        y > dst.source_h || rows > dst.source_h-y) return false;
+    for (uint32_t sy = 0; sy < rows; ++sy) {
+        const uint32_t source_y = y + sy;
+        if (source_y % dst.divisor) continue;
+        const uint32_t ty = source_y / dst.divisor;
+        if (ty >= dst.gpu_h) return false;
+        const uint8_t* line = rgba + size_t(sy) * width * 4;
+        uint16_t* output = dst.packed.data() + size_t(ty) * dst.gpu_w;
+        for (uint32_t tx = 0; tx < dst.gpu_w; ++tx) {
+            const uint8_t* px = line + size_t(tx * dst.divisor) * 4;
+            // VitaGL read_rgba4444: AAAABBBBGGGGRRRR (bit0=R), premultiplied
+            // original color and transparency are retained (4-bit precision).
+            output[tx] = uint16_t((px[0] >> 4) |
+                                  (px[1] & 0xF0u) |
+                                  ((px[2] & 0xF0u) << 4) |
+                                  ((px[3] & 0xF0u) << 8));
+        }
+    }
+    dst.rows_seen = y + rows;
+    return true;
 }
 
 int upload(const RgbaImage& image, bool linear) {
@@ -433,65 +450,84 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
     else if (size >= 8 && !std::memcmp(b, "C14D", 4)) image_encoding = PacEncoding::Community14Dbfz;
     else if (size >= 8 && !std::memcmp(b, "C14U", 4)) image_encoding = PacEncoding::Community14Dynamic;
     if (image_encoding == PacEncoding::Community14Dynamic) {
-        // Preserve every original pixel and coordinate. Dynamic PRIVATE mods
-        // carry many 712x712 sprites; constructing each full RGBA buffer on the
-        // 96 MiB Newlib heap can throw bad_alloc before a fight. Inflate into
-        // bounded 256 KiB strips and submit directly to VitaGL instead.
-        uint32_t width = 0, height = 0;
-        const uint32_t index = b[4] | (uint32_t(b[5]) << 8) | (uint32_t(b[6]) << 16) | (uint32_t(b[7]) << 24);
-        if (!communityImageDimensions(b + 8, size_t(size) - 8, index, image_encoding,
-                                      width, height, error)) {
+        // Hardware crash psp2core-1791436599: stack glTexSubImage2D ->
+        // _malloc_r during original GameData.Init after other PACs load.
+        // Single GL upload, compact GPU format, *no sub-image writes*.
+        const uint32_t index = b[4] | (uint32_t(b[5]) << 8) |
+                              (uint32_t(b[6]) << 16) | (uint32_t(b[7]) << 24);
+        uint32_t width=0, height=0;
+        if (!communityImageDimensions(b + 8, size_t(size) - 8, index,
+                                      image_encoding, width, height, error)) {
             dbtb_setDiagnosticStage(1);
-            std::fprintf(stderr, "[TextureStream] invalid header: %s\n", error.c_str());
+            std::fprintf(stderr,"[TextureCompact] invalid source: %s\n",error.c_str());
             return -1;
         }
-        const size_t cost = size_t(size) + size_t(width) * height * 4;
-        const bool retain = trimTextures(cost); // evict *idle* GPU images first
-        GLint old = 0;
-        glGetIntegerv(GL_TEXTURE_BINDING_2D, &old);
-        StreamingTextureUpload stream;
-        glGenTextures(1, &stream.texture);
-        if (!stream.texture) { dbtb_setDiagnosticStage(1); return -1; }
-        glBindTexture(GL_TEXTURE_2D, stream.texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, linear ? GL_LINEAR : GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        dbtb_setDiagnosticStage(3, uint32_t(size_t(width)*height*4));
-        const uint64_t init_start = dbtb_timeUs();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-                     GL_UNSIGNED_BYTE, nullptr);
-        stream.upload_us += dbtb_timeUs() - init_start;
-        const GLenum init_error = glGetError();
-        bool success = init_error == GL_NO_ERROR;
-        if (success) {
-            dbtb_setDiagnosticStage(2, uint32_t(size), index);
-            success = decodeCommunityImageProfileRows(b + 8, size_t(size) - 8,
-                        index, image_encoding, &stream, &uploadRows, error);
-        } else error = "GPU texture allocation failed";
-        const uint64_t elapsed = dbtb_timeUs() - decode_start;
-        dbtb_performance().texture_upload_us += stream.upload_us;
-        dbtb_performance().texture_decode_us += elapsed > stream.upload_us ? elapsed - stream.upload_us : 0;
-        glBindTexture(GL_TEXTURE_2D, old);
+        CompactTexturePixels compact;
+        compact.source_w=width; compact.source_h=height;
+        compact.divisor=(width >= 384 || height >= 384) ? 2u : 1u;
+        compact.gpu_w=(width+compact.divisor-1)/compact.divisor;
+        compact.gpu_h=(height+compact.divisor-1)/compact.divisor;
+        const size_t rgba4_bytes=size_t(compact.gpu_w)*compact.gpu_h*2;
+        // Strictly cap output to protect Newlib and GPU memory.
+        if (!rgba4_bytes || rgba4_bytes>8u*1024u*1024u) {
+            dbtb_setDiagnosticStage(1);
+            std::fprintf(stderr,"[TextureCompact] unsupported dimensions: %ux%u\n",width,height);
+            return -1;
+        }
+        compact.packed.resize(size_t(compact.gpu_w)*compact.gpu_h);
+        if (!decodeCommunityImageProfileRows(b + 8,size_t(size)-8,index,
+                image_encoding,&compact,&packCompactRows,error) ||
+            compact.rows_seen != height) {
+            dbtb_setDiagnosticStage(1);
+            std::fprintf(stderr,"[TextureCompact] decode rejected: %s\n",error.c_str());
+            return -1;
+        }
+        const uint64_t decode_end=dbtb_timeUs();
+        dbtb_performance().texture_decode_us += decode_end-decode_start;
+        const size_t cost=size_t(size)+rgba4_bytes;
+        const bool retain=trimTextures(cost);
+        GLint old=0;
+        glGetIntegerv(GL_TEXTURE_BINDING_2D,&old);
+        GLuint id=0;
+        glGenTextures(1,&id);
+        if (!id) { dbtb_setDiagnosticStage(1); return -1; }
+        glBindTexture(GL_TEXTURE_2D,id);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,linear ? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,linear ? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+        dbtb_setDiagnosticStage(3,uint32_t(rgba4_bytes),index);
+        const uint64_t upload_start=dbtb_timeUs();
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,compact.gpu_w,compact.gpu_h,
+                     0,GL_RGBA,GL_UNSIGNED_SHORT_4_4_4_4,compact.packed.data());
+        const GLenum gl_error=glGetError();
+        const uint64_t upload_us=dbtb_timeUs()-upload_start;
+        dbtb_performance().texture_upload_us+=upload_us;
+        glBindTexture(GL_TEXTURE_2D,old);
         dbtb_setDiagnosticStage(1);
-        if (!success) {
-            glDeleteTextures(1, &stream.texture);
-            std::fprintf(stderr, "[TextureStream] rejected %ux%u: %s\n", width, height, error.c_str());
+        if (gl_error!=GL_NO_ERROR) {
+            glDeleteTextures(1,&id);
+            std::fprintf(stderr,"[TextureCompact] GL error 0x%x %ux%u\n",
+                         unsigned(gl_error),compact.gpu_w,compact.gpu_h);
             return -1;
         }
-        textures[stream.texture] = {int(width), int(height)};
+        // Keep the *logical* dimensions used by the original Java engine,
+        // even though the physical GPU image is smaller. UV math is unchanged.
+        textures[id]={int(width),int(height)};
         if (retain) {
-            texture_cache.push_front({hash, linear != 0,
-                std::vector<uint8_t>(b, b + size), stream.texture, cost, 1});
-            texture_cache_bytes += cost;
+            texture_cache.push_front({hash,linear!=0,
+                std::vector<uint8_t>(b,b+size),id,cost,1});
+            texture_cache_bytes+=cost;
         }
-        if (elapsed >= 250000 || dbtb_performance().textures <= 5)
+        if (dbtb_performance().textures<=5 || upload_us>=200000) {
             std::fprintf(stderr,
-                "[TextureStream] original=%ux%u tiles=%u peak_rgba_KiB=256 elapsed_ms=%llu GPU_ms=%llu\n",
-                width, height, stream.tiles,
-                static_cast<unsigned long long>(elapsed/1000),
-                static_cast<unsigned long long>(stream.upload_us/1000));
-        return int32_t(stream.texture);
+                "[TextureCompact] logical=%ux%u gpu=%ux%u rgba4444_KiB=%u "
+                "decode_ms=%llu GPU_ms=%llu\n",
+                width,height,compact.gpu_w,compact.gpu_h,unsigned(rgba4_bytes/1024),
+                static_cast<unsigned long long>((decode_end-decode_start)/1000),
+                static_cast<unsigned long long>(upload_us/1000));
+        }
+        return int32_t(id);
     }
     if (image_encoding != PacEncoding::Auto) {
         const uint32_t index = b[4] | (uint32_t(b[5]) << 8) | (uint32_t(b[6]) << 16) | (uint32_t(b[7]) << 24);
