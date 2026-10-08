@@ -1,7 +1,7 @@
 #requires -Version 5.1
 # Data-only Dalvik inspection for DragonTap_Util PRIVATE generated mods.
 # Used only for unknown protected aliases; no Android code is executed.
-Add-Type -TypeDefinition @'
+if (-not ('PrivateModDexReader' -as [type])) { Add-Type -TypeDefinition @'
 using System;
 using System.IO;
 using System.Text;
@@ -109,7 +109,7 @@ public static class PrivateModDexReader {
   return matches[0];
  }
 }
-'@ -ErrorAction Stop
+'@ -ErrorAction Stop }
 
 function Get-PrivateModProfile($Archive) {
     $dex=$Archive.GetEntry('classes.dex')
