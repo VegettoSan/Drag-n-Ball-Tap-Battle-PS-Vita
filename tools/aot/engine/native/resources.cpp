@@ -5,6 +5,7 @@
 #include "resource_cache.hpp"
 #include "installed_data.hpp"
 #include "pac.hpp"
+#include "dynamic_codec.hpp"
 #include "image.hpp"
 #if defined(__vita__)
 #include <vitaGL.h>
@@ -140,6 +141,28 @@ int upload(const RgbaImage& image, bool linear) {
 bool dbtb_initResources(const std::string& base, const std::string& profile) {
     vfs.reset(new GameVfs(base));
     if (!vfs->prepareDirectories() || profile.empty() || !vfs->selectProfile(profile)) return false;
+    // Profile isolation: do not retain a previous mod's keys on reinitialization.
+    installDynamicCommunityProfile(nullptr);
+    const std::string codec_path=base + "/profiles/" + profile + "/dbtb_codec.json";
+    struct stat codec_stat{};
+    if (lstat(codec_path.c_str(), &codec_stat)==0) {
+        if (!S_ISREG(codec_stat.st_mode)) {
+            std::fprintf(stderr, "Protected profile codec is not a regular file: %s\n", codec_path.c_str());
+            return false;
+        }
+        std::vector<uint8_t> codec_bytes;
+        CommunityPacProfile decoded{};
+        std::string codec_error;
+        if (!readFile(codec_path, codec_bytes) ||
+            !parseDynamicCodecJson(codec_bytes, decoded, codec_error)) {
+            std::fprintf(stderr, "Protected profile codec invalid: %s (%s)\n",
+                         codec_path.c_str(), codec_error.c_str());
+            return false;
+        }
+        installDynamicCommunityProfile(&decoded);
+        std::printf("Dynamic protected PAC codec activated for profile: %s\n", profile.c_str());
+    }
+ 
 
     installed_audit = scanInstalledData(*vfs);
     if (installed_audit.ready)
