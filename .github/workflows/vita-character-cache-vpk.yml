@@ -1,0 +1,169 @@
+name: VPK experimental - selector de personajes
+
+on:
+  push:
+    branches:
+      - perf/character-switch-metadata-cache
+    paths:
+      - '.github/workflows/vita-character-cache-vpk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: dbtb-character-cache-private-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Preflight - test-only branch and private source
+        env:
+          ORIGINAL_APK_URL: ${{ secrets.DBTB_ORIGINAL_APK_URL }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" != refs/heads/perf/character-switch-metadata-cache ]]; then
+            echo '::error::Only the experimental branch may build this test VPK.'
+            exit 1
+          fi
+          if [[ -z "$ORIGINAL_APK_URL" ]]; then
+            echo '::error::DBTB_ORIGINAL_APK_URL repository secret is missing. Original APK must not be committed.'
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/dbtb-private"
+          python3 tools/releases/download_original_apk.py --output "$RUNNER_TEMP/dbtb-private/original.apk"
+
+      - name: Pure-host character cache regression
+        run: |
+          set -euo pipefail
+          g++ -std=c++14 -O2 -Wall -Wextra -Isrc \
+            tests/test_character_selection_cache.cpp \
+            src/engine_resources.cpp src/pac.cpp src/game_data.cpp src/vfs.cpp \
+            -o "$RUNNER_TEMP/dbtb-character-cache-probe"
+          "$RUNNER_TEMP/dbtb-character-cache-probe"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Instalar herramientas y ejecutar regresiones de memoria/audio
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends maven libvorbis-dev libpng-dev zlib1g-dev
+          python3 -m unittest discover -s tests -p test_livearea.py -v
+          python3 -m unittest discover -s tests -p test_release_workflows.py -v
+          python3 -m unittest discover -s tests -p test_selector_theme.py -v
+          python3 tools/releases/extract_music_fixture.py "$RUNNER_TEMP/dbtb-private/original.apk" "$RUNNER_TEMP/dbtb-private/music"
+          g++ -std=c++14 -O2 -Itests/audio_stubs -Itools/aot/engine/native -Isrc \
+            tests/test_vita_ogg.cpp src/vfs.cpp -lvorbisfile -lvorbis -logg \
+            -o "$RUNNER_TEMP/dbtb-private/ogg-test"
+          "$RUNNER_TEMP/dbtb-private/ogg-test" "$RUNNER_TEMP/dbtb-private/music"
+          g++ -std=c++14 -O2 -fsanitize=address,undefined -Itests/audio_stubs \
+            -Itools/aot/engine/native -Isrc tests/test_vita_audio.cpp src/vfs.cpp \
+            -lvorbisfile -lvorbis -logg -o "$RUNNER_TEMP/dbtb-private/audio-test"
+          ASAN_OPTIONS=detect_leaks=0 "$RUNNER_TEMP/dbtb-private/audio-test"
+
+      - name: Obtener dependencias AOT publicas
+        run: |
+          set -euo pipefail
+          task_tools="$RUNNER_TEMP/dbtb-private/tools"
+          mkdir -p "$task_tools/lib"
+          curl --fail --silent --show-error --location --retry 3 \
+            https://github.com/pxb1988/dex2jar/releases/download/v2.4/dex-tools-v2.4.zip \
+            -o "$task_tools/dex2jar.zip"
+          unzip -q "$task_tools/dex2jar.zip" -d "$task_tools"
+          curl --fail --silent --show-error --location --retry 3 \
+            https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.37.0/ecj-3.37.0.jar \
+            -o "$task_tools/ecj-3.37.0.jar"
+          mvn -q -f tools/aot/pom.xml dependency:copy-dependencies \
+            -DincludeScope=runtime -DoutputDirectory="$task_tools/lib"
+
+      - name: Generar core original completo (archivos privados efimeros)
+        run: |
+          set -euo pipefail
+          task_private="$RUNNER_TEMP/dbtb-private"
+          if ! bash "$task_private/tools/dex-tools-v2.4/d2j-dex2jar.sh" \
+            -f "$task_private/original.apk" -o "$task_private/original.jar" \
+            > "$task_private/dex2jar.log" 2>&1; then
+            echo '::error::Fallo dex2jar. No se publica un ejecutable de prueba.'
+            exit 1
+          fi
+          if ! python3 tools/aot/engine/generate.py \
+            --original-jar "$task_private/original.jar" \
+            --ecj "$task_private/tools/ecj-3.37.0.jar" \
+            --lib-directory "$task_private/tools/lib" \
+            --work-directory "$task_private/generated" > "$task_private/generate.log" 2>&1; then
+            echo '::error::Fallo la generacion del motor original; salida privada excluida de los artefactos.'
+            exit 1
+          fi
+
+      - name: Compilar ELF SELF VPK con VitaSDK 2026.08
+        run: |
+          set -euo pipefail
+          docker pull vitasdk/vitasdk:2026.08
+          docker image inspect vitasdk/vitasdk:2026.08 --format '{{index .RepoDigests 0}}' \
+            > "$RUNNER_TEMP/dbtb-private/sdk-image.txt"
+          if ! docker run --rm --user "$(id -u):$(id -g)" \
+            -e VITASDK=/usr/local/vitasdk -e PYTHONDONTWRITEBYTECODE=1 \
+            -e GIT_CONFIG_GLOBAL=/dev/null -e GIT_CONFIG_SYSTEM=/dev/null \
+            -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory \
+            -e "GIT_CONFIG_VALUE_0=$GITHUB_WORKSPACE" \
+            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE:ro" \
+            -v "$RUNNER_TEMP/dbtb-private:$RUNNER_TEMP/dbtb-private" \
+            -w "$GITHUB_WORKSPACE" vitasdk/vitasdk:2026.08 \
+            python3 tools/aot/engine/vita/build.py \
+            --generated-c "$RUNNER_TEMP/dbtb-private/generated/c" \
+            --build-directory "$RUNNER_TEMP/dbtb-private/vita-build" --jobs 2 \
+            > "$RUNNER_TEMP/dbtb-private/build.log" 2>&1; then
+            echo '::error::Fallo la compilacion completa. No se crea ni publica un VPK dummy.'
+            exit 1
+          fi
+
+      - name: Validate full Vita VPK and stage only playable output
+        run: |
+          set -euo pipefail
+          build="$RUNNER_TEMP/dbtb-private/vita-build"
+          test -s "$build/eboot.bin"
+          test -s "$build/dbtb_original_engine"
+          vpk="$build/DBTapBattle-Vita-01.00.vpk"
+          test -s "$vpk"
+          test -s "$RUNNER_TEMP/dbtb-private/generated/c/all.c"
+          python3 tools/validate_livearea_vpk.py "$vpk"
+          mkdir -p "$RUNNER_TEMP/dbtb-experiment"
+          cp "$vpk" "$RUNNER_TEMP/dbtb-experiment/Dragon-Ball-Tap-Battle-PS-Vita-v1.0-Character-Cache-Test.vpk"
+          (cd "$RUNNER_TEMP/dbtb-experiment"; sha256sum *.vpk >SHA256SUMS.txt)
+          {
+            echo "Experimental build; NOT hardware tested."
+            echo "Branch: $GITHUB_REF"
+            echo "Commit: $GITHUB_SHA"
+            echo "APP_VER: 01.00"
+            echo "TITLE_ID: DBTB01178"
+            echo "Only use if comparing character-selection timings with stable v1.0."
+            echo "Preserve ux0:data/DBTapBattle/profiles and their saves."
+          } > "$RUNNER_TEMP/dbtb-experiment/README.txt"
+
+      - name: Upload fully compiled experimental VPK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DBTapBattle-v1.0-character-cache-experimental-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/dbtb-experiment/*.vpk
+            ${{ runner.temp }}/dbtb-experiment/SHA256SUMS.txt
+            ${{ runner.temp }}/dbtb-experiment/README.txt
+
+      - name: Purge private APK, JAR, generated C and logs
+        if: always()
+        run: rm -rf -- "$RUNNER_TEMP/dbtb-private"
