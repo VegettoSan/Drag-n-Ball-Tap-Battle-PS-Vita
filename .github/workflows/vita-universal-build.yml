@@ -1,0 +1,111 @@
+name: Experimental full engine VPK - Universal PRIVATE codec
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/vita-universal-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  full-engine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check private input without logging its URL
+        env:
+          ORIGINAL_APK_URL: ${{ secrets.DBTB_ORIGINAL_APK_URL }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$ORIGINAL_APK_URL" ]]; then
+            echo "::error::DBTB_ORIGINAL_APK_URL is not configured; cannot build full original TeaVM engine. Stable release remains untouched."
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/dbtb-private"
+          python3 tools/releases/download_original_apk.py --output "$RUNNER_TEMP/dbtb-private/original.apk"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install pinned Java build inputs
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends maven libpng-dev zlib1g-dev
+          mkdir -p "$RUNNER_TEMP/dbtb-private/tools/lib"
+          curl --fail --silent --show-error --location --retry 3 \
+            https://github.com/pxb1988/dex2jar/releases/download/v2.4/dex-tools-v2.4.zip \
+            -o "$RUNNER_TEMP/dbtb-private/tools/dex2jar.zip"
+          unzip -q "$RUNNER_TEMP/dbtb-private/tools/dex2jar.zip" -d "$RUNNER_TEMP/dbtb-private/tools"
+          curl --fail --silent --show-error --location --retry 3 \
+            https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.37.0/ecj-3.37.0.jar \
+            -o "$RUNNER_TEMP/dbtb-private/tools/ecj-3.37.0.jar"
+          mvn -q -f tools/aot/pom.xml dependency:copy-dependencies \
+            -DincludeScope=runtime -DoutputDirectory="$RUNNER_TEMP/dbtb-private/tools/lib"
+
+      - name: Generate original engine privately
+        run: |
+          set -euo pipefail
+          base="$RUNNER_TEMP/dbtb-private"
+          bash "$base/tools/dex-tools-v2.4/d2j-dex2jar.sh" \
+            -f "$base/original.apk" -o "$base/original.jar" > "$base/dex2jar.log" 2>&1
+          python3 tools/aot/engine/generate.py \
+            --original-jar "$base/original.jar" \
+            --ecj "$base/tools/ecj-3.37.0.jar" \
+            --lib-directory "$base/tools/lib" \
+            --work-directory "$base/generated" > "$base/generate.log" 2>&1
+          test -s "$base/generated/c/all.c"
+          test "$(stat -c%s "$base/generated/c/all.c")" -gt 200000
+
+      - name: Build full playable engine (not smoke dummy)
+        run: |
+          set -euo pipefail
+          docker pull vitasdk/vitasdk:2026.08
+          docker run --rm --user "$(id -u):$(id -g)" \
+            -e VITASDK=/usr/local/vitasdk -e PYTHONDONTWRITEBYTECODE=1 \
+            -e GIT_CONFIG_GLOBAL=/dev/null -e GIT_CONFIG_SYSTEM=/dev/null \
+            -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory \
+            -e "GIT_CONFIG_VALUE_0=$GITHUB_WORKSPACE" \
+            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE:ro" \
+            -v "$RUNNER_TEMP/dbtb-private:$RUNNER_TEMP/dbtb-private" \
+            -w "$GITHUB_WORKSPACE" vitasdk/vitasdk:2026.08 \
+            python3 tools/aot/engine/vita/build.py \
+            --generated-c "$RUNNER_TEMP/dbtb-private/generated/c" \
+            --build-directory "$RUNNER_TEMP/dbtb-private/vita-build" --jobs 2 \
+            > "$RUNNER_TEMP/dbtb-private/build.log" 2>&1
+
+      - name: Validate and stage experimental Vita VPK
+        run: |
+          set -euo pipefail
+          src="$RUNNER_TEMP/dbtb-private/vita-build/vita"
+          mapfile -t files < <(find "$src" -maxdepth 1 -name 'DBTapBattle-Vita-*.vpk')
+          if [[ "${#files[@]}" != 1 ]]; then
+            echo "::error::Expected one full-engine VPK, found ${#files[@]}"
+            exit 1
+          fi
+          python3 tools/validate_livearea_vpk.py "${files[0]}"
+          mkdir -p experimental-build
+          cp "${files[0]}" experimental-build/DBTapBattle-Universal-Experimental.vpk
+          sha256sum experimental-build/*.vpk > experimental-build/SHA256SUMS.txt
+          printf 'Experimental original TeaVM engine with DEX-derived per-profile dbtb_codec.json support.\nHardware gameplay NOT validated. Stable v1.0 release was not replaced.\n' > experimental-build/README.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DBTapBattle-Universal-Full-Engine-VPK
+          path: experimental-build/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Remove private build inputs
+        if: always()
+        run: rm -rf -- "$RUNNER_TEMP/dbtb-private"
