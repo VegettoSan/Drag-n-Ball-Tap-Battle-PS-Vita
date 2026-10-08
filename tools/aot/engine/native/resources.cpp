@@ -127,6 +127,25 @@ bool synchronizeInstalledCharacters(std::vector<uint8_t>& save, int characters) 
     }
     return changed;
 }
+struct StreamingTextureUpload {
+    GLuint texture = 0;
+    unsigned tiles = 0;
+    uint64_t upload_us = 0;
+};
+
+bool uploadRows(void* context, const uint8_t* rgba, uint32_t y, uint32_t rows, uint32_t width) {
+    auto& stream = *static_cast<StreamingTextureUpload*>(context);
+    const uint64_t start = dbtb_timeUs();
+    dbtb_setDiagnosticStage(3, uint32_t(size_t(rows) * width * 4), stream.tiles);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, GLint(y), int(width), int(rows),
+                    GL_RGBA, GL_UNSIGNED_BYTE, rgba);
+    const GLenum code = glGetError();
+    stream.upload_us += dbtb_timeUs() - start;
+    ++stream.tiles;
+    dbtb_setDiagnosticStage(2);
+    return code == GL_NO_ERROR;
+}
+
 int upload(const RgbaImage& image, bool linear) {
     GLint old = 0; glGetIntegerv(GL_TEXTURE_BINDING_2D, &old);
     GLuint id = 0; glGenTextures(1, &id); glBindTexture(GL_TEXTURE_2D, id);
@@ -413,6 +432,67 @@ int32_t dbtb_loadTexture(void* data, int32_t size, int32_t linear) {
     else if (size >= 8 && !std::memcmp(b, "C14I", 4)) image_encoding = PacEncoding::Community14Invasion;
     else if (size >= 8 && !std::memcmp(b, "C14D", 4)) image_encoding = PacEncoding::Community14Dbfz;
     else if (size >= 8 && !std::memcmp(b, "C14U", 4)) image_encoding = PacEncoding::Community14Dynamic;
+    if (image_encoding == PacEncoding::Community14Dynamic) {
+        // Preserve every original pixel and coordinate. Dynamic PRIVATE mods
+        // carry many 712x712 sprites; constructing each full RGBA buffer on the
+        // 96 MiB Newlib heap can throw bad_alloc before a fight. Inflate into
+        // bounded 256 KiB strips and submit directly to VitaGL instead.
+        uint32_t width = 0, height = 0;
+        const uint32_t index = b[4] | (uint32_t(b[5]) << 8) | (uint32_t(b[6]) << 16) | (uint32_t(b[7]) << 24);
+        if (!communityImageDimensions(b + 8, size_t(size) - 8, index, image_encoding,
+                                      width, height, error)) {
+            dbtb_setDiagnosticStage(1);
+            std::fprintf(stderr, "[TextureStream] invalid header: %s\n", error.c_str());
+            return -1;
+        }
+        const size_t cost = size_t(size) + size_t(width) * height * 4;
+        const bool retain = trimTextures(cost); // evict *idle* GPU images first
+        GLint old = 0;
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &old);
+        StreamingTextureUpload stream;
+        glGenTextures(1, &stream.texture);
+        if (!stream.texture) { dbtb_setDiagnosticStage(1); return -1; }
+        glBindTexture(GL_TEXTURE_2D, stream.texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, linear ? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        dbtb_setDiagnosticStage(3, uint32_t(size_t(width)*height*4));
+        const uint64_t init_start = dbtb_timeUs();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+                     GL_UNSIGNED_BYTE, nullptr);
+        stream.upload_us += dbtb_timeUs() - init_start;
+        const GLenum init_error = glGetError();
+        bool success = init_error == GL_NO_ERROR;
+        if (success) {
+            dbtb_setDiagnosticStage(2, uint32_t(size), index);
+            success = decodeCommunityImageProfileRows(b + 8, size_t(size) - 8,
+                        index, image_encoding, &stream, &uploadRows, error);
+        } else error = "GPU texture allocation failed";
+        const uint64_t elapsed = dbtb_timeUs() - decode_start;
+        dbtb_performance().texture_upload_us += stream.upload_us;
+        dbtb_performance().texture_decode_us += elapsed > stream.upload_us ? elapsed - stream.upload_us : 0;
+        glBindTexture(GL_TEXTURE_2D, old);
+        dbtb_setDiagnosticStage(1);
+        if (!success) {
+            glDeleteTextures(1, &stream.texture);
+            std::fprintf(stderr, "[TextureStream] rejected %ux%u: %s\n", width, height, error.c_str());
+            return -1;
+        }
+        textures[stream.texture] = {int(width), int(height)};
+        if (retain) {
+            texture_cache.push_front({hash, linear != 0,
+                std::vector<uint8_t>(b, b + size), stream.texture, cost, 1});
+            texture_cache_bytes += cost;
+        }
+        if (elapsed >= 250000 || dbtb_performance().textures <= 5)
+            std::fprintf(stderr,
+                "[TextureStream] original=%ux%u tiles=%u peak_rgba_KiB=256 elapsed_ms=%llu GPU_ms=%llu\n",
+                width, height, stream.tiles,
+                static_cast<unsigned long long>(elapsed/1000),
+                static_cast<unsigned long long>(stream.upload_us/1000));
+        return int32_t(stream.texture);
+    }
     if (image_encoding != PacEncoding::Auto) {
         const uint32_t index = b[4] | (uint32_t(b[5]) << 8) | (uint32_t(b[6]) << 16) | (uint32_t(b[7]) << 24);
         ok = decodeCommunityImageProfile(b + 8, size_t(size) - 8, index, image_encoding, image, error);
