@@ -57,3 +57,15 @@ User's second `runtime.log` records `Combat resource boundary: bobj03.pac idle_c
 Real APK offline validation: `bgm_03.ogg` metadata footprint **41,614 B** (instead of 2,159,645 B); original `stsz` describes **5,701 samples**, maximum compressed ES packet **599 bytes**. All nine M4A BGM files in this mod have index footprints under 102 KiB and each sample's max size is below Vita's supported AAC `SCE_AUDIODEC_AAC_MAX_ES_SIZE=1536`. These data-only checks do **not** prove realtime audio on PS Vita; a new full-engine hardware test must confirm both audio and combat.
 
 Build note: native cold-path `compressed_bgm.cpp` is size-optimized separately with `-Os` to leave appropriate Sony ELF converter segment headroom. Do not change TeaVM heap policy or touch the original game logic to address this specific crash.
+
+
+### Direct VitaSDK build and package audit
+
+Compiled the **full original APK-derived TeaVM core** locally (not GitHub Actions and not the native dummy smoke core) with VitaSDK 2026.08 and the new file-backed AAC reader:
+
+- Experimental package: `DBTapBattle-Vita-Universal-AAC-Stream-Fix-Experimental-01.00.vpk` (2,747,339 B).
+- SHA-256: `1d4af497e86a53135c3fc20ece76a39cb5cb923bbc707b2197be241d98923833`.
+- ELF → Sony VELF → SELF `eboot.bin` → VPK succeeded with the `compressed_bgm.cpp` `-Os` setting.
+- ZIP CRC audit passed. The 15 member names match the previous MemoryFix experimental VPK, and **only `eboot.bin` differs**. LiveArea icon, background, startup, theme, selector graphics and seed files remain unchanged. `tools/validate_livearea_vpk.py` reports PASS.
+- The compiled ELF contains `Compressed BGM indexed:`, the universal image marker `C14U` and the retained `Combat resource boundary:` diagnostic.
+- Still experimental: Sony Vita hardware tests are pending. Check `dbz_mobile_v9` with the previous character pairing (char37 versus char20) and capture `runtime.log` if the crash persists. A successful build does **not** by itself prove playback or gameplay stability.
