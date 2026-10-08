@@ -59,7 +59,18 @@ INVASION = Profile(
     {'F813': ('back', 2), '17A5': ('bobj', 2), '0953': ('char', 2),
      '364E': ('chardemo', 2), '91F9': ('charf', 4), '1A4B': ('card', 3)})
 
-PROFILES = (LEGACY, SPANISH, INVASION)
+DBFZ = Profile(
+    'community14-dbfz-11d60c43', 0x39AE, 0xAFC6643C, 0x64CE617B,
+    {0xA4C74FE3: 'bin', 0x0E995397: 'cnv', 0x82F9572B: 'dac',
+     0x10445923: 'rgba', 0x04BEE884: 'spr', 0x3E602FA3: 'wav'},
+    0x4B8B, 0xC03A, 0xF00D, 0x4BCC7D9E, 0x5AB5, 0x44F7,
+    {'2B98': 'common', 'CC4B': 'select0', '7D98': 'effect',
+     '46C3': 'demo_00', 'D6E1': 'demo_08', 'B727': 'card_preview',
+     'AC9E': 'gamedata', 'D791': 'text00'},
+    {'8ED7': ('back', 2), 'DC70': ('bobj', 2), '128B': ('char', 2),
+     'CD4A': ('chardemo', 2), '4BD8': ('charf', 4), 'FDD0': ('card', 3)})
+
+PROFILES = (LEGACY, SPANISH, INVASION, DBFZ)
 PROFILES_BY_NAME = {p.name: p for p in PROFILES}
 
 # Backwards-compatible constants used by existing tests/tooling for a210795b.
