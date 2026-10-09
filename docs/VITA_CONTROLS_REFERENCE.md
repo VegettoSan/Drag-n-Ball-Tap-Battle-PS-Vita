@@ -27,9 +27,10 @@ without generative artwork; the drawing is a reference, not a game screenshot.
 Specials depend on the character and original requirements. In Vita mode,
 touch-pad sprites are hidden; real fingers retain input priority. Nested pause
 settings return with Circle before Start resumes the main pause menu.
-Original tutorial remains touch/gestures. Shortcuts require original ready
-screen/script markers and a new press after scene changes. See
-[Test 4](TEST_VITA_CONTROLS_4.md) and [shortcut audit](VITA_MENU_SHORTCUTS_2026-10-09.md).
+Original tutorial remains touch/gestures. Shortcuts target live original input consumers and require a new press after
+scene changes; the original script decides whether X is ready to advance.
+Test 4 failed broader back/text shortcuts; Test 5 hardware verification is
+pending. See [Test 5](TEST_VITA_CONTROLS_5.md) and [shortcut audit](VITA_MENU_SHORTCUTS_2026-10-09.md).
 
 This schematic replaces the earlier Spanish decorative reference for current
 user guidance. Historical Test 3 artifact identity is preserved in its evidence.

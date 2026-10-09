@@ -1,31 +1,35 @@
 # Current status — 2026-10-09, v1.1 Universal Mod Support (release ready)
 
-## Experimental Vita controls — Test 2 hardware accepted; Test 4 English candidate
+## Experimental Vita controls — Test 4 partial result; Test 5 correction candidate
 
-The user reports Controls Test 2 worked perfectly on physical Vita. No profile
-identity or runtime log was supplied; this accepts the reported session, not
-all mods. The attached photo shows a victory dialogue and motivates text input.
+User tested Test 4 (01.05): Start resumes the main pause menu; Circle goes
+back only within pause. Circle outside pause and X dialogues did not work.
+Back buttons occupy the same location when needed; real dialogue taps work
+anywhere. Profile and runtime log were not supplied. This is partial acceptance,
+not approval of all Test 3/4 shortcuts. Test 2's earlier acceptance still stands.
+[Hardware report](evidence/vita_controls_hardware_report_test_4.json).
 
-On `test/vita-controls`, Controls Test 3 adds Start to resume from the main
-pause menu, Circle to touch the visible original back button in audited menus,
-and X to touch interactive scripted text. Held buttons cannot repeat or carry
-an action across scenes. Actual touch contacts take priority; pause/back wait
-for original contact 0. Yes/no confirmations remain touch-operated.
+On `test/vita-controls`, Test 5 removes the pause-only graphic requirement for
+Circle and the non-universal demo/text-object markers for X. Live audited
+original CheckBack consumers receive a single contact-0 touch at (40,24);
+interactive script 811 receives X as an ordinary Begin anywhere, letting the
+original script accept or ignore it. Prior-frame bTaskSkip cannot block these
+menu/script contacts; original Run resets it after consuming input. Audited
+Yes/No confirmations suppress shortcuts. Script type 9 ignores X while allowing
+a separate menu back listener to remain available. Menu/script
+contexts outrank stale combat tasks, and pending back cancels if its consumer
+changes even while a script remains alive. Start resume behavior is retained.
 
-L remains rage, R remains fourth special shortcut, and X still confirms ready
-character selection. Every profile launch offers **Touch only** / **PS Vita
-controls**, with hidden pads in Vita mode and remembered highlight. Separate
-bubble `DBTBCT001` / `01.05` updates previous controls tests and preserves isolated test saves.
-No new core patches; existing main compatibility pipeline remains identical.
-Local JVM/Python tests and full-engine ARM/SELF/VPK validation pass without a
-workflow. Test 3 shortcuts and Test 4 selector hardware acceptance are pending. `main` and stable v1.1 remain
-unchanged. Test 4 translates all launcher-owned labels/hints to English and
-adds a simple English leader-line control diagram. User profile/folder names
-remain user content; original game/mod text is unchanged. See
-[Test 4 protocol](TEST_VITA_CONTROLS_4.md),
-[English controls reference](VITA_CONTROLS_REFERENCE.md),
-[historical Test 3 protocol](TEST_VITA_CONTROLS_3.md) and
-[menu audit](VITA_MENU_SHORTCUTS_2026-10-09.md).
+English selector order is **PS Vita controls** first / **Touch only** second.
+Stored mode values keep their meaning and remembered highlight; neither saves
+nor folders migrate. Bubble `DBTBCT001` / `01.06` updates previous test versions
+and keeps isolated test progress. New JVM checks execute original Game1 back
+navigation and original Game4 finished/markerless text branches; all 37 back
+consumer modes, holds, touch priority and exclusions pass. Native preferences
+and Python regressions pass. Full local build/package evidence is in
+[Test 5](TEST_VITA_CONTROLS_5.md); its hardware verification is pending.
+`main`, stable v1.1 and the existing core patch pipeline remain unchanged.
+[Updated audit](VITA_MENU_SHORTCUTS_2026-10-09.md).
 
 ## Historical physical controls research — 2026-10-08, no runtime change at that stage
 

@@ -4,6 +4,14 @@ Branch: `test/vita-controls`. Stable `main` remains unchanged. Test 2 is user
 accepted; Test 3's new pause/back/text shortcuts and this English launcher
 still need physical Vita testing.
 
+## Later physical result — 2026-10-08 23:51 America/Bogota
+
+Start resumes the main pause menu and Circle returns within pause. Circle
+outside pause and X dialogues failed. The pending statements below preserve
+the historical delivery state. This version is only partially accepted;
+[Test 5](TEST_VITA_CONTROLS_5.md) revises those shortcuts and row order.
+[Report](evidence/vita_controls_hardware_report_test_4.json).
+
 ## Install
 
 Install **DBTapBattle-Vita-01.05-Controls-Test-4-English.vpk** over the existing controls-test

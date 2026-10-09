@@ -4,6 +4,13 @@ Rama `test/vita-controls`; `main` permanece intacta. Test 2 fue aprobado por
 el usuario. Esta versión añade tres atajos mediante toques originales y
 requiere comprobarlos en PS Vita.
 
+## Resultado posterior en Test 4
+
+Test 4 conserva estos atajos sin cambios de Java. El usuario confirmó pausa,
+pero Círculo fuera de pausa y X en diálogos fallaron. El alcance host de abajo
+no constituye aceptación de esos dos atajos en consola. La corrección está en
+[Test 5](TEST_VITA_CONTROLS_5.md); [reporte](evidence/vita_controls_hardware_report_test_4.json).
+
 ## Instalar
 
 Instalar **DBTapBattle-Vita-01.04-Controls-Test-3.vpk** en VitaShell. Actualiza

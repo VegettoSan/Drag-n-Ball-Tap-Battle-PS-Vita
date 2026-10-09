@@ -1,5 +1,33 @@
 # Attempts Log
 
+## 2026-10-09 — Test 5 after Test 4 partial hardware feedback
+
+User accepted Start resume, but Circle worked only in pause and X did not
+advance text. Re-inspected original Run, CheckBack and script 811. Previous
+fixtures supplied pause-panel/text markers that unrelated screens need not
+have; presence of a synthetic touch alone did not prove menu/script navigation.
+Original CheckBack accepts the fixed upper-left region; Game4 consumes global
+Begin independently of coordinates. Original Run resets bTaskSkip after input,
+so the adapter must not use its prior-frame value to reject menu/script input.
+
+Vita adapter now uses live audited coordinate consumers, no pause-panel
+signature; script 811 accepts X Begin without synthetic readiness requirements
+(type 9 remains excluded). Explicit live Yes/No task exclusions prevent a
+parent listener accepting Circle. Independent back-consumer identity/mode
+cancels queued back across transitions even if a script persists. An automatic type-9 script ignores X but retains an
+independent menu back listener. Menus outrank stale combat tasks. English row order swapped, persistent mode values retained.
+
+Expanded probe executes original Game1 case 692 and Game4 case 811, covering
+finished dialogue and a markerless branch; all 37 back consumers tested without
+fabricated pause sprites. Native preference probe and Python regressions pass.
+Fresh private TeaVM generation and local full-engine build use existing exported
+open-source tools; no workflow. Restored executable permissions after recovering
+SDK files before resuming CMake. No engine/core patch changes. Full local ARM/SELF/VPK, LiveArea, ZIP/SFO/
+SELF equality, seed/theme and source-marker checks pass. Same-input main
+pipeline regenerated comparison matches all patched JAR entries.
+[Artifact evidence](evidence/vita_controls_test_5.json). [Protocol](TEST_VITA_CONTROLS_5.md), [hardware report](evidence/vita_controls_hardware_report_test_4.json).
+
+
 ## 2026-10-09 — Test 4 English launcher and vector control schematic
 
 User corrected the requested guide: a schematic console with leader lines,

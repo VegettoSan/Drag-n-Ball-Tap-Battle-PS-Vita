@@ -1,6 +1,32 @@
 # Build and packaging
 
-## Controls Test 4 — current local English selector build
+## Controls Test 5 — current local back/dialogue correction
+
+`--test-controls` selects `DBTBCT001` / `01.06`, same test title and isolated
+save. Fresh private TeaVM generation: 468 classes / 4103 methods. Complete
+local ARM ELF, VELF, SELF and VPK build PASS without workflow. Original full
+amalgamation uses -O1, native code -O2 with existing cold paths/launcher -Os.
+SDK exports were restored locally; executable permissions were repaired before
+resuming CMake. That tooling repair does not change project/game code.
+
+Artifact `DBTapBattle-Vita-01.06-Controls-Test-5.vpk`, 2750832 bytes,
+SHA-256 `69e9180129ca02a55e0a0caed01afb39afb2bbec0f8e002e8fe6b50ecfe071f3`.
+Implementation commit `d0a14e0a48aff4c26a3e9d3d0d2fd14d102106cc`.
+RX-to-RW import headroom 7080 bytes. ZIP CRC, APP_VER/TITLE_ID,
+packaged SELF equality, approved seed/theme and LiveArea pass. All patched
+original JAR entries equal main's pipeline regenerated on the same private
+input; Controller/KeyData also equal original. PatchResourceInit unchanged.
+
+JVM probes execute original Game1 back navigation and Game4 finished/markerless
+text branches; all 37 coordinate consumers, holds, real-touch priority, queues,
+loading and exclusions pass. Native reordered-row preference probe passes;
+Python 41 pass, 20 existing skips. Visibility/resource code is unchanged and
+its existing nine-corpus validation is inherited. Test 4 accepted only pause
+shortcuts; Test 5 physical result remains pending.
+[Protocol](TEST_VITA_CONTROLS_5.md), [evidence](evidence/vita_controls_test_5.json).
+
+
+## Controls Test 4 — historical local English selector build
 
 `--test-controls` now selects `DBTBCT001` / `01.05`. Full-engine local CMake
 build PASS, no workflow. Since only native launcher strings and version change,

@@ -1,5 +1,41 @@
 # Vita menu shortcut audit — 2026-10-09
 
+## Test 5 revision after physical failures
+
+The audit below preserves Test 3's inspected paths and now-obsolete adapter
+guards. Test 4 only confirmed pause shortcuts; other-menu Circle and X text
+failed. [Report](evidence/vita_controls_hardware_report_test_4.json).
+
+**Current rule:** live audited CheckBack coordinate consumers define back
+input at (40,24), pointer 0. The common 806/action-10/resource-0x6000 panel is a
+pause-specific signature, not a universal back-button requirement. The
+consumer whitelist below remains, but sprite detection is removed. Live
+sentinel confirmation tasks explicitly suppress shortcuts even if a parent
+consumer is still active.
+
+Interactive script 811 consumes iTouchStatus generated from any Begin among
+all five contacts. A finished text with marker uses its ready branch; other
+interactive types also test global touch without demo/text-object markers.
+Test 5 sends a normal Begin at (240,280); original code ignores or acts on it
+according to its own state. Only original type 9 is excluded as noninteractive.
+No new state writes or forced script transitions. Original Run collects touch
+state then resets bTaskSkip to false before task dispatch; the prior-frame
+flag cannot reject new menu/script input. Combat retains its existing gate.
+
+Priority: loading/resume/confirmation exclusions; pause; script; character
+selection; audited back menus; combat. Script type 9 ignores X and never falls through to stale combat. A separate
+audited back listener can still receive Circle during that automatic script. Back can coexist with a script;
+its own consumer identity and frozen mode also participate in rearming and
+queued-contact cancellation. Real fingers keep their slots.
+
+Original-class tests now execute Game1 case 692 (back -> mode 693) and Game4
+case 811 (finished-text and markerless global-touch branches), beyond checking
+that KeyData/CheckBack sees a contact. No real game resources, bytecode or
+generated commercial sources are committed. [Test 5](TEST_VITA_CONTROLS_5.md).
+
+## Historical Test 3 adapter design (superseded)
+
+
 ## Source and scope
 
 Private inspection of the supplied pinned original APK's dex2jar classes.

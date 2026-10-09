@@ -3,15 +3,17 @@
 ## Experimental controls branch only
 
 On `test/vita-controls`, the launcher offers two remembered choices before
-every profile startup: **Touch only** (mode 0) and **PS Vita controls**
-(mode 2, hidden pads). The test bubble is `DBTBCT001` / APP_VER `01.05`; its native
+every profile startup: **PS Vita controls** first (mode 2, hidden pads), then
+**Touch only** (mode 0). The test bubble is `DBTBCT001` / APP_VER `01.06`; its native
 save path is `profiles/<Profile>/save-controls-test.bin`, initially copied from
 the stable `save.bin` or the approved seed. Stable release paths below remain
 the release contract. `vita-controls.cfg` holds only the Vita mode. See
-[controls protocol and limits](TEST_VITA_CONTROLS_4.md). Test 1's legacy visible
+[controls protocol and limits](TEST_VITA_CONTROLS_5.md). Test 1's legacy visible
 mode 1 still parses, highlights the Vita row and becomes hidden mode 2 when
 confirmed. The sidecar schema stays `DBTC1:<0|1|2>\n`; new selections write
-only 0 or 2. Test 4 updates the same test bubble and retains previous test progress.
+only 0 or 2. Remembered mode 0 highlights row 1; legacy modes 1/2 highlight
+row 0 and confirming writes mode 2. Missing preferences keep the existing touch
+default, now highlighted on the second row. Test 5 updates the same test bubble and retains previous test progress.
 
 All launcher-owned labels, help text, loading/empty-state messages and fallback
 selector text are English. Profile names come from user folder names and are
@@ -23,15 +25,24 @@ L activates original rage/pad 6; R activates the fourth special shortcut/pad 5.
 In ready character selection, left/right still pulse the original arrows and
 X pulses the original confirmation pad at (240,140), code `0x4100`, only in
 selection mode 0. Holding X does not repeat; scene changes require release
-before another press. Start in the main pause menu and Circle at a visible audited back button emit
-one original contact-0 tap at (40,24). Circle also backs out of character
-selection when its original back panel is present. X emits a Begin tap at
-(240,280) for a live interactive script with visible text and original ready
-markers. Scripted dialogue takes priority over lingering combat tasks. Original
-engine code decides reveal/advance/resume; the adapter does not rewrite script
-or pause state. Loading, held controls and excluded confirmation dialogs do
-not synthesize these shortcuts. Nested pause settings return with Circle;
-Start resumes only the main pause menu. Other menu choices remain touch-operated.
+before another press. Start in the main pause menu and Circle in audited
+coordinate-back menus emit one original contact-0 tap at (40,24). The live
+original consumer defines this hit area; no pause-specific sprite signature
+is required. Character selection and menus with a simultaneous script can
+receive Circle back too. X sends a Begin at (240,280) to live script 811,
+except noninteractive type 9. It does not require a text object, finished-text
+flag or demo-position marker; the original script decides whether that touch
+is ready to reveal/advance/skip or should be ignored. The adapter never writes
+pause/script state. Run's prior-frame bTaskSkip is not a menu/script input gate.
+
+Loading/resume and audited sentinel-coordinate Yes/No tasks exclude shortcuts.
+Script/menu contexts take precedence over lingering combat tasks. Holding a
+shortcut does not repeat it; consumer identity and frozen mode changes cancel
+pending contact-0 back and require held controls to release. A real finger on
+0 keeps priority. Nested pause settings return with Circle; Start resumes the
+main pause menu only. Other choices stay touch-operated. These are Test 5 host
+contracts; Test 4's physical failures and Test 5's pending hardware check are
+recorded separately.
 
 Vita modes overlay save-read config byte 4 with original pad mode 1 and retain
 the touch preference on disk during original writes. Gameplay input remains

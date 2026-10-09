@@ -1,5 +1,23 @@
 # Confirmed Successes
 
+## 2026-10-09 — Start resume accepted; broader Test 5 original-consumer probes pass
+
+**Level: USER HARDWARE REPORT (Test 4).** Start main pause resume and Circle
+within pause worked. Circle in other menus and X dialogue failed and are
+recorded in FAILURES; this is not full acceptance of Test 4.
+
+**Level: ORIGINAL-CLASS HOST EXECUTION (Test 5).** Circle's generated contact
+actually changes original Game1 menu 692 to 693. X's Begin drives original
+Game4's finished-text and markerless interactive branches to bTaskNext/
+bTaskRepeat. All 37 audited back modes without pause sprites, stale-combat
+priority, held buttons, real contact-0 priority, transition queue cancellation,
+loading, noninteractive and Yes/No exclusions pass. Native two-row preference
+reversal preserves mode 0/1/2 semantics and malformed/symlink fallback. Python
+41 pass, 20 existing gated skips, no failures. Full local ARM/SELF/VPK build,
+LiveArea and package/source/core checks pass without workflow. Test 5 hardware
+is pending. [Evidence](evidence/vita_controls_test_5.json).
+
+
 ## 2026-10-09 — Test 4 English selector local build validated
 
 **Level: SOURCE / HOST / LOCAL PACKAGE CHECKS.** All owned launcher UI copy is

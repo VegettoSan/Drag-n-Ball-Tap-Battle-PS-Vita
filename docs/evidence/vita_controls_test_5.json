@@ -1,0 +1,121 @@
+{
+  "scope": "local full original-engine build; Test 5 hardware pending; Test 4 pause accepted, broader back/text failed",
+  "branch": "test/vita-controls",
+  "source_commit": "d0a14e0a48aff4c26a3e9d3d0d2fd14d102106cc",
+  "source_tree": "32bade4aea13c5056fa38506aeb6611c4af29d9d",
+  "main_base": "a6b90ef0a2714dbfa02dc4d2e1afc85fca076931",
+  "workflow_dispatched": false,
+  "filename": "DBTapBattle-Vita-01.06-Controls-Test-5.vpk",
+  "size": 2750832,
+  "sha256": "69e9180129ca02a55e0a0caed01afb39afb2bbec0f8e002e8fe6b50ecfe071f3",
+  "eboot_sha256": "c9ca8262641e19443dc47d255216d54acf426fa15031040d2900bb9a6733d676",
+  "elf_sha256": "68a4356248b5f90c63a1e1fcc12de68bf8e5a6f00237f97560ee1895636f01d0",
+  "sfo": {
+    "APP_VER": "01.06",
+    "ATTRIBUTE": null,
+    "ATTRIBUTE2": null,
+    "ATTRIBUTE_MINOR": null,
+    "BOOT_FILE": "",
+    "CATEGORY": "gd",
+    "CONTENT_ID": "",
+    "EBOOT_APP_MEMSIZE": null,
+    "EBOOT_ATTRIBUTE": null,
+    "EBOOT_PHY_MEMSIZE": null,
+    "LAREA_TYPE": null,
+    "NP_COMMUNICATION_ID": "",
+    "PARENTAL_LEVEL": null,
+    "PSP2_DISP_VER": "00.000",
+    "PSP2_SYSTEM_VER": null,
+    "STITLE": "DB Tap Battle Controls Test",
+    "TITLE": "DB Tap Battle Controls Test",
+    "TITLE_ID": "DBTBCT001",
+    "VERSION": "00.00"
+  },
+  "rx_to_rw_headroom_bytes": 7080,
+  "compilation": {
+    "TeaVM": "0.12.3",
+    "ECJ": "3.37.0",
+    "VitaSDK": "2026.08",
+    "GCC": "15.2.0",
+    "classes": 468,
+    "methods": 4103,
+    "java_C": "fresh Test 5 full amalgamation -O1",
+    "native": "-O2; existing cold paths and launcher -Os",
+    "local_build": "fresh final private generation/full-engine build; exported SDK executable permissions restored before build",
+    "workflow_dispatched": false
+  },
+  "core_class_comparison": {
+    "TCBManajer": {
+      "original_sha256": "5602d406a0acedc00da4c46559d88b3174ab636991578669c106d31abae00feb",
+      "baseline_sha256": "e493462ad8bd9549bedd5cfc801e8c94474c8da1f87671c92f2ff6b7a6b60e4d",
+      "candidate_sha256": "e493462ad8bd9549bedd5cfc801e8c94474c8da1f87671c92f2ff6b7a6b60e4d",
+      "same_as_existing_main_pipeline": true,
+      "same_as_original_apk": false
+    },
+    "Controller": {
+      "original_sha256": "b6772034d0290eda1b3fa56aec92120d72f12b6c27f320eb00beaa6f398bbfdc",
+      "baseline_sha256": "b6772034d0290eda1b3fa56aec92120d72f12b6c27f320eb00beaa6f398bbfdc",
+      "candidate_sha256": "b6772034d0290eda1b3fa56aec92120d72f12b6c27f320eb00beaa6f398bbfdc",
+      "same_as_existing_main_pipeline": true,
+      "same_as_original_apk": true
+    },
+    "KeyData": {
+      "original_sha256": "5561f82d40d589d4a7887f5acf3e259f42df5618fe6e8810e2cb31b999576e43",
+      "baseline_sha256": "5561f82d40d589d4a7887f5acf3e259f42df5618fe6e8810e2cb31b999576e43",
+      "candidate_sha256": "5561f82d40d589d4a7887f5acf3e259f42df5618fe6e8810e2cb31b999576e43",
+      "same_as_existing_main_pipeline": true,
+      "same_as_original_apk": true
+    }
+  },
+  "core_comparison_scope": "all patched JAR entries equal main pipeline regenerated on same private dex2jar input; no new patch source changes",
+  "checks": {
+    "complete_arm_elf": true,
+    "full_game_and_adapter_symbols": true,
+    "source_marker": "d0a14e0",
+    "self_matches_vpk": true,
+    "approved_save_seed": true,
+    "zip_crc": true,
+    "approved_selector_theme": true,
+    "livearea": "PASS",
+    "jvm_input": "PASS: 37 original back consumers without pause sprites; original Game1 mode 692 -> 693; original Game4 finished/markerless global-touch branches; holds, scene queues, priority, loads, automatic script independent back and confirmation exclusions",
+    "native_preferences": "PASS: Vita first/Touch second; persisted mode 0/1/2 mapping, legacy hidden migration, malformed/symlink refusal",
+    "english_selector": "UNCHANGED: English labels retained; UI row order matches native row mapping",
+    "python_tests": {
+      "total": 61,
+      "passed": 41,
+      "skipped": 20
+    }
+  },
+  "inherited_visibility_evidence": {
+    "unchanged_code_from_test_1": true,
+    "native_DAC_CNV_corpora": 9,
+    "reference": "vita_controls_test_1.json",
+    "rerun_for_test_5": false
+  },
+  "limits": [
+    "Test 5 physical Vita result pending",
+    "Test 4 hardware accepted pause only; Circle outside pause and X dialogue failed; profile/log unspecified",
+    "All 37 audited coordinate back consumers are covered in host probes; unknown custom game-code menus need their own audit",
+    "Back does not require a pause-specific graphic; original live consumer governs acceptance",
+    "X delivers global Begin to live interactive 811, excluding type 9; independent menu back remains during automatic scripts; original readiness/skip logic governs response",
+    "Audited sentinel Yes/No tasks block shortcuts even if a parent listener persists",
+    "Five original contact IDs; real fingers have priority; contact-0 back can queue until finger End",
+    "No engine/PatchResourceInit changes; same-input patched JAR equals existing main pipeline in every entry",
+    "Native visibility/preexisting corpus evidence inherited, not universal mod hardware certification",
+    "Vita row first/Touch row second changes only UI mapping, no saved-mode or save-file migration",
+    "Tutorial remains touch/gestures; stable save.bin untouched"
+  ],
+  "guide": {
+    "filename": "PS-Vita-Controls-Diagram-English.png",
+    "sha256": "55ad9dcb2a08958fa48361c626d270d0a00040ec4158f846d791fe62726b2006",
+    "dimensions": [
+      1920,
+      1250
+    ],
+    "style": "simple blue/silver/gold vector console schematic with precise English leader-line annotations; no generated bitmap",
+    "source": "docs/assets/vita-controls-en.svg",
+    "renderer": "CairoSVG; deterministic SVG to PNG",
+    "updated_for_test_5": false
+  },
+  "hardware_reference": "vita_controls_hardware_report_test_4.json"
+}

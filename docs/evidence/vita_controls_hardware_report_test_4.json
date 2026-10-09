@@ -1,0 +1,24 @@
+{
+  "recorded_message_time": "2026-10-08T23:51:28-05:00",
+  "version": "01.05",
+  "filename": "DBTapBattle-Vita-01.05-Controls-Test-4-English.vpk",
+  "sha256": "352ddfd66e78758b49e24819b6b5cee31c8e64010581d83e63f2e1c0e454d924",
+  "level": "user physical Vita report",
+  "result": "partial acceptance; menu/dialogue shortcuts failed",
+  "confirmed": [
+    "Start main pause resume works",
+    "Circle back works within pause"
+  ],
+  "failed": [
+    "Circle back outside pause",
+    "X dialogue advancement"
+  ],
+  "observations": [
+    "Back button appears at the same position where needed",
+    "Dialogues advance by touching any screen position"
+  ],
+  "request": "PS Vita controls first; Touch only second",
+  "profile": null,
+  "runtime_log_supplied": false,
+  "test_5_hardware_status": "pending"
+}

@@ -1,5 +1,27 @@
 # Failures and Dead Ends
 
+## 2026-10-09 — Test 4 Circle outside pause and X dialogue fail on hardware
+
+**USER HARDWARE REPORT.** VPK 01.05: Start pause resume worked, Circle back
+worked only in pause, and X did not advance dialogues. No profile/log supplied.
+Real taps anywhere advance dialogues; the back button has a consistent position.
+[Report](evidence/vita_controls_hardware_report_test_4.json).
+
+Test 3/4 host fixtures falsely narrowed recognition to a common pause sprite
+and assumed demo/text-object readiness. Those checks passed their constructed
+fixtures but did not establish the required other-menu/dialogue behavior.
+The adapter also rejected prior-frame bTaskSkip even though original Run resets
+it after reading fresh touches. These source restrictions are confirmed;
+without a runtime trace the exact failing guard in that session is unobserved.
+Do not mark all Test 3/4 shortcuts hardware-approved or repeat those fixtures
+as universal screen signatures.
+
+Test 5 changes recognition to actual live original input consumers. Its probes
+execute Game1 navigation and Game4 global-touch branches, without requiring
+pause sprites or demo/text markers. Original code still decides when a touch
+counts; no flags/tasks are forced. Test 5 hardware outcome remains pending.
+
+
 > **Historical document notice — current v1.0 contract:** this file preserves
 > evidence/instructions for the build or investigation named here. The current
 > Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
