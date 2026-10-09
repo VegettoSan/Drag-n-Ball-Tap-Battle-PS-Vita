@@ -1,4 +1,4 @@
-DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.5 / VITA RELEASE v1.1
+DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.5 / VITA RELEASE v1.2
 
 WEB EXTRACTOR ALTERNATIVE
 If you do not have a Windows PC, use Web Extractor 1.0:
@@ -30,6 +30,13 @@ QUICK START
 6. Confirm the final profile path is:
      ux0:data/DBTapBattle/profiles/<Profile>/
 7. Launch the Vita port and select the profile.
+8. Choose PS VITA CONTROLS for physical controls with hidden touch pads,
+   or TOUCH ONLY for the original touchscreen input. Dialogues use touch.
+
+UPGRADING TO VITA v1.2
+Existing profiles are compatible and do not need re-extraction. Keep each
+profile's save.bin and any dbtb_codec.json beside its PAC files. Extractor
+version 1.5 and the profiles-v1 data layout are unchanged by the controls update.
 
 PROFILE NAMING
 Every APK uses its APK filename as the Vita profile folder name.

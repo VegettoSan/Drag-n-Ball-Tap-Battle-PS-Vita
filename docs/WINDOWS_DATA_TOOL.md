@@ -54,6 +54,11 @@ release `1.1`; its filename is not the internal extractor version (1.5).
 No extractor code/data-layout change is needed for v1.2 controls; valid profiles
 do not need re-extraction.
 
+`DBTapBattle-Extractor-Windows-v1.2.zip` is also prepared for the authorized
+release `1.2`. It contains the same Extractor 1.5 scripts plus v1.2-aligned
+English instructions; publication is pending. The ZIP includes all six files
+listed by the Windows packaging workflow, with no APK or game data.
+
 ## Output contract
 
 Every APK becomes one independent Vita profile under:

@@ -58,6 +58,18 @@ and include its SHA-256 below. This document can be used as the English release
 body. No release workflow was dispatched. Public upload is left to the
 maintainer; this documentation does not claim release 1.2 is already published.
 
+The user has now authorized publication of tag **1.2** with the exact VPK and
+`DBTapBattle-Extractor-Windows-v1.2.zip`. The latter packages Windows Extractor
+**1.5**; extraction scripts and `profiles-v1` output are unchanged. Its two
+instruction files are aligned with the English v1.2 input choice. Publication
+remains pending until both assets and the release state are verified on GitHub.
+
+Windows ZIP: **17411 bytes**, SHA-256
+`b367d4dfac9da9b63f7e7ade7b57e8a45214ce7a30b104ddbcc0a76fdd24f64b`.
+Its six-file allowlist, ZIP CRC and exact source-file bytes pass validation.
+The recovered VPK matches the original delivered package's checksum, size,
+SFO identity, packaged eboot hash and public-file allowlist.
+
 ## Exact package identity
 
 | Field | Value |

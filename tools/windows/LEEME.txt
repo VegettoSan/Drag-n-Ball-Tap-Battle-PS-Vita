@@ -1,4 +1,4 @@
-DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.5 / Vita v1.1
+DRAGON BALL TAP BATTLE - WINDOWS DATA EXTRACTOR 1.5 / Vita v1.2
 
 This legacy filename is kept only for compatibility.
 For the current English instructions, read README.txt in this folder.
@@ -22,9 +22,12 @@ Primary launcher:
 Legacy-compatible launcher:
   Extraer_APK_para_Vita.bat
 
-VITA v1.1 / UNIVERSAL MOD SUPPORT
-- Para los mods PRIVATE nuevos, conserva dbtb_codec.json junto a los PAC.
-- Algunas texturas de mods muy pesados pueden verse borrosas porque Vita
-  reduce su resolucion para evitar cierres por falta de memoria GPU.
-- La extraccion no modifica el APK y los mods no estan garantizados al 100%.
-- Guia de instalacion: docs/INSTALLATION_AND_EXTRACTION.md en el repositorio.
+VITA v1.2 / PS VITA CONTROLS AND RETAINED UNIVERSAL MOD SUPPORT
+- Existing profiles do not need re-extraction for v1.2.
+- Choose PS VITA CONTROLS or TOUCH ONLY before opening a profile.
+- PS VITA CONTROLS hides the touch pads; dialogues remain touch-operated.
+- For newly detected PRIVATE mods, keep dbtb_codec.json beside the PAC files.
+- Heavy mod textures may be downscaled or appear softer to prevent GPU
+  memory exhaustion. Compatibility is not guaranteed for every mod.
+- Extraction does not modify the APK or install its save.bin.
+- Installation guide: docs/INSTALLATION_AND_EXTRACTION.md in the repository.
