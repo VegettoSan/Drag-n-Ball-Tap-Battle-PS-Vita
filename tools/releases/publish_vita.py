@@ -38,7 +38,7 @@ def digest(path):
 
 def cmake_version():
     source = (REPO / 'tools/aot/engine/vita/CMakeLists.txt').read_text()
-    versions = re.findall(r'set\(VITA_VERSION "(\d{2}\.\d{2})"\)', source)
+    versions = re.findall(r'set\(VITA_VERSION "(\d{2}\.\d{2})"(?: CACHE STRING "[^"]*")?\)', source)
     if len(versions) != 1:
         raise ValueError('Expected one Vita APP_VER in the full-engine CMake target')
     return versions[0]
@@ -132,7 +132,7 @@ def validate_engine(elf, generation_log, plan):
 def validate_vpk(vpk_path, eboot_path, version):
     with zipfile.ZipFile(vpk_path) as vpk:
         names = vpk.namelist()
-        allowed = set(EXPECTED) | {TEMPLATE_PATH, 'eboot.bin', 'sce_sys/param.sfo'} | NOTICES | set(SELECTOR_ASSETS)
+        allowed = set(EXPECTED) | {TEMPLATE_PATH, 'eboot.bin', 'sce_sys/param.sfo', 'save.bin'} | NOTICES | set(SELECTOR_ASSETS)
         files = {n for n in names if not n.endswith('/')}
         if len(names) != len(set(names)) or files != allowed or vpk.testzip():
             raise ValueError('Invalid release VPK layout, CRC, duplicate entries or unexpected private/game-data files')
@@ -142,6 +142,15 @@ def validate_vpk(vpk_path, eboot_path, version):
         sfo = parse_sfo(vpk.read('sce_sys/param.sfo'))
         if sfo.get('APP_VER') != version or sfo.get('TITLE_ID') != 'DBTB01178':
             raise ValueError('VPK APP_VER/title ID mismatch')
+        sys.path.insert(0, str(REPO / 'tools'))
+        from materialize_default_save import materialize
+        # Validate the approved seed instead of allowing an arbitrary save.
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            seed = Path(tmp) / 'save.bin'
+            materialize(REPO / 'assets/default_save.bin.zlib.b64', seed)
+            if vpk.read('save.bin') != seed.read_bytes():
+                raise ValueError('Approved default save seed changed')
         for path, expected in EXPECTED.items():
             name = path.rsplit('/', 1)[-1]
             if validate_png(vpk.read(path), name, ASSETS[name]) != expected:
@@ -177,7 +186,7 @@ def package(plan, private_root, output):
                             'dex2jar': '2.4', 'ecj': '3.37.0', 'generated_c': '-O1', 'native': '-O2',
                             'docker_image': (private_root / 'sdk-image.txt').read_text().strip()},
               'artifacts': {path.name: {'sha256': digest(path), 'size_bytes': path.stat().st_size} for path in (target, symbols)},
-              'hardware_scope': '00.34 gameplay/runtime checkpoint is hardware-confirmed; a freshly rebuilt 01.00/DBTB01178 CI artifact still needs its own install/launch sanity check'}
+              'hardware_scope': 'v1.1 VisualQuality resource baseline and retained controls are user-approved in separate hardware tests; freshly rebuilt packages still need their own install/launch sanity check'}
     (output / 'build.json').write_text(json.dumps(report, indent=2) + '\n')
     (output / 'SHA256SUMS.txt').write_text(''.join(f'{digest(path)}  {path.name}\n' for path in (target, symbols, output / 'build.json')))
     notes = (f'Dragon Ball Tap Battle Vita {plan["version"]}\n\n'
@@ -185,7 +194,7 @@ def package(plan, private_root, output):
              f'TeaVM generation: {generation["classes"]} classes / {generation["methods"]} methods.\n'
              'Includes the approved LiveArea, the validated Gen-styled data selector and both battle-memory repairs: native PAC streaming and exact Ogg PCM allocation.\n\n'
              'Install the VPK as an update; preserve `ux0:data/DBTapBattle/` and saves. Original game data is supplied separately.\n'
-             '00.34 is the hardware-confirmed gameplay/runtime baseline; a freshly rebuilt 01.00/DBTB01178 package still needs its own install/launch sanity check.\n'
+             'Retained Vita controls and the v1.1 resource baseline were approved in separate hardware tests. Dialogues remain tactile. A freshly rebuilt package still needs its own install/launch sanity check.\n'
              'The symbols ZIP contains compiled ELF/VELF for crash analysis, never APK/JAR/classes/generated C or game data.\n')
     extra = os.environ.get('RELEASE_NOTES', '').strip()
     (output / 'release-notes.md').write_text(notes + ('\n' + extra + '\n' if extra else ''))

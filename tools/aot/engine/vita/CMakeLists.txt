@@ -24,7 +24,7 @@ get_filename_component(TEAVM_C_DIR "${TEAVM_C_DIR}" ABSOLUTE)
 
 set(VITA_APP_NAME "Dragon Ball Tap Battle Vita" CACHE STRING "LiveArea title")
 set(VITA_TITLEID "DBTB01178" CACHE STRING "Vita application identifier")
-set(VITA_VERSION "01.00" CACHE STRING "Vita package version")
+set(VITA_VERSION "01.02" CACHE STRING "Vita package version")
 set(DBTB_SAVE_BASENAME "save.bin" CACHE STRING "Native per-profile save filename")
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)

@@ -20,13 +20,6 @@ public final class VitaControlsProbe {
             if(TCBManajer.TouchesStatus[id]!=0)TCBManajer.iTouchStatus=1;
         }
     }
-    static void originalScriptTap(String reason) {
-        consumeTouches();TCBManajer.tcbNow=active;
-        TCBManajer.bTaskNext=false;TCBManajer.bTaskRepeat=false;
-        engine.Game4(gw,811);
-        check(TCBManajer.bTaskNext && TCBManajer.bTaskRepeat,reason+" original script did not advance");
-        gw.keyData.ClearBegin();
-    }
     static void backTap(String reason) {
         check(gw.keyData.isBeginTouch(0) && gw.keyData.getX(0)==40 && gw.keyData.getY(0)==24,reason+" pointer");
         check(engine.CheckBack(gw,gw.keyData.getX(0),gw.keyData.getY(0),1),reason+" original CheckBack");
@@ -113,23 +106,24 @@ public final class VitaControlsProbe {
         step(0);events[0]=0;events[3]=0;events[41]=128;controls.update(gw,engine,events,1);
         active.md=694;events[3]=2;events[41]=0;controls.update(gw,engine,events,1);
         check(gw.keyData.GetIndex(0)<0,"pending back crossed consumer md change");
-        // Execute Game4's real any-screen Begin consumer at the text-end branch,
-        // and its interactive script branch with no demo marker or text object.
-        battle();active.md=811;active._work[0]=8;TCBManajer.bTaskSkip=true;
-        TCBManajer.iDemoPushXPos=30;TCBManajer.iDemoPushYPos=-1;TCBManajer.iTextEnd=1;
-        step(0);events[41]=16;controls.update(gw,engine,events,0);
-        check(TCBManajer.iTextEnd==1,"adapter changed text state");originalScriptTap("finished dialogue X");
-        step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"held X repeats text");
-        step(0);TCBManajer.iDemoPushXPos=-1;TCBManajer.iTextEnd=0;active._work[7]=0;
-        events[41]=16;controls.update(gw,engine,events,0);check(TCBManajer.iTextEnd==0,"adapter rewrote markerless text");
-        originalScriptTap("markerless any-screen dialogue X");
-        step(0);active._work[0]=9;step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"noninteractive script skipped");
-        active._work[0]=8;step(0);TCBManajer.bDrawLoading=true;step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"X text during loading");
-        TCBManajer.bDrawLoading=false;step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"held X after loading");
-        battle();TCB dialog=addTask(811);dialog._work[0]=8;step(0);events[41]=16;controls.update(gw,engine,events,0);
-        boolean textTap=false;for(int id=0;id<5;id++)textTap|=gw.keyData.isBeginTouch(id) && gw.keyData.getY(id)==280;
-        check(textTap,"dialog failed to override lingering combat task");gw.keyData.ClearBegin();
-        dialog._work[0]=9;step(0);step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"noninteractive script fell through to combat");
+        // Dialogue X was rejected on hardware and retired. Scripts still
+        // shield stale combat, while real Begin touches remain unchanged.
+        battle();TCB dialog=addTask(811);dialog._work[0]=8;step(0);
+        step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"dialog X leaked into combat");
+        step(16);step(0);step(16);
+        for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"fresh dialogue X injected a touch");
+        dialog._work[0]=9;step(0);step(16);
+        for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"automatic script exposed combat X");
+        dialog._work[0]=8;step(0);TCBManajer.bDrawLoading=true;step(16);
+        TCBManajer.bDrawLoading=false;step(16);
+        for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"held X after dialogue loading");
+        step(0);events[0]=0;events[1]=480;events[2]=272;events[3]=0;events[41]=16;
+        controls.update(gw,engine,events,1);
+        check(gw.keyData.isBeginTouch(0) && gw.keyData.getX(0)==240 && gw.keyData.getY(0)==160,"dialog real touch lost");
+        for(int id=1;id<5;id++)check(gw.keyData.GetIndex(id)<0,"dialog X added a second touch");
+        events[3]=2;events[41]=0;controls.update(gw,engine,events,1);
+        dialog.act=false;step(16);check(engine.controller.GetKey(1,2)==0,"held X crossed dialogue exit");
+        step(0);step(16);check(engine.controller.GetKey(1,0)==0x4100,"combat X did not rearm after dialogue");
         // A script can coexist with a coordinate-based back consumer.
         battle();active.md=811;active._work[0]=8;menu=addTask(692);step(0);
         events[41]=128;controls.update(gw,engine,events,0);backTap("back alongside dialogue");gw.keyData.ClearBegin();
@@ -139,6 +133,6 @@ public final class VitaControlsProbe {
         active._work[0]=9;step(0);step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"automatic script accepts X alongside menu");
         step(0);events[41]=128;controls.update(gw,engine,events,0);backTap("menu back alongside automatic script");gw.keyData.ClearBegin();
         battle();TCBManajer.bPause=true;TCBManajer.bTaskSkip=true;active.md=847;TCBManajer.iPlayMode=8;step(0);step(1024);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"Start Bluetooth pause");
-        System.out.println("VITA CONTROLS JVM PASS: combat/selection regression; Start resume; 37 back consumers without pause sprites; original Game1 navigation; pointer-0 priority; original Game4 markerless/finished dialogue; holds/transitions/loading/confirmation exclusions");
+        System.out.println("VITA CONTROLS JVM PASS: combat/selection regression; Start resume; 37 back consumers without pause sprites; original Game1 navigation; pointer-0 priority; tactile dialogues and neutral X; holds/transitions/loading/confirmation exclusions");
     }
 }

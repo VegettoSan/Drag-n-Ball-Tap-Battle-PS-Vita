@@ -3,10 +3,10 @@ package com.namcobandaigames.dragonballtap.apk;
 /** Vita-only pointer adapter. Never writes commands, tasks or controller keys. */
 final class VitaControls {
     private final int mode;
-    private final boolean[] wanted = new boolean[18];
+    private final boolean[] wanted = new boolean[17];
     private final boolean[] real = new boolean[5];
     private final boolean[] realBegin = new boolean[5];
-    private final int[] x = new int[18], y = new int[18];
+    private final int[] x = new int[17], y = new int[17];
     private final int[] owner = {-1,-1,-1,-1,-1};
     private int scene = -1, sceneMd = -1, blocked = 2047, previousHeld;
     private boolean pausePending;
@@ -65,9 +65,8 @@ final class VitaControls {
         if(TCBManajer.bPause && pause!=null)return use(pause,3);
         if(!TCBManajer.bPause) {
             TCB dialog=findTask(811);
-            // Every original interactive script accepts global Begin touches.
-            // It decides when to ignore, reveal or advance them. Text sprites,
-            // iTextEnd and demo-position markers are not universal UI guards.
+            // Dialogues remain tactile. Keep scripts ahead of lingering combat
+            // tasks so X cannot become an attack behind a text screen.
             if(dialog!=null) {
                 if(dialog._work[0]!=9)return use(dialog,4);
                 // An automatic script ignores X, but cannot disable a separate
@@ -96,7 +95,7 @@ final class VitaControls {
 
     void update(GlobalWork gw, TCBManajer engine, int[] events, int count) {
         gw.bBackKey = false;
-        for (int i=0;i<18;i++) wanted[i] = false;
+        for (int i=0;i<17;i++) wanted[i] = false;
         for (int i=0;i<5;i++) realBegin[i] = false;
         // End before Begin; Vita raw IDs are already compact and stable. Real
         // fingers retain those IDs, and preempt only synthetic owners of a slot.
@@ -151,15 +150,11 @@ final class VitaControls {
             else if((pressed&12)==8)want(14,464,128);
             else if((pressed&16)!=0 && TCBManajer.iChrSelectMode==0 &&
                 matches(pad(engine,4),4,240,140,0x4100))want(15,240,140);
-        } else if(current==4 && (pressed&16)!=0) {
-            // Original script reads iTouchStatus from any Begin pointer. Let it
-            // decide whether this tap reveals the line or advances the dialogue.
-            want(17,240,280);
         }
         if(backTask!=null && (current==1 || current==3 || current==4 || current==5)) {
             if((pressed&128)!=0 || (current==3 && (pressed&1024)!=0))backPending=true;
             if(backPending) {
-                for(int i=5;i<18;i++)wanted[i]=false;
+                for(int i=5;i<17;i++)wanted[i]=false;
                 blocked|=held;
                 // CheckBack consumes ID 0. Never steal an active real finger.
                 if(!real[0]) { want(16,40,24); backPending=false; }
@@ -171,7 +166,7 @@ final class VitaControls {
             boolean begin=owner[i]!=i && realBegin[i]; owner[i]=i;
             gw.keyData.Set(x[i],y[i],begin?1:0,i);
         }
-        for(int action=5;action<18;action++)if(wanted[action]) {
+        for(int action=5;action<17;action++)if(wanted[action]) {
             int id=slot(action); boolean begin=id<0;
             if((action==12 || action==16) && id<0) { if(owner[0]<0)id=0; }
             else if(id<0) {

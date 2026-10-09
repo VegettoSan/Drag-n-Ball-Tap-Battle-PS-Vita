@@ -34,7 +34,7 @@ class SelectorThemeTests(unittest.TestCase):
             packaged = "selector/" + name
             self.assertIn(packaged, cmake)
             self.assertIn(packaged, release)
-        self.assertIn('set(VITA_VERSION "01.00" CACHE STRING', cmake)
+        self.assertIn('set(VITA_VERSION "01.02" CACHE STRING', cmake)
         self.assertIn('set(VITA_TITLEID "DBTB01178" CACHE STRING', cmake)
         self.assertIn("sfo.get('TITLE_ID') != 'DBTB01178'", release)
 

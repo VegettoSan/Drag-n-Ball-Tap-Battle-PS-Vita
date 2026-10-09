@@ -371,7 +371,7 @@ bool chooseControls(VitaInput& input, BootChoice& choice, bool themed,
             centeredShadowText(480, y + 20, 2.4f, labels[row], 1, 0.98f, 0.78f);
         }
         centeredShadowText(480, 360, 1.8f, "VITA: TOUCH PADS HIDDEN", 0.9f, 0.94f, 1);
-        centeredShadowText(480, 395, 1.8f, "TEXT: X NEXT   PAUSE: START RESUME", 0.9f, 0.94f, 1);
+        centeredShadowText(480, 395, 1.8f, "TEXT: TOUCH SCREEN   START: PAUSE / RESUME", 0.9f, 0.94f, 1);
         centeredShadowText(480, 430, 1.8f, "MENUS: TOUCH / O BACK", 0.9f, 0.94f, 1);
         centeredShadowText(480, 463, 1.6f, "CHARACTERS: DPAD CHANGE / X SELECT", 0.9f, 0.94f, 1);
         centeredShadowText(480, 505, 1.6f, "DPAD / STICK   X / TOUCH SELECT   O BACK", 1, 0.86f, 0.08f);
