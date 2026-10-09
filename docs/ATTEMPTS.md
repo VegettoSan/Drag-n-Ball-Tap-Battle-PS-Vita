@@ -1,5 +1,23 @@
 # Attempts Log
 
+## 2026-10-09 — Test 4 English launcher and vector control schematic
+
+User corrected the requested guide: a schematic console with leader lines,
+English labels, and all selector text in English. Replaced the six remaining
+Spanish controls-screen literals; added accurate pause/text hint. Profile,
+loading, empty-state and fallback labels were already English. User folder
+names remain unchanged. No Java or control behavior changes.
+
+Built locally with unchanged Test 3 TeaVM input and reconfigured full-engine
+CMake/VitaSDK build; all ARM units recompiled, APP_VER 01.05, same test identity
+and save. English widths/source literals, ELF strings, Python regressions,
+original core comparison, ZIP/SFO/SELF/seed/theme/LiveArea pass. A new original
+SVG schematic supplies precise English lines/button anchors, rendered to PNG
+and visually reviewed. The previous illustrative guide remains historical.
+[Protocol](TEST_VITA_CONTROLS_4.md), [reference](VITA_CONTROLS_REFERENCE.md),
+[evidence](evidence/vita_controls_test_4.json). Hardware remains pending.
+
+
 ## 2026-10-09 — Controls Test 3 after accepted Test 2
 
 User requested Start to resume pause, Circle at original back buttons and X

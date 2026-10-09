@@ -1,6 +1,6 @@
 # Current status — 2026-10-09, v1.1 Universal Mod Support (release ready)
 
-## Experimental Vita controls — Test 2 hardware accepted; Test 3 candidate
+## Experimental Vita controls — Test 2 hardware accepted; Test 4 English candidate
 
 The user reports Controls Test 2 worked perfectly on physical Vita. No profile
 identity or runtime log was supplied; this accepts the reported session, not
@@ -13,13 +13,18 @@ an action across scenes. Actual touch contacts take priority; pause/back wait
 for original contact 0. Yes/no confirmations remain touch-operated.
 
 L remains rage, R remains fourth special shortcut, and X still confirms ready
-character selection. Every profile launch offers **Solo táctil** / **Controles
-PS Vita**, with hidden pads in Vita mode and remembered highlight. Separate
-bubble `DBTBCT001` / `01.04` updates Test 2 and preserves isolated test saves.
+character selection. Every profile launch offers **Touch only** / **PS Vita
+controls**, with hidden pads in Vita mode and remembered highlight. Separate
+bubble `DBTBCT001` / `01.05` updates previous controls tests and preserves isolated test saves.
 No new core patches; existing main compatibility pipeline remains identical.
 Local JVM/Python tests and full-engine ARM/SELF/VPK validation pass without a
-workflow. Test 3 hardware acceptance is pending. `main` and stable v1.1 remain
-unchanged. See [Test 3 protocol](TEST_VITA_CONTROLS_3.md) and
+workflow. Test 3 shortcuts and Test 4 selector hardware acceptance are pending. `main` and stable v1.1 remain
+unchanged. Test 4 translates all launcher-owned labels/hints to English and
+adds a simple English leader-line control diagram. User profile/folder names
+remain user content; original game/mod text is unchanged. See
+[Test 4 protocol](TEST_VITA_CONTROLS_4.md),
+[English controls reference](VITA_CONTROLS_REFERENCE.md),
+[historical Test 3 protocol](TEST_VITA_CONTROLS_3.md) and
 [menu audit](VITA_MENU_SHORTCUTS_2026-10-09.md).
 
 ## Historical physical controls research — 2026-10-08, no runtime change at that stage

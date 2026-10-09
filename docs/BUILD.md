@@ -1,6 +1,30 @@
 # Build and packaging
 
-## Controls Test 3 — current local build recipe
+## Controls Test 4 — current local English selector build
+
+`--test-controls` now selects `DBTBCT001` / `01.05`. Full-engine local CMake
+build PASS, no workflow. Since only native launcher strings and version change,
+the unchanged raw Test 3 TeaVM generation is reused. The existing private build
+was reconfigured to version 01.05 and all ARM translation units recompiled;
+it was not a new TeaVM run. Fresh generation remains supported by the commands
+below. Do not build the root bootstrap as the playable engine.
+
+Artifact: `DBTapBattle-Vita-01.05-Controls-Test-4-English.vpk`, 2749108 bytes,
+SHA-256 `352ddfd66e78758b49e24819b6b5cee31c8e64010581d83e63f2e1c0e454d924`.
+Implementation commit `4144ab7409f7d5b115d64f5e809b1ee8d9253048`.
+ARM ELF / VELF / SELF / VPK, ZIP CRC, SFO identity, approved seed/theme,
+SELF equality, LiveArea and source marker pass. RX-to-RW headroom
+7080 bytes. English launcher labels are present in ELF,
+old Spanish launcher literals absent, and translated labels fit existing
+blue button/text widths. Python: 41 pass, 20 existing gated skips, no failures.
+Original input JVM/native preference/visibility evidence is inherited because
+those sources did not change. Same-input main/candidate patched JAR comparison
+was rerun and all entries remain equal.
+[Protocol](TEST_VITA_CONTROLS_4.md), [evidence](evidence/vita_controls_test_4.json).
+Physical Test 3 shortcuts and Test 4 English selector remain pending.
+
+
+## Controls Test 3 — historical local build recipe
 
 Use fresh generation and the full-engine builder shown below on
 `test/vita-controls`; `--test-controls` now selects `DBTBCT001` / `01.04`.

@@ -1,0 +1,126 @@
+{
+  "scope": "local full original-engine build; Test 4 English selector/guide candidate; Test 3 shortcuts hardware pending; Test 2 accepted by user",
+  "branch": "test/vita-controls",
+  "source_commit": "4144ab7409f7d5b115d64f5e809b1ee8d9253048",
+  "source_tree": "04c02a6178842ce6a9336982f2fe659c502389ed",
+  "main_base": "a6b90ef0a2714dbfa02dc4d2e1afc85fca076931",
+  "workflow_dispatched": false,
+  "filename": "DBTapBattle-Vita-01.05-Controls-Test-4-English.vpk",
+  "size": 2749108,
+  "sha256": "352ddfd66e78758b49e24819b6b5cee31c8e64010581d83e63f2e1c0e454d924",
+  "eboot_sha256": "77727ca0eb8e531472d943b4924821f35d99f69b219832924f4c5756040340a3",
+  "elf_sha256": "4018bf548d5e3863cb4a855ea00bfa5575384766bf07e13f62b43db7de3b0e5b",
+  "sfo": {
+    "APP_VER": "01.05",
+    "ATTRIBUTE": null,
+    "ATTRIBUTE2": null,
+    "ATTRIBUTE_MINOR": null,
+    "BOOT_FILE": "",
+    "CATEGORY": "gd",
+    "CONTENT_ID": "",
+    "EBOOT_APP_MEMSIZE": null,
+    "EBOOT_ATTRIBUTE": null,
+    "EBOOT_PHY_MEMSIZE": null,
+    "LAREA_TYPE": null,
+    "NP_COMMUNICATION_ID": "",
+    "PARENTAL_LEVEL": null,
+    "PSP2_DISP_VER": "00.000",
+    "PSP2_SYSTEM_VER": null,
+    "STITLE": "DB Tap Battle Controls Test",
+    "TITLE": "DB Tap Battle Controls Test",
+    "TITLE_ID": "DBTBCT001",
+    "VERSION": "00.00"
+  },
+  "rx_to_rw_headroom_bytes": 7080,
+  "compilation": {
+    "TeaVM": "0.12.3",
+    "ECJ": "3.37.0",
+    "VitaSDK": "2026.08",
+    "GCC": "15.2.0",
+    "java_C": "unchanged Test 3 full TeaVM amalgamation, recompiled at -O1",
+    "native": "-O2; existing cold resource/image/BGM paths and launcher -Os",
+    "classes": 468,
+    "methods": 4103,
+    "java_generation": "unchanged Test 3 raw TeaVM generation reused; full ARM amalgamation recompiled",
+    "local_build": "existing private CMake build reconfigured to 01.05; native selector and source marker updated; no workflow"
+  },
+  "core_class_comparison": {
+    "TCBManajer": {
+      "original_sha256": "326c0b69dff7b8bae1de939e2e033c12fa9693b928fa28d84a85f649b0388aed",
+      "baseline_sha256": "548cfa8894d338ac47b03d14a65a11577db03d55cbfc219fd3087ecb6741a57b",
+      "candidate_sha256": "548cfa8894d338ac47b03d14a65a11577db03d55cbfc219fd3087ecb6741a57b",
+      "same_as_existing_main_pipeline": true,
+      "same_as_original_apk": false
+    },
+    "Controller": {
+      "original_sha256": "b6772034d0290eda1b3fa56aec92120d72f12b6c27f320eb00beaa6f398bbfdc",
+      "baseline_sha256": "b6772034d0290eda1b3fa56aec92120d72f12b6c27f320eb00beaa6f398bbfdc",
+      "candidate_sha256": "b6772034d0290eda1b3fa56aec92120d72f12b6c27f320eb00beaa6f398bbfdc",
+      "same_as_existing_main_pipeline": true,
+      "same_as_original_apk": true
+    },
+    "KeyData": {
+      "original_sha256": "5561f82d40d589d4a7887f5acf3e259f42df5618fe6e8810e2cb31b999576e43",
+      "baseline_sha256": "5561f82d40d589d4a7887f5acf3e259f42df5618fe6e8810e2cb31b999576e43",
+      "candidate_sha256": "5561f82d40d589d4a7887f5acf3e259f42df5618fe6e8810e2cb31b999576e43",
+      "same_as_existing_main_pipeline": true,
+      "same_as_original_apk": true
+    }
+  },
+  "core_comparison_scope": "all patched JAR entries equal main pipeline regenerated on same private dex2jar input; no new patch source changes",
+  "checks": {
+    "complete_arm_elf": true,
+    "full_game_and_adapter_symbols": true,
+    "source_marker": "4144ab7",
+    "self_matches_vpk": true,
+    "approved_save_seed": true,
+    "zip_crc": true,
+    "approved_selector_theme": true,
+    "livearea": "PASS",
+    "jvm_input": "UNCHANGED: Test 3 original-class JVM probe inherited; no Java/control changes",
+    "native_preferences": "UNCHANGED; inherited Test 2 validation",
+    "python_tests": {
+      "total": 61,
+      "passed": 41,
+      "skipped": 20
+    },
+    "english_selector": "PASS: all owned selector literals audited; translated labels fit existing text width; old Spanish selector literals absent from ELF",
+    "diagram_visual_review": "PASS: English labels, original schematic, leader lines terminate on physical controls, readable 1920x1250"
+  },
+  "inherited_visibility_evidence": {
+    "unchanged_code_from_test_1": true,
+    "native_DAC_CNV_corpora": 9,
+    "reference": "vita_controls_test_1.json",
+    "rerun_for_test_4": false
+  },
+  "limits": [
+    "Test 3 shortcuts and Test 4 English selector physical Vita acceptance pending",
+    "Test 2 user report: worked perfectly; no profile identification or runtime log",
+    "Nine DAC/CNV corpora are inherited host evidence, not nine hardware-certified mods",
+    "Unknown/ambiguous effect DAC layouts retain visible pads",
+    "Five original contact IDs; real fingers take priority",
+    "Back shortcuts require original visible common back panel and audited coordinate consumer",
+    "Start resumes main pause menu; nested pause settings use Circle to return",
+    "Confirmation yes/no dialogs remain touch-operated",
+    "X dialogue requires live interactive script, visible text and original touch-ready markers",
+    "Tutorial remains touch/gestures",
+    "Stable save.bin untouched; isolated test progress retained"
+  ],
+  "guide": {
+    "filename": "PS-Vita-Controls-Diagram-English.png",
+    "sha256": "55ad9dcb2a08958fa48361c626d270d0a00040ec4158f846d791fe62726b2006",
+    "dimensions": [
+      1920,
+      1250
+    ],
+    "style": "simple blue/silver/gold vector console schematic with precise English leader-line annotations; no generated bitmap",
+    "source": "docs/assets/vita-controls-en.svg",
+    "renderer": "CairoSVG; deterministic SVG to PNG"
+  },
+  "reused_input": {
+    "raw_teavm_sha256": "036826835f0cd3a23eef809909b9d34e4984bad060474135ae334436f4fcb166",
+    "reference": "vita_controls_test_3.json",
+    "original_core_comparison_rerun": true,
+    "unchanged_java_adapter_source": true
+  }
+}

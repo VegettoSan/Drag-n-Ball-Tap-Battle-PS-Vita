@@ -1,5 +1,17 @@
 # Confirmed Successes
 
+## 2026-10-09 — Test 4 English selector local build validated
+
+**Level: SOURCE / HOST / LOCAL PACKAGE CHECKS.** All owned launcher UI copy is
+English, six translated controls strings fit existing widths, old Spanish
+launcher literals are absent from ELF. Python 41 pass/20 existing skips; local
+ARM/SELF/VPK, LiveArea, seed/theme and integrity pass without workflow. New
+English schematic has lines connected to physical controls; vector/PNG visual
+review passed. Original Java/control sources unchanged; Test 3 shortcuts and
+Test 4 English selector have no physical acceptance yet.
+[Evidence](evidence/vita_controls_test_4.json).
+
+
 ## 2026-10-09 — Controls Test 2 accepted; Test 3 host/build validated
 
 **Level: USER HARDWARE REPORT (Test 2).** User reported Test 2 worked perfectly.

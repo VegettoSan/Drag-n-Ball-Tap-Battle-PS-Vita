@@ -3,15 +3,21 @@
 ## Experimental controls branch only
 
 On `test/vita-controls`, the launcher offers two remembered choices before
-every profile startup: **Solo táctil** (mode 0) and **Controles PS Vita**
-(mode 2, hidden pads). The test bubble is `DBTBCT001` / APP_VER `01.04`; its native
+every profile startup: **Touch only** (mode 0) and **PS Vita controls**
+(mode 2, hidden pads). The test bubble is `DBTBCT001` / APP_VER `01.05`; its native
 save path is `profiles/<Profile>/save-controls-test.bin`, initially copied from
 the stable `save.bin` or the approved seed. Stable release paths below remain
 the release contract. `vita-controls.cfg` holds only the Vita mode. See
-[controls protocol and limits](TEST_VITA_CONTROLS_3.md). Test 1's legacy visible
+[controls protocol and limits](TEST_VITA_CONTROLS_4.md). Test 1's legacy visible
 mode 1 still parses, highlights the Vita row and becomes hidden mode 2 when
 confirmed. The sidecar schema stays `DBTC1:<0|1|2>\n`; new selections write
-only 0 or 2. Test 3 updates the same test bubble and retains previous test progress.
+only 0 or 2. Test 4 updates the same test bubble and retains previous test progress.
+
+All launcher-owned labels, help text, loading/empty-state messages and fallback
+selector text are English. Profile names come from user folder names and are
+not translated or renamed. Original game/mod menus and dialogue keep their
+resource language. Touch choices and preference values remain identical.
+The controls guide is [an English vector schematic](VITA_CONTROLS_REFERENCE.md).
 
 L activates original rage/pad 6; R activates the fourth special shortcut/pad 5.
 In ready character selection, left/right still pulse the original arrows and
