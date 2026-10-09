@@ -326,7 +326,7 @@ bool chooseControls(VitaInput& input, BootChoice& choice, bool themed,
                     const UiTexture& background, const UiTexture& header,
                     const UiTexture& button) {
     int selected = controlSelectionFromPreference(readControlPreference(choice.profile_directory));
-    const char* labels[] = {"TOUCH ONLY", "PS VITA CONTROLS"};
+    const char* labels[] = {"PS VITA CONTROLS", "TOUCH ONLY"};
     // Release the selecting finger/button before accepting another selection.
     bool armed = false;
     for (;;) {

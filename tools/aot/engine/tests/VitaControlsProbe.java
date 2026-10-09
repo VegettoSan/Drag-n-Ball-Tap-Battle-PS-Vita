@@ -11,7 +11,22 @@ public final class VitaControlsProbe {
     static GlobalWork gw; static TCBManajer engine; static TCB active;
     static int[] events=new int[45];static VitaControls controls;
     static TCB addTask(int md) { TCB t=new TCB();t.act=true;t.md=md;t.next=TCBManajer.tcbHead.next;TCBManajer.tcbHead.next=t;return t; }
-    static TCB backPanel() { TCB t=addTask(806);t._work[2]=0x6002;t.obj=new ObjReq();t.obj.ano=10;return t; }
+    static void consumeTouches() {
+        TCBManajer.iTouchStatus=0;
+        for(int id=0;id<5;id++) {
+            TCBManajer.TouchesXPos[id]=gw.keyData.getX(id);
+            TCBManajer.TouchesYPos[id]=gw.keyData.getY(id);
+            TCBManajer.TouchesStatus[id]=gw.keyData.isBeginTouch(id)?1:0;
+            if(TCBManajer.TouchesStatus[id]!=0)TCBManajer.iTouchStatus=1;
+        }
+    }
+    static void originalScriptTap(String reason) {
+        consumeTouches();TCBManajer.tcbNow=active;
+        TCBManajer.bTaskNext=false;TCBManajer.bTaskRepeat=false;
+        engine.Game4(gw,811);
+        check(TCBManajer.bTaskNext && TCBManajer.bTaskRepeat,reason+" original script did not advance");
+        gw.keyData.ClearBegin();
+    }
     static void backTap(String reason) {
         check(gw.keyData.isBeginTouch(0) && gw.keyData.getX(0)==40 && gw.keyData.getY(0)==24,reason+" pointer");
         check(engine.CheckBack(gw,gw.keyData.getX(0),gw.keyData.getY(0),1),reason+" original CheckBack");
@@ -26,7 +41,7 @@ public final class VitaControlsProbe {
         TCBManajer.tcbHead=new TCB();active=new TCB();active.act=true;active.md=38;active._work[1]=0;
         TCBManajer.tcbHead.next=active;TCBManajer.iPlayerNo=0;TCBManajer.bGameStart=true;
         TCBManajer.bPause=false;TCBManajer.bDrawLoading=false;TCBManajer.bTaskSkip=false;TCBManajer.bResume=false;TCBManajer.iPlayMode=0;
-        TCBManajer.iDemoPushXPos=-1;TCBManajer.iDemoPushYPos=-1;TCBManajer.iTextEnd=0;
+        TCBManajer.iDemoPushXPos=-1;TCBManajer.iDemoPushYPos=-1;TCBManajer.iTextEnd=0;TCBManajer.wSystemFlag=0;
         events=new int[45];TCBManajer.bBackKeyPush=false;
         controls=new VitaControls(1);step(0);
     }
@@ -59,49 +74,69 @@ public final class VitaControlsProbe {
         battle();controls=new VitaControls(0);step(0);step(2047);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"touch mode injects");
         battle();events[41]=0;events[42]=50;events[43]=50;controls.update(gw,engine,events,0);engine.controller.SetKey(gw.keyData);check(engine.controller.GetKey(0,2)==5,"analog diagonal");
         check(!gw.bBackKey,"Android Back injected");
-        // The real pause menu consumes CheckBack even while bTaskSkip is set.
-        battle();step(1024);TCBManajer.bPause=true;TCBManajer.bTaskSkip=true;active.md=847;TCB panel=backPanel();
+        // Pointer 0 works through actual original back consumers, without
+        // fabricated pause-panel sprites in every unrelated menu fixture.
+        battle();step(1024);TCBManajer.bPause=true;TCBManajer.bTaskSkip=true;active.md=847;
         step(1024);check(gw.keyData.GetIndex(0)<0,"held Start resumed immediately");
         step(0);events[41]=1024;controls.update(gw,engine,events,0);backTap("Start resume");
         gw.keyData.ClearBegin();step(1024);check(gw.keyData.GetIndex(0)<0,"held resume repeated");
         step(0);events[41]=128;controls.update(gw,engine,events,0);backTap("Circle in pause");
-        gw.keyData.ClearBegin();step(0);panel.obj.wObjFlag=1;step(128);check(gw.keyData.GetIndex(0)<0,"hidden back injected");
-        // Menus require both an audited live consumer and an initialized visible panel.
-        battle();TCBManajer.bGameStart=false;active.md=692;panel=backPanel();step(0);
-        events[41]=128;controls.update(gw,engine,events,0);backTap("Circle menu");gw.keyData.ClearBegin();
-        step(128);check(gw.keyData.GetIndex(0)<0,"held Circle repeats");
-        active.md=694;step(128);check(gw.keyData.GetIndex(0)<0,"held Circle crosses menu");
+        gw.keyData.ClearBegin();
+        int[] menus={688,692,694,695,696,699,855,246,283,127,131,141,143,146,149,158,179,
+            353,360,368,375,385,409,416,421,1086,1104,1108,1117,761,1014,1024,1036,1048,1051,1057,1063};
+        for(int md:menus) {
+            battle();active.md=md;TCBManajer.bTaskSkip=true;step(0);
+            events[41]=128;controls.update(gw,engine,events,0);backTap("menu "+md);
+            gw.keyData.ClearBegin();step(128);check(gw.keyData.GetIndex(0)<0,"held Circle repeats "+md);
+        }
+        // Execute a real original menu branch after the emitted touch. No
+        // panel object or fake menu-side adapter logic participates.
+        battle();active.md=692;step(0);events[41]=128;controls.update(gw,engine,events,0);
+        consumeTouches();TCBManajer.tcbNow=active;engine.Game1(gw,692);
+        check(active.md==693,"original menu did not consume Circle back");gw.keyData.ClearBegin();
+        // Returning menus take precedence over stale battle state/pads.
+        battle();TCB menu=addTask(692);step(0);events[41]=128;controls.update(gw,engine,events,0);backTap("menu over stale battle");
+        gw.keyData.ClearBegin();menu.md=694;step(128);check(gw.keyData.GetIndex(0)<0,"held Circle crosses menu");
         step(0);events[41]=128;controls.update(gw,engine,events,0);backTap("fresh Circle next menu");gw.keyData.ClearBegin();
-        step(0);active.md=704;step(128);check(gw.keyData.GetIndex(0)<0,"confirmation sentinel accepts Circle");
-        active.md=692;step(0);panel.obj.ano=11;step(128);check(gw.keyData.GetIndex(0)<0,"unrelated panel accepts Circle");
-        panel.obj.ano=10;step(128);check(gw.keyData.GetIndex(0)<0,"Circle rearmed when back appears");
-        step(0);TCBManajer.bDrawLoading=true;step(128);check(gw.keyData.GetIndex(0)<0,"Circle during loading");
+        for(int md:new int[]{704,851,264,286,62,74,112}) {
+            battle();active.md=692;addTask(md);step(0);step(128|16|1024);
+            for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"confirmation accepts shortcuts "+md);
+        }
+        battle();active.md=1004;step(0);step(128);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"unknown menu back injected");
+        battle();active.md=692;TCBManajer.bDrawLoading=true;step(0);step(128);check(gw.keyData.GetIndex(0)<0,"Circle during loading");
         TCBManajer.bDrawLoading=false;step(128);check(gw.keyData.GetIndex(0)<0,"held Circle after loading");
-        // ID 0 belongs to the real finger until its End. A pending back never steals it.
+        // ID 0 belongs to a real finger until End; pending back cancels when its
+        // task identity or frozen mode changes, including simultaneous scripts.
         step(0);events[0]=0;events[1]=480;events[2]=272;events[3]=0;events[41]=128;
         controls.update(gw,engine,events,1);check(gw.keyData.getY(0)==160,"back stole finger 0");
         events[3]=2;events[41]=0;controls.update(gw,engine,events,1);backTap("queued Circle");gw.keyData.ClearBegin();
         step(0);events[0]=0;events[3]=0;events[41]=128;controls.update(gw,engine,events,1);
         active.md=694;events[3]=2;events[41]=0;controls.update(gw,engine,events,1);
         check(gw.keyData.GetIndex(0)<0,"pending back crossed consumer md change");
-        // Original scripted text task 811 reads Begin through iTouchStatus.
-        battle();TCBManajer.bGameStart=false;active.md=811;active._work[0]=8;TCB text=addTask(821);text.obj=new ObjReq();
-        TCBManajer.iDemoPushXPos=30;TCBManajer.iTextEnd=-1;step(0);events[41]=16;
-        controls.update(gw,engine,events,0);boolean begin=false;for(int id=0;id<5;id++)begin|=gw.keyData.isBeginTouch(id);
-        check(begin,"X text Begin missing");check(TCBManajer.iTextEnd==-1,"adapter changed text state");
-        gw.keyData.ClearBegin();step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"held X repeats text");
-        TCBManajer.iTextEnd=1;step(0);step(16);boolean present=false;for(int id=0;id<5;id++)present|=gw.keyData.GetIndex(id)>=0;check(present,"X finished text missing");
+        // Execute Game4's real any-screen Begin consumer at the text-end branch,
+        // and its interactive script branch with no demo marker or text object.
+        battle();active.md=811;active._work[0]=8;TCBManajer.bTaskSkip=true;
+        TCBManajer.iDemoPushXPos=30;TCBManajer.iDemoPushYPos=-1;TCBManajer.iTextEnd=1;
+        step(0);events[41]=16;controls.update(gw,engine,events,0);
+        check(TCBManajer.iTextEnd==1,"adapter changed text state");originalScriptTap("finished dialogue X");
+        step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"held X repeats text");
+        step(0);TCBManajer.iDemoPushXPos=-1;TCBManajer.iTextEnd=0;active._work[7]=0;
+        events[41]=16;controls.update(gw,engine,events,0);check(TCBManajer.iTextEnd==0,"adapter rewrote markerless text");
+        originalScriptTap("markerless any-screen dialogue X");
         step(0);active._work[0]=9;step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"noninteractive script skipped");
-        active._work[0]=8;step(0);TCBManajer.iDemoPushXPos=-1;step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"X without text marker");
-        TCBManajer.iDemoPushXPos=30;step(0);text.act=false;step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"X without text task");
-        text.act=true;step(0);TCBManajer.bDrawLoading=true;step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"X text during loading");
+        active._work[0]=8;step(0);TCBManajer.bDrawLoading=true;step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"X text during loading");
         TCBManajer.bDrawLoading=false;step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"held X after loading");
-        step(0);text.obj.wObjFlag=1;step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"X hidden text");
-        battle();TCB dialog=addTask(811);dialog._work[0]=8;text=addTask(823);text.obj=new ObjReq();
-        TCBManajer.iDemoPushXPos=30;TCBManajer.iTextEnd=1;step(0);events[41]=16;controls.update(gw,engine,events,0);
+        battle();TCB dialog=addTask(811);dialog._work[0]=8;step(0);events[41]=16;controls.update(gw,engine,events,0);
         boolean textTap=false;for(int id=0;id<5;id++)textTap|=gw.keyData.isBeginTouch(id) && gw.keyData.getY(id)==280;
-        check(textTap,"dialog failed to override lingering combat task");
-        battle();TCBManajer.bPause=true;TCBManajer.bTaskSkip=true;active.md=847;backPanel();TCBManajer.iPlayMode=8;step(0);step(1024);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"Start Bluetooth pause");
-        System.out.println("VITA CONTROLS JVM PASS: combat/selection regression; Start resume; Circle visible back/original CheckBack; pointer-0 priority; X scripted text; holds/transitions/loading/confirmation exclusions");
+        check(textTap,"dialog failed to override lingering combat task");gw.keyData.ClearBegin();
+        dialog._work[0]=9;step(0);step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"noninteractive script fell through to combat");
+        // A script can coexist with a coordinate-based back consumer.
+        battle();active.md=811;active._work[0]=8;menu=addTask(692);step(0);
+        events[41]=128;controls.update(gw,engine,events,0);backTap("back alongside dialogue");gw.keyData.ClearBegin();
+        step(0);events[0]=0;events[3]=0;events[41]=128;controls.update(gw,engine,events,1);
+        menu.md=694;events[3]=2;events[41]=0;controls.update(gw,engine,events,1);
+        check(gw.keyData.GetIndex(0)<0,"dialog pending back crossed consumer change");
+        battle();TCBManajer.bPause=true;TCBManajer.bTaskSkip=true;active.md=847;TCBManajer.iPlayMode=8;step(0);step(1024);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"Start Bluetooth pause");
+        System.out.println("VITA CONTROLS JVM PASS: combat/selection regression; Start resume; 37 back consumers without pause sprites; original Game1 navigation; pointer-0 priority; original Game4 markerless/finished dialogue; holds/transitions/loading/confirmation exclusions");
     }
 }

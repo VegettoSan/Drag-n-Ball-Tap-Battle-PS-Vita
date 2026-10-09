@@ -11,7 +11,9 @@ final class VitaControls {
     private int scene = -1, sceneMd = -1, blocked = 2047, previousHeld;
     private boolean pausePending;
     private boolean backPending;
-    private TCB sceneTask, contextTask;
+    private TCB sceneTask, contextTask, backTask, sceneBackTask;
+    private int sceneBackMd = -1;
+    private static final int[] CONFIRMATION_MODES={704,851,264,286,62,74,112};
 
     VitaControls(int mode) { this.mode = mode; }
 
@@ -44,48 +46,43 @@ final class VitaControls {
         default: return false;
         }
     }
-    private static boolean backVisible() {
-        TCB head=TCBManajer.tcbHead;
-        TCB t=head==null?null:head.next;
-        for(int n=0;t!=null && n<1170;n++,t=t.next) {
-            // Original common-panel action 10 at (0,0), initialized by 805 -> 806.
-            if(t.act && t.md==806 && t._work[0]==0 && (t._work[2]&0xff00)==0x6000 &&
-               t._work[4]==0 && t._work[5]==0 && t.obj!=null && t.obj.ano==10 &&
-               (t.obj.wObjFlag&1)==0)return true;
-        }
+    private static boolean confirmation() {
+        // These original tasks pass sentinel coordinates to CheckBack. Keep
+        // Yes/No choices tactile even when a parent back consumer is still live.
+        for(int i=0;i<CONFIRMATION_MODES.length;i++)if(findTask(CONFIRMATION_MODES[i])!=null)return true;
         return false;
-    }
-    private static boolean textVisible() {
-        TCB text=findTask(821);
-        if(text==null)text=findTask(823);
-        return text!=null && text.obj!=null && (text.obj.wObjFlag&1)==0;
     }
     private int use(TCB t,int value) { contextTask=t; return value; }
     private int context(TCBManajer engine) {
-        contextTask=null;
-        if (TCBManajer.bDrawLoading || TCBManajer.bResume) return 0;
+        contextTask=null; backTask=null;
+        if (TCBManajer.bDrawLoading || TCBManajer.bResume || confirmation()) return 0;
         if(TCBManajer.bPause && TCBManajer.iPlayMode==8)return 0;
-        TCB battle=findTask(38), selection=findTask(1014), pause=findTask(847);
-        if(TCBManajer.bPause && TCBManajer.iPlayMode!=8 && pause!=null && backVisible())return use(pause,3);
-        if(!TCBManajer.bPause && !TCBManajer.bTaskSkip) {
+        TCB head=TCBManajer.tcbHead;
+        TCB t=head==null?null:head.next;
+        for(int n=0;t!=null && n<1170;n++,t=t.next)
+            if(t.act && backConsumer(t.md)) { backTask=t; break; }
+        TCB pause=findTask(847);
+        if(TCBManajer.bPause && pause!=null)return use(pause,3);
+        if(!TCBManajer.bPause) {
             TCB dialog=findTask(811);
-            if(dialog!=null && dialog._work[0]!=9 && TCBManajer.iDemoPushXPos!=-1 &&
-               TCBManajer.iTextEnd!=0 && textVisible())return use(dialog,4);
+            // Every original interactive script accepts global Begin touches.
+            // It decides when to ignore, reveal or advance them. Text sprites,
+            // iTextEnd and demo-position markers are not universal UI guards.
+            if(dialog!=null)return use(dialog,dialog._work[0]==9?0:4);
+            TCB selection=findTask(1014);
+            if(selection!=null && matches(pad(engine,0),3,100,0,0) &&
+                matches(pad(engine,1),5,-50,20,0x4100) && matches(pad(engine,2),5,430,20,0x4100))return use(selection,1);
         }
+        // A live audited coordinate consumer defines the back hit area. Menu
+        // graphics vary; requiring the pause panel excluded all other layouts.
+        // Run resets bTaskSkip after reading touches, so its previous-frame
+        // value cannot gate fresh menu/script input in this platform adapter.
+        if(backTask!=null)return use(backTask,5);
+        TCB battle=findTask(38);
         if (!TCBManajer.bPause && !TCBManajer.bTaskSkip && TCBManajer.bGameStart && battle!=null &&
             matches(pad(engine,0),1,90,237,0) && matches(pad(engine,1),4,430,268,0x4100) &&
             matches(pad(engine,2),4,340,268,0x100000) && matches(pad(engine,3),4,380,218,0x200000) &&
-            matches(pad(engine,4),4,440,188,0x400000) && matches(pad(engine,5),4,440,128,0x800000)) return use(battle,2);
-        if(!TCBManajer.bPause && !TCBManajer.bTaskSkip) {
-            if (selection!=null && matches(pad(engine,0),3,100,0,0) &&
-                matches(pad(engine,1),5,-50,20,0x4100) && matches(pad(engine,2),5,430,20,0x4100)) return use(selection,1);
-        }
-        if(backVisible()) {
-                TCB head=TCBManajer.tcbHead;
-                TCB t=head==null?null:head.next;
-                for(int n=0;t!=null && n<1170;n++,t=t.next)
-                    if(t.act && backConsumer(t.md) && (!TCBManajer.bTaskSkip || TCBManajer.bPause))return use(t,5);
-        }
+            matches(pad(engine,4),4,440,188,0x400000) && matches(pad(engine,5),4,440,128,0x800000))return use(battle,2);
         return 0;
     }
     private void want(int action, int px, int py) { wanted[action] = true; x[action] = px; y[action] = py; }
@@ -113,10 +110,12 @@ final class VitaControls {
         if(analog)held|=2048;
         int current=mode==0?0:context(engine);
         int currentMd=contextTask==null?-1:contextTask.md;
+        int backMd=backTask==null?-1:backTask.md;
         blocked &= held;
-        if(current!=scene || contextTask!=sceneTask || currentMd!=sceneMd) {
+        if(current!=scene || contextTask!=sceneTask || currentMd!=sceneMd || backTask!=sceneBackTask || backMd!=sceneBackMd) {
             blocked|=held; pausePending=false; backPending=false;
             scene=current; sceneTask=contextTask; sceneMd=currentMd;
+            sceneBackTask=backTask; sceneBackMd=backMd;
         }
         int active=held & ~blocked, pressed=active & ~previousHeld;
         previousHeld=held;
@@ -152,7 +151,7 @@ final class VitaControls {
             // decide whether this tap reveals the line or advances the dialogue.
             want(17,240,280);
         }
-        if((current==1 || current==3 || current==5) && backVisible()) {
+        if(backTask!=null && (current==1 || current==3 || current==4 || current==5)) {
             if((pressed&128)!=0 || (current==3 && (pressed&1024)!=0))backPending=true;
             if(backPending) {
                 for(int i=5;i<18;i++)wanted[i]=false;

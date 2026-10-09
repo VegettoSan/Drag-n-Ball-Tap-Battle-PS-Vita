@@ -18,7 +18,7 @@ int main() {
         assert(writeControlPreference(profile,mode));
         assert(readControlPreference(profile)==mode);
         const int row=controlSelectionFromPreference(readControlPreference(profile));
-        assert(row==(mode?1:0));
+        assert(row==(mode?0:1));
         assert(controlModeFromSelection(row)==(mode?2:0));
     }
     assert(writeControlPreference(profile,1));
