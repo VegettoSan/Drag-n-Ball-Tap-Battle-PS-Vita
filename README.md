@@ -118,6 +118,20 @@ Detailed extractor instructions:
 - [Web APK Data Extractor](docs/WEB_DATA_TOOL.md)
 - [Windows extractor](tools/windows/README.txt)
 
+## PS Vita controls
+
+![PS Vita controls: movement, combat actions, character selection, Back and Pause](docs/assets/vita-controls-en.png)
+
+Choose **PS VITA CONTROLS** before opening a profile to use physical controls
+with the touch pads hidden. Hold **X** to charge Ki; press it to attack or confirm
+a ready character. Combat actions depend on the character and original game
+requirements. Use the front touchscreen to advance dialogues and operate other
+touch-only choices.
+
+**Start** pauses and resumes from the main pause menu. **Circle** goes back when
+the game's Back button is available. See the [complete controls reference](docs/VITA_CONTROLS_REFERENCE.md)
+for context-dependent shortcuts.
+
 ## Save data
 
 Each profile owns its own save:

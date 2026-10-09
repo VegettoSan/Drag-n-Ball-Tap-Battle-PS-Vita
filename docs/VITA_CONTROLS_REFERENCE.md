@@ -7,24 +7,27 @@
 > Current guide; explicitly dated experiments and superseded decisions remain historical.
 <!-- DBTB_DOC_STATUS:END -->
 
-![PS Vita controls diagram](assets/vita-controls-en.svg)
+![PS Vita controls diagram](assets/vita-controls-en.png)
 
-An original front-view vector schematic in the launcher's blue, silver and
-gold palette. Leader lines terminate on the named physical controls. Text is
-English. Current source: [editable SVG](assets/vita-controls-en.svg), 1920 × 1250.
-The current diagram omits retired dialogue X. Earlier downloaded PNG versions
-may still show that obsolete action; the SVG is the v1.2 reference.
+The user-approved English diagram has large labels, thin leader lines and no
+label boxes, using the launcher's blue/cyan and silver palette. The transparent
+PNG is **1152 × 512**, with the console's proportions preserved. It uses the
+user's combat action names; availability still depends on the character and
+original game requirements. Dialogue X remains retired.
+
+The [earlier editable vector diagram](assets/vita-controls-en.svg) is retained
+as a previous reference; the PNG above is the current user-facing illustration.
 
 | Physical control | Combat | Other contexts |
 |---|---|---|
 | D-pad | Eight directions | Left/right change character; navigate launcher |
 | Left stick | Eight directions | Navigate launcher |
-| X | Attack | Confirm ready character |
-| Square | Special shortcut 1 | Other game choices remain touch-operated |
-| Triangle | Special shortcut 2 | Launcher also accepts it as back |
-| Circle | Special shortcut 3 | Back when original visible button is available; launcher back |
-| R | Special shortcut 4 | No additional menu shortcut |
-| L | Rage, when available | No additional menu shortcut |
+| X | Normal attack; hold to charge Ki | Confirm ready character |
+| Square | Ki attack (special shortcut 1) | Other game choices remain touch-operated |
+| Triangle | Heavy attack (special shortcut 2) | Launcher also accepts it as back |
+| Circle | Direct attack (special shortcut 3) | Back when original visible button is available; launcher back |
+| R | Charged Ki attack (special shortcut 4) | No additional menu shortcut |
+| L | Rage / ultimate special attack, when available | No additional menu shortcut |
 | Start | Pause | Resume from main pause menu |
 | Select | Not assigned | Not assigned |
 | Right stick | Not assigned | Not assigned |
