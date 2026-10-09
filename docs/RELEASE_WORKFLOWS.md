@@ -1,19 +1,23 @@
 # Compilar y publicar VPK desde GitHub Actions
 
 <!-- DBTB_DOC_STATUS:START -->
-> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
-> Gameplay/runtime baseline: 00.34 hardware-confirmed.
+> **Published release:** v1.1 / APP_VER `01.01` / TITLE_ID `DBTB01178`.
+> v1.2 is prepared locally with APP_VER `01.02`; its controls were approved in separate test builds.
 > See [CURRENT_STATUS](CURRENT_STATUS.md) and
 > [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 <!-- DBTB_DOC_STATUS:END -->
 
 
+La versión 1.2 se compiló localmente **sin ejecutar estos workflows**. Su
+publicación manual usa la etiqueta `1.2`, siguiendo `1.1`; las etiquetas
+automáticas de Actions conservan su esquema `v<APP_VER>`.
+
 Hay dos botones manuales en **Actions**:
 
 | Workflow | Etiqueta automatica (version actual) | Publicacion |
 |---|---|---|
-| [Publicar VPK - Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml) | `v01.00` con el CMake actual | Release normal, marcada Latest |
-| [Publicar VPK - Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml) | `v01.00-pre.<run_id>` con el CMake actual | Prerelease para pruebas, no reemplaza Latest |
+| [Publicar VPK - Release](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-release.yml) | `v01.02` con el CMake actual | Release normal, marcada Latest |
+| [Publicar VPK - Prerelease](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/workflows/vita-prerelease.yml) | `v01.02-pre.<run_id>` con el CMake actual | Prerelease para pruebas, no reemplaza Latest |
 
 Ambos usan la version de `tools/aot/engine/vita/CMakeLists.txt`, el commit exacto
 seleccionado al ejecutar el workflow y el mismo compilador compartido. No usan
@@ -23,7 +27,7 @@ nativos, con el mismo pipeline completo; la referencia física actual es 00.34.
 
 ## Contrato de datos del VPK
 
-El VPK v1.0 (APP_VER `01.00`, TITLE_ID `DBTB01178`) espera datos externos exclusivamente en:
+El VPK v1.2 (APP_VER `01.02`, TITLE_ID `DBTB01178`) espera datos externos exclusivamente en:
 
 ```text
 ux0:data/DBTapBattle/profiles/<Profile>/

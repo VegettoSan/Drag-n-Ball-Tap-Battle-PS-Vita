@@ -1,5 +1,14 @@
 # Vita Controls Test 5 — broader back and dialogue input
 
+## Final hardware outcome and v1.2 integration
+
+The user confirms Circle now works in Test 5; dialogue X still fails.
+Dialogue X is retired at the user's request. v1.2 retains combat X, character
+confirmation, Start pause/resume and Circle back. Text advances by touch.
+The script guard remains to prevent stale battle input behind dialogues.
+[Hardware report](evidence/vita_controls_hardware_report_test_5.json).
+The build and candidate design below are historical Test 5 evidence.
+
 Branch `test/vita-controls`; stable main unchanged. Test 4 confirmed Start
 resume and Circle within pause but failed other-menu back and X dialogues.
 This candidate revises the Vita adapter only and requires another Vita test.

@@ -1,5 +1,11 @@
 # Attempts Log
 
+## 2026-10-09 — v1.2 controls integration
+
+Promote approved physical controls and English selector to main. Retire dialogue X after Test 5 failed on hardware; keep script input neutral. Generate/build the full engine locally, preserving the v1.1 pipeline and stable save identity.
+
+[Hardware report](evidence/vita_controls_hardware_report_test_5.json).
+
 ## 2026-10-09 — Test 5 after Test 4 partial hardware feedback
 
 User accepted Start resume, but Circle worked only in pause and X did not

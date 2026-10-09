@@ -1,19 +1,18 @@
-# Current runtime/data contract — v1.1 Universal Mod Support (00.34 historical stable baseline)
+# Current runtime/data contract — v1.2 PS Vita Controls
 
-## Experimental controls branch only
+## Integrated Vita controls
 
-On `test/vita-controls`, the launcher offers two remembered choices before
+On `main`, the launcher offers two remembered choices before
 every profile startup: **PS Vita controls** first (mode 2, hidden pads), then
-**Touch only** (mode 0). The test bubble is `DBTBCT001` / APP_VER `01.06`; its native
-save path is `profiles/<Profile>/save-controls-test.bin`, initially copied from
-the stable `save.bin` or the approved seed. Stable release paths below remain
-the release contract. `vita-controls.cfg` holds only the Vita mode. See
-[controls protocol and limits](TEST_VITA_CONTROLS_5.md). Test 1's legacy visible
+**Touch only** (mode 0). v1.2 uses `DBTB01178` / APP_VER `01.02` and the stable profile-local
+`save.bin`. `vita-controls.cfg` holds only the Vita mode. Test builds keep their
+separate `DBTBCT001` bubble and `save-controls-test.bin`; no automatic test-save
+migration is performed. See [release notes](RELEASE_v1.2.md). Test 1's legacy visible
 mode 1 still parses, highlights the Vita row and becomes hidden mode 2 when
 confirmed. The sidecar schema stays `DBTC1:<0|1|2>\n`; new selections write
 only 0 or 2. Remembered mode 0 highlights row 1; legacy modes 1/2 highlight
 row 0 and confirming writes mode 2. Missing preferences keep the existing touch
-default, now highlighted on the second row. Test 5 updates the same test bubble and retains previous test progress.
+default, now highlighted on the second row.
 
 All launcher-owned labels, help text, loading/empty-state messages and fallback
 selector text are English. Profile names come from user folder names and are
@@ -29,10 +28,9 @@ before another press. Start in the main pause menu and Circle in audited
 coordinate-back menus emit one original contact-0 tap at (40,24). The live
 original consumer defines this hit area; no pause-specific sprite signature
 is required. Character selection and menus with a simultaneous script can
-receive Circle back too. X sends a Begin at (240,280) to live script 811,
-except noninteractive type 9. It does not require a text object, finished-text
-flag or demo-position marker; the original script decides whether that touch
-is ready to reveal/advance/skip or should be ignored. The adapter never writes
+receive Circle back too. Dialogues advance by touch only. X is neutral while script 811 is live;
+this prevents attacks from lingering combat state behind a text screen.
+The adapter never writes
 pause/script state. Run's prior-frame bTaskSkip is not a menu/script input gate.
 
 Loading/resume and audited sentinel-coordinate Yes/No tasks exclude shortcuts.
@@ -40,9 +38,8 @@ Script/menu contexts take precedence over lingering combat tasks. Holding a
 shortcut does not repeat it; consumer identity and frozen mode changes cancel
 pending contact-0 back and require held controls to release. A real finger on
 0 keeps priority. Nested pause settings return with Circle; Start resumes the
-main pause menu only. Other choices stay touch-operated. These are Test 5 host
-contracts; Test 4's physical failures and Test 5's pending hardware check are
-recorded separately.
+main pause menu only. Other choices stay touch-operated. The user approved Circle in Test 5 and Start resume earlier; dialogue X failed
+and is retired. Historical reports preserve each test identity.
 
 Vita modes overlay save-read config byte 4 with original pad mode 1 and retain
 the touch preference on disk during original writes. Gameplay input remains
@@ -56,15 +53,12 @@ image fields, preserving the immutable shared cache and source PACs.
 
 ## Current package identity
 
-- release candidate ready to publish: **v1.1 Universal Mod Support**, hardware approved on the `dbz mobile v9` profile
-- Vita APP_VER: `01.01`
+- release ready for upload: **v1.2 PS Vita Controls**
+- Vita APP_VER: `01.02`
 - TITLE_ID: `DBTB01178`
-- executable baseline: hardware-confirmed VisualQuality 2026-10-08, identical bytes in the v1.1 VPK
-- historical v1.0 / 00.34: previous known-good gameplay baseline (unchanged, retained for rollback)
-
-Historical 00.34 test records intentionally retain `DBTB00001`, because that
-was the Title ID of the exact VPK tested on hardware. The v1.0 release changed
-package identity, not the runtime/data contract below. The v1.1 candidate preserves the same unified profile and save paths.
+- fresh full-engine build of the approved controls, with dialogue X retired
+- v1.1 VisualQuality loader/memory baseline retained; no core patch change
+- historical test identity `DBTBCT001` remains separate
 
 ## Runtime root
 
@@ -178,7 +172,7 @@ Web-specific implementation and validation evidence is documented in
 
 ## Evidence status
 
-v1.1 is the latest accepted hardware-tested candidate: the high-resolution `dbz_mobile_v9` profile entered and completed successive fights on physical Vita using the VisualQuality runtime, although some protected textures remain blurry because they are reduced to protect GPU memory. The v1.1 VPK contains that exact executable and changes APP_VER metadata only. See [v1.1 release notes](RELEASE_v1.1.md) and [installation guide](INSTALLATION_AND_EXTRACTION.md).
+The inherited v1.1 resource baseline was hardware-tested: the high-resolution `dbz_mobile_v9` profile entered and completed successive fights on physical Vita using the VisualQuality runtime, although some protected textures remain blurry because they are reduced to protect GPU memory. v1.2 adds the approved controls and uses a newly compiled executable. See [v1.1 release notes](RELEASE_v1.1.md) and [installation guide](INSTALLATION_AND_EXTRACTION.md).
 
 Historically, 00.34 was the first hardware-confirmed stable checkpoint. The exact tested VPK is:
 

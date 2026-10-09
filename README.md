@@ -1,8 +1,12 @@
 # Dragon Ball Tap Battle PS Vita
 
-> **Ready to publish: v1.1 — Universal Mod Support** — Vita `APP_VER 01.01`, `TITLE_ID DBTB01178`.
-> **Hardware-confirmed:** the updated VisualQuality engine plays successive battles in the heavy `dbz_mobile_v9` mod, with no crash or freeze in the user's accepted test. Previous public **v1.0 / 00.34** remains the historical fallback.
-> The release VPK contains the *exact* hardware-tested `eboot.bin`; only `sce_sys/param.sfo` differs from the approved experimental VPK to set APP_VER 01.01.
+> **v1.2 — PS Vita Controls** — Vita `APP_VER 01.02`, `TITLE_ID DBTB01178`.
+> Physical combat controls, hidden touch pads, character confirmation, Circle back
+> and Start pause/resume, approved in the user's controls tests. Dialogues remain
+> touch-operated. English profile launcher: **PS VITA CONTROLS** first, then
+> **TOUCH ONLY**, with a remembered choice before every profile launch.
+> A fresh local full-engine release build retains the v1.1 VisualQuality resource
+> and memory baseline. [Release notes](docs/RELEASE_v1.2.md).
 
 > **Current data/runtime contract:** see [Current runtime contract](docs/CURRENT_RUNTIME_CONTRACT.md). Historical documents retain earlier 00.34/v1.0 observations as build-specific evidence.
 
@@ -16,7 +20,7 @@ vitaGL, and the original game core compiled privately for Vita.
 
 Before installing the port, make sure you have:
 
-- **A homebrew-enabled PlayStation Vita** (PS Vita 1000 or 2000, with HENkaku/taiHEN, Ensō, or a compatible homebrew setup). The v1.1 release has been tested on real PS Vita hardware; PS TV and Vita3K compatibility have **not** been confirmed.
+- **A homebrew-enabled PlayStation Vita** (PS Vita 1000 or 2000, with HENkaku/taiHEN, Ensō, or a compatible homebrew setup). The v1.1 resource baseline and retained controls were tested on real PS Vita hardware; PS TV and Vita3K compatibility have **not** been confirmed.
 - **VitaShell** (or another compatible VPK installer) to install the game and transfer extracted data using USB, FTP, or your preferred method.
 - **`libshacccg.suprx` installed and working on the console.** The port uses **vitaGL**, which requires this shader compiler module. **It is not included in the VPK.** Follow the [vitaGL prerequisites](https://github.com/Rinnegatamante/vitaGL#prerequisites) and the [libshacccg extraction/installation guide](https://samilops2.gitbook.io/vita-troubleshooting-guide/shader-compiler/extract-libshacccg.suprx) to prepare it from your own console.
 - **Writable `ux0:` storage with enough free space** for the VPK and at least one extracted game profile. The amount of space needed depends on the APK/mod; large mods can use considerably more storage.
@@ -139,7 +143,15 @@ from another profile.
 
 ## Project status
 
-**v1.1 Universal Mod Support — hardware-approved release candidate (2026-10-08)**
+**v1.2 PS Vita Controls — local release package (2026-10-09)**
+
+- File: `Dragon-Ball-Tap-Battle-PS-Vita-v1.2.vpk`, APP_VER `01.02`, TITLE_ID `DBTB01178`.
+- Updates the stable bubble; uses existing profile `save.bin` files and retained control preferences.
+- X attacks/confirms characters; dialogues use front touch. L rage, R fourth special.
+- [Controls reference](docs/VITA_CONTROLS_REFERENCE.md) · [Release notes](docs/RELEASE_v1.2.md)
+- SHA-256: `343aee505f77fa743339111fa7cf29f1e9bda333e49bddb6be166933d7bac1fc`. Exact build identity is recorded in the [v1.2 evidence](docs/evidence/vita_release_1.2.json); public upload is prepared for the maintainer.
+
+**Historical v1.1 Universal Mod Support — published release (2026-10-08)**
 
 - Release VPK: `Dragon-Ball-Tap-Battle-PS-Vita-v1.1.vpk` — Vita APP_VER `01.01`, TITLE_ID `DBTB01178`
 - SHA-256: `9953e8c99ce59a5b4b55dab3ae2caec788c39ffe1edb19a2d4e5833c958ee6bd`
@@ -168,10 +180,11 @@ See [Current Status](docs/CURRENT_STATUS.md) for validation scope and history.
 
 ## Technical documentation
 
-- [Vita physical controls research and selector-mode plan](docs/VITA_CONTROLS_RESEARCH_2026-10-08.md) — original virtual-pad host probes pass; gameplay bindings are not yet implemented.
-- [Hide virtual-pad graphics through Vita resource adaptation](docs/VITA_PAD_VISIBILITY_RESEARCH_2026-10-08.md) — nine-APK structural audit; runtime and hardware validation pending.
-- [Install & extract data for v1.1](docs/INSTALLATION_AND_EXTRACTION.md)
-- [v1.1 Release Notes](docs/RELEASE_v1.1.md)
+- [Vita physical controls research and selector-mode plan](docs/VITA_CONTROLS_RESEARCH_2026-10-08.md) — historical adapter design; working bindings are now integrated in v1.2.
+- [Hide virtual-pad graphics through Vita resource adaptation](docs/VITA_PAD_VISIBILITY_RESEARCH_2026-10-08.md) — structural nine-APK audit; the retained hidden-pad adapter was approved in the controls tests.
+- [Install & extract data for v1.2](docs/INSTALLATION_AND_EXTRACTION.md)
+- [v1.2 Release Notes](docs/RELEASE_v1.2.md)
+- [Historical v1.1 Release Notes](docs/RELEASE_v1.1.md)
 - [Current Runtime Contract](docs/CURRENT_RUNTIME_CONTRACT.md)
 - [Data Layout](docs/DATA_LAYOUT.md)
 - [Web APK Data Extractor](docs/WEB_DATA_TOOL.md)

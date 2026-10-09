@@ -1,5 +1,20 @@
 # Reusable porting guide — lessons from Tap Battle on Vita
 
+## v1.2 adapter-only physical controls
+
+The integrated controls translate Vita buttons to the original KeyData pointer
+interface; they never write task, combat, pause or controller state. Hidden pads
+use a sparse per-stream DAC overlay, preserving source/cache bytes. Per-profile
+settings select Vita mode or original touch input before each launch. The stable
+build uses `DBTB01178` / `01.02` / `save.bin`.
+
+Host original-script acceptance did not predict dialogue X behavior on hardware.
+After Test 5 failed it, the feature was retired at the user's request. Scripts
+still guard against stale combat input; real dialogue touches remain intact.
+Circle was accepted in Test 5, Start resume earlier, and combat/hidden pads and
+character confirmation in preceding tests. See [current contract](CURRENT_RUNTIME_CONTRACT.md),
+[controls reference](VITA_CONTROLS_REFERENCE.md) and [release notes](RELEASE_v1.2.md).
+
 > **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
 > The hardware-confirmed gameplay baseline is 00.34; historical build metadata
 > remains unchanged where it identifies exact tested artifacts.

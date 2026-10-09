@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-09",
+  "source": "User report in this conversation",
+  "vpk": "DBTapBattle-Vita-01.06-Controls-Test-5.vpk",
+  "app_ver": "01.06",
+  "title_id": "DBTBCT001",
+  "vpk_sha256": "69e9180129ca02a55e0a0caed01afb39afb2bbec0f8e002e8fe6b50ecfe071f3",
+  "result": {
+    "circle_back": "User confirms Circle now works",
+    "dialogue_x": "Still fails; user requests retiring it",
+    "integration": "User requests integrating working controls into main and preparing v1.2"
+  },
+  "profile": null,
+  "runtime_log": null,
+  "scope": "Reported shortcuts only; does not certify every menu or mod"
+}

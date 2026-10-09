@@ -1,6 +1,23 @@
 # Build and packaging
 
-## Controls Test 5 — current local back/dialogue correction
+## v1.2 local full-engine release
+
+CMake defaults to `DBTB01178` / `01.02` / normal title / `save.bin`.
+Generate private C afresh, then run `tools/aot/engine/vita/build.py` without
+`--test-controls`. Local generation, build and package checks use no workflow.
+The separate test flag retains Test 5 identity; it is not a stable release.
+The original patch pipeline stays unchanged; only Vita input and native launcher
+adapters differ. Dialogue X is retired, with its neutral script guard retained.
+[Release notes and exact artifact evidence](RELEASE_v1.2.md).
+
+Final artifact `Dragon-Ball-Tap-Battle-PS-Vita-v1.2.vpk`, 2750706 bytes;
+SHA-256 `343aee505f77fa743339111fa7cf29f1e9bda333e49bddb6be166933d7bac1fc`.
+Source `f6e9adaa792d38c4f3a7c7b27d112ae54b41ede5`; full engine 468 classes / 4103 methods.
+ARM ELF/VELF/SELF, exact public allowlist, ZIP CRC, stable SFO/save identity,
+approved LiveArea/theme/seed and 7080-byte import headroom all pass.
+Original patched JAR entries match the same-input existing main pipeline.
+
+## Historical Controls Test 5 — back/dialogue candidate
 
 `--test-controls` selects `DBTBCT001` / `01.06`, same test title and isolated
 save. Fresh private TeaVM generation: 468 classes / 4103 methods. Complete
@@ -587,12 +604,9 @@ For installation, update the VPK without deleting `ux0:data/DBTapBattle/` or sav
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
-> and functional on physical PS Vita for the exercised selector, profile-loading
-> and gameplay paths, with no issue found so far. It retains the 00.33
-> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
-> See [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current release preparation — v1.2 (2026-10-09):** APP_VER `01.02`,
+> TITLE_ID `DBTB01178`; stable `save.bin`, approved Vita controls, English
+> launcher, tactile dialogues. [Release notes](RELEASE_v1.2.md).
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## Corrected LiveArea repack — 2026-10-05

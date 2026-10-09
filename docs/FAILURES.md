@@ -1,5 +1,11 @@
 # Failures and Dead Ends
 
+## 2026-10-09 — Test 5 dialogue X retired
+
+User reports X still does not advance dialogues. Host original-script probes did not establish real Vita behavior. Stop investigation as requested and remove the synthetic dialogue action and its help/guide claims. Text remains tactile; do not repeat this attempt unchanged.
+
+[Hardware report](evidence/vita_controls_hardware_report_test_5.json).
+
 ## 2026-10-09 — Test 4 Circle outside pause and X dialogue fail on hardware
 
 **USER HARDWARE REPORT.** VPK 01.05: Start pause resume worked, Circle back

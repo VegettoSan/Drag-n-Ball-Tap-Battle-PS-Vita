@@ -1,5 +1,14 @@
 # Vita menu shortcut audit — 2026-10-09
 
+## Final hardware outcome and v1.2 integration
+
+The user confirms Circle now works in Test 5; dialogue X still fails.
+Dialogue X is retired at the user's request. v1.2 retains combat X, character
+confirmation, Start pause/resume and Circle back. Text advances by touch.
+The script guard remains to prevent stale battle input behind dialogues.
+[Hardware report](evidence/vita_controls_hardware_report_test_5.json).
+The build and candidate design below are historical Test 5 evidence.
+
 ## Test 5 revision after physical failures
 
 The audit below preserves Test 3's inspected paths and now-obsolete adapter

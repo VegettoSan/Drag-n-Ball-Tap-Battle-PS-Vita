@@ -1,5 +1,11 @@
 # Confirmed Successes
 
+## 2026-10-09 — Test 5 Circle hardware acceptance
+
+User confirms Circle now works beyond the previously accepted pause path. Profile and runtime log were not supplied. Preserve earlier accepted combat, hidden pads, swapped shoulders, character X and Start resume. This is not a blanket certification of all mods.
+
+[Hardware report](evidence/vita_controls_hardware_report_test_5.json).
+
 ## 2026-10-09 — Start resume accepted; broader Test 5 original-consumer probes pass
 
 **Level: USER HARDWARE REPORT (Test 4).** Start main pause resume and Circle

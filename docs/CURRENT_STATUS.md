@@ -1,6 +1,33 @@
-# Current status — 2026-10-09, v1.1 Universal Mod Support (release ready)
+# Current status — 2026-10-09, v1.2 PS Vita Controls (release ready)
 
-## Experimental Vita controls — Test 4 partial result; Test 5 correction candidate
+## v1.2 working controls promoted to main
+
+The user approved combat and hidden pads, the L/R swap and X character
+confirmation, then Start resume and finally Circle beyond pause in Test 5.
+Dialogue X still failed and is removed at the user's request; advance text by
+front touch. The retained script guard blocks stale combat input during text.
+[Final Test 5 report](evidence/vita_controls_hardware_report_test_5.json).
+
+v1.2 is a fresh local full-engine build, APP_VER `01.02`, TITLE_ID `DBTB01178`.
+It updates the stable bubble and uses each profile's existing `save.bin`.
+`save-controls-test.bin` belongs to the separate test bubble and is not migrated
+or overwritten. Existing `vita-controls.cfg` preferences retain their meaning.
+The English launcher offers **PS VITA CONTROLS** (hidden pads) first and
+**TOUCH ONLY** second before every profile launch, remembering the highlight.
+No core task, combat or controller implementation is changed.
+
+The v1.1 VisualQuality resource/memory baseline is retained. Its earlier
+hardware result and the separate controls tests do not certify every mod or
+the exact rebuilt v1.2 package. Release/package evidence is recorded in
+[release notes](RELEASE_v1.2.md). Publication is prepared for the maintainer.
+
+Final VPK: `Dragon-Ball-Tap-Battle-PS-Vita-v1.2.vpk`, 2750706 bytes.
+SHA-256 `343aee505f77fa743339111fa7cf29f1e9bda333e49bddb6be166933d7bac1fc`. Full local engine/package and LiveArea checks pass;
+JVM controls, native preferences and Python regressions pass (41 run / 20 skipped).
+Build source `f6e9adaa792d38c4f3a7c7b27d112ae54b41ede5`.
+No release workflow was dispatched and no new GitHub release is claimed.
+
+## Historical Test 5 candidate (superseded by v1.2)
 
 User tested Test 4 (01.05): Start resumes the main pause menu; Circle goes
 back only within pause. Circle outside pause and X dialogues did not work.
@@ -27,8 +54,9 @@ and keeps isolated test progress. New JVM checks execute original Game1 back
 navigation and original Game4 finished/markerless text branches; all 37 back
 consumer modes, holds, touch priority and exclusions pass. Native preferences
 and Python regressions pass. Full local build/package evidence is in
-[Test 5](TEST_VITA_CONTROLS_5.md); its hardware verification is pending.
-`main`, stable v1.1 and the existing core patch pipeline remain unchanged.
+[Test 5](TEST_VITA_CONTROLS_5.md). At delivery its hardware result was pending;
+the final report above approves Circle and rejects dialogue X. Main integration
+is now complete; the existing core patch pipeline remains unchanged.
 [Updated audit](VITA_MENU_SHORTCUTS_2026-10-09.md).
 
 ## Historical physical controls research — 2026-10-08, no runtime change at that stage
@@ -52,7 +80,7 @@ Linked button/stick layers must also be included. This is structural evidence,
 not an integrated invisible-pad feature or a hardware rendering result.
 See [visibility design and evidence](VITA_PAD_VISIBILITY_RESEARCH_2026-10-08.md).
 
-## Latest confirmed: v1.1 VisualQuality promoted for release
+## Historical v1.1 VisualQuality release baseline
 
 The user has **approved the 2026-10-08 VisualQuality experimental build on
 physical PS Vita** with the high-resolution protected `dbz_mobile_v9` profile.
@@ -73,8 +101,8 @@ APP_VER `01.01`, TITLE_ID `DBTB01178`. Its `eboot.bin` matches the hardware
 approved VisualQuality VPK bit-for-bit; only APP_VER SFO metadata was changed.
 VPK ZIP and LiveArea integrity pass. The previous v1.0 remains historical.
 
-**Public release upload still belongs to the maintainer**; do not claim GitHub
-has already published v1.1. Full instructions: [v1.1 release notes](RELEASE_v1.1.md)
+GitHub release `1.1` is published; the existing asset and its recorded hash
+remain unchanged by v1.2 preparation. Full instructions: [v1.1 release notes](RELEASE_v1.1.md)
 and [Web/Windows install guide](INSTALLATION_AND_EXTRACTION.md).
 
 ---
@@ -992,9 +1020,7 @@ No currently reproduced crash is open in the 00.23 tested path. New failures sho
 [Porting guide](PORTING_GUIDE.md) explains reusable techniques and failures.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current public release — v1.0 / DBTB01178 (2026-10-07):** the 00.34
-> gameplay/runtime baseline is hardware-confirmed stable for the tested paths.
-> Earlier 00.33 hardware evidence remains valid for the protected-PAC repeated-fight
-> repair, Loading recovery and dynamic rosters. Historical artifact identities are
-> preserved; see the v1.0 identity section at the top of this file.
+> **Current release preparation — v1.2 (2026-10-09):** APP_VER `01.02`,
+> TITLE_ID `DBTB01178`; stable `save.bin`, approved Vita controls, English
+> launcher, tactile dialogues. [Release notes](RELEASE_v1.2.md).
 <!-- DBTB_CURRENT_CHECKPOINT:END -->

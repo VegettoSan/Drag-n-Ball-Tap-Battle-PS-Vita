@@ -1,19 +1,30 @@
-# Installation and data extraction — Dragon Ball Tap Battle PS Vita v1.1
+# Installation and data extraction — Dragon Ball Tap Battle PS Vita v1.2
 
-This guide applies to **v1.1 — Universal Mod Support**, `TITLE_ID DBTB01178`, Vita `APP_VER 01.01`. The updated build has been tested on a real PS Vita with consecutive battles in the heavy `dbz mobile v9` mod, in addition to the previously validated original game and community-mod paths. **Compatibility with every existing mod is not guaranteed.**
+This guide applies to **v1.2 — PS Vita Controls**, `TITLE_ID DBTB01178`, Vita
+`APP_VER 01.02`. It retains the v1.1 VisualQuality baseline and adds the controls
+approved in the user's tests. **Compatibility with every mod is not guaranteed.**
 
 ## 1. Install or update the VPK
 
-1. Transfer `Dragon-Ball-Tap-Battle-PS-Vita-v1.1.vpk` to your PS Vita.
+1. Transfer `Dragon-Ball-Tap-Battle-PS-Vita-v1.2.vpk` to your PS Vita.
 2. Install it with **VitaShell** over the currently installed version. **Do not uninstall the game first and do not delete its data.**
-3. The `TITLE_ID` remains `DBTB01178`. The release contains the exact same `eboot.bin` as the hardware-tested VisualQuality build; only `sce_sys/param.sfo` changes `APP_VER` from `01.00` to `01.01`.
+3. The `TITLE_ID` remains `DBTB01178`. v1.2 is a fresh full-engine build of the integrated controls. Existing profile `save.bin` files remain in place. Test bubble `DBTBCT001` and its `save-controls-test.bin` stay separate; test progress is not automatically migrated.
 4. Existing profiles and save files remain under `ux0:data/DBTapBattle/profiles/`. A backup is still recommended before updating.
 
 **The VPK does not contain the original APK or proprietary game data.** Prepare the data from an APK copy that you legally possess.
 
+## Choose controls before launching a profile
+
+The English launcher offers **PS VITA CONTROLS** first (physical controls,
+hidden touch pads), then **TOUCH ONLY** (original touch input). It asks before
+every profile launch and remembers that profile's highlighted choice.
+Use X to confirm a character, Circle for available Back buttons, and Start to
+pause/resume the main pause screen. Dialogues and other menu choices use touch.
+See the [English controls diagram](VITA_CONTROLS_REFERENCE.md).
+
 ## 2A. Extract on Windows
 
-1. Download `DBTapBattle-Extractor-Windows-v1.1.zip` from the same release.
+1. Download `DBTapBattle-Extractor-Windows-v1.1.zip` from the existing 1.1 release; data extraction is unchanged.
 2. Extract **all** files into the same folder. Keep `PrivateModDex.ps1` and `Extraer_APK_para_Vita.ps1` together with the BAT launchers.
 3. Drag one or more Dragon Ball Tap Battle APK files onto `Extract_APK_for_Vita.bat`. You may also double-click the BAT and select the APK.
 4. Wait until validation/extraction finishes. The tool creates a Vita-ready package under `Listo_para_Vita/`.
