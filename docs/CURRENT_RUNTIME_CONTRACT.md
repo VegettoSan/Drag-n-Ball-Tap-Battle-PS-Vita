@@ -2,12 +2,22 @@
 
 ## Experimental controls branch only
 
-On `test/vita-controls`, the launcher adds three remembered modes before
-profile startup. The test bubble is `DBTBCT001` / APP_VER `01.02`; its native
+On `test/vita-controls`, the launcher offers two remembered choices before
+every profile startup: **Solo táctil** (mode 0) and **Controles PS Vita**
+(mode 2, hidden pads). The test bubble is `DBTBCT001` / APP_VER `01.03`; its native
 save path is `profiles/<Profile>/save-controls-test.bin`, initially copied from
 the stable `save.bin` or the approved seed. Stable release paths below remain
 the release contract. `vita-controls.cfg` holds only the Vita mode. See
-[controls protocol and limits](TEST_VITA_CONTROLS.md).
+[controls protocol and limits](TEST_VITA_CONTROLS_2.md). Test 1's legacy visible
+mode 1 still parses, highlights the Vita row and becomes hidden mode 2 when
+confirmed. The sidecar schema stays `DBTC1:<0|1|2>\n`; new selections write
+only 0 or 2. Test 2 updates the same test bubble and retains Test 1 progress.
+
+L activates original rage/pad 6; R activates the fourth special shortcut/pad 5.
+In ready character selection, left/right still pulse the original arrows and
+X pulses the original confirmation pad at (240,140), code `0x4100`, only in
+selection mode 0. Holding X does not repeat; scene changes require release
+before another press. General game menus remain touch-operated.
 
 Vita modes overlay save-read config byte 4 with original pad mode 1 and retain
 the touch preference on disk during original writes. Gameplay input remains

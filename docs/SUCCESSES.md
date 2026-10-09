@@ -1,5 +1,26 @@
 # Confirmed Successes
 
+## 2026-10-09 — Controls Test 1 accepted on physical Vita
+
+**Level: USER HARDWARE REPORT.** User tested Vita controls with hidden pads and
+reported “si funciono perfecto”. This records the exercised Test 1 session;
+the profile is unspecified and no logs/captures were supplied. It does not
+certify all nine mods or Controls Test 2's new L/R and X behavior. Test 1 VPK
+identity remains in [the historical protocol](TEST_VITA_CONTROLS.md).
+[Hardware report and scope](evidence/vita_controls_hardware_report_test_1.json).
+
+## 2026-10-09 — Controls Test 2 input and preference host validation
+
+**Level: HOST JVM / NATIVE PREFERENCE CONTRACT.** Swapped L/R and X through
+the original selection pad pass press/hold/release and scene rearming tests.
+General menu neutrality remains intact. The two-row selector maps both legacy
+Vita preferences to hidden mode, preserves profile persistence and refuses
+malformed/symlink files. Python suite: 41 passes, 20 gated skips, no failures.
+New Test 2 behavior still needs physical Vita acceptance.
+
+Local full-engine ARM/VELF/SELF/VPK build and package validation PASS, without
+dispatching a workflow. [Artifact and checksums](evidence/vita_controls_test_2.json).
+
 ## 2026-10-08 — experimental controls host validation
 
 **Level: HOST JVM / NATIVE RESOURCE CONTRACT, hardware pending.** VitaControls

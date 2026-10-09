@@ -1,15 +1,23 @@
-# Current status — 2026-10-08, v1.1 Universal Mod Support (release ready)
+# Current status — 2026-10-09, v1.1 Universal Mod Support (release ready)
 
-## Experimental Vita controls — separate test branch, hardware pending
+## Experimental Vita controls — Test 1 hardware accepted; Test 2 candidate
 
-`test/vita-controls` implements the accepted Vita button scheme, a per-profile
-Touch / Vita visible / Vita hidden launcher choice, and character-selection
-left/right arrows. Core classes match the existing main compatibility pipeline; controls add no core patches. This branch
-uses a separate test bubble and isolated profile saves; `main` and the stable
-v1.1 package are not replaced. Host input/resource checks pass; actual Vita
-acceptance is still required. See [test protocol](TEST_VITA_CONTROLS.md).
+The user reports Controls Test 1 worked perfectly on physical Vita with Vita
+buttons and hidden pads. The profile was not identified and no logs/captures
+were supplied; this does not certify all mods or the new Test 2 changes.
 
-## Physical controls research — 2026-10-08, no runtime change
+On `test/vita-controls`, Controls Test 2 swaps L/R (L rage, R fourth special
+shortcut), adds X confirmation through the original character-selection pad,
+and offers only **Solo táctil** / **Controles PS Vita**, the latter with hidden
+pads. Old visible-Vita preferences select hidden Vita on confirmation. The
+choice still appears every profile launch and remembers its highlighted row.
+Core classes retain the existing main compatibility pipeline; no new core
+patches. Separate test bubble `DBTBCT001` / `01.03` updates Test 1 and preserves
+its isolated saves. `main` and stable v1.1 remain unchanged. New input and
+preference host checks pass; Test 2 hardware acceptance is pending. See
+[Test 2 protocol](TEST_VITA_CONTROLS_2.md).
+
+## Historical physical controls research — 2026-10-08, no runtime change at that stage
 
 The original settings and combat pad were inspected in the supplied APKs.
 Original mode 1 offers a virtual stick and six buttons; mode 2 is gesture input.

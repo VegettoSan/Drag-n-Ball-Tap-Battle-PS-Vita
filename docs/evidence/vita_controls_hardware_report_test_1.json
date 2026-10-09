@@ -1,0 +1,22 @@
+{
+  "report_recorded_on": "2026-10-09",
+  "source": "user report in this conversation",
+  "level": "physical PS Vita user acceptance report",
+  "tested_build": "DBTapBattle-Vita-01.02-Controls-Test-1.vpk",
+  "sha256": "f0fb5355304671a69865c9e11b1ea513b682b50c670438210adc0bbcccc3b3f0",
+  "mode": "Vita buttons with hidden touch pads",
+  "user_quote": "Ya lo probé con el modo de controles de Vita y sin pads tatiles visible y la verdad si funciono perfecto",
+  "result": "accepted for the user's exercised session",
+  "profile": null,
+  "logs_or_captures_attached": false,
+  "requested_followup": [
+    "Swap L/R",
+    "X confirms the character in character selection",
+    "Only touch or PS Vita controls; PS Vita choice hides pads"
+  ],
+  "limits": [
+    "Profile and detailed mode/character coverage unspecified",
+    "No blanket acceptance claim for nine supplied mods",
+    "Does not establish Controls Test 2 hardware acceptance"
+  ]
+}

@@ -1,5 +1,11 @@
 # Vita Controls Test 1 — rama experimental
 
+**Registro histórico:** el usuario probó esta versión con controles Vita y pads
+ocultos y reportó que funcionó perfectamente. No indicó perfil ni adjuntó logs.
+El esquema y las tres opciones siguientes describen Test 1; la versión actual
+es [Controls Test 2](TEST_VITA_CONTROLS_2.md), con L/R invertidos, X para confirmar
+personaje y solo dos opciones de entrada.
+
 Esta prueba adapta entrada y recursos en PS Vita. No añade parches al
 motor: conserva `TCBManajer`, `Controller` y `KeyData` del pipeline existente.
 Se mantienen las adaptaciones de compatibilidad ya presentes en main

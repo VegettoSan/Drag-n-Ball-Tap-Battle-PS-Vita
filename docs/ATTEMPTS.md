@@ -1,5 +1,26 @@
 # Attempts Log
 
+## 2026-10-09 — Controls Test 2 after physical Vita feedback
+
+User accepted Test 1 with Vita buttons and hidden pads, then requested swapped
+triggers, X character confirmation and two launcher choices. All changes stay
+in Vita input/launcher adapters; PatchResourceInit and original core handling
+are unchanged. Original Game3 selection task 1014 reads pad 4 (type 4, center
+240,140, key 0x4100) for confirmation in selection mode 0; X emits a single
+contact through that pad. Holding X and scene changes cannot auto-confirm the
+next screen. D-pad arrows retain priority over a simultaneous X press.
+
+Host JVM input probe passes swapped L/R, original-pad X confirmation, hold and
+transition release/rearming, touch priority, pause and menu neutrality. Native
+preference probe passes two choices, legacy visible/hidden preference mapping,
+persistence and malformed/symlink refusal. Python: 61 tests, 41 pass, 20 existing
+gated skips, no failures. New TeaVM generation and local VitaSDK full-engine
+build pass; no build workflow dispatched. Final package integrity, source
+marker, SFO, seed, selector theme and LiveArea pass; RX-to-RW headroom is 8936
+bytes. [Exact artifact evidence](evidence/vita_controls_test_2.json).
+Physical Test 2 remains pending.
+See [Test 2 protocol](TEST_VITA_CONTROLS_2.md).
+
 ## 2026-10-08 — implement Vita controls on test/vita-controls
 
 Adapted Vita held states into original KeyData pointers, gated by original

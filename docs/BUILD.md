@@ -1,6 +1,25 @@
 # Build and packaging
 
-## Controls Test 1 — local full-engine build, separate branch
+## Controls Test 2 — current local build recipe
+
+Use the generation/build commands below on `test/vita-controls`. The current
+`--test-controls` option builds `DBTBCT001` / APP_VER `01.03`, updating the Test 1
+bubble while preserving `save-controls-test.bin`. Generate C afresh after the
+Java adapter changes; do not reuse Test 1's generated input. No workflow is
+dispatched. [Test 2 protocol](TEST_VITA_CONTROLS_2.md).
+
+Full local build and packaging PASS: 468 classes / 4099 methods generated,
+ARM ELF, VELF, SELF and VPK produced. Artifact:
+`DBTapBattle-Vita-01.03-Controls-Test-2.vpk`, 2748710 bytes,
+SHA-256 `377a8f46a42afb452612291b197ce954e86c8e7101b56da1df5b6a256287bdae`.
+Source commit `b12664b52854d9e3449b2db7a19f8cfab0e3296a`.
+RX-to-RW headroom is 8936 bytes. ZIP CRC, SFO identity, packaged SELF equality,
+approved seed/selector theme, LiveArea and full-engine/source symbols pass.
+All entries of the patched original JAR equal the main pipeline regenerated
+on the same private dex2jar input; Controller/KeyData equal original. No new
+core patches. [Build evidence](evidence/vita_controls_test_2.json).
+
+## Controls Test 1 — historical local full-engine build, separate branch
 
 Built on `test/vita-controls` without dispatching or running a build workflow.
 The existing open-source tool exports supply pinned TeaVM 0.12.3, ECJ 3.37.0
