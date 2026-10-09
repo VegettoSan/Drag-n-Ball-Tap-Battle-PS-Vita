@@ -6,6 +6,11 @@
 #include <sys/stat.h>
 #include "vfs.hpp"
 
+// Retain the v1 file values: 1 was visible Vita, 2 is hidden Vita. Both select
+// the sole Vita row now; confirming migrates the old visible preference to 2.
+inline int controlSelectionFromPreference(int mode) { return mode == 0 ? 0 : 1; }
+inline int controlModeFromSelection(int row) { return row == 1 ? 2 : 0; }
+
 inline std::string controlPreferencePath(const std::string& profile) {
     return std::string(GameVfs::kBasePath) + "/profiles/" + profile + "/vita-controls.cfg";
 }

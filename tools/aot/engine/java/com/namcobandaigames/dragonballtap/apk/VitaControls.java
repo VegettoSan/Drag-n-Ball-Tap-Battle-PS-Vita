@@ -3,10 +3,10 @@ package com.namcobandaigames.dragonballtap.apk;
 /** Vita-only pointer adapter. Never writes commands, tasks or controller keys. */
 final class VitaControls {
     private final int mode;
-    private final boolean[] wanted = new boolean[15];
+    private final boolean[] wanted = new boolean[16];
     private final boolean[] real = new boolean[5];
     private final boolean[] realBegin = new boolean[5];
-    private final int[] x = new int[15], y = new int[15];
+    private final int[] x = new int[16], y = new int[16];
     private final int[] owner = {-1,-1,-1,-1,-1};
     private int scene = -1, blocked = 2047, previousHeld;
     private boolean pausePending;
@@ -44,7 +44,7 @@ final class VitaControls {
 
     void update(GlobalWork gw, TCBManajer engine, int[] events, int count) {
         gw.bBackKey = false;
-        for (int i=0;i<15;i++) wanted[i] = false;
+        for (int i=0;i<16;i++) wanted[i] = false;
         for (int i=0;i<5;i++) realBegin[i] = false;
         // End before Begin; Vita raw IDs are already compact and stable. Real
         // fingers retain those IDs, and preempt only synthetic owners of a slot.
@@ -76,9 +76,9 @@ final class VitaControls {
             if((active&32)!=0)want(7,340,268);
             if((active&64)!=0)want(8,380,218);
             if((active&128)!=0)want(9,440,188);
-            if((active&256)!=0)want(10,440,128);
+            if((active&512)!=0)want(10,440,128);
             Controller.ButtonObject rage=pad(engine,6);
-            if((active&512)!=0 && rage!=null && rage.Type==4 && rage.KeyCode[0]==0x21000000)
+            if((active&256)!=0 && rage!=null && rage.Type==4 && rage.KeyCode[0]==0x21000000)
                 want(11,rage.Pos[0],rage.Pos[1]);
             if((pressed&1024)!=0 && TCBManajer.iPlayMode!=8)pausePending=true;
             if(pausePending) {
@@ -91,6 +91,8 @@ final class VitaControls {
             // One step per press; character animations/loading keep their timing.
             if((pressed&12)==4)want(13,16,128);
             else if((pressed&12)==8)want(14,464,128);
+            else if((pressed&16)!=0 && TCBManajer.iChrSelectMode==0 &&
+                matches(pad(engine,4),4,240,140,0x4100))want(15,240,140);
         }
         for(int i=0;i<5;i++)wanted[i]=real[i];
         for(int i=0;i<5;i++)if(owner[i]>=0 && (!wanted[owner[i]] || (real[i] && owner[i]!=i)))clear(gw.keyData,i);
@@ -98,7 +100,7 @@ final class VitaControls {
             boolean begin=owner[i]!=i && realBegin[i]; owner[i]=i;
             gw.keyData.Set(x[i],y[i],begin?1:0,i);
         }
-        for(int action=5;action<15;action++)if(wanted[action]) {
+        for(int action=5;action<16;action++)if(wanted[action]) {
             int id=slot(action); boolean begin=id<0;
             if(action==12 && id<0) { if(owner[0]<0)id=0; }
             else if(id<0) {
