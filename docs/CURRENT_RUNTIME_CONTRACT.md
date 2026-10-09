@@ -1,5 +1,12 @@
 # Current runtime/data contract — v1.2 PS Vita Controls
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 ## Integrated Vita controls
 
 On `main`, the launcher offers two remembered choices before

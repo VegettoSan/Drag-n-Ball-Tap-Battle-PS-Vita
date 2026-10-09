@@ -1,61 +1,61 @@
-# Porting plan — v1.0 / 00.34 hardware baseline, 2026-10-07
+# Porting plan — v1.2 integration, 2026-10-09
 
-The original plan began with an atlas preview. The chosen implementation now
-preserves the original Java engine through private TeaVM AOT and replaces its
-Android platform services. Do not restart handwritten combat reconstruction.
-[CURRENT_STATUS](CURRENT_STATUS.md) is the evidence matrix; this page is the work
-order. Completion below applies only to the stated scope/build.
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
 
-| Stage | Established work | Remaining exit condition |
+Preserve the original Java core through private TeaVM AOT and adapt Vita
+platform boundaries. v1.2 keeps the v1.1 VisualQuality resource/memory baseline.
+[Current status](CURRENT_STATUS.md) records evidence; this page sets work order.
+
+| Area | Established work | Remaining validation |
 |---|---|---|
-| Bootstrap/data | Native selector, VFS, original/Community14 containers, byte-preserving import | Maintain path/error/fallback tests |
-| Original core | APK-derived Init/Run/tasks/Controller/drawing/AI generated privately | Preserve method boundaries during future adaptations |
-| Vita integration | GLES/FBO/PVF/touch/Vorbis/PCM/save/time services; real menu and battle on earlier builds | Exercise every required lifecycle/mode, not only a compile |
-| Offline data | Local character/shared completeness, no dependency on dead catalog | Broader missing-data diagnostics and dataset coverage |
-| Performance | 00.18 steady battle 60 FPS; 00.33 repeated Invasion fight transitions survive the prior native allocation crash | Re-measure FPS/memory over longer latest-build sessions and more profiles |
-| Text | 00.19 image-rectangle fix restores visible text | Size/layout/script and lifecycle matrix |
-| Audio | Decode/three channels/limiter/reconstruction; 00.21 setup repair | Clean audio/voices reported in the current hardware path; broaden character/phrase and long-session coverage |
-| Saves/mods | Independent per-profile seeded save, dynamic installed roster 00..99, standalone resource isolation | Broader save semantics and code-mod compatibility matrix |
-| Product/distribution | v1.0 public package identity; 00.34 hardware-confirmed runtime, small main commits, manual release/prerelease automation | Broader compatibility, install/launch sanity on DBTB01178 and release-performance validation |
+| Engine/platform | Private original Init/Run/tasks/combat; GLES/PVF/audio/file/time adapters | Broader mode/lifecycle coverage, preserve task ordering |
+| Resource memory | Native PAC streaming, exact Ogg allocation, protected-PAC ownership swap; indexed file-backed AAC/M4A and adaptive C14U texture policy | Re-measure long sessions/profile churn; accepted blur remains |
+| Profiles/saves | Unified profiles-v1, no resource borrowing, profile-local stable save.bin and seed | Broader save round-trips; no automatic experimental progress migration |
+| Mods/extractors | Audited codecs plus bounded PRIVATE DEX recognition, optional dbtb_codec.json | Additional data/code mods require independent evidence |
+| Controls | Combat/hidden pads, swapped L/R, character X, Start resume and Circle accepted over tests | Exact rebuilt stable v1.2 retest and more original menu contexts |
+| Selector | English labels; Vita first / Touch only second; remembered profile input choice | Long/Unicode folder names and accessibility remain separate |
+| Packaging | Local full-engine v1.2, 01.02 / DBTB01178, complete build/package checks | User physical retest; public release upload by maintainer |
 
-## Immediate physical checks
+## Immediate work
 
-1. Keep the now-passing Invasion repeated-fight/Saitama->Freezer path in every future regression pass.
-2. Exercise additional characters and profiles, especially large protected PACs, while watching cold/repeated/evicted resource loads.
-3. Reconfirm clean voices/text/FPS during longer runs; the 00.33 success closes the reproduced crash but is not exhaustive coverage.
-4. Explicitly test Shop return behavior, return-to-menu, repeated launches, save round-trips and suspend/resume.
-5. Continue distinguishing every rebuilt VPK/ELF hash from the pinned 00.33 hardware-tested artifact.
+1. Record the user's stable v1.2 result against its exact VPK hash. The user is
+   testing it; no result has been reported yet.
+2. Recheck stable profile progress, control-choice persistence, combat and
+   character confirmation, available Circle Back and Start pause/resume.
+   Dialogues and tutorial remain tactile; dialogue X is retired, not a blocker
+   to investigate again without a new explicit request and changed evidence.
+3. Preserve the previous heavy dbz_mobile_v9 successive-fight and Invasion
+   Saitama -> Freezer regression paths; broaden character/profile/long-session
+   coverage without assuming every mod is certified.
+4. Check Shop return, repeated launches, save round-trips and suspend/resume.
+5. Prepare publication using the exact compiled file and English
+   [v1.2 release notes](RELEASE_v1.2.md); compiled does not mean newly
+   hardware-tested or already published.
 
 ## Subsequent work
 
-- Keep the original frame/task order; improve loading only at verified adapter
-  boundaries. Prefetch/async loading is a future design requiring ownership,
-  scheduling and real-device measurements, not a current implemented feature.
-- Validate all supported single-player flows, return-to-menu, repeated launches
-  and suspend/resume before claiming complete gameplay fidelity.
-- Confirm profile save isolation and backups with real fixtures; document any
-  migration rather than silently sharing progress.
-- Implement physical controls through the recovered original mode-1 virtual
-  pad and KeyData, following [the 2026-10-08 research](VITA_CONTROLS_RESEARCH_2026-10-08.md).
-  Host JVM type-1/type-4 probes pass; selector/configuration, pointer allocation,
-  tutorial, pause and hardware acceptance remain pending. Preserve physical
-  Back neutrality outside validated gameplay contexts.
-- Extend asset mods first; Java/code-mod mechanics and new codecs require
-  independent audits. File fallback does not merge PAC entries.
-- Optional selector metadata/Unicode, remembered profile and log rotation remain
-  secondary to reliable gameplay.
-- Bluetooth/network synchronization requires packet/timing analysis. Billing,
-  browser and obsolete catalog services are not single-player requirements.
-- Before public full-engine release, review upstream notices, commercial-code
-  distribution scope and whether a true relink bundle is available.
+- Improve loading or heavy-texture quality only at evidenced adapter boundaries;
+  retain approved ownership/memory repairs and source PAC bytes. No current
+  generic async prefetch/loading feature is claimed.
+- Audit new code-mod mechanics/task/pad layouts independently; compatible
+  extraction is not execution of modified Android DEX.
+- Continue profile/save isolation. Do not silently move experimental progress
+  over the stable save or borrow another profile's resources.
+- Optional remembered profile selection, Unicode metadata and log rotation are
+  distinct from the implemented remembered **control-mode** choice.
+- Network/Bluetooth synchronization remains unsupported and requires its own
+  packet/timing study. Billing and obsolete remote catalogs are offline boundaries.
 
 ## Future port reuse
 
-Use [PORTING_GUIDE](PORTING_GUIDE.md) for the workflow and failure lessons. Reuse
-validated platform contracts, not this APK's constants, state labels, memory
-budgets or formats without checking the next game's actual source. The GdGohan
-archive is a comparison reference; the original supplied APK remains behavioral
-source of truth. Historical stages/results live in [ATTEMPTS](ATTEMPTS.md).
+[PORTING_GUIDE](PORTING_GUIDE.md) explains the reusable method. Reuse verified
+platform contracts, not this game's constants, memory budgets or task IDs
+without checking the next game's source. Journals retain dated experiments.
 
 <!-- DBTB_00_23_DETAIL:START -->
 ## Milestone update — 00.23 battle-start blocker closed for the reproduced path
@@ -68,9 +68,6 @@ and release-quality performance/build reproducibility.
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current public release — v1.0 / DBTB01178 (2026-10-07):** the 00.34
-> gameplay/runtime baseline is hardware-confirmed stable for the tested paths.
-> Earlier 00.33 hardware evidence remains valid for the protected-PAC repeated-fight
-> repair, Loading recovery and dynamic rosters. Historical artifact identities are
-> preserved; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->

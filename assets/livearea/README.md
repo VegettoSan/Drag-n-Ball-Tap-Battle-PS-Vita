@@ -1,12 +1,11 @@
 # Dragon Ball Tap Battle LiveArea
 
 <!-- DBTB_DOC_STATUS:START -->
-> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
-> Gameplay/presentation baseline: hardware-confirmed 00.34. This file may also
-> describe earlier component validation; see
-> [CURRENT_STATUS](../../docs/CURRENT_STATUS.md) for authoritative status.
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](../../docs/CURRENT_RUNTIME_CONTRACT.md) · [Status](../../docs/CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
 <!-- DBTB_DOC_STATUS:END -->
-
 
 Approved LiveArea art extracted from the supplied `gen.apk` and adapted for PS Vita.
 
@@ -30,7 +29,8 @@ dimensions, indexed PNG format, palette/transparency requirements and size limit
 CMake fails closed if any check fails.
 
 The supplied Ready ZIP and failed Final VPK had a 192-entry `pic0.png` palette.
-The corrected source pads that PLTE to 256 entries; every decoded RGBA pixel and every IDAT byte is unchanged. This repairs a documented Vita splash requirement that the earlier hash/header checks missed. The corrected LiveArea was subsequently installed and accepted on physical Vita and remains packaged in the 00.34 hardware baseline and v1.0 release.
+The corrected source pads that PLTE to 256 entries; every decoded RGBA pixel and every IDAT byte is unchanged. This repairs a documented Vita splash requirement that the earlier hash/header checks missed. The corrected LiveArea was subsequently installed and accepted on physical Vita and remains packaged unchanged in the 00.34 historical baseline, v1.1 and the
+validated v1.2 package.
 Reproduce the lossless correction with:
 
 ```sh

@@ -1,5 +1,12 @@
 # Dragon Ball Tap Battle PS Vita
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](docs/CURRENT_RUNTIME_CONTRACT.md) · [Status](docs/CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 > **v1.2 — PS Vita Controls** — Vita `APP_VER 01.02`, `TITLE_ID DBTB01178`.
 > Physical combat controls, hidden touch pads, character confirmation, Circle back
 > and Start pause/resume, approved in the user's controls tests. Dialogues remain
@@ -179,6 +186,8 @@ that was physically tested remains documented with its original
 See [Current Status](docs/CURRENT_STATUS.md) for validation scope and history.
 
 ## Technical documentation
+
+[Complete documentation index and v1.2 alignment audit](docs/DOCUMENTATION_INDEX.md).
 
 - [Vita physical controls research and selector-mode plan](docs/VITA_CONTROLS_RESEARCH_2026-10-08.md) — historical adapter design; working bindings are now integrated in v1.2.
 - [Hide virtual-pad graphics through Vita resource adaptation](docs/VITA_PAD_VISIBILITY_RESEARCH_2026-10-08.md) — structural nine-APK audit; the retained hidden-pad adapter was approved in the controls tests.

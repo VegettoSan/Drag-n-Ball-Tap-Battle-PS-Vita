@@ -1,5 +1,12 @@
 # Project Rules
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 These rules are part of the technical contract of the port.
 
 1. **The original game is the behavioral source of truth.** Reconstruct or adapt its systems; do not replace them with arbitrary hardcoded approximations when the original behavior can be understood.
@@ -55,8 +62,6 @@ contract. See [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md) and
 [CURRENT_STATUS](CURRENT_STATUS.md).
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current release preparation — v1.2 (2026-10-09):** APP_VER `01.02`,
-> TITLE_ID `DBTB01178`. Approved Vita controls, English selector and hidden pads;
-> touch-only dialogues. v1.1 resource/memory baseline retained.
-> See [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->

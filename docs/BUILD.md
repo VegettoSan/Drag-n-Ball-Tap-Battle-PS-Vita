@@ -1,5 +1,12 @@
 # Build and packaging
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 ## v1.2 local full-engine release
 
 CMake defaults to `DBTB01178` / `01.02` / normal title / `save.bin`.
@@ -141,7 +148,7 @@ ZIP/SFO/seed/full-engine checks and approved LiveArea validation pass.
 See [hardware protocol](TEST_VITA_CONTROLS.md) and
 [build evidence](evidence/vita_controls_test_1.json).
 
-## v1.0 public release — DBTB01178
+## Historical v1.0 public release — DBTB01178
 
 Current public package identity:
 
@@ -159,9 +166,9 @@ public release. The package identity changed from the historical test ID
 the 00.34 stable content. Historical build sections below retain the exact
 APP_VER/TITLE_ID/hash values of the artifacts that were actually tested.
 
-## 00.34 stable hardware-confirmed build — unified profiles + selector UX
+## Historical 00.34 stable build — unified profiles + selector UX
 
-Current complete user-test artifact:
+Exact historical user-test artifact:
 
 - `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk`
 - APP_VER: `00.34`
@@ -176,7 +183,7 @@ Current complete user-test artifact:
 to `ux0:data/DBTapBattle/profiles/<Profile>/`. The VPK no longer distinguishes
 `game/` from `mods/` at runtime and no longer synthesizes an Original row.
 
-The current 00.34 rebuild changes only selector button/text geometry after the
+The final 00.34 rebuild changed only selector button/text geometry after the
 no-orb fix: the 664 px-wide themed button is centered at x=148, the one-star
 marker is shifted with it, and labels are fitted to a 530 px cyan text region
 centered at x=480. Original game/core behavior is unchanged.
@@ -604,9 +611,8 @@ For installation, update the VPK without deleting `ux0:data/DBTapBattle/` or sav
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current release preparation — v1.2 (2026-10-09):** APP_VER `01.02`,
-> TITLE_ID `DBTB01178`; stable `save.bin`, approved Vita controls, English
-> launcher, tactile dialogues. [Release notes](RELEASE_v1.2.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## Corrected LiveArea repack — 2026-10-05

@@ -1,10 +1,17 @@
 # Internal resource map
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 Source: supplied APK 1.4 (hash in APK_AUDIT.md); original GameData,
 GameData.SpriteData, TCBManajer._SetAct/_ActReqMain/DrawImage/DrawSprite,
 checked against DEX and local jadx 1.5.6 output. The table below describes the
 ordinary source contracts; the pinned community normalization is documented
-separately. Full engine 00.22 preserves original payload interpreters privately;
+separately. The current full engine preserves original payload interpreters privately;
 see [CURRENT_STATUS](CURRENT_STATUS.md) for device/host scope.
 
 | Format | Original role / layout established | Status and remaining work |
@@ -19,7 +26,7 @@ see [CURRENT_STATUS](CURRENT_STATUS.md) for device/host scope.
 | GDT | Present in scenarios/card/gamedata/text resources | Not explicitly dispatched by observed GameData branches. Do not confuse tag 'gdt' with gameplay DAC converted to piGameData. Meaning/consumers UNCONFIRMED |
 | BMP/DAT/PLT/DB | Found in common/select/card-preview/background-object PACs | Container/hash/type confirmed. No matching branch in the audited original GameData loader; possible authoring/legacy metadata remains UNCONFIRMED. Preserve bytes; do not claim needed runtime decoders |
 | OGG / exterior audio | Original/Gen/Android14/Spanish: 17 stereo BGM + 19 mono SE, all real Vorbis 44.1 kHz. Invasion changes 7 `.ogg`-named BGM to 5 MP3 + 2 AAC/M4A; Samu has 12 MP3 + 3 AAC/M4A + 2 Vorbis | Runtime sniffs content: Vorbis uses libvorbisfile, MP3/AAC use Vita SceAudiodec without source conversion. 00.28 hardware confirmed Invasion audio in the tested path; 00.29 fixes one-stream compressed-BGM replacement exposed by Samu |
-| WAV | Original GameData loader has WAV slot support (max 20 original, not 30) | 198 Gen RIFF mono PCM16/22050 streams and 198 community wrapped streams host-checked; audible quality pending |
+| WAV | Original GameData loader has WAV slot support (max 20 original, not 30) | 198 Gen RIFF mono PCM16/22050 streams and 198 community wrapped streams host-checked; clean voices reported in later hardware paths, exhaustive character/phrase coverage open |
 | mk.bin | 392-byte raw resource read by Game9 | Present; complete command/schema meaning PENDING |
 | loading.png | 4233-byte standalone raw resource | Present and loader reference confirmed |
 | XML | Android manifest/layout/values resources, not a game XML scene system | Replace platform UI/lifecycle; do not add an invented scene XML parser |
@@ -43,6 +50,17 @@ counts are in [APK_TECHNICAL_REFERENCE](APK_TECHNICAL_REFERENCE.md) and
 The engine itself is not rewritten for these differences. Native/Vita resource
 adapters restore only verified transport/metadata contracts before handing data
 to the preserved original consumers.
+
+## v1.2 pad visibility at the resource boundary
+
+`src/pad_visibility.hpp` audits the normalized effect animation and selects
+only pad image fields. In hidden mode the native stream view overlays image -1,
+which the original renderer already skips. Shared cached bytes and source PACs
+remain immutable; input zones stay active. Nine supplied APKs have structural/
+corpus evidence (22-action closure, 25 image fields, 50 bytes). This is not proof
+of every custom mod. Unrecognized structures decline the overlay.
+See [visibility research](VITA_PAD_VISIBILITY_RESEARCH_2026-10-08.md) and
+[current runtime contract](CURRENT_RUNTIME_CONTRACT.md).
 
 ## Important format distinctions
 
@@ -82,8 +100,9 @@ record index, height with 47592 and record index. Indices are table-record
 indices, independent of the outer PAC entry index. Payload cell bytes are not
 XOR-decoded or replaced with original defaults.
 
-Codec selection follows each resolved PAC. A converted gamedata override and
-ordinary text fallback can therefore coexist. Truncated directories, header
+Codec selection follows each resolved PAC. Converted gamedata and ordinary
+text files can coexist inside the selected profile; no file is borrowed from
+another profile. Truncated directories, header
 overlap and record extents outside the payload fail with empty output. The
 complete two-table load is atomic; a corrupt mod override reports an error.
 These bounds are native safety constraints, verified on the supplied files.
@@ -93,7 +112,8 @@ Host ASan/UBSan validation: both APKs yield 271 game records and one text record
 these differences are preserved. Remaining cells and dimension changes are not
 included in that statistic. Tests also cover record-index XOR, unsigned 128/255
 values, every truncated synthetic payload, coordinate bounds, large offsets and
-products, stale-state clearing and mixed-codec VFS fallback. LeakSanitizer is
+products and stale-state clearing. The original mixed-codec fallback fixture
+was a historical test; current fixtures enforce profile isolation. LeakSanitizer is
 disabled because this container prevents its /proc thread inspection; address
 and undefined-behavior instrumentation remain enabled. That initial host table test is historical; later Vita gameplay uses these
 services. It is not exhaustive schema or fidelity proof.
@@ -122,7 +142,7 @@ plausible count alone is not FORMAT CONFIRMED. Zero-count interpretations of
 raw CNV do not establish an empty sprite set. Raw animation DAC index validation
 checks only table and record starts, not full variable record bounds.
 
-## Current adapter boundary and corpus — 00.22
+## Current adapter boundary and historical 00.22 corpus
 
 `normaliseEnginePac` adapts confirmed Community14 directories, image wrappers,
 WAV wrappers and converted **top-level BIN** GameData entries; gamedata/text00
@@ -145,8 +165,9 @@ indices even when excluded payloads are not read; see [PAC_FORMAT](PAC_FORMAT.md
 
 Private game bytes never enter tests committed to Git. Host probes use supplied
 external APK extractions; [VALIDATION](VALIDATION.md) gives commands, fixtures and
-which APIs are mocked. Current audible voice quality and 00.22 selection recovery need Vita
-confirmation even though decoding/normalization pass on host.
+which APIs are mocked. Later hardware tests approved clean voices, selection
+and battle startup in the exercised paths. Those results do not certify all
+characters, codecs or scenes.
 
 <!-- DBTB_00_23_DETAIL:START -->
 ## 00.23 resource-loading note
@@ -158,12 +179,8 @@ future ports: format conversion and bridge allocation strategy are separate conc
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
-> and functional on physical PS Vita for the exercised selector, profile-loading
-> and gameplay paths, with no issue found so far. It retains the 00.33
-> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
-> See [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 Deep machine-readable evidence: [apk_deep_structure_2026-10-06.json](evidence/apk_deep_structure_2026-10-06.json).

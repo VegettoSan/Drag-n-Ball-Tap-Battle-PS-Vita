@@ -1,5 +1,12 @@
 # Vita boot-selector theme assets
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](../../docs/CURRENT_RUNTIME_CONTRACT.md) · [Status](../../docs/CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 These split Base64 files reconstruct a small ZIP containing **four derived PNG
 elements** used only by the PS Vita data-set selector:
 
@@ -23,15 +30,20 @@ Do not replace these parts casually: the hashes are an integrity/provenance
 contract for the exact theme tested by the port.
 
 
-## v1.0 runtime use (00.34 implementation)
+## Current runtime use — v1.2 (inherited 00.34 presentation)
 
-The v1.0 selector, inherited unchanged from 00.34, must not draw the whole 512×512 background PNG. That source
+The v1.2 selector retains the approved 00.34 background crop and must not draw the whole 512×512 background PNG. That source
 contains two separate visual regions: the desired cyan/grid background occupies
 the continuous top band (detected as 482×320 px), while a blue energy orb exists
 later in the transparent lower section. Runtime sampling therefore crops to the
 top band in both U and V and stretches only that band across the complete
 960×544 Vita viewport. The header/button/ball
 textures retain their independent placement and sizing.
+
+The v1.2 launcher also reuses the header/button/background for its English
+control choice: **PS VITA CONTROLS** first / **TOUCH ONLY** second. Profile
+folder names keep their supplied language; the original game/mod text is not
+translated.
 
 The same background, header and button assets are reused for the
 **OPENING PROFILE / LOADING GAME DATA...** transition shown immediately after

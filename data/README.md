@@ -1,11 +1,19 @@
 # Local game data — current profile contract
 
-Current public VPK identity: **v1.0**, APP_VER `01.00`, TITLE_ID `DBTB01178`.
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](../docs/CURRENT_RUNTIME_CONTRACT.md) · [Status](../docs/CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
+Prepared v1.2 VPK identity: APP_VER `01.02`, TITLE_ID `DBTB01178`; the published
+1.1 is the previous release.
 
 No Dragon Ball Tap Battle asset dataset is stored in Git. Prepare data from a
 user-owned APK outside tracked source, then copy the resulting package to Vita.
 
-The current v1.0 runtime contract (inherited from 00.34) is:
+The v1.2 runtime retains the unified profile contract:
 
 ```text
 ux0:data/DBTapBattle/profiles/<Profile>/
@@ -44,6 +52,11 @@ ux0:data/DBTapBattle/profiles/<Profile>/save.bin
 
 The VPK copies its read-only `app0:/save.bin` seed only when that profile does
 not already have a save. APK-bundled saves are not installed automatically.
+
+The profile-local `vita-controls.cfg` remembers only the launch input choice.
+Vita controls hide pads; Touch only retains original input. Stable progress stays
+in `save.bin`; experimental `save-controls-test.bin` is separate and is not
+automatically migrated. Keep any required `dbtb_codec.json` with its profile.
 
 The older Python extraction/preparation tools are retained for engineering,
 forensics and pinned historical tests. Some of their command-line examples in

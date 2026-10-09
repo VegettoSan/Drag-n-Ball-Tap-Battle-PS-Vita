@@ -1,8 +1,15 @@
 # Runtime data layout — unified profiles
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 > Source of truth for the current executable/extractor contract: [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md). The migration section at the bottom intentionally names historical paths.
 
-Current source contract after the unified-profile selector refactor.
+Current v1.2 contract, retaining the unified profiles-v1 layout from v1.1.
 
 ## Base path
 
@@ -92,6 +99,19 @@ Rules:
 - APK-bundled `save.bin` files are recorded by the extractor for provenance but
   are not installed as runtime progress.
 - Saves are never shared automatically between profiles.
+
+## Input preference and test-save ownership
+
+`ux0:data/DBTapBattle/profiles/<Profile>/vita-controls.cfg` stores only the
+remembered control preference (`DBTC1:<0|1|2>\n`). New choices write 2 for
+hidden-pad Vita controls or 0 for touch only; legacy 1 migrates to 2 when
+confirmed. The selector prompts before every profile launch. Do not rename or
+rewrite profile data to change input mode. A missing preference retains the
+touch default even though the Vita row is displayed first.
+
+Stable v1.2 (`DBTB01178`, `01.02`) reads/writes the existing `save.bin`.
+Experimental controls builds (`DBTBCT001`) use `save-controls-test.bin`.
+The stable release does not automatically copy test progress over stable saves.
 
 ## Extractor contract
 

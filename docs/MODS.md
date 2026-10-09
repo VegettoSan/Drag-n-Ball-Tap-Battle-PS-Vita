@@ -1,8 +1,15 @@
-# Mod compatibility model — v1.1 universal release candidate
+# Mod compatibility model — v1.2 with inherited universal mod support
+
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
 
 > Historical test documents may use older `game/` and `mods/` paths. The
 > current runtime contract is [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
-> v1.1 uses APP_VER `01.01` and TITLE_ID `DBTB01178`. It retains the hardware-confirmed 00.34 profile/save model and adds universal PRIVATE codec parsing and graphics memory safety. The v1.0 baseline remains available for rollback.
+> v1.2 uses APP_VER `01.02` and TITLE_ID `DBTB01178`. It retains the v1.1 VisualQuality loader/memory baseline and adds approved Vita controls. The published 1.1 remains the previous release.
 
 ## Selection model
 
@@ -58,6 +65,21 @@ The VPK's read-only `app0:/save.bin` is copied only when that profile has no
 save yet. Existing saves are never replaced merely by switching profile or
 updating the VPK. APK-local saves are not installed automatically.
 
+## Controls and asset-mod compatibility
+
+Every profile offers **PS VITA CONTROLS** first (hidden pads) and **TOUCH ONLY**
+second before launch; the highlight is remembered per profile. Input goes through
+the original KeyData/Controller boundary. Pad hiding changes only the runtime
+DAC view, not PAC files or shared cached bytes. Unknown resource structures can
+decline the overlay; nine supplied APKs have structural/corpus evidence, not
+universal hardware certification. Custom DEX task/pad changes need an audit.
+
+X attacks and confirms ready characters. Circle goes back in audited original
+menus; Start pauses/resumes the main pause screen. Dialogues, tutorial gestures,
+other menu choices and Yes/No prompts use front touch. See
+[control reference](VITA_CONTROLS_REFERENCE.md) and
+[runtime contract](CURRENT_RUNTIME_CONTRACT.md).
+
 ## Compatibility tiers
 
 ### Tier A — resource replacement
@@ -94,11 +116,11 @@ Audited protected families include Android14, Spanish Android14, Invasion and
 DBFZ. For many additional DragonTap PRIVATE variants, the Web and Windows
 extractors derive codec aliases/XOR values *from the APK's own DEX initializer*,
 validate PAC structure, and write a profile-local `dbtb_codec.json` when required.
-The v1.1 Vita bridge reads this metadata without executing Android code.
+The v1.2 Vita bridge retains the v1.1 path and reads this metadata without executing Android code.
 Neither a successful decode nor a complete character roster proves that every
 customized mod works: DEX logic changes may require separate porting.
 
-### High-resolution sprites / GPU memory (known v1.1 limitation)
+### High-resolution sprites / GPU memory (v1.1 limitation retained in v1.2)
 
 Some mods have large sprite atlases/effect assets that can exhaust Vita system/GPU
 memory during character selection, fight startup or between fights. The universal
@@ -106,7 +128,7 @@ C14U texture bridge uses compact RGBA4444 uploads and an **adaptive memory-aware
 quality policy**. It may reduce GPU texture resolution to prevent out-of-memory
 crashes. Therefore **some characters, effects, UI elements or backgrounds may
 look blurry while others are sharp**. This is a tradeoff intentionally kept in
-the hardware-approved v1.1 build. The extractor preserves the original PACs.
+the hardware-approved v1.1 resource baseline retained in v1.2. The extractor preserves the original PACs.
 
 The policy is generic across compatible protected formats and depends on resource
 dimensions and memory usage; **there are no mod-name-specific configuration
@@ -146,11 +168,15 @@ installation layout unless explicitly updated to `profiles/`.
 
 ## Current evidence
 
+- v1.2: approved physical controls and hidden pads are integrated into main;
+  stable package 01.02 / DBTB01178 was freshly built and is being tested.
+  Dialogue X was retired; no exact stable-v1.2 hardware result is recorded yet.
+
 - v1.1 VisualQuality: physical Vita accepts repeated fights of `dbz_mobile_v9`, no reproduced prior crash/freeze, though some reduced-resolution textures are blurry. `runtime.log` shows 340 performance windows, 317 of which are 58+ FPS; this is a tested-session result, not a blanket performance promise.
 
 - 00.33: hardware-confirmed repeated-fight protected-PAC ownership fix.
 - Recent hardware sequence: Loading recovery, dynamic rosters including Samu 92.
-- v1.0: current public release inherits the hardware-confirmed 00.34 runtime and
+- Historical v1.0: its public release inherited the hardware-confirmed 00.34 runtime and
   uses unified `profiles/`, real-only selector entries, fullscreen selector
   background handling and the themed profile-opening transition. The exact
   00.34 gameplay/runtime baseline was confirmed on physical Vita; a freshly

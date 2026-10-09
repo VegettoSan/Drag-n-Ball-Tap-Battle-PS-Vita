@@ -1,5 +1,21 @@
 # Current status — 2026-10-09, v1.2 PS Vita Controls (release ready)
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
+## Documentation alignment — 2026-10-09
+
+All 78 pre-existing tracked Markdown files were reviewed, and the
+[documentation index](DOCUMENTATION_INDEX.md) adds the 79th. Current subsystem,
+build, validation, installation/extractor and next-work pages now match v1.2.
+Every page links to current status/contract while preserving dated build and
+APK evidence. The user is testing stable v1.2; no outcome is recorded yet.
+These are Markdown-only updates; the delivered executable/VPK is unchanged.
+
 ## v1.2 working controls promoted to main
 
 The user approved combat and hidden pads, the L/R swap and X character
@@ -963,7 +979,7 @@ acceptance of the Final VPK.
 See [corrected package evidence](evidence/vita_livearea_fixed_00.23.json) and
 [the corrected device test](TEST_VITA_00_23_LIVEAREA_FIXED.md).
 
-## Implementation versus observation
+## Historical implementation versus observation — 00.23
 
 | Area | Current implementation | Verified scope / open limit |
 |---|---|---|
@@ -991,7 +1007,7 @@ log reports effective bus 222; log API results/effective values instead of
 assuming the requested value is the applied value. No higher clock profile is
 established here.
 
-## Latest observations and next work
+## Historical next work — 00.23
 
 1. **Confirm the LiveArea repack on hardware.** Install the corrected `DBTapBattle-Vita-00.23-LiveArea-Fixed.vpk` and verify VitaShell promotion, bubble icon, Shenlong background, launch gate/logo and a short launch/battle regression pass.
 2. **Broaden 00.23 regression coverage.** Repeat battles, switch across more characters and revisit evicted resources to confirm the streaming fix under churn rather than only one successful progression.
@@ -1020,7 +1036,6 @@ No currently reproduced crash is open in the 00.23 tested path. New failures sho
 [Porting guide](PORTING_GUIDE.md) explains reusable techniques and failures.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current release preparation — v1.2 (2026-10-09):** APP_VER `01.02`,
-> TITLE_ID `DBTB01178`; stable `save.bin`, approved Vita controls, English
-> launcher, tactile dialogues. [Release notes](RELEASE_v1.2.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->

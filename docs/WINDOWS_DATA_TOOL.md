@@ -1,4 +1,11 @@
-# Windows APK data extractor 1.5 — universal v1.1 support
+# Windows APK data extractor 1.5 — v1.2-compatible profiles-v1 output
+
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
 
 The public launcher is:
 
@@ -25,7 +32,7 @@ browser and does not upload the selected APK. See
 - built-in Windows PowerShell 5.1
 - no Python, Java, 7-Zip, administrator rights, or network access required
 
-## v1.1 universal protected mods
+## Universal protected mods retained from v1.1
 
 The release ZIP includes `PrivateModDex.ps1` beside
 `Extraer_APK_para_Vita.ps1`. Keep both files together. Unknown compatible
@@ -36,11 +43,16 @@ Heavy mod images can be blurred/downscaled on Vita for memory stability.
 See [full installation guide](INSTALLATION_AND_EXTRACTION.md).
 
 
-Extractor 1.5 targets the v1.1 VPK (`APP_VER 01.01`, `TITLE_ID DBTB01178`)
+Extractor 1.5 is compatible with v1.2 (`APP_VER 01.02`, `TITLE_ID DBTB01178`)
 and its `profiles-v1` contract documented in
 [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md). The VPK scans only
 `ux0:data/DBTapBattle/profiles/`; it does not use `game/` or `mods/` as
 current profile roots and it does not synthesize an Original row.
+
+The existing public download is `DBTapBattle-Extractor-Windows-v1.1.zip` from
+release `1.1`; its filename is not the internal extractor version (1.5).
+No extractor code/data-layout change is needed for v1.2 controls; valid profiles
+do not need re-extraction.
 
 ## Output contract
 
@@ -81,8 +93,9 @@ The extractor detects:
 - ordinary Gen-style `assets/` layouts;
 - audited protected Android14-family layouts.
 
-Protected Android14-family aliases are canonicalized only when a known audited
-codec profile is identified. Payload bytes are not decrypted/recompressed by the
+Protected aliases are canonicalized using a known audited codec or validated
+constants recovered by the bounded PRIVATE DEX reader. Unknown/ambiguous
+loaders fail closed. Payload bytes are not decrypted/recompressed by the
 desktop extractor.
 
 ## Vita copy procedure

@@ -1,5 +1,12 @@
 # Original renderer → vitaGL mapping
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 Source: supplied DEX, disassembled with androguard and decompiled locally with
 jadx 1.5.6. API availability checked against vitaGL commit
 `cdbba4232cb93a741ba190be9a32143dfed12d8d`. Availability is source-level evidence,
@@ -42,6 +49,16 @@ jadx 1.5.6. API availability checked against vitaGL commit
 | `glFramebufferTexture2DOES` | `glFramebufferTexture2D` | Small adapter: drop OES suffix; translate GL constants; verify FBO orientation and completeness. |
 | `glGenFramebuffersOES` | `glGenFramebuffers` | Small adapter: drop OES suffix; translate GL constants; verify FBO orientation and completeness. |
 | `glGenRenderbuffersOES` | `glGenRenderbuffers` | Small adapter: drop OES suffix; translate GL constants; verify FBO orientation and completeness. |
+
+## Current v1.2 presentation adaptations
+
+The renderer retains the v1.1 VisualQuality policy: supported dynamic C14U
+images can use RGBA4444 and reduced physical GPU resolution according to size
+and memory pressure. The accepted blur limitation remains; original source PAC
+bytes and geometry contracts are unchanged. Physical input adds no renderer
+rewrite: pad image fields are hidden by the resource-stream view, and the
+original drawing code skips image -1. See [resource formats](RESOURCE_FORMATS.md)
+and [control reference](VITA_CONTROLS_REFERENCE.md).
 
 ## Behavior to preserve
 
@@ -102,9 +119,6 @@ labels mocked host checks and real-device results.
 - `evidence/apk_inventory.json`: actual DEX API call inventory.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current public release — v1.0 / DBTB01178 (2026-10-07):** the 00.34
-> gameplay/runtime baseline is hardware-confirmed stable for the tested paths.
-> Earlier 00.33 hardware evidence remains valid for the protected-PAC repeated-fight
-> repair, Loading recovery and dynamic rosters. Historical artifact identities are
-> preserved; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->

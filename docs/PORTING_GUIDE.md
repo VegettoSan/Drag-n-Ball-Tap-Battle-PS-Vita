@@ -1,5 +1,12 @@
 # Reusable porting guide — lessons from Tap Battle on Vita
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 ## v1.2 adapter-only physical controls
 
 The integrated controls translate Vita buttons to the original KeyData pointer
@@ -15,11 +22,8 @@ Circle was accepted in Test 5, Start resume earlier, and combat/hidden pads and
 character confirmation in preceding tests. See [current contract](CURRENT_RUNTIME_CONTRACT.md),
 [controls reference](VITA_CONTROLS_REFERENCE.md) and [release notes](RELEASE_v1.2.md).
 
-> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
-> The hardware-confirmed gameplay baseline is 00.34; historical build metadata
-> remains unchanged where it identifies exact tested artifacts.
-
-Checkpoint: 2026-10-05 / full-engine 00.22. This guide distinguishes reusable
+Original lessons began at 2026-10-05 / full-engine 00.22 and were extended
+through v1.1 and v1.2. This guide distinguishes reusable
 methods from game-specific facts. [CURRENT_STATUS](CURRENT_STATUS.md) identifies
 what actually worked on hardware. It is not a claim that every Java/Android game
 can use this exact pipeline or that Tap Battle is finished.
@@ -54,7 +58,7 @@ disconnected; required services must not pretend to succeed as empty no-ops.
 | GL10/GL11 calls | VitaGles → C ABI → vitaGL | Keep state/draw order, types and memory lifetime |
 | Canvas/Paint text | StringTexture → PVF service | Metrics, image coverage and text bounds are separate contracts |
 | SoundPool/MediaPlayer/AudioTrack | Native Vorbis/PCM mixer | Recover IDs, rates, channel limits and lifecycle before optimizing |
-| Android files/save | GameVfs plus dedicated profile save bridge | Resource fallback and write ownership are different policies |
+| Android files/save | GameVfs plus dedicated profile save bridge | Selected-profile read isolation and atomic save write ownership |
 | Java timing/background tasks | Patched Vita time/fibers and EventQueue pump | A working render loop may still starve cooperative jobs |
 
 See [ENGINE_MAP](ENGINE_MAP.md), [RENDER_MAPPING](RENDER_MAPPING.md) and
@@ -107,7 +111,8 @@ original Game3 mask 187 (BIN/WAV allowed) and other paths 251 (BIN only). Type f
 are bit tests; their OR does not define the legal range of an int mask. Test actual
 core call sites and higher/sign bits instead of only invented seven-bit samples.
 The new regression fails on previous code and passes after removing that guard;
-physical 00.22 selection recovery remains pending.
+00.22 initially awaited selection testing; later hardware reports approved
+selection and battle startup. That earlier pending status is historical.
 
 Separate disk bytes, bridge copies, decoding and GPU uploads. A 26-character-PAC
 host probe measured 91,081,701 → 11,707,264 source bytes with filter 33; this
@@ -160,9 +165,11 @@ outside present; a steady FPS average can hide a long loading/background pause.
 
 ## 8. Preserve datasets and save ownership
 
-Resolve mod files before base files, but do not hide a corrupt existing override.
-An entire PAC override does not merge its entries with another PAC. Decode
-per resolved file so ordinary fallback and encoded overrides can coexist.
+Resolve resources only inside the selected profiles/<Profile>/ dataset. Missing
+or corrupt data is an explicit compatibility error; never borrow another
+profile's files. An entire PAC is decoded as one resource, without merging its
+entries with another PAC. Ordinary and protected files can coexist inside one
+profile when their own formats are supported.
 A container codec does not establish text charset: Gen's ordinary PAC has UTF-8
 text00 but Shift_JIS game/character tables. Avoid lossy charset conversion.
 
@@ -200,11 +207,8 @@ allocation **shape and timing**, not only total file size or final decoded conte
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current public release — v1.0 / DBTB01178 (2026-10-07):** the 00.34
-> gameplay/runtime baseline is hardware-confirmed stable for the tested paths.
-> Earlier 00.33 hardware evidence remains valid for the protected-PAC repeated-fight
-> repair, Loading recovery and dynamic rosters. Historical artifact identities are
-> preserved; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## Reusable lesson from 00.23 → 00.24: budget transient native allocations

@@ -1,4 +1,11 @@
-# Web APK data extractor — v1.1 Universal Mod Support
+# Web APK data extractor — v1.2-compatible profiles-v1 output
+
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
 
 The project includes a browser-based data extractor for users who do not have a
 Windows PC.
@@ -11,16 +18,16 @@ The site is deployed from the repository by `.github/workflows/pages.yml`.
 GitHub Pages deployment run `37704582648` completed successfully and reported
 the URL above.
 
-## Current v1.1 universal extraction note
+## Universal extraction retained from v1.1
 
 For compatible previously unknown DragonTap PRIVATE mods, the browser statically
 parses `classes.dex`, verifies protected PAC aliases and emits `dbtb_codec.json`
-inside the profile. The v1.1 Vita runtime uses that metadata. Legacy profiles
+inside the profile. The v1.2 Vita runtime retains that metadata path. Legacy profiles
 may not require it. This does not run Android code and does not guarantee
 compatibility with arbitrary DEX logic changes.
 
 **High-resolution mod warning:** heavy graphics can exceed Vita GPU memory;
-v1.1 may downscale selected textures for stability, so some graphics look blurry.
+v1.2 retains v1.1's policy and may downscale selected textures for stability, so some graphics look blurry.
 The extracted PAC files retain their original bytes. Read the
 [complete installation and extraction guide](INSTALLATION_AND_EXTRACTION.md).
 
@@ -85,7 +92,7 @@ name collisions receive `_2`, `_3`, etc.
 ux0:data/DBTapBattle/profiles/<Profile>/
 ```
 
-10. Launch Dragon Ball Tap Battle PS Vita v1.1 (`TITLE_ID DBTB01178`) and select
+10. Launch Dragon Ball Tap Battle PS Vita v1.2 (`APP_VER 01.02`, `TITLE_ID DBTB01178`) and select
     the profile.
 
 Do **not** copy the generated ZIP itself into `ux0:data/`, and do not create
@@ -104,7 +111,8 @@ Extractor 1.5:
 - rejects unsafe paths, reserved Windows names, duplicate normalized names,
   file/directory collisions and unexpected non-regular entries;
 - detects non-empty `res/raw/` versus `assets/` layouts;
-- detects the three audited protected Android14-family codec profiles;
+- detects four audited protected profiles (Android14, Spanish, Invasion, DBFZ)
+  and compatible unknown PRIVATE profiles through the bounded static DEX reader;
 - maps only audited protected PAC aliases back to canonical names;
 - validates protected PAC entry bounds/type evidence before publishing them;
 - detects contiguous complete character triplets in the Vita `00..99`
@@ -139,7 +147,7 @@ use a current browser or Windows Extractor 1.5.
 ## Responsive selector UI
 
 The site uses the same four validated Gen-derived selector assets as the Vita
-00.34/v1.0 selector:
+v1.2 selector (inherited from 00.34):
 
 - `select0_background.png`
 - `select0_header.png`
@@ -185,6 +193,12 @@ limit rather than permission to silently truncate the package.
 This establishes the extraction/package core against all six supplied project
 APK families. Device/browser UI and memory behavior should still be reported
 separately when testing specific Android/iOS browsers.
+
+This table is the pinned six-APK 2026-10-07 test scope. Later PRIVATE-profile
+checks and dbz_mobile_v9 hardware acceptance are recorded in
+[universal recognition](DRAGONTAP_PRIVATE_UNIVERSAL.md) and
+[the memory investigation](DBZ_MOBILE_V9_COMBAT_OOM_2026-10-07.md).
+The controls-only v1.2 update needs no new extraction of valid existing profiles.
 
 Machine-readable evidence:
 [`docs/evidence/web_extractor_1.0_2026-10-07.json`](evidence/web_extractor_1.0_2026-10-07.json).

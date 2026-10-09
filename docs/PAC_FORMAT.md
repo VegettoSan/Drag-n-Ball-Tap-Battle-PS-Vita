@@ -1,10 +1,17 @@
 # PAC Container Format
 
-Status: ordinary outer format validated against original and Gen APKs; the
-pinned Community14 encoded variant is supported per file. Current runtime is
-full engine 00.22; physical selection recovery is pending after 00.21 rejects
-original filter 187. Audio/menu recovery is confirmed in 00.21. See
-[CURRENT_STATUS](CURRENT_STATUS.md).
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
+Status: ordinary outer format is validated against original/Gen data; audited
+protected codecs and DEX-derived PRIVATE metadata are retained from v1.1 in
+v1.2. Earlier filter-187/251 and whole-PAC loading regressions were repaired.
+Native streaming and allocation-free protected-PAC handoff remain required.
+See [CURRENT_STATUS](CURRENT_STATUS.md) for build/hardware scope.
 
 This document describes the outer `.pac` container. Internal formats such as `spr`, `act`, `cnv`, `dac`, `gdt`, etc. require their own reverse-engineering notes.
 
@@ -194,7 +201,7 @@ The 00.20/00.21 native range guard rejected char00 before opening its PAC.
 [evidence](evidence/vita_hardware_selection_00.21.json). The extended regression
 fails at char00/filter 187 on the previous source and passes after removing the
 guard. It checks exact selected bytes/slots, nonempty metadata, allowed voices,
-and actual native resource-copy/cache behavior; physical 00.22 remains pending.
+and actual native resource-copy/cache behavior; that host check did not itself establish physical 00.22 acceptance.
 
 <!-- DBTB_00_23_DETAIL:START -->
 ## Vita loading contract validated in 00.23
@@ -207,11 +214,8 @@ allowed the reproduced battle-start path to pass on hardware in 00.23.
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current public release — v1.0 / DBTB01178 (2026-10-07):** the 00.34
-> gameplay/runtime baseline is hardware-confirmed stable for the tested paths.
-> Earlier 00.33 hardware evidence remains valid for the protected-PAC repeated-fight
-> repair, Loading recovery and dynamic rosters. Historical artifact identities are
-> preserved; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## Protected-PAC ownership rule — 00.33

@@ -1,11 +1,19 @@
 # Platform services — original contracts and current Vita adapters
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 > Current filesystem/selector contract: [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
-Current public release v1.0 uses APP_VER `01.00` and TITLE_ID `DBTB01178`; the hardware-confirmed gameplay/selector/data-layout baseline is 00.34. Original-code facts refer to the pinned original
-APK, not the community archive. The full original core executes through private
-AOT; this is no longer an atlas-only bootstrap. [CURRENT_STATUS](CURRENT_STATUS.md)
-and [VALIDATION](VALIDATION.md) qualify the hardware/host evidence.
+Current prepared v1.2 uses APP_VER `01.02` and TITLE_ID `DBTB01178`.
+It retains the v1.1 VisualQuality loader/memory baseline and approved Vita
+controls. Original-code facts refer to the pinned original APK, not the
+community archive. The core executes through private AOT; host, build and
+hardware evidence remain separate in [CURRENT_STATUS](CURRENT_STATUS.md).
 
 ## Audio
 
@@ -19,6 +27,7 @@ mono PCM16**; its 44100-Hz buffer-size query is not the playback rate.
 | Current backend | Contract / source |
 |---|---|
 | OGG | libvorbisfile decodes whole clips on load; 17 stereo BGM and 19 mono SE, 44100 Hz source in supplied APKs |
+| MP3 / AAC / M4A | Content-sniffed compressed BGM through Vita SceAudiodec; file-backed indexed AAC/M4A retained from v1.1 |
 | Voices | RIFF chunk walking or headerless PCM16; original bank IDs zero-based, 3 active voice channels |
 | Community voices | Verified indexed wrapper/ADPCM decoded during PAC normalization before PCM load |
 | Output | Stereo 48000 Hz, 1024-frame blocks via SceAudio; fixed native worker buffer |
@@ -34,42 +43,54 @@ not rewritten or pre-expanded to 48 kHz. Vorbis decoding/loading remains on the
 calling game path; only mixing/output runs in the audio worker. Do not describe
 this as an implemented asynchronous streaming/prefetch decoder.
 
-00.19 voices still sound bad despite zero measured overload/clipping in its
-latest session. 00.20's synthetic reconstruction check reduces an image 32.3 dB,
-but its hardware worker fails setup before the menu. 00.21 worker/menu recovery is now confirmed on Vita. Its
-selection then rejects legal mask 187 and exits; 00.22 removes that native range
-guard. Physical selection recovery and audible voice quality remain pending. Source rail samples, clipping and output gaps are separate
-facts; see [VALIDATION](VALIDATION.md) for counter meanings.
+Earlier voice/setup/filter failures in 00.19–00.22 were corrected in
+subsequent hardware tests. Clean voices/audio were reported in the later tested
+paths. Source clipping and output gaps remain separate metrics; broader
+character/phrase coverage is not implied. [Validation](VALIDATION.md).
 
 ## Touch and physical controls
 
-Research update (2026-10-08): [Vita controls investigation](VITA_CONTROLS_RESEARCH_2026-10-08.md)
-recovers original gesture mode 2, virtual-pad mode 1, ConfigData[4] persistence
-and the actual type-1/type-4 pad geometry. A new JVM probe validates the original
-pad. The proposed selector choice and synthetic-contact adapter are not yet
-implemented; the current runtime behavior in the table below is unchanged.
+`VitaControls.update` runs before original `Run`. Physical buttons become
+synthetic contacts only in audited original contexts; Controller, task state,
+combat commands and pause state remain original. No global Android Back is
+injected. Original scale is 320/screen_height; 960×544 produces scaled width
+564 and the original horizontal offsets. Raw touch IDs map to stable slots
+0–4, which real fingers retain ahead of synthetic contacts.
 
-Original screen scale is 320/screen_height. VitaEngine sets 960×544, truncates
-scaled width to 564 and applies original horizontal offsets before KeyData.
-Raw Vita touch IDs are mapped to stable logical slots 0–4; Begin/Move/End and
-Controller history/gesture processing remain original. KeyData has ten slots;
-the observed core processes five touches. Front touch is hardware-confirmed in
-earlier menu/selection/combat builds.
+The English launcher prompts before every profile launch: **PS VITA CONTROLS**
+first, then **TOUCH ONLY**, remembering each profile's highlighted choice.
+`vita-controls.cfg` stores input preference only. Legacy mode 1 confirms as
+hidden mode 2; touch mode 0 retains its meaning and the missing-file default.
 
-| Input | Native selector | Current original-game loop |
+| Input | Native selector | Original-game loop in Vita mode |
 |---|---|---|
-| Front touch | Select visible profile row | Original KeyData/Controller gestures |
-| D-pad / left stick | Move/scroll profile rows | No gameplay gesture mapping |
-| Cross | Confirm profile | Neutral |
-| Circle / Triangle | Cancel selector | Android Back deliberately not emitted |
-| Start | Diagnostic/selector behavior where present | Pause/back neutral; use original touch UI |
-| Square, L/R, Select, right stick | No general gameplay binding | Mapping remains future work |
+| Front touch | Select/confirm visible rows | Original gestures, dialogues and other menu choices |
+| D-pad / left stick | Navigate rows | Eight combat directions; D-pad left/right changes character |
+| X | Confirm | Attack; confirm a ready character; neutral during dialogues |
+| Square / Triangle | Triangle also cancels | Special shortcuts 1 / 2 in combat |
+| Circle | Cancel/back | Special shortcut 3 in combat; original Back in audited menus |
+| L / R | No additional launcher action | Rage when available / special shortcut 4 |
+| Start | No general launcher shortcut | Pause; resume from the main pause menu |
+| Select / right stick | Unassigned | Unassigned |
 
-Held touch/button state is primed across selector transitions. Circle/Triangle
-previously closed the game through original Back semantics; neutral physical
-input now avoids that unintended exit. Do not advertise a controller scheme
-from the older proposal. The selector's diagnostic font remains ASCII-limited;
-UTF-8 paths are retained and in-game PVF text is a separate service.
+Vita mode overlays save-read configuration byte 4 with original virtual-pad
+mode 1; save writes preserve the user's stored touch preference. Hidden pads
+use a sparse per-stream DAC image-field overlay; immutable PAC cache/source
+bytes remain unchanged. Touch-only mode emits no physical game shortcuts.
+
+Menu Back and Start resume use a single contact-0 Begin at (40,24), combat
+pause uses (240,30). A real finger on 0 is never evicted; pending input cancels
+when its live consumer changes. Held shortcuts require release/repress after
+scene changes. Loading/resume and audited Yes/No prompts exclude shortcuts.
+Scripts shield stale combat input; dialogue X was retired after hardware
+failure. Original tutorial stays tactile. Start resumes only the main pause
+menu; Circle returns from nested settings first.
+
+Retained controls were approved in the user's test sequence, most recently
+Circle in Test 5. The exact stable v1.2 package's physical retest is pending.
+See [controls reference](VITA_CONTROLS_REFERENCE.md) and
+[current contract](CURRENT_RUNTIME_CONTRACT.md). Launcher labels are English;
+profile names and game/mod text retain their language.
 
 ## Text/render/lifecycle
 
@@ -88,8 +109,9 @@ contracts. All return/suspend/restart combinations still need a device matrix.
 
 ## Files, resources and saves
 
-Resources resolve through `GameVfs` inside exactly one active dataset. Original
-uses `game/`; a selected profile uses only `mods/<Profile>/`. Missing, malformed
+Resources resolve through `GameVfs` inside exactly one active first-level
+`profiles/<Profile>/` dataset. There is no special Original root or cross-profile
+resource borrowing. Missing, malformed
 or non-regular selected-profile resources are explicit errors; there is no
 cross-profile fallback. Native ResourceAdapter applies original
 GameData exclusion bits before disk reads and normalizes only selected verified
@@ -99,7 +121,8 @@ See [PAC_FORMAT](PAC_FORMAT.md) and [DATA_LAYOUT](DATA_LAYOUT.md).
 Original ConfigData is 12906 bytes; _FILELoad/_FILESave/_FILESaveLen and original
 partial offsets remain the semantic authority. Only `save.bin` is writable.
 
-Starting with 00.30, the VPK still contains the exact user-approved
+The independent-save principle introduced in 00.30 is retained with unified
+profile paths from 00.34. The v1.2 VPK contains the exact user-approved
 12,906-byte seed at read-only `app0:/save.bin` (SHA-256
 `64b050092a5be8921108e1a38ef4777ef69eb87ab3226d8c244eb9073755e0bb`),
 but each selected profile owns a separate writable copy:
@@ -118,6 +141,10 @@ state. A failed publication reports failure and removes the temporary file it
 created; an already-existing temp file is not overwritten. Full Android
 round-trip and arbitrary mod progression compatibility are still separate
 validation work.
+
+`vita-controls.cfg` is separate from progress. The test bubble
+`DBTBCT001` uses `save-controls-test.bin`; stable `DBTB01178` uses `save.bin`
+and does not automatically migrate test progress.
 
 There is no cross-profile gameplay-resource or mutable-save fallback. The historical 00.29 root `ux0:data/DBTapBattle/save.bin` is no longer an active 00.30 input. Old `saves/shared` and `saves/<profile>` layouts remain historical/backups. APK-bundled saves may be recorded for provenance, but current extractors do not install them as gameplay state. Some save fields are BE; PAC LE
 offsets do not imply universal endianness. SharedPreferences Smap identity and
@@ -172,12 +199,8 @@ hardware in the 00.23 test session.
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
-> and functional on physical PS Vita for the exercised selector, profile-loading
-> and gameplay paths, with no issue found so far. It retains the 00.33
-> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
-> See [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## 00.33 resource ownership checkpoint

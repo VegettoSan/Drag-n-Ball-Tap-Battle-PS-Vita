@@ -1,12 +1,11 @@
 # Compilar y publicar VPK desde GitHub Actions
 
 <!-- DBTB_DOC_STATUS:START -->
-> **Published release:** v1.1 / APP_VER `01.01` / TITLE_ID `DBTB01178`.
-> v1.2 is prepared locally with APP_VER `01.02`; its controls were approved in separate test builds.
-> See [CURRENT_STATUS](CURRENT_STATUS.md) and
-> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
 <!-- DBTB_DOC_STATUS:END -->
-
 
 La versión 1.2 se compiló localmente **sin ejecutar estos workflows**. Su
 publicación manual usa la etiqueta `1.2`, siguiendo `1.1`; las etiquetas
@@ -23,7 +22,9 @@ Ambos usan la version de `tools/aot/engine/vita/CMakeLists.txt`, el commit exact
 seleccionado al ejecutar el workflow y el mismo compilador compartido. No usan
 el bootstrap de la raiz ni el ejecutable dummy del native smoke. La compilacion
 de release tambien mantiene `-O1` para todo el core TeaVM y `-O2` para servicios
-nativos, con el mismo pipeline completo; la referencia física actual es 00.34.
+nativos, con las rutas frías y selector a -Os. La base de recursos VisualQuality
+de v1.1 y los controles retenidos se aprobaron en pruebas separadas; el VPK
+estable 1.2 recién compilado aún espera su resultado físico.
 
 ## Contrato de datos del VPK
 
@@ -111,13 +112,14 @@ simuladas. Un fallo impide la publicacion. El ELF debe contener el motor origina
 y el log de generacion debe demostrar un core completo; un native link probe
 no puede pasar por un VPK jugable.
 
-La 00.34 es el checkpoint físico estable actual para los recorridos documentados. Cada VPK nuevo tiene otro commit/hash: compilar/publicar automáticamente no equivale a probar ese nuevo binario en consola. Usa [la prueba/resultados 00.34](TEST_VITA_00_34.md) como regresión actual y guarda el VPK, `build.json`, `runtime.log` y el ZIP de símbolos correspondiente.
+00.34 es evidencia histórica de estabilidad. La base de recursos v1.1 y los
+controles probados se conservan en v1.2. Cada VPK nuevo tiene otro commit/hash: compilar/publicar automáticamente no equivale a probar ese nuevo binario en consola. Usa [la prueba/resultados 00.34](TEST_VITA_00_34.md) como regresión histórica y guarda el VPK, `build.json`, `runtime.log` y el ZIP de símbolos correspondiente.
 
 La sintaxis, pruebas unitarias y staging con el VPK real se verificaron localmente.
 La [validacion en GitHub](https://github.com/VegettoSan/Drag-n-Ball-Tap-Battle-PS-Vita/actions/runs/37395626518)
 tambien paso: actionlint y las 13 pruebas de publicacion/LiveArea, sobre el commit
 `b17bb49ef1ab257ea74f68353a907b4f538c1c89`.
-La primera compilacion/publicacion completa en Actions necesita que el secreto
+Una compilacion/publicacion completa en Actions necesita que el secreto
 de descarga este configurado; no se ha simulado una publicacion real.
 
 Referencias de implementacion: [workflows reutilizables](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows),

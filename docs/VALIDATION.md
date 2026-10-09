@@ -1,4 +1,11 @@
-# Validation and diagnostic reference — v1.0 release / 00.34 hardware baseline
+# Validation and diagnostic reference — v1.2
+
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
 
 > Current data/selector contract: [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 > Historical fixtures keep their build identity; current VFS/runtime validation uses
@@ -9,18 +16,45 @@ outside tracked source. This page describes reproducible probes; it does not cla
 all commands were freshly rerun for the documentation update. Recorded passes are
 pinned in [CURRENT_STATUS](CURRENT_STATUS.md) and evidence JSONs.
 
-## v1.0 package identity validation
+## v1.2 package identity and build evidence
 
-Current public package metadata must validate as:
+| Field | Current stable package |
+|---|---|
+| VPK | `Dragon-Ball-Tap-Battle-PS-Vita-v1.2.vpk` |
+| APP_VER / TITLE_ID | `01.02` / `DBTB01178` |
+| Size | 2750706 bytes |
+| SHA-256 | `343aee505f77fa743339111fa7cf29f1e9bda333e49bddb6be166933d7bac1fc` |
+| Build source | `f6e9adaa792d38c4f3a7c7b27d112ae54b41ede5` |
 
-- APP_VER: `01.00`
-- TITLE_ID: `DBTB01178`
-- VPK: `Dragon-Ball-Tap-Battle-PS-Vita-v1.0.vpk`
+Fresh local full engine: 468 classes / 4103 methods; ARM ELF/VELF/SELF/VPK,
+source/version markers, 7080-byte import headroom, exact public-file allowlist,
+ZIP CRC, approved seed/theme/LiveArea and packaged SELF equality pass.
+The original patched JAR matches the same-input main compatibility pipeline.
+This is a newly compiled executable, not a metadata-only v1.1 repack.
+[Machine-readable evidence](evidence/vita_release_1.2.json).
 
-The exact 00.34 hardware-test artifact used `DBTB00001`; that value remains
-correct in its historical test record. For v1.0, verify the new SFO identity plus
-ZIP CRC and confirm that the gameplay executable/resources remain the 00.34
-release baseline.
+The controls probes pass combat/character confirmation, Start resume, 37
+audited CheckBack consumers, real touch priority, neutral dialogue X and
+holds/transitions/loading/confirmation exclusions. Native preference tests pass;
+Python tests: 41 pass / 20 fixture-gated skips. The nine-corpus pad visibility
+evidence is inherited, not rerun or promoted to all-mod hardware acceptance.
+
+```sh
+python3 tools/aot/engine/tests/run_vita_controls_probe.py \
+  --original-jar /private/original.jar --ecj /tools/ecj-3.37.0.jar \
+  --adapter-classes /private/fresh-engine/classes
+g++ -std=c++14 -Isrc tests/test_control_settings.cpp src/vfs.cpp \
+  -o /private/probes/control-settings
+/private/probes/control-settings
+python3 tools/validate_livearea_vpk.py /private/Dragon-Ball-Tap-Battle-PS-Vita-v1.2.vpk
+```
+
+Hardware approved the retained controls over test builds; dialogue X failed
+and is retired. The user is testing stable v1.2; no result is recorded yet.
+Check stable installation, profile progress, remembered control choices,
+combat/character controls, Circle available Back and Start pause/resume, touch
+dialogues and a previous mod regression. Capture version/hash/profile and logs
+with the outcome. Earlier 00.xx SFOs/hashes remain correct for their own tests.
 
 ## Web Extractor validation
 
@@ -73,7 +107,7 @@ See [WEB_DATA_TOOL](WEB_DATA_TOOL.md).
 No current full-engine Vita3K confirmation is recorded. API mocks must be named.
 Keep build source, VPK SHA, dataset/profile and procedure with every promotion.
 
-## 00.25 protected-profile regression gate
+## Historical 00.25 protected-profile regression gate
 
 The public `Community mod profiles` workflow runs without APK/game bytes. It
 checks Python extraction/alias safety plus synthetic C++ PAC/image, converted
@@ -263,12 +297,8 @@ testing to repeated battles, additional characters, datasets/mods and long sessi
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
-> and functional on physical PS Vita for the exercised selector, profile-loading
-> and gameplay paths, with no issue found so far. It retains the 00.33
-> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
-> See [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## Deep APK forensic evidence — 2026-10-06
@@ -320,7 +350,7 @@ Directly validated: 345/345 ordinary PAC directories, six nested SPR containers,
 all 36 exterior audio files. This is APK/host evidence only; it does not certify
 92-character Vita runtime behavior.
 
-## Samu 00.27 large-roster/direct-audio validation
+## Historical Samu 00.27 large-roster/direct-audio validation
 
 Public synthetic checks:
 
@@ -337,7 +367,9 @@ Expected roster coverage: baseline 13, Invasion 22, Samu 92, complete two-digit
 namespace 100 positions (`00..99`), incomplete-triplet rejection, gap
 rejection and invalid >100-bound rejection.
 
-For the exact audited user-owned Samu APK, the reproducible import check is:
+The pinned engineering check below uses the historical 00.27 fixture layout;
+it is not a current Vita installation recipe. For present-day installation use
+Web/Windows profiles-v1 output. The historical import check is:
 
 ```sh
 python3 tools/prepare_samu_mod.py \

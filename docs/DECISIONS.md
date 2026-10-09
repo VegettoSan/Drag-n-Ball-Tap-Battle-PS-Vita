@@ -1,5 +1,32 @@
 # Architecture Decisions
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
+## ADR-022 — Vita controls through original contacts, independent launch preference
+
+**Status:** implemented in main for v1.2 — 2026-10-09.
+
+Convert Vita held buttons/stick to synthetic original KeyData contacts before
+Run, restricted to audited live contexts. Preserve real touch IDs and task/
+combat/controller implementations; never inject global Android Back. The sparse
+per-stream pad image overlay leaves PAC/cache bytes intact. Profile-local
+`vita-controls.cfg` holds the remembered input mode, independently of progress.
+The launcher is English, Vita first / Touch only second; stable identity and
+`save.bin` are retained. Test identity/save remain separate, without migration.
+
+Combat, hidden pads, swapped L/R, character X, Start resume and Circle were
+approved over the user's tests. Dialogue X failed in Test 5 and is retired at
+the user's request. Dialogues use touch; the script guard still prevents stale
+combat input. Host script acceptance must not be mistaken for real Vita proof.
+The exact rebuilt stable package still awaits its physical retest.
+[Runtime contract](CURRENT_RUNTIME_CONTRACT.md) and
+[hardware outcome](evidence/vita_controls_hardware_report_test_5.json).
+
 ## ADR-001 — Native VitaSDK execution (implementation refined by ADR-011)
 
 **Status:** accepted — 2026-10-04
@@ -66,7 +93,8 @@ Meaningful experiments must be recorded in `ATTEMPTS.md`; validated successes an
 
 ## ADR-008 — Profile-local saves and original input service
 
-**Status:** save portion superseded by ADR-017 in 00.29; input portion remains historical/valid.
+**Status:** save portion superseded by ADR-017/019/021; physical input neutrality
+superseded by ADR-022 in v1.2. Original KeyData/Controller remains the boundary.
 The early separate saves/ proposal is superseded: Original uses game/save.bin;
 a selected mod uses mods/<Profile>/save.bin. Only save.bin is writable through
 the resource adapter. No save fallback/migration crosses profiles. Exclusive
@@ -169,11 +197,8 @@ incompatibility requires a narrower adaptation.
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current public release — v1.0 / DBTB01178 (2026-10-07):** the 00.34
-> gameplay/runtime baseline is hardware-confirmed stable for the tested paths.
-> Earlier 00.33 hardware evidence remains valid for the protected-PAC repeated-fight
-> repair, Loading recovery and dynamic rosters. Historical artifact identities are
-> preserved; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## ADR-017 — One shared mutable save seeded by the VPK
