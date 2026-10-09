@@ -1,5 +1,12 @@
 # Vita Controls Test 2 — ajustes después de la prueba en consola
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Historical build sheet: its identities/results apply to the named build only.
+<!-- DBTB_DOC_STATUS:END -->
+
 Rama: `test/vita-controls`. `main` y v1.1 permanecen intactos. El usuario confirmó
 Test 1 con controles Vita y pads ocultos; esta nueva versión requiere probar
 los tres ajustes siguientes en consola.

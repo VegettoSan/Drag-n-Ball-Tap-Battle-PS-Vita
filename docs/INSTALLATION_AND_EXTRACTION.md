@@ -1,5 +1,12 @@
 # Installation and data extraction — Dragon Ball Tap Battle PS Vita v1.2
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 This guide applies to **v1.2 — PS Vita Controls**, `TITLE_ID DBTB01178`, Vita
 `APP_VER 01.02`. It retains the v1.1 VisualQuality baseline and adds the controls
 approved in the user's tests. **Compatibility with every mod is not guaranteed.**

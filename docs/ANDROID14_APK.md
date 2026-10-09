@@ -1,12 +1,11 @@
 # Community Android 14 APK audit — 2026-10-04
 
-> **Historical document notice — current v1.0 contract:** this file preserves
-> evidence/instructions for the build or investigation named here. The current
-> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
-> current `game/` or `mods/` profile roots and no built-in Original selector
-> row. Do not reuse historical install paths for v1.0. See
-> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
-
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Pinned source/research facts retain their corpus; dated runtime proposals are historical.
+<!-- DBTB_DOC_STATUS:END -->
 
 Baseline: main `a04e264`. This document concerns the two user-supplied files;
 "Android 14" is their supplied label, not proof of an Android 14 OS test.
@@ -160,7 +159,15 @@ Reports contain paths, hashes, dimensions, API/class names and format facts;
 no asset bytes or decompiled commercial source. Native import/preview tests
 and limitations are recorded with their implementation in subsequent commits.
 
-## Import and installed-mod contract
+## Current installation and historical importer
+
+Use the Web/Windows profiles-v1 extractor for current Vita installation. Each
+APK is a standalone `ux0:data/DBTapBattle/profiles/<Profile>/` dataset; there
+is no resource fallback to an Original profile. Input is selected before launch
+and does not change codec aliases or source PAC bytes.
+[Current installation guide](INSTALLATION_AND_EXTRACTION.md).
+
+### Historical engineering importer contract
 
 The extractor now supports `--layout auto|raw|assets|community14`. Auto rejects
 archives with actual payloads on both raw/assets sides instead of choosing
@@ -222,7 +229,7 @@ observed stalls/voice/text regressions in stages: 00.18 restored stable battle
 performance, 00.19 restored text, 00.21 recovered audio worker/menu startup, and
 00.22 accepted the original 187/251 selection masks with clean audio/selection reported on hardware. 00.22 then exposed a separate whole-PAC TeaVM allocation failure at battle startup. 00.23 restores the original streaming PAC parser through a native-backed stream; the reported physical-Vita retest enters and plays a battle with no error observed in that session.
 
-Current extractor suite has 12 tests (the nine-test counts above are historical
+The extractor suite at that checkpoint had 12 tests (the nine-test counts above are historical
 checkpoints). See [VALIDATION](VALIDATION.md) for fixtures/commands and scope.
 Different private constants must fail explicitly or receive a new reviewed
 codec profile. Code-dependent mod mechanics are not assumed compatible merely
@@ -231,12 +238,8 @@ proof of a PAC/ADPCM codec failure. Profile-local saves and source manifests:
 [DATA_LAYOUT](DATA_LAYOUT.md), [MODS](MODS.md).
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
-> and functional on physical PS Vita for the exercised selector, profile-loading
-> and gameplay paths, with no issue found so far. It retains the 00.33
-> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
-> See [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## Deep offline reference — 2026-10-06

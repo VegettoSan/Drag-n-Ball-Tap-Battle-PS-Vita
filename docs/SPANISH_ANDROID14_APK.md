@@ -1,18 +1,11 @@
 # APK Español Android14 — referencia técnica completa
 
-> **Current Vita installation note (v1.0; runtime inherited from 00.34):** regardless of the APK family
-> described here, current extracted datasets are independent profiles under
-> `ux0:data/DBTapBattle/profiles/<Profile>/`. Historical `game/` or `mods/`
-> paths in old test evidence are not current install instructions. See
-> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
-
-
 <!-- DBTB_DOC_STATUS:START -->
-> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
-> The hardware-confirmed gameplay/runtime baseline is 00.34. This file may
-> document an earlier component or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Pinned source/research facts retain their corpus; dated runtime proposals are historical.
 <!-- DBTB_DOC_STATUS:END -->
-
 
 Fuente auditada: `DBTB en español para Android 14.apk`
 

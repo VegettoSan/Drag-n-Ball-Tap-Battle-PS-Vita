@@ -1,6 +1,13 @@
 # DBFZ v22 APK — protected resource profile (2026-10-07)
 
-> **Status:** format-level interoperability implemented in source and static APK validation complete. **Not confirmed on PS Vita hardware.** Existing public VPK v1.0 / 00.34 remains the stable gameplay checkpoint and **does not automatically include changes committed after its build**.
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Pinned source/research facts retain their corpus; dated runtime proposals are historical.
+<!-- DBTB_DOC_STATUS:END -->
+
+> **Status:** format-level interoperability implemented in source and static APK validation complete. **Not confirmed on PS Vita hardware.** The codec path is included in the v1.1 baseline retained by prepared v1.2, but this exact DBFZ profile still lacks a reported on-console result. Earlier v1.0 artifacts do not gain changes committed after their build.
 >
 > **Runtime install contract:** `ux0:data/DBTapBattle/profiles/Dbfz_v22/`, from the Windows/Web extractor's sanitized `Dbfz v22.apk` stem. The profile is standalone: no copying from Original or other profiles.
 

@@ -1,5 +1,12 @@
 # Vita Controls Test 4 — English launcher
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Historical build sheet: its identities/results apply to the named build only.
+<!-- DBTB_DOC_STATUS:END -->
+
 Branch: `test/vita-controls`. Stable `main` remains unchanged. Test 2 is user
 accepted; Test 3's new pause/back/text shortcuts and this English launcher
 still need physical Vita testing.

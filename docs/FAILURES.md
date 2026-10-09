@@ -1,5 +1,12 @@
 # Failures and Dead Ends
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Chronological ledger: old pending/failed entries retain the evidence known at that time.
+<!-- DBTB_DOC_STATUS:END -->
+
 ## 2026-10-09 — Test 5 dialogue X retired
 
 User reports X still does not advance dialogues. Host original-script probes did not establish real Vita behavior. Stop investigation as requested and remove the synthetic dialogue action and its help/guide claims. Text remains tactile; do not repeat this attempt unchanged.
@@ -26,14 +33,6 @@ Test 5 changes recognition to actual live original input consumers. Its probes
 execute Game1 navigation and Game4 global-touch branches, without requiring
 pause sprites or demo/text markers. Original code still decides when a touch
 counts; no flags/tasks are forced. Test 5 hardware outcome remains pending.
-
-
-> **Historical document notice — current v1.0 contract:** this file preserves
-> evidence/instructions for the build or investigation named here. The current
-> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
-> current `game/` or `mods/` profile roots and no built-in Original selector
-> row. Do not reuse historical install paths for v1.0. See
-> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
 
 
 ## 2026-10-05 — prevention after confirmed 00.24 recovery
@@ -433,12 +432,8 @@ regression testing open.
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
-> and functional on physical PS Vita for the exercised selector, profile-loading
-> and gameplay paths, with no issue found so far. It retains the 00.33
-> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
-> See [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## 2026-10-05 — Final VPK contained a native CI probe

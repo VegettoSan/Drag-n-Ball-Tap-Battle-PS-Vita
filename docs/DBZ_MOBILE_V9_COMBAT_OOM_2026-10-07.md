@@ -1,5 +1,12 @@
 # 2026-10-07: dbz_mobile_v9 — combat-loading `std::bad_alloc` after universal decoder
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Pinned source/research facts retain their corpus; dated runtime proposals are historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 ## Hardware evidence
 
 User-tested full-engine universal experimental VPK, TITLE_ID `DBTB01178`, with 7 profiles installed. The selected profile from `runtime.log` is **`dbz_mobile_v9`**. This profile is not the independently inspected `dbs mobile tap battle v1.apk`, so do **not** attribute the failure to that APK.

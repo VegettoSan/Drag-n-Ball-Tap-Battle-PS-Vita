@@ -1,18 +1,11 @@
 # Dragon Ball Tap Battle — referencia técnica de los APK auditados
 
-> **Current Vita installation note (v1.0; runtime inherited from 00.34):** regardless of the APK family
-> described here, current extracted datasets are independent profiles under
-> `ux0:data/DBTapBattle/profiles/<Profile>/`. Historical `game/` or `mods/`
-> paths in old test evidence are not current install instructions. See
-> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
-
-
 <!-- DBTB_DOC_STATUS:START -->
-> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
-> The hardware-confirmed gameplay/runtime baseline is 00.34. This file may
-> document an earlier component or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Pinned source/research facts retain their corpus; dated runtime proposals are historical.
 <!-- DBTB_DOC_STATUS:END -->
-
 
 Fecha de auditoría profunda: **2026-10-06**.
 
@@ -27,7 +20,7 @@ Los niveles de evidencia deben mantenerse separados:
 - **OBSERVADO EN APK:** bytes, hashes, estructura ZIP, manifiesto, DEX, PAC, audio y librerías comprobados directamente.
 - **NORMALIZADO/DECODIFICADO:** contenido comparado después de quitar únicamente protecciones/metadatos cuyo contrato está confirmado.
 - **INFERENCIA:** relación probable entre mods o intención de un cambio; nunca tratar como hecho si no hay evidencia directa.
-- **HARDWARE CONFIRMED:** solo lo probado en PS Vita real. La referencia de desarrollo actual es 00.33: Loading y roster dinámico están confirmados en hardware, y el crash reproducible de Invasion Saitama→Freezer queda resuelto tras varias peleas consecutivas sin fallo.
+- **HARDWARE CONFIRMED:** solo lo probado en PS Vita real. En el hito histórico 00.33: Loading y roster dinámico están confirmados en hardware, y el crash reproducible de Invasion Saitama→Freezer queda resuelto tras varias peleas consecutivas sin fallo.
 
 No se debe reconstruir ni modificar lógica original del motor a partir de estos documentos. El motor original AOT sigue siendo la autoridad; Vita debe adaptar sus servicios al contrato del motor.
 
@@ -791,7 +784,7 @@ Este APK es evidencia fuerte de una expansión de roster **data-driven** sobre G
 
 Evidencia machine-readable: [dragonball_zuper_samugameryt_2026-10-06.json](evidence/dragonball_zuper_samugameryt_2026-10-06.json).
 
-## 19. Estado Vita 00.33 de perfiles modificados
+## 19. Estado histórico Vita 00.33 de perfiles modificados
 
 La evidencia de hardware más reciente cambia dos conclusiones de compatibilidad:
 

@@ -1,9 +1,19 @@
 # Investigación: ocultar los gráficos del pad desde Vita
 
-> Implementation update: the experiment is now built on `test/vita-controls`.
-> See [Controls Test 1](TEST_VITA_CONTROLS.md) and
-> [local build evidence](evidence/vita_controls_test_1.json). The research below
-> retains its original scope; hardware acceptance is still pending.
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Pinned source/research facts retain their corpus; dated runtime proposals are historical.
+<!-- DBTB_DOC_STATUS:END -->
+
+> **Implemented in v1.2:** the adapter/hidden-pad design was integrated and
+> the retained controls were approved in the user's test sequence. The selector
+> has two English choices: Vita first (hidden pads), Touch only second. Dialogue
+> X was retired after physical failure. The exact stable v1.2 package awaits
+> physical retest. The dated research/proposed mapping below is historical;
+> [current contract](CURRENT_RUNTIME_CONTRACT.md) and
+> [control reference](VITA_CONTROLS_REFERENCE.md) supersede it.
 
 Fecha: 2026-10-08. Complementa la
 [investigación de controles y selector](VITA_CONTROLS_RESEARCH_2026-10-08.md).

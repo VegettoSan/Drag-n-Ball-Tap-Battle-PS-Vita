@@ -1,5 +1,12 @@
 # Third-party tools, runtime and test-build notices
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 Checkpoint 00.21 / 2026-10-05. Upstream license texts are not changed by this
 documentation update. The repository contains handwritten port source and
 non-commercial evidence; generated APK-derived Java/JAR/C stays private. The
@@ -65,9 +72,6 @@ review above remains open; this is another private full-engine test delivery.
 [Artifact evidence](evidence/vita_selection_filter_build_00.22.json).
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current public release — v1.0 / DBTB01178 (2026-10-07):** the 00.34
-> gameplay/runtime baseline is hardware-confirmed stable for the tested paths.
-> Earlier 00.33 hardware evidence remains valid for the protected-PAC repeated-fight
-> repair, Loading recovery and dynamic rosters. Historical artifact identities are
-> preserved; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->

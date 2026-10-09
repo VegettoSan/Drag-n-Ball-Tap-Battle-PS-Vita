@@ -1,5 +1,12 @@
 # Confirmed Successes
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Chronological ledger: old pending/failed entries retain the evidence known at that time.
+<!-- DBTB_DOC_STATUS:END -->
+
 ## 2026-10-09 — Test 5 Circle hardware acceptance
 
 User confirms Circle now works beyond the previously accepted pause path. Profile and runtime log were not supplied. Preserve earlier accepted combat, hidden pads, swapped shoulders, character X and Start resume. This is not a blanket certification of all mods.
@@ -112,14 +119,6 @@ choice, native mapping, save-option integration, new TeaVM equivalence and
 physical Vita acceptance remain pending. No gameplay executable was changed.
 See [controls research](VITA_CONTROLS_RESEARCH_2026-10-08.md) and
 [host evidence](evidence/vita_controls_host_probe_2026-10-08.json).
-
-> **Historical document notice — current v1.0 contract:** this file preserves
-> evidence/instructions for the build or investigation named here. The current
-> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
-> current `game/` or `mods/` profile roots and no built-in Original selector
-> row. Do not reuse historical install paths for v1.0. See
-> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
-
 
 ## 2026-10-07 — Web Extractor 1.0 — local browser packaging validated
 
@@ -608,11 +607,8 @@ Test VPK SHA-256: `8dd286423b09abb1ce11d82b314bd0e89a5a728f31e4226ba3207b1054b58
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current public release — v1.0 / DBTB01178 (2026-10-07):** the 00.34
-> gameplay/runtime baseline is hardware-confirmed stable for the tested paths.
-> Earlier 00.33 hardware evidence remains valid for the protected-PAC repeated-fight
-> repair, Loading recovery and dynamic rosters. Historical artifact identities are
-> preserved; see [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## 2026-10-05 — Corrected LiveArea packaging passes host verification

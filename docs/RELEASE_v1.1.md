@@ -1,5 +1,12 @@
 # Dragon Ball Tap Battle PS Vita v1.1 — Universal Mod Support
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Historical build sheet: its identities/results apply to the named build only.
+<!-- DBTB_DOC_STATUS:END -->
+
 **Status:** hardware-tested release build, ready for maintainer publication.
 
 **VPK:** `Dragon-Ball-Tap-Battle-PS-Vita-v1.1.vpk`  

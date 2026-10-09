@@ -1,12 +1,11 @@
 # Original-style APK with bundled characters
 
-> **Historical document notice — current v1.0 contract:** this file preserves
-> evidence/instructions for the build or investigation named here. The current
-> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
-> current `game/` or `mods/` profile roots and no built-in Original selector
-> row. Do not reuse historical install paths for v1.0. See
-> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
-
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Pinned source/research facts retain their corpus; dated runtime proposals are historical.
+<!-- DBTB_DOC_STATUS:END -->
 
 Validated source: user-supplied `gen.apk`, SHA-256
 `d52cbd7ef248d995ad17ba6ec8ec6fa08590a344ac2a9786e5ac839bf7715f28`.
@@ -16,14 +15,25 @@ and the encoded Community14 APK. It keeps ordinary/canonical resource names and
 ordinary PAC headers, but bundles the character/card data that the supplied
 original APK lacks.
 
+## Current installation
+
+Use the [Web](WEB_DATA_TOOL.md) or [Windows](WINDOWS_DATA_TOOL.md) extractor.
+Install the complete dataset as `ux0:data/DBTapBattle/profiles/gen/` (folder
+label may be renamed). Keep any required codec sidecar. Stable progress stays
+in that profile's save.bin; the current VPK seeds only a missing save.
+The older engineering recipes below describe pre-profiles-v1 tooling, not
+current Vita install paths.
+
 ## Layout
 
-The 57 `res/raw/` entries are zero-byte stubs. The actual runtime data lives in `assets/`: 147 files total, including 108 PACs, 36 OGGs, `loading.png`, `mk.bin` and an APK-bundled `save.bin`. The current v1.0 port reads/writes only the selected profile's save at `ux0:data/DBTapBattle/profiles/<Profile>/save.bin`. Current extractors record the APK-bundled save for provenance but do **not** install it as runtime progress. A fresh profile is seeded from the exact VPK `app0:/save.bin` only when that profile has no save yet. Existing profile progress is never overwritten by profile selection or VPK update; there is no migration or cross-profile fallback.
+The 57 `res/raw/` entries are zero-byte stubs. The actual runtime data lives in `assets/`: 147 files total, including 108 PACs, 36 OGGs, `loading.png`, `mk.bin` and an APK-bundled `save.bin`. The current v1.2 port reads/writes only the selected profile's save at `ux0:data/DBTapBattle/profiles/<Profile>/save.bin`. Current extractors record the APK-bundled save for provenance but do **not** install it as runtime progress. A fresh profile is seeded from the exact VPK `app0:/save.bin` only when that profile has no save yet. Existing profile progress is never overwritten by profile selection or VPK update; there is no migration or cross-profile fallback.
 
 `tools/extract_apk_data.py` auto mode now recognizes this pattern: when
 `res/raw/` contains only empty stubs and `assets/` contains real payloads, it
 selects the ordinary `assets` layout automatically. APKs with non-empty payloads
 on both sides remain ambiguous and still require `--layout` explicitly.
+
+### Historical engineering extraction recipes
 
 ```sh
 python tools/extract_apk_data.py gen.apk ./install/game
@@ -76,15 +86,11 @@ Evidence: `docs/evidence/original_plus_characters_apk_2026-10-05.json`.
 
 Status: **FORMAT CONFIRMED + HOST COMPATIBILITY CONFIRMED**. Later physical Vita checkpoints validate the shared runtime systems, dynamic roster path and repeated-battle memory fixes, but a selector label alone still does not prove that this exact Gen source hash was exercised for every mode. Keep dataset provenance explicit instead of promoting unrelated hardware observations into complete profile certification.
 
-The mixed charset is handled at normalized payload boundaries; ordinary PAC headers do not imply Shift_JIS text00. Historical 00.20/00.22 notes remain useful for the origin of selective reads and selection fixes; the current runtime checkpoint is 00.33. Save publication is profile-local and atomic, while complete Android save-field interoperability remains broader validation work. See [CURRENT_STATUS](CURRENT_STATUS.md) and [VALIDATION](VALIDATION.md).
+The mixed charset is handled at normalized payload boundaries; ordinary PAC headers do not imply Shift_JIS text00. Historical 00.20/00.22 notes remain useful for the origin of selective reads and selection fixes; 00.33 is the historical protected-PAC repair; v1.2 retains the later v1.1 baseline. Save publication is profile-local and atomic, while complete Android save-field interoperability remains broader validation work. See [CURRENT_STATUS](CURRENT_STATUS.md) and [VALIDATION](VALIDATION.md).
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
-> and functional on physical PS Vita for the exercised selector, profile-loading
-> and gameplay paths, with no issue found so far. It retains the 00.33
-> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
-> See [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## Deep offline reference — 2026-10-06

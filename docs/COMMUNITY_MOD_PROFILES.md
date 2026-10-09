@@ -1,18 +1,11 @@
 # Community mod codec profiles
 
-> **Current Vita installation note (v1.0; runtime inherited from 00.34):** regardless of the APK family
-> described here, current extracted datasets are independent profiles under
-> `ux0:data/DBTapBattle/profiles/<Profile>/`. Historical `game/` or `mods/`
-> paths in old test evidence are not current install instructions. See
-> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
-
-
 <!-- DBTB_DOC_STATUS:START -->
-> **Current public release:** v1.0 / APP_VER `01.00` / TITLE_ID `DBTB01178`.
-> The hardware-confirmed gameplay/runtime baseline is 00.34. This file may
-> document an earlier component or build; see [CURRENT_STATUS](CURRENT_STATUS.md) for authoritative status.
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
 <!-- DBTB_DOC_STATUS:END -->
-
 
 This page records the protected resource profiles that have been audited for the
 Vita port. It documents interoperability metadata only; no APK, DEX, native
@@ -20,8 +13,15 @@ library or commercial game payload is stored in this repository.
 
 ## Compatibility baseline
 
-The current physical-Vita gameplay baseline is **00.34**, inherited by public
-v1.0; the earlier 00.24 build was a historical protected-resource milestone.
+v1.2 retains the hardware-approved v1.1 VisualQuality resource/memory baseline.
+00.24 and 00.33/00.34 remain historical protected-resource/profile milestones.
+Approved Vita controls are integrated without changing this codec table; the
+exact stable v1.2 package awaits physical retest.
+
+Known audited codecs below retain their pinned corpus evidence. Compatible
+unknown PRIVATE variants use DEX-derived `dbtb_codec.json` as documented in
+[universal recognition](DRAGONTAP_PRIVATE_UNIVERSAL.md). Recognition and build
+success do not certify every mod's gameplay.
 The original and tested mod gameplay routes are hardware-confirmed in the
 reported sessions, but newly added DBFZ codec support is a **source-only** change
 until a new VPK is built and exercised on a real Vita.

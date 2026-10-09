@@ -1,5 +1,12 @@
 # DragonTap_Util PRIVATE MOD — universal recognition research
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 > **2026-10-08 hardware update:** the universal PRIVATE decoder, file-backed
 > AAC audio and memory-safe GPU texture bridge are now tested in a full original
 > TeaVM VPK on physical PS Vita with `dbz_mobile_v9`, including consecutive
@@ -30,12 +37,12 @@ The following are direct observations from the five user-provided protected APKs
 
 ## Decisive discovery: aliases AND XOR keys are in classes.dex
 
-For these four APKs, a single Dalvik class initializer (`Lext/o;.<clinit>`) sets:
+For the five APKs listed above, a single Dalvik class initializer (`Lext/o;.<clinit>`) sets:
 
 1. A 17-string array of four-character uppercase hexadecimal aliases (2 slots repeat).
 2. A consecutive 17-int static-field block with the per-APK obfuscation keys.
 
-**Array slot contract, confirmed across all four:**
+**Array slot contract, confirmed across those five audited APKs:**
 
 | Array index | Logical name | Filename rule |
 |---|---|---|

@@ -1,12 +1,11 @@
 # APK audit — 2026-10-04
 
-> **Historical document notice — current v1.0 contract:** this file preserves
-> evidence/instructions for the build or investigation named here. The current
-> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
-> current `game/` or `mods/` profile roots and no built-in Original selector
-> row. Do not reuse historical install paths for v1.0. See
-> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
-
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Pinned source/research facts retain their corpus; dated runtime proposals are historical.
+<!-- DBTB_DOC_STATUS:END -->
 
 Historical audit baseline: main `1e3699b`. Current engine status is maintained
 in [CURRENT_STATUS](CURRENT_STATUS.md); baseline findings below describe that
@@ -81,12 +80,8 @@ profile is separately audited in [ORIGINAL_PLUS_CHARACTERS_APK](ORIGINAL_PLUS_CH
 an Original selector label identifies a folder, not a particular APK hash.
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
-> and functional on physical PS Vita for the exercised selector, profile-loading
-> and gameplay paths, with no issue found so far. It retains the 00.33
-> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
-> See [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## Deep offline reference — 2026-10-06

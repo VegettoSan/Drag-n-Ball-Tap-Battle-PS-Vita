@@ -1,5 +1,12 @@
 # Java core → native C: historical feasibility probes
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](../../docs/CURRENT_RUNTIME_CONTRACT.md) · [Status](../../docs/CURRENT_STATUS.md).
+> Pinned source/research facts retain their corpus; dated runtime proposals are historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 InputProbe and the unadapted EngineProbe below are historical feasibility tests,
 not release targets. The full original core is now the production port approach
 in [engine/README.md](engine/README.md); use [BUILD](../../docs/BUILD.md) for it.
@@ -13,8 +20,10 @@ The additional `VirtualPadProbe.java` exercises actual original combat pad
 types 1/4: eight directions, six buttons, press/hold/release, effective ranges,
 five simultaneous IDs 0..4 and continuous direction changes. It passes on the
 host JVM against the pinned original APK converted with dex2jar 2.4. Its new
-TeaVM/native comparison and Vita integration remain pending; the historical
-InputProbe AOT result below does not establish those new checks.
+VirtualPadProbe did not itself establish a standalone TeaVM/native comparison.
+Vita integration subsequently shipped through VitaControls and was approved in
+controls tests. The full stable v1.2 build passes; its hardware retest is pending.
+The historical InputProbe AOT result below remains a distinct measurement.
 See [controls research](../../docs/VITA_CONTROLS_RESEARCH_2026-10-08.md) for
 reproduction, evidence and the adapter-only implementation plan.
 
@@ -130,10 +139,6 @@ runtime path passed the previously crashing battle-start transition on real hard
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
-> and functional on physical PS Vita for the exercised selector, profile-loading
-> and gameplay paths, with no issue found so far. It retains the 00.33
-> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
-> See [CURRENT_STATUS](../../docs/CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](../../docs/CURRENT_STATUS.md) and
+> [runtime contract](../../docs/CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->

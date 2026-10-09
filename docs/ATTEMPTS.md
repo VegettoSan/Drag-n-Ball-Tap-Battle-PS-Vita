@@ -1,5 +1,12 @@
 # Attempts Log
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Chronological ledger: old pending/failed entries retain the evidence known at that time.
+<!-- DBTB_DOC_STATUS:END -->
+
 ## 2026-10-09 — v1.2 controls integration
 
 Promote approved physical controls and English selector to main. Retire dialogue X after Test 5 failed on hardware; keep script input neutral. Generate/build the full engine locally, preserving the v1.1 pipeline and stable save identity.
@@ -162,14 +169,6 @@ Android Back. No VPK/runtime changes or physical-test result in this attempt.
 **Details/evidence:** [research](VITA_CONTROLS_RESEARCH_2026-10-08.md),
 [APK inventory](evidence/vita_controls_apk_inventory_2026-10-08.json),
 [host results](evidence/vita_controls_host_probe_2026-10-08.json).
-
-> **Historical document notice — current v1.0 contract:** this file preserves
-> evidence/instructions for the build or investigation named here. The current
-> Vita runtime uses only `ux0:data/DBTapBattle/profiles/<Profile>/`; it has no
-> current `game/` or `mods/` profile roots and no built-in Original selector
-> row. Do not reuse historical install paths for v1.0. See
-> [CURRENT_RUNTIME_CONTRACT](CURRENT_RUNTIME_CONTRACT.md).
-
 
 ## 2026-10-07 — Web Extractor 1.0 + GitHub Pages
 
@@ -1231,12 +1230,8 @@ coverage rather than reopening the removed whole-PAC bridge design.
 <!-- DBTB_00_23_DETAIL:END -->
 
 <!-- DBTB_CURRENT_CHECKPOINT:START -->
-> **Current hardware checkpoint — 00.34 (2026-10-07):** the exact
-> `DBTapBattle-Vita-00.34-Button-Text-Center-Fix.vpk` is user-confirmed stable
-> and functional on physical PS Vita for the exercised selector, profile-loading
-> and gameplay paths, with no issue found so far. It retains the 00.33
-> protected-PAC ownership fix and uses the unified `profiles-v1` data contract.
-> See [CURRENT_STATUS](CURRENT_STATUS.md).
+> **Current checkpoint — v1.2:** see [current status](CURRENT_STATUS.md) and
+> [runtime contract](CURRENT_RUNTIME_CONTRACT.md). Earlier build identities/results stay historical.
 <!-- DBTB_CURRENT_CHECKPOINT:END -->
 
 ## 2026-10-05 — Repair the failed Final LiveArea VPK

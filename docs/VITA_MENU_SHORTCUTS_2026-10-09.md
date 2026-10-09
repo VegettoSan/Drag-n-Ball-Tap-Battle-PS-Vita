@@ -1,5 +1,12 @@
 # Vita menu shortcut audit — 2026-10-09
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Current guide; explicitly dated experiments and superseded decisions remain historical.
+<!-- DBTB_DOC_STATUS:END -->
+
 ## Final hardware outcome and v1.2 integration
 
 The user confirms Circle now works in Test 5; dialogue X still fails.
@@ -9,13 +16,13 @@ The script guard remains to prevent stale battle input behind dialogues.
 [Hardware report](evidence/vita_controls_hardware_report_test_5.json).
 The build and candidate design below are historical Test 5 evidence.
 
-## Test 5 revision after physical failures
+## Historical Test 5 candidate after physical failures
 
 The audit below preserves Test 3's inspected paths and now-obsolete adapter
 guards. Test 4 only confirmed pause shortcuts; other-menu Circle and X text
 failed. [Report](evidence/vita_controls_hardware_report_test_4.json).
 
-**Current rule:** live audited CheckBack coordinate consumers define back
+**Retained v1.2 Back rule:** live audited CheckBack coordinate consumers define back
 input at (40,24), pointer 0. The common 806/action-10/resource-0x6000 panel is a
 pause-specific signature, not a universal back-button requirement. The
 consumer whitelist below remains, but sprite detection is removed. Live
@@ -25,7 +32,7 @@ consumer is still active.
 Interactive script 811 consumes iTouchStatus generated from any Begin among
 all five contacts. A finished text with marker uses its ready branch; other
 interactive types also test global touch without demo/text-object markers.
-Test 5 sends a normal Begin at (240,280); original code ignores or acts on it
+The historical Test 5 candidate sends a normal Begin at (240,280); original code ignores or acts on it
 according to its own state. Only original type 9 is excluded as noninteractive.
 No new state writes or forced script transitions. Original Run collects touch
 state then resets bTaskSkip to false before task dispatch; the prior-frame

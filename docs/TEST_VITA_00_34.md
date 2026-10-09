@@ -1,5 +1,12 @@
 # PS Vita test — 00.34 unified profiles + selector UX
 
+<!-- DBTB_DOC_STATUS:START -->
+> **Repository status — 2026-10-09:** main contains prepared v1.2 (`01.02` / `DBTB01178`),
+> retaining v1.1 and approved Vita controls; dialogues use touch. Exact v1.2 hardware
+> retest is pending; published release is 1.1. [Current contract](CURRENT_RUNTIME_CONTRACT.md) · [Status](CURRENT_STATUS.md).
+> Historical build sheet: its identities/results apply to the named build only.
+<!-- DBTB_DOC_STATUS:END -->
+
 > **Status:** HARDWARE CONFIRMED — stable and functional on physical PS Vita.
 > **Gameplay baseline:** 00.34 is the latest hardware-confirmed checkpoint.
 
