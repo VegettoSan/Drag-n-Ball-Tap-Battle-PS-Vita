@@ -1,5 +1,19 @@
 # Confirmed Successes
 
+## 2026-10-09 — Controls Test 2 accepted; Test 3 host/build validated
+
+**Level: USER HARDWARE REPORT (Test 2).** User reported Test 2 worked perfectly.
+No profile identity or runtime log was supplied; approval covers the reported
+session. [Report](evidence/vita_controls_hardware_report_test_2.json).
+
+**Level: HOST JVM / LOCAL BUILD (Test 3).** Original CheckBack accepts adapter
+taps for Start resume and Circle back. Script-ready X input, contact-0 priority,
+holds, transitions, loading and confirmation exclusions pass. Python: 41 pass,
+20 existing gated skips, no failures. Fresh TeaVM and local full-engine VPK
+build/validation pass without workflow; physical Test 3 is pending.
+[Exact artifact evidence](evidence/vita_controls_test_3.json).
+
+
 ## 2026-10-09 — Controls Test 1 accepted on physical Vita
 
 **Level: USER HARDWARE REPORT.** User tested Vita controls with hidden pads and

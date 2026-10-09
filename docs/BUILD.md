@@ -1,6 +1,25 @@
 # Build and packaging
 
-## Controls Test 2 — current local build recipe
+## Controls Test 3 — current local build recipe
+
+Use fresh generation and the full-engine builder shown below on
+`test/vita-controls`; `--test-controls` now selects `DBTBCT001` / `01.04`.
+Do not reuse Test 2 generated C. No workflow dispatched. Test progress stays in
+`save-controls-test.bin`; stable identity and saves remain unchanged.
+
+Full local build PASS: 468 classes / 4103 methods; ARM ELF, VELF, SELF and VPK.
+`DBTapBattle-Vita-01.04-Controls-Test-3.vpk`, 2749103 bytes,
+SHA-256 `013c1d26649cce8815822ac8548290652363f669ca6a9f39fa916a101d6392c7`.
+Implementation commit `b227d6ca3acb98c2ffefe21720312698dfba6490`;
+RX-to-RW import headroom 7144 bytes. ZIP CRC, SFO identity,
+SELF equality, approved save seed/selector images and LiveArea pass. All entries
+of the patched original JAR equal the main pipeline regenerated on the same
+private dex2jar input; Controller and KeyData also equal original.
+[JVM checks, build evidence](evidence/vita_controls_test_3.json) and
+[hardware protocol](TEST_VITA_CONTROLS_3.md). Physical Test 3 remains pending.
+
+
+## Controls Test 2 — historical local build recipe
 
 Use the generation/build commands below on `test/vita-controls`. The current
 `--test-controls` option builds `DBTBCT001` / APP_VER `01.03`, updating the Test 1

@@ -1,0 +1,19 @@
+{
+  "recorded_date_utc": "2026-10-09",
+  "version": "01.03",
+  "filename": "DBTapBattle-Vita-01.03-Controls-Test-2.vpk",
+  "sha256": "377a8f46a42afb452612291b197ce954e86c8e7101b56da1df5b6a256287bdae",
+  "level": "user physical Vita report",
+  "report": "funciono perfectamente",
+  "profile": null,
+  "runtime_log_supplied": false,
+  "photo": "victory screen with scripted text; profile not identified",
+  "scope": "reported Test 2 session only; no universal mod certification",
+  "requested_follow_up": [
+    "Start resume",
+    "Circle back",
+    "X scripted text",
+    "simple Vita guide"
+  ],
+  "test_3_hardware_status": "pending"
+}

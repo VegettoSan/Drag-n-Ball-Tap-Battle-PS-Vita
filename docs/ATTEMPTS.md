@@ -1,5 +1,25 @@
 # Attempts Log
 
+## 2026-10-09 — Controls Test 3 after accepted Test 2
+
+User requested Start to resume pause, Circle at original back buttons and X
+for text shown in the supplied victory photo. Audited original pause task 847,
+37 coordinate-based CheckBack consumers, common visible back panel and live
+script 811/text tasks. Implemented original synthetic touch paths only in
+VitaControls; no new core patch or direct pause/script writes. Back/pause use
+contact 0 and wait for real fingers; X dialogue uses any free original contact.
+Dialogue context outranks stale combat tasks. Task identity and frozen task
+mode rearm only after release. Sentinel yes/no confirmations remain excluded.
+
+Expanded original-class JVM probe PASS. Python 61 total, 41 pass, 20 existing
+skips. Fresh 468-class/4103-method generation, local ARM/SELF/VPK and package
+integrity pass; no workflow. Added simple blue/silver/gold control guide with
+an ImageGen console illustration and exact native text legend. Test 3 remains
+pending on physical Vita; Test 2 acceptance is recorded separately.
+[Menu audit](VITA_MENU_SHORTCUTS_2026-10-09.md),
+[protocol](TEST_VITA_CONTROLS_3.md), [evidence](evidence/vita_controls_test_3.json).
+
+
 ## 2026-10-09 — Controls Test 2 after physical Vita feedback
 
 User accepted Test 1 with Vita buttons and hidden pads, then requested swapped

@@ -1,21 +1,26 @@
 # Current status — 2026-10-09, v1.1 Universal Mod Support (release ready)
 
-## Experimental Vita controls — Test 1 hardware accepted; Test 2 candidate
+## Experimental Vita controls — Test 2 hardware accepted; Test 3 candidate
 
-The user reports Controls Test 1 worked perfectly on physical Vita with Vita
-buttons and hidden pads. The profile was not identified and no logs/captures
-were supplied; this does not certify all mods or the new Test 2 changes.
+The user reports Controls Test 2 worked perfectly on physical Vita. No profile
+identity or runtime log was supplied; this accepts the reported session, not
+all mods. The attached photo shows a victory dialogue and motivates text input.
 
-On `test/vita-controls`, Controls Test 2 swaps L/R (L rage, R fourth special
-shortcut), adds X confirmation through the original character-selection pad,
-and offers only **Solo táctil** / **Controles PS Vita**, the latter with hidden
-pads. Old visible-Vita preferences select hidden Vita on confirmation. The
-choice still appears every profile launch and remembers its highlighted row.
-Core classes retain the existing main compatibility pipeline; no new core
-patches. Separate test bubble `DBTBCT001` / `01.03` updates Test 1 and preserves
-its isolated saves. `main` and stable v1.1 remain unchanged. New input and
-preference host checks pass; Test 2 hardware acceptance is pending. See
-[Test 2 protocol](TEST_VITA_CONTROLS_2.md).
+On `test/vita-controls`, Controls Test 3 adds Start to resume from the main
+pause menu, Circle to touch the visible original back button in audited menus,
+and X to touch interactive scripted text. Held buttons cannot repeat or carry
+an action across scenes. Actual touch contacts take priority; pause/back wait
+for original contact 0. Yes/no confirmations remain touch-operated.
+
+L remains rage, R remains fourth special shortcut, and X still confirms ready
+character selection. Every profile launch offers **Solo táctil** / **Controles
+PS Vita**, with hidden pads in Vita mode and remembered highlight. Separate
+bubble `DBTBCT001` / `01.04` updates Test 2 and preserves isolated test saves.
+No new core patches; existing main compatibility pipeline remains identical.
+Local JVM/Python tests and full-engine ARM/SELF/VPK validation pass without a
+workflow. Test 3 hardware acceptance is pending. `main` and stable v1.1 remain
+unchanged. See [Test 3 protocol](TEST_VITA_CONTROLS_3.md) and
+[menu audit](VITA_MENU_SHORTCUTS_2026-10-09.md).
 
 ## Historical physical controls research — 2026-10-08, no runtime change at that stage
 

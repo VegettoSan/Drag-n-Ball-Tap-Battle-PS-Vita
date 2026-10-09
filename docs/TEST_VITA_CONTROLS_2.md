@@ -4,6 +4,14 @@ Rama: `test/vita-controls`. `main` y v1.1 permanecen intactos. El usuario confir
 Test 1 con controles Vita y pads ocultos; esta nueva versión requiere probar
 los tres ajustes siguientes en consola.
 
+## Aceptación posterior — 2026-10-09 UTC
+
+El usuario confirmó después: “funciono perfectamente”. Perfil no identificado,
+sin log de ejecución. El protocolo y la condición pendiente de abajo describen
+el momento de entrega histórico. La aprobación posterior cubre esa sesión de
+Test 2; los nuevos atajos corresponden a [Test 3](TEST_VITA_CONTROLS_3.md).
+[Reporte](evidence/vita_controls_hardware_report_test_2.json).
+
 ## Instalar
 
 Instalar **DBTapBattle-Vita-01.03-Controls-Test-2.vpk** con VitaShell. Usa la misma
