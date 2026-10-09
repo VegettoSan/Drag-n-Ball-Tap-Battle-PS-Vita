@@ -68,7 +68,12 @@ final class VitaControls {
             // Every original interactive script accepts global Begin touches.
             // It decides when to ignore, reveal or advance them. Text sprites,
             // iTextEnd and demo-position markers are not universal UI guards.
-            if(dialog!=null)return use(dialog,dialog._work[0]==9?0:4);
+            if(dialog!=null) {
+                if(dialog._work[0]!=9)return use(dialog,4);
+                // An automatic script ignores X, but cannot disable a separate
+                // original menu's coordinate-back listener or expose combat.
+                return backTask!=null?use(backTask,5):use(dialog,0);
+            }
             TCB selection=findTask(1014);
             if(selection!=null && matches(pad(engine,0),3,100,0,0) &&
                 matches(pad(engine,1),5,-50,20,0x4100) && matches(pad(engine,2),5,430,20,0x4100))return use(selection,1);

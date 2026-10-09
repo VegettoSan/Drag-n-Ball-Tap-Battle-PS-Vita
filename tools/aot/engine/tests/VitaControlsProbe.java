@@ -136,6 +136,8 @@ public final class VitaControlsProbe {
         step(0);events[0]=0;events[3]=0;events[41]=128;controls.update(gw,engine,events,1);
         menu.md=694;events[3]=2;events[41]=0;controls.update(gw,engine,events,1);
         check(gw.keyData.GetIndex(0)<0,"dialog pending back crossed consumer change");
+        active._work[0]=9;step(0);step(16);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"automatic script accepts X alongside menu");
+        step(0);events[41]=128;controls.update(gw,engine,events,0);backTap("menu back alongside automatic script");gw.keyData.ClearBegin();
         battle();TCBManajer.bPause=true;TCBManajer.bTaskSkip=true;active.md=847;TCBManajer.iPlayMode=8;step(0);step(1024);for(int id=0;id<5;id++)check(gw.keyData.GetIndex(id)<0,"Start Bluetooth pause");
         System.out.println("VITA CONTROLS JVM PASS: combat/selection regression; Start resume; 37 back consumers without pause sprites; original Game1 navigation; pointer-0 priority; original Game4 markerless/finished dialogue; holds/transitions/loading/confirmation exclusions");
     }
