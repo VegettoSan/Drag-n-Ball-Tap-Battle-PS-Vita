@@ -326,7 +326,7 @@ bool chooseControls(VitaInput& input, BootChoice& choice, bool themed,
                     const UiTexture& background, const UiTexture& header,
                     const UiTexture& button) {
     int selected = controlSelectionFromPreference(readControlPreference(choice.profile_directory));
-    const char* labels[] = {"SOLO TACTIL", "CONTROLES PS VITA"};
+    const char* labels[] = {"TOUCH ONLY", "PS VITA CONTROLS"};
     // Release the selecting finger/button before accepting another selection.
     bool armed = false;
     for (;;) {
@@ -362,7 +362,7 @@ bool chooseControls(VitaInput& input, BootChoice& choice, bool themed,
             drawUiTextureUv(background, 0, 0, 960, 544, background.content_u_max, background.content_v_max, 0.7f);
             drawUiTexture(header, 72, 26, 816, 58);
         }
-        centeredShadowText(480, 43, 3, "CONTROLES", 1, 0.86f, 0.08f);
+        centeredShadowText(480, 43, 3, "CONTROLS", 1, 0.86f, 0.08f);
         centeredShadowText(480, 105, 2, clipped(choice.profile_directory, 38), 0.9f, 0.94f, 1);
         for (int row = 0; row < 2; ++row) {
             const float y = 160.0f + row * 85.0f;
@@ -370,9 +370,10 @@ bool chooseControls(VitaInput& input, BootChoice& choice, bool themed,
             else rect(148, y, 664, 58, 0.1f, row == selected ? 0.45f : 0.18f, 0.6f);
             centeredShadowText(480, y + 20, 2.4f, labels[row], 1, 0.98f, 0.78f);
         }
-        centeredShadowText(480, 360, 1.8f, "VITA: PADS TACTILES OCULTOS", 0.9f, 0.94f, 1);
-        centeredShadowText(480, 430, 1.8f, "MENUS: PANTALLA TACTIL", 0.9f, 0.94f, 1);
-        centeredShadowText(480, 463, 1.6f, "PERSONAJES: DPAD CAMBIAR / X SELECCIONAR", 0.9f, 0.94f, 1);
+        centeredShadowText(480, 360, 1.8f, "VITA: TOUCH PADS HIDDEN", 0.9f, 0.94f, 1);
+        centeredShadowText(480, 395, 1.8f, "TEXT: X NEXT   PAUSE: START RESUME", 0.9f, 0.94f, 1);
+        centeredShadowText(480, 430, 1.8f, "MENUS: TOUCH / O BACK", 0.9f, 0.94f, 1);
+        centeredShadowText(480, 463, 1.6f, "CHARACTERS: DPAD CHANGE / X SELECT", 0.9f, 0.94f, 1);
         centeredShadowText(480, 505, 1.6f, "DPAD / STICK   X / TOUCH SELECT   O BACK", 1, 0.86f, 0.08f);
         vglSwapBuffers(GL_FALSE); sceKernelDelayThread(16000);
     }
